@@ -40,7 +40,7 @@
 
 ---
 
-### 🟢 TASK-02: Multi-Route Karnataka GPS Telemetry Generator
+### 🟢 TASK-02: Multi-Route Karnataka GPS Telemetry Generator [COMPLETED]
 - **Assignee**: Node B (Teammate Antigravity)
 - **Target Files**: `distributed/routes/bmtc_orr.json`, `distributed/routes/bmtc_ecity.json`, `distributed/routes/mysuru_ringroad.json`
 - **Objective**: Provide realistic high-frequency GPS coordinate sequences with road elevation changes and simulated IMU z-axis profiles.
@@ -52,7 +52,7 @@
 
 ---
 
-### 🟢 TASK-03: Edge Hardware & AI Model Benchmarking Suite
+### 🟢 TASK-03: Edge Hardware & AI Model Benchmarking Suite [COMPLETED]
 - **Assignee**: Node B (Teammate Antigravity)
 - **Target File**: `distributed/edge_benchmark.py`
 - **Objective**: Run automated benchmarks on the local CPU/GPU to measure real edge performance metrics for the presentation slide.
@@ -69,5 +69,5 @@
 - [x] Real-time GIS Command Dashboard (`index.html`) — Node A
 - [x] OGC GeoJSON Export (`/api/export-geojson`) — Node A
 - [x] TASK-01: In-Cab Driver HUD Console UI (`driver_console.html`, `templates/driver_console.html`) — Node B (Completed)
-- [ ] TASK-02: Multi-Route Karnataka GPS Telemetry — Node B (Ready to start)
-- [ ] TASK-03: Edge Hardware & AI Model Benchmark Suite — Node B (Ready to start)
+- [x] TASK-02: Multi-Route Karnataka GPS Telemetry (`distributed/routes/*.json`) — Node B (Completed)
+- [x] TASK-03: Edge Hardware & AI Model Benchmark Suite (`distributed/edge_benchmark.py`, `BENCHMARK_RESULTS.md`) — Node B (Completed)
