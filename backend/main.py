@@ -19,7 +19,7 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# CORS Middleware
+# CORS Middleware for local and cross-origin dashboard access
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -56,6 +56,25 @@ def read_root(request: Request):
     """Renders the main UrbanSight AI Command Dashboard."""
     return templates.TemplateResponse("index.html", {"request": request})
 
+@app.get("/api/health")
+def health_check():
+    """Health check endpoint for local and distributed monitoring."""
+    return {
+        "status": "HEALTHY",
+        "service": "UrbanSight AI Command Orchestrator",
+        "version": "2.0.0",
+        "active_agents": 4,
+        "agents": [
+            "VisionPerceptionAgent (YOLOv8/DPDP Blur)",
+            "GeospatialClusteringAgent (DBSCAN/IMU Fusion)",
+            "MunicipalDispatcherAgent (CPWD SOR/Auto-Dispatch)",
+            "FleetAdvisoryAgent (Driver WebSocket Alerts)"
+        ],
+        "buses_online": len(orchestrator.buses),
+        "hazards_tracked": len(orchestrator.hazards),
+        "work_orders_filed": len(orchestrator.work_orders)
+    }
+
 @app.get("/api/metrics")
 def get_metrics():
     return orchestrator.get_system_metrics()
@@ -79,6 +98,39 @@ def get_advisories():
 @app.get("/api/events")
 def get_event_logs():
     return orchestrator.event_logs
+
+@app.get("/api/agents/status")
+def get_agents_status():
+    """Returns detailed status and stats for each of the 4 autonomous agents."""
+    return {
+        "agent_1_vision": {
+            "name": "Vision Perception Agent",
+            "model": "YOLOv8-Nano (TensorRT FP16 / 30 FPS)",
+            "privacy_guard": "DPDP Act 2023 §2(t) Zero-Persistence YuNet Gaussian Masking",
+            "confidence_threshold": 0.70,
+            "status": "ACTIVE"
+        },
+        "agent_2_clustering": {
+            "name": "Geospatial Clustering Agent",
+            "algorithm": "DBSCAN (epsilon=25m, Haversine metric)",
+            "sensor_fusion": "6-Axis IMU Acceleration Shock (-az < -0.25g / bump rejection)",
+            "status": "ACTIVE"
+        },
+        "agent_3_dispatcher": {
+            "name": "Municipal Dispatcher Agent",
+            "jurisdictions": ["BBMP Mahadevapura Ward 85", "BBMP East", "MCC Mysuru Ward 9"],
+            "rate_schedule": "CPWD Schedule of Rates 2023/2024",
+            "sla_rules": {"CRITICAL_P1": "<24h", "HIGH_P2": "<48h", "MEDIUM_P3": "<72h"},
+            "status": "ACTIVE"
+        },
+        "agent_4_advisory": {
+            "name": "Fleet Advisory Agent",
+            "broadcast_radius_m": 300,
+            "protocol": "WebSocket / MQTT Telemetry",
+            "advisory_types": ["SPEED_REDUCTION", "LANE_MERGE", "CAUTION"],
+            "status": "ACTIVE"
+        }
+    }
 
 @app.post("/api/simulate-detection")
 def simulate_detection(req: DetectSimulationRequest):
