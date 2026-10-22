@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UrbanSight AI — In-Cab Driver HUD Console | BMTC-KA57-E912</title>
+
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-void: #090D16;
+            --bg-card: #0F172A;
+            --bg-card-hover: #1E293B;
+            --bg-panel: #111827;
+            --border-color: #1E293B;
+            --border-glow: rgba(0, 229, 255, 0.25);
+
+            --primary: #00E5FF;
+            --primary-glow: rgba(0, 229, 255, 0.4);
+            --accent: #FF5E1E;
+            --accent-glow: rgba(255, 94, 30, 0.4);
+            --warning: #F59E0B;
+            --warning-glow: rgba(245, 158, 11, 0.4);
+            --danger: #EF4444;
+            --danger-glow: rgba(239, 68, 68, 0.45);
+            --success: #10B981;
+            --success-glow: rgba(16, 185, 129, 0.35);
+            --purple: #8B5CF6;
+
+            --text-primary: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+
+            --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-heading);
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Top HUD Bar */
+        .hud-topbar {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 2px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(12px);
+            z-index: 100;
+        }
+
+        .hud-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .hud-badge {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #00E5FF22, #00E5FF44);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .hud-titles h1 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-titles p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .tag-pill {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .pill-cyan { background: rgba(0, 229, 255, 0.15); color: var(--primary); border: 1px solid var(--primary); }
+        .pill-green { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .pill-amber { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+        .pill-red { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+
+        .hud-status-strip {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .telemetry-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-family: var(--font-mono);
+        }
+
+        .telemetry-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .telemetry-val {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .live-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse-dot 1.4s infinite;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 14px var(--success); }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        .btn-hud {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-hud:hover {
+            background: #334155;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-hud.active {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Main Cockpit Layout */
+        .hud-main-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr 340px;
+            gap: 20px;
+            padding: 20px 24px;
+            flex: 1;
+            align-items: stretch;
+        }
+
+        /* Panels */
+        .hud-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hud-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .panel-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title i {
+            color: var(--primary);
+        }
+
+        /* Left Column: Speedometer & Drive Dynamics */
+        .speedo-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .speedo-svg {
+            width: 240px;
+            height: 140px;
+        }
+
+        .speedo-arc-bg {
+            fill: none;
+            stroke: #1E293B;
+            stroke-width: 14;
+            stroke-linecap: round;
+        }
+
+        .speedo-arc-val {
+            fill: none;
+            stroke: url(#speedo-grad);
+            stroke-width: 14;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 140;
+            transition: stroke-dashoffset 0.4s ease-out;
+            filter: drop-shadow(0 0 8px var(--primary-glow));
+        }
+
+        .speed-readout {
+            position: absolute;
+            bottom: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .speed-number {
+            font-size: 3.4rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            line-height: 1;
+            color: #FFFFFF;
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+
+        .speed-unit {
+            font-size: 0.85rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            color: var(--primary);
+            letter-spacing: 1.5px;
+        }
+
+        .speed-limit-badge {
+            background: #FFFFFF;
+            color: #000000;
+            border: 3px solid #EF4444;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            margin-top: 12px;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+
+        .speed-limit-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .dynamics-list {
+            margin-top: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .dynamic-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+        }
+
+        .dynamic-row .lbl {
+            color: var(--text-muted);
+        }
+
+        .dynamic-row .val {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Center Column: Dynamic Hazard Advisory HUD Card */
+        .hud-center-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Dynamic Hazard Warning Card */
+        .hazard-advisory-card {
+            border-radius: 14px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* State: Active Critical Alert */
+        .hazard-advisory-card.active-alert {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 2px solid var(--danger);
+            box-shadow: 0 0 35px var(--danger-glow), inset 0 0 25px rgba(239, 68, 68, 0.15);
+            animation: alertGlow 1.2s infinite alternate ease-in-out;
+        }
+
+        @keyframes alertGlow {
+            0% { border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
+            100% { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 45px rgba(239, 68, 68, 0.65); }
+        }
+
+        /* State: Roadway All Clear */
+        .hazard-advisory-card.all-clear {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 20px var(--success-glow);
+        }
+
+        .alert-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: var(--font-mono);
+            margin-bottom: 14px;
+            width: fit-content;
+        }
+
+        .badge-critical {
+            background: var(--danger);
+            color: #FFFFFF;
+            box-shadow: 0 0 15px var(--danger-glow);
+            animation: pulse-badge 0.8s infinite alternate;
+        }
+
+        @keyframes pulse-badge {
+            0% { transform: scale(0.98); }
+            100% { transform: scale(1.02); }
+        }
+
+        .badge-clear {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .hazard-main-title {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .hazard-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-family: var(--font-mono);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Distance Countdown Meter */
+        .distance-countdown-box {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dist-meter-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dist-meter-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .dist-number-wrap {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .dist-number {
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            color: #FFFFFF;
+            line-height: 1;
+        }
+
+        .dist-unit {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--warning);
+            font-family: var(--font-mono);
+        }
+
+        .dist-progress-wrap {
+            flex: 1;
+            margin: 0 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .dist-progress-bar {
+            height: 12px;
+            background: #1E293B;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .dist-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger), var(--warning));
+            width: 75%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--danger-glow);
+        }
+
+        .dist-time-est {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            text-align: right;
+        }
+
+        /* Recommended Action Box */
+        .advisory-action-banner {
+            background: rgba(0, 229, 255, 0.08);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .action-text-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .action-directive {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: 0.3px;
+        }
+
+        .action-sub {
+            font-size: 0.88rem;
+            color: var(--primary);
+            font-family: var(--font-mono);
+        }
+
+        /* Directional Merge Arrow Animation */
+        .merge-arrow-container {
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 229, 255, 0.15);
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+            flex-shrink: 0;
+            animation: arrow-bounce 1s infinite alternate ease-in-out;
+        }
+
+        @keyframes arrow-bounce {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-10px); }
+        }
+
+        /* 3-Lane Road Visualizer */
+        .lane-indicator-strip {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .lane-col {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        .lane-col.lane-safe {
+            background: rgba(16, 185, 129, 0.15);
+            border: 2px solid var(--success);
+            box-shadow: 0 0 15px var(--success-glow);
+        }
+
+        .lane-col.lane-hazard {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid var(--danger);
+            box-shadow: 0 0 15px var(--danger-glow);
+        }
+
+        .lane-name {
+            font-size: 0.72rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .lane-status {
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        /* Radar Scanner (When All Clear) */
+        .radar-scan-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .radar-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 229, 255, 0.3);
+            position: relative;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 25px rgba(0, 229, 255, 0.1);
+        }
+
+        .radar-circle::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0deg, transparent 270deg, rgba(0, 229, 255, 0.45) 360deg);
+            animation: radarSweep 2.5s linear infinite;
+        }
+
+        @keyframes radarSweep {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .radar-bus-icon {
+            font-size: 1.8rem;
+            color: var(--primary);
+            z-index: 2;
+        }
+
+        /* Right Column: Perception & IMU Telemetry */
+        .telemetry-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .telemetry-card-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .imu-meter-bar {
+            height: 8px;
+            background: #1E293B;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            margin: 6px 0;
+        }
+
+        .imu-meter-center {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #64748B;
+        }
+
+        .imu-meter-fill {
+            height: 100%;
+            width: 50%;
+            background: var(--success);
+            transition: width 0.2s, background-color 0.2s;
+        }
+
+        /* Camera Feed Simulator Thumbnail */
+        .dashcam-preview {
+            width: 100%;
+            height: 120px;
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .dashcam-overlay-text {
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: #00E5FF;
+            text-shadow: 0 1px 3px #000;
+            z-index: 5;
+        }
+
+        .dashcam-blur-badge {
+            position: absolute;
+            bottom: 6px;
+            right: 8px;
+            background: rgba(16, 185, 129, 0.85);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.62rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            z-index: 5;
+        }
+
+        .dashcam-sim-grid {
+            width: 100%;
+            height: 100%;
+            opacity: 0.25;
+            background-image: linear-gradient(rgba(0, 229, 255, 0.2) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 229, 255, 0.2) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Bottom Interactive Evaluation Control Strip */
+        .hud-bottom-bar {
+            background: rgba(15, 23, 42, 0.98);
+            border-top: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .eval-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .eval-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sim {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: var(--text-primary);
+            padding: 7px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-sim:hover {
+            background: #334155;
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-sim-pothole:hover { border-color: var(--danger); color: var(--danger); }
+        .btn-sim-bump:hover { border-color: var(--warning); color: var(--warning); }
+        .btn-sim-water:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Responsive tablet sizing */
+        @media (max-width: 1024px) {
+            .hud-main-grid {
+                grid-template-columns: 280px 1fr;
+            }
+            .hud-right-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hud-main-grid {
+                grid-template-columns: 1fr;
+            }
+            .hud-status-strip {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top HUD Bar -->
+    <header class="hud-topbar">
+        <div class="hud-brand">
+            <div class="hud-badge">
+                <i class="fa-solid fa-tablet-screen-button"></i>
+            </div>
+            <div class="hud-titles">
+                <h1>
+                    UrbanSight AI · Driver In-Cab HUD
+                    <span class="tag-pill pill-cyan">BMTC-KA57-E912</span>
+                    <span class="tag-pill pill-green" id="telemetry-mode-tag">LIVE API</span>
+                </h1>
+                <p>Route 500D (Hebbal ↔ Silk Board via Outer Ring Road) · Smart Cities Track SIH26124</p>
+            </div>
+        </div>
+
+        <div class="hud-status-strip">
+            <div class="telemetry-item">
+                <span class="telemetry-label">Privacy Shield</span>
+                <span class="telemetry-val" style="color:var(--success);">
+                    <i class="fa-solid fa-shield-halved"></i> DPDP §2(t) 100% BLUR
+                </span>
+            </div>
+
+            <div class="telemetry-item">
+                <span class="telemetry-label">GPS Satellites</span>
+                <span class="telemetry-val" id="hud-gps-sats">
+                    <span class="live-dot"></span> 3D FIX (14 SATS)
+                </span>
+            </div>
+
+            <div class="telemetry-item">
+                <span class="telemetry-label">System Time</span>
+                <span class="telemetry-val" id="hud-clock">19:54:00 IST</span>
+            </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button class="btn-hud active" id="btn-audio-toggle" title="Toggle Hazard Audio Alert Chime">
+                <i class="fa-solid fa-volume-high" id="audio-icon"></i>
+                <span id="audio-text">CHIME: ON</span>
+            </button>
+            <button class="btn-hud" id="btn-chime-test" title="Test Web Audio API Alert Chime">
+                <i class="fa-solid fa-bell"></i> TEST
+            </button>
+            <button class="btn-hud" id="btn-fullscreen" title="Toggle Fullscreen Tablet Mode">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+            <a href="index.html" class="btn-hud" title="Return to Central ICCC Dashboard">
+                <i class="fa-solid fa-arrow-left"></i> ICCC
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Cockpit Layout -->
+    <main class="hud-main-grid">
+
+        <!-- Left Column: Driving Gauges & Speedometer -->
+        <section class="hud-panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fa-solid fa-gauge-high"></i> Telemetry & Speed</span>
+                <span class="tag-pill pill-cyan">CAN-BUS</span>
+            </div>
+
+            <div class="speedo-wrap">
+                <svg class="speedo-svg" viewBox="0 0 240 140">
+                    <defs>
+                        <linearGradient id="speedo-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#00E5FF"/>
+                            <stop offset="70%" stop-color="#10B981"/>
+                            <stop offset="100%" stop-color="#EF4444"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Background arc (180 deg) -->
+                    <path class="speedo-arc-bg" d="M 30 130 A 90 90 0 0 1 210 130"/>
+                    <!-- Active value arc -->
+                    <path class="speedo-arc-val" id="speedo-meter" d="M 30 130 A 90 90 0 0 1 210 130"/>
+                </svg>
+
+                <div class="speed-readout">
+                    <div class="speed-number" id="hud-speed-num">42</div>
+                    <div class="speed-unit">KM / H</div>
+                </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; align-items:center;">
+                <div class="speed-limit-badge" id="speed-limit-badge">50</div>
+                <div class="speed-limit-label">Road Speed Limit</div>
+            </div>
+
+            <div class="dynamics-list">
+                <div class="dynamic-row">
+                    <span class="lbl"><i class="fa-solid fa-compass"></i> Heading</span>
+                    <span class="val" id="hud-heading">142° SE (Bearing)</span>
+                </div>
+                <div class="dynamic-row">
+                    <span class="lbl"><i class="fa-solid fa-location-dot"></i> GPS Lat/Lng</span>
+                    <span class="val" id="hud-coords">12.9352, 77.6821</span>
+                </div>
+                <div class="dynamic-row">
+                    <span class="lbl"><i class="fa-solid fa-mountain"></i> Altitude</span>
+                    <span class="val">914 m MSL</span>
+                </div>
+                <div class="dynamic-row">
+                    <span class="lbl"><i class="fa-solid fa-road"></i> Road IRI Quality</span>
+                    <span class="val" style="color:var(--success);">2.2 (Smooth Arterial)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Center Column: Dynamic Hazard Warning Card -->
+        <section class="hud-panel hud-center-panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fa-solid fa-triangle-exclamation"></i> Dynamic Hazard Advisory HUD</span>
+                <span class="tag-pill pill-cyan" id="horizon-tag">300m SCAN HORIZON</span>
+            </div>
+
+            <!-- Dynamic Card (Toggles between Alert and All Clear) -->
+            <div class="hazard-advisory-card active-alert" id="hazard-card">
+
+                <div id="alert-content">
+                    <div class="alert-header-badge badge-critical" id="alert-badge">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span id="alert-badge-text">CRITICAL HAZARD DETECTED</span>
+                    </div>
+
+                    <h2 class="hazard-main-title" id="alert-title">
+                        CRITICAL POTHOLE (9.4cm Depth)
+                    </h2>
+                    <p class="hazard-subtitle" id="alert-subtitle">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                        <span id="alert-loc-text">Sarjapur-ORR Junction (Near EcoWorld Underpass)</span>
+                    </p>
+
+                    <!-- Distance Countdown Meter -->
+                    <div class="distance-countdown-box">
+                        <div class="dist-meter-left">
+                            <span class="dist-meter-label">Distance to Hazard</span>
+                            <div class="dist-number-wrap">
+                                <span class="dist-number" id="countdown-dist">220</span>
+                                <span class="dist-unit">METERS</span>
+                            </div>
+                        </div>
+
+                        <div class="dist-progress-wrap">
+                            <div class="dist-progress-bar">
+                                <div class="dist-progress-fill" id="countdown-progress-bar" style="width: 73%;"></div>
+                            </div>
+                            <div class="dist-time-est" id="countdown-time">Est. Impact: 18.8s at current speed</div>
+                        </div>
+                    </div>
+
+                    <!-- Recommended Action Banner -->
+                    <div class="advisory-action-banner" id="advisory-banner">
+                        <div class="merge-arrow-container" id="arrow-container">
+                            <i class="fa-solid fa-arrow-turn-down fa-rotate-90" id="arrow-icon"></i>
+                        </div>
+                        <div class="action-text-group">
+                            <div class="action-directive" id="action-directive">
+                                MERGE TO LEFT LANE; REDUCE SPEED TO 20 KM/H
+                            </div>
+                            <div class="action-sub" id="action-sub">
+                                Autonomous Municipal Dispatch: PWD Ticket #W85-802 filed (SLA &lt;24h)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3-Lane Road Visualizer -->
+                    <div class="lane-indicator-strip">
+                        <div class="lane-col lane-safe" id="lane-1">
+                            <span class="lane-name">Lane 1 (Left)</span>
+                            <span class="lane-status" style="color:var(--success);">
+                                <i class="fa-solid fa-circle-check"></i> RECOMMENDED
+                            </span>
+                        </div>
+                        <div class="lane-col lane-hazard" id="lane-2">
+                            <span class="lane-name">Lane 2 (Center)</span>
+                            <span class="lane-status" style="color:var(--danger);">
+                                <i class="fa-solid fa-triangle-exclamation"></i> POTHOLE (9.4cm)
+                            </span>
+                        </div>
+                        <div class="lane-col" id="lane-3">
+                            <span class="lane-name">Lane 3 (Right)</span>
+                            <span class="lane-status" style="color:var(--text-muted);">
+                                <i class="fa-solid fa-ban"></i> HEAVY TRAFFIC
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roadway Clear Container (Hidden when alert is active) -->
+                <div id="clear-content" style="display:none;" class="radar-scan-box">
+                    <div class="radar-circle">
+                        <i class="fa-solid fa-bus radar-bus-icon"></i>
+                    </div>
+                    <div class="alert-header-badge badge-clear">
+                        <i class="fa-solid fa-shield-check"></i> ALL CLEAR
+                    </div>
+                    <h2 class="hazard-main-title" style="color:var(--success); font-size:1.6rem; margin-top:8px;">
+                        ROADWAY AHEAD IS CLEAR
+                    </h2>
+                    <p class="hazard-subtitle" style="justify-content:center;">
+                        No severe road surface distress within 300m forward radar horizon.
+                    </p>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+                <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">
+                    <i class="fa-solid fa-wifi"></i> Edge V2X Broadcast Radius: 300 meters
+                </span>
+                <button class="btn-hud" id="btn-ack-hazard">
+                    <i class="fa-solid fa-check-double"></i> Acknowledge Alert
+                </button>
+            </div>
+        </section>
+
+        <!-- Right Column: Perception, Privacy & IMU Telemetry -->
+        <section class="hud-panel hud-right-panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fa-solid fa-microchip"></i> Edge AI Perception</span>
+                <span class="tag-pill pill-green">YOLOv8-NANO</span>
+            </div>
+
+            <!-- In-Memory Privacy Cam Simulator -->
+            <div class="telemetry-card">
+                <div class="telemetry-card-title">
+                    <span>Dashcam Optical Feed</span>
+                    <span style="color:var(--primary);">30 FPS</span>
+                </div>
+                <div class="dashcam-preview">
+                    <div class="dashcam-sim-grid"></div>
+                    <div class="dashcam-overlay-text">
+                        CAM-01 [FRONT WIDE]<br>
+                        1080p @ 30 FPS · BUFFER IN-MEMORY<br>
+                        ZERO DISK PERSISTENCE
+                    </div>
+                    <div class="dashcam-blur-badge">
+                        <i class="fa-solid fa-user-shield"></i> DPDP BLUR: ACTIVE
+                    </div>
+                    <i class="fa-solid fa-video" style="font-size:2rem; color:#334155;"></i>
+                </div>
+            </div>
+
+            <!-- 6-Axis IMU Shock Verification Card -->
+            <div class="telemetry-card">
+                <div class="telemetry-card-title">
+                    <span>6-Axis IMU Sensor Fusion</span>
+                    <span id="imu-shock-val" style="color:var(--success);">-0.04g az</span>
+                </div>
+                <div class="imu-meter-bar">
+                    <div class="imu-meter-center"></div>
+                    <div class="imu-meter-fill" id="imu-meter-fill" style="width: 48%;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.68rem; color:var(--text-dim); font-family:var(--font-mono); margin-top:4px;">
+                    <span>-1.0g (Pothole Shock)</span>
+                    <span>0.0g</span>
+                    <span>+1.0g (Speed Bump)</span>
+                </div>
+                <div style="font-size:0.72rem; color:var(--text-muted); margin-top:6px; font-family:var(--font-mono);" id="imu-filter-status">
+                    Filter: Rejects speed bump false alarms (+az &gt; +0.40g)
+                </div>
+            </div>
+
+            <!-- Vehicle & Hardware Health -->
+            <div class="telemetry-card">
+                <div class="telemetry-card-title">
+                    <span>Edge Hardware State</span>
+                    <span style="color:var(--success);">NORMAL</span>
+                </div>
+                <div class="dynamics-list" style="margin-top:4px; gap:6px;">
+                    <div class="dynamic-row" style="padding:4px 8px;">
+                        <span class="lbl">Inference Latency</span>
+                        <span class="val" style="color:var(--primary);">9.8 ms (102 FPS)</span>
+                    </div>
+                    <div class="dynamic-row" style="padding:4px 8px;">
+                        <span class="lbl">Redaction Rate</span>
+                        <span class="val">14 Faces/Plates sec</span>
+                    </div>
+                    <div class="dynamic-row" style="padding:4px 8px;">
+                        <span class="lbl">LAN Bridge</span>
+                        <span class="val" style="color:var(--success);" id="lan-bridge-status">Active (Port 8080)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Evaluation Strip (Quick Scenarios for Infothon Judges) -->
+    <footer class="hud-bottom-bar">
+        <div class="eval-title">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Interactive Demo Scenarios:</span>
+        </div>
+
+        <div class="eval-buttons">
+            <button class="btn-sim btn-sim-pothole" id="btn-demo-pothole">
+                <i class="fa-solid fa-circle-exclamation"></i> Critical Pothole (280m)
+            </button>
+            <button class="btn-sim btn-sim-water" id="btn-demo-water">
+                <i class="fa-solid fa-water"></i> Waterlogging (250m)
+            </button>
+            <button class="btn-sim btn-sim-bump" id="btn-demo-bump">
+                <i class="fa-solid fa-shield"></i> Speed Bump (+0.45g Filtered)
+            </button>
+            <button class="btn-sim" id="btn-demo-clear">
+                <i class="fa-solid fa-road"></i> Road Clear
+            </button>
+        </div>
+    </footer>
+
+    <!-- Web Audio API Synthesizer & Client Logic -->
+    <script>
+        // State variables
+        let audioEnabled = true;
+        let audioCtx = null;
+        let currentDistance = 220;
+        let busSpeed = 42;
+        let countdownTimer = null;
+        let isAlertActive = true;
+        let apiConnected = false;
+
+        // Sound synthesizer using Web Audio API
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playChime(type = 'critical') {
+            if (!audioEnabled) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+
+                if (type === 'critical') {
+                    // Urgent Two-Tone Warning Chime: 880Hz (A5) -> 1760Hz (A6)
+                    const osc1 = audioCtx.createOscillator();
+                    const osc2 = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    osc1.type = 'sine';
+                    osc1.frequency.setValueAtTime(880, now);
+                    osc1.frequency.exponentialRampToValueAtTime(1174, now + 0.15);
+
+                    osc2.type = 'triangle';
+                    osc2.frequency.setValueAtTime(1760, now + 0.16);
+                    osc2.frequency.exponentialRampToValueAtTime(880, now + 0.35);
+
+                    gain.gain.setValueAtTime(0.001, now);
+                    gain.gain.linearRampToValueAtTime(0.25, now + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+                    osc1.connect(gain);
+                    osc2.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc1.start(now);
+                    osc1.stop(now + 0.2);
+                    osc2.start(now + 0.15);
+                    osc2.stop(now + 0.45);
+                } else {
+                    // Pleasant Gentle Chime
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, now); // D5
+                    osc.frequency.setValueAtTime(880, now + 0.12); // A5
+
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                }
+            } catch (e) {
+                console.warn("Audio chime context error:", e);
+            }
+        }
+
+        // Toggle Audio
+        const btnAudio = document.getElementById('btn-audio-toggle');
+        const audioIcon = document.getElementById('audio-icon');
+        const audioText = document.getElementById('audio-text');
+
+        btnAudio.addEventListener('click', () => {
+            initAudio();
+            audioEnabled = !audioEnabled;
+            if (audioEnabled) {
+                btnAudio.classList.add('active');
+                audioIcon.className = 'fa-solid fa-volume-high';
+                audioText.textContent = 'CHIME: ON';
+                playChime('gentle');
+            } else {
+                btnAudio.classList.remove('active');
+                audioIcon.className = 'fa-solid fa-volume-xmark';
+                audioText.textContent = 'CHIME: MUTED';
+            }
+        });
+
+        document.getElementById('btn-chime-test').addEventListener('click', () => {
+            initAudio();
+            playChime('critical');
+        });
+
+        // Fullscreen Toggle
+        document.getElementById('btn-fullscreen').addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        // Speedometer UI update
+        function setSpeedometer(speed) {
+            busSpeed = speed;
+            document.getElementById('hud-speed-num').textContent = Math.round(speed);
+            // 0 km/h = 283 offset, 100 km/h = 0 offset
+            const maxSpeed = 100;
+            const clamped = Math.min(Math.max(speed, 0), maxSpeed);
+            const dashOffset = 283 - (clamped / maxSpeed) * 283;
+            document.getElementById('speedo-meter').style.strokeDashoffset = dashOffset;
+        }
+
+        // Live Clock
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-IN', { hour12: false }) + ' IST';
+            document.getElementById('hud-clock').textContent = timeStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Distance countdown simulator
+        function startCountdown() {
+            if (countdownTimer) clearInterval(countdownTimer);
+            countdownTimer = setInterval(() => {
+                if (!isAlertActive) return;
+                
+                // Decrement distance based on current speed (m/s = speed * 1000 / 3600)
+                const metersPerSec = (busSpeed * 1000) / 3600;
+                currentDistance -= Math.round(metersPerSec * 0.4);
+
+                if (currentDistance <= 15) {
+                    // Hazard cleared!
+                    setHazardAllClear();
+                    return;
+                }
+
+                updateDistanceDisplay();
+            }, 400);
+        }
+
+        function updateDistanceDisplay() {
+            const distEl = document.getElementById('countdown-dist');
+            const progressEl = document.getElementById('countdown-progress-bar');
+            const timeEl = document.getElementById('countdown-time');
+
+            distEl.textContent = Math.max(0, currentDistance);
+
+            // Progress bar (0 to 300m)
+            const percent = Math.min(100, Math.max(0, (currentDistance / 300) * 100));
+            progressEl.style.width = percent + '%';
+
+            // Estimated impact time
+            const speedMps = (busSpeed * 1000) / 3600;
+            const estSecs = (currentDistance / speedMps).toFixed(1);
+            timeEl.textContent = `Est. Impact: ${estSecs}s at current speed`;
+        }
+
+        function setHazardAlert(title, loc, dist, action, sub, laneHazardIdx = 2, imuZ = -0.32) {
+            isAlertActive = true;
+            currentDistance = dist;
+
+            document.getElementById('alert-content').style.display = 'block';
+            document.getElementById('clear-content').style.display = 'none';
+
+            const card = document.getElementById('hazard-card');
+            card.className = 'hazard-advisory-card active-alert';
+
+            document.getElementById('alert-title').textContent = title;
+            document.getElementById('alert-loc-text').textContent = loc;
+            document.getElementById('action-directive').textContent = action;
+            document.getElementById('action-sub').textContent = sub;
+
+            // Lane indicators
+            for (let i = 1; i <= 3; i++) {
+                const laneEl = document.getElementById(`lane-${i}`);
+                if (i === laneHazardIdx) {
+                    laneEl.className = 'lane-col lane-hazard';
+                    laneEl.querySelector('.lane-status').innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> HAZARD`;
+                    laneEl.querySelector('.lane-status').style.color = 'var(--danger)';
+                } else if (i === 1) {
+                    laneEl.className = 'lane-col lane-safe';
+                    laneEl.querySelector('.lane-status').innerHTML = `<i class="fa-solid fa-circle-check"></i> RECOMMENDED`;
+                    laneEl.querySelector('.lane-status').style.color = 'var(--success)';
+                } else {
+                    laneEl.className = 'lane-col';
+                    laneEl.querySelector('.lane-status').innerHTML = `<i class="fa-solid fa-arrows-left-right"></i> CLEAR`;
+                    laneEl.querySelector('.lane-status').style.color = 'var(--text-muted)';
+                }
+            }
+
+            // IMU shock representation
+            const imuValEl = document.getElementById('imu-shock-val');
+            imuValEl.textContent = `${imuZ}g az (Shock)`;
+            imuValEl.style.color = 'var(--danger)';
+            document.getElementById('imu-meter-fill').style.width = '20%';
+            document.getElementById('imu-meter-fill').style.background = 'var(--danger)';
+
+            updateDistanceDisplay();
+            playChime('critical');
+            startCountdown();
+        }
+
+        function setHazardAllClear() {
+            isAlertActive = false;
+            if (countdownTimer) clearInterval(countdownTimer);
+
+            document.getElementById('alert-content').style.display = 'none';
+            document.getElementById('clear-content').style.display = 'block';
+
+            const card = document.getElementById('hazard-card');
+            card.className = 'hazard-advisory-card all-clear';
+
+            // Reset IMU to normal
+            const imuValEl = document.getElementById('imu-shock-val');
+            imuValEl.textContent = `-0.02g az (Normal)`;
+            imuValEl.style.color = 'var(--success)';
+            document.getElementById('imu-meter-fill').style.width = '49%';
+            document.getElementById('imu-meter-fill').style.background = 'var(--success)';
+        }
+
+        // Acknowledge Button
+        document.getElementById('btn-ack-hazard').addEventListener('click', () => {
+            setHazardAllClear();
+            playChime('gentle');
+        });
+
+        // Interactive Evaluator Buttons
+        document.getElementById('btn-demo-pothole').addEventListener('click', () => {
+            initAudio();
+            setHazardAlert(
+                "CRITICAL POTHOLE (9.4cm Depth)",
+                "Sarjapur-ORR Junction (Near EcoWorld Underpass)",
+                280,
+                "MERGE TO LEFT LANE; REDUCE SPEED TO 20 KM/H",
+                "Autonomous Municipal Dispatch: PWD Ticket #W85-802 filed (SLA <24h)",
+                2,
+                -0.34
+            );
+        });
+
+        document.getElementById('btn-demo-water').addEventListener('click', () => {
+            initAudio();
+            setHazardAlert(
+                "WATERLOGGING (15cm Standing Water)",
+                "Kadubeesanahalli Low-Lying Service Road",
+                250,
+                "MOVE TO CENTER FLYOVER LANE; CAUTION HYDROPANIC",
+                "Traffic Advisory: High hydroplaning hazard detected by optical pass",
+                1,
+                -0.08
+            );
+        });
+
+        document.getElementById('btn-demo-bump').addEventListener('click', () => {
+            initAudio();
+            // Speed bump filtered simulation
+            setHazardAllClear();
+            const imuValEl = document.getElementById('imu-shock-val');
+            imuValEl.textContent = `+0.45g az (Speed Bump)`;
+            imuValEl.style.color = 'var(--warning)';
+            document.getElementById('imu-meter-fill').style.width = '75%';
+            document.getElementById('imu-meter-fill').style.background = 'var(--warning)';
+            document.getElementById('imu-filter-status').textContent = 'Filter: Verified as SPEED BUMP (+az > +0.40g) — Suppressed';
+            setTimeout(() => {
+                imuValEl.textContent = `-0.02g az (Normal)`;
+                imuValEl.style.color = 'var(--success)';
+                document.getElementById('imu-meter-fill').style.width = '49%';
+                document.getElementById('imu-meter-fill').style.background = 'var(--success)';
+                document.getElementById('imu-filter-status').textContent = 'Filter: Rejects speed bump false alarms (+az > +0.40g)';
+            }, 3000);
+        });
+
+        document.getElementById('btn-demo-clear').addEventListener('click', () => {
+            setHazardAllClear();
+        });
+
+        // Dynamic Speed Flutter Simulator (realistic transit behavior)
+        setInterval(() => {
+            if (!apiConnected) {
+                // Subtle random oscillation between 38 and 44 km/h
+                const delta = (Math.random() - 0.5) * 2;
+                const nextSpeed = Math.min(46, Math.max(36, busSpeed + delta));
+                setSpeedometer(nextSpeed);
+
+                // GPS coordinate drift
+                const baseLat = 12.9352;
+                const baseLng = 77.6821;
+                const latDrift = baseLat + (Math.sin(Date.now() / 10000) * 0.003);
+                const lngDrift = baseLng + (Math.cos(Date.now() / 10000) * 0.003);
+                document.getElementById('hud-coords').textContent = `${latDrift.toFixed(4)}, ${lngDrift.toFixed(4)}`;
+            }
+        }, 1200);
+
+        // Hybrid API Polling (Auto-fallback to Demo Simulation)
+        async function pollTelemetryAPI() {
+            try {
+                const response = await fetch('/api/buses/BMTC-KA57-E912/telemetry', {
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    apiConnected = true;
+                    document.getElementById('telemetry-mode-tag').textContent = 'LIVE API (LAN)';
+                    document.getElementById('telemetry-mode-tag').className = 'tag-pill pill-green';
+
+                    // Update live telemetry from server
+                    if (data.bus) {
+                        setSpeedometer(data.bus.speed_kmh || 42);
+                        document.getElementById('hud-coords').textContent = `${data.bus.lat.toFixed(4)}, ${data.bus.lng.toFixed(4)}`;
+                    }
+
+                    // Check for active advisories within 300m
+                    if (data.active_advisories && data.active_advisories.length > 0) {
+                        const adv = data.active_advisories[0];
+                        if (adv.distance_meters <= 300) {
+                            setHazardAlert(
+                                `${adv.hazard_type} DETECTED`,
+                                "Ahead on Bus Path (300m Horizon)",
+                                adv.distance_meters,
+                                adv.recommendation || "REDUCE SPEED & PROCEED WITH CAUTION",
+                                "Synchronized with ICCC Master Dispatcher",
+                                2,
+                                -0.30
+                            );
+                        }
+                    }
+                } else {
+                    handleFallbackMode();
+                }
+            } catch (err) {
+                handleFallbackMode();
+            }
+        }
+
+        function handleFallbackMode() {
+            apiConnected = false;
+            document.getElementById('telemetry-mode-tag').textContent = 'DEMO SIMULATION';
+            document.getElementById('telemetry-mode-tag').className = 'tag-pill pill-amber';
+        }
+
+        // Initialize state
+        setSpeedometer(42);
+        updateDistanceDisplay();
+        startCountdown();
+
+        // Start hybrid polling
+        setInterval(pollTelemetryAPI, 2000);
+        pollTelemetryAPI();
+    </script>
+</body>
+</html>

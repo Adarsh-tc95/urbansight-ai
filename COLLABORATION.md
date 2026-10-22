@@ -23,7 +23,7 @@
 
 ## 📋 Task Dispatch Queue
 
-### 🟢 TASK-01: In-Cab Driver HUD Console UI (HIGH PRIORITY)
+### 🟢 TASK-01: In-Cab Driver HUD Console UI [COMPLETED]
 - **Assignee**: Node B (Teammate Antigravity)
 - **Target File**: `frontend/driver_console.html` (or `templates/driver_console.html` + standalone `driver_console.html` at root for GitHub Pages)
 - **Objective**: Create a high-contrast, distraction-free tablet UI designed for the bus driver's dashboard mount.
@@ -68,6 +68,6 @@
 - [x] Backend 4-Agent Modular Architecture (`tests/test_pipeline.py` 21/21 passing) — Node A
 - [x] Real-time GIS Command Dashboard (`index.html`) — Node A
 - [x] OGC GeoJSON Export (`/api/export-geojson`) — Node A
-- [ ] TASK-01: In-Cab Driver HUD Console UI — Node B (Ready to start)
+- [x] TASK-01: In-Cab Driver HUD Console UI (`driver_console.html`, `templates/driver_console.html`) — Node B (Completed)
 - [ ] TASK-02: Multi-Route Karnataka GPS Telemetry — Node B (Ready to start)
 - [ ] TASK-03: Edge Hardware & AI Model Benchmark Suite — Node B (Ready to start)
