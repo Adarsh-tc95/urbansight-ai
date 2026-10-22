@@ -47,6 +47,9 @@ class DetectSimulationRequest(BaseModel):
     location_name: Optional[str] = "Sarjapur-ORR Junction (Near EcoWorld)"
     confidence: Optional[float] = 0.965
     damage_depth_cm: Optional[float] = 9.8
+    affected_length_m: Optional[float] = None
+    estimated_area_sqm: Optional[float] = None
+    z_shock: Optional[float] = None
 
 @app.get("/")
 def read_root(request: Request):
@@ -79,19 +82,77 @@ def get_event_logs():
 
 @app.post("/api/simulate-detection")
 def simulate_detection(req: DetectSimulationRequest):
-    detection = orchestrator.process_edge_detection(
-        bus_id=req.bus_id,
-        hazard_type=req.hazard_type,
-        lat=req.lat,
-        lng=req.lng,
-        location_name=req.location_name,
-        confidence=req.confidence,
-        damage_depth_cm=req.damage_depth_cm
-    )
+    try:
+        detection = orchestrator.process_edge_detection(
+            bus_id=req.bus_id,
+            hazard_type=req.hazard_type,
+            lat=req.lat,
+            lng=req.lng,
+            location_name=req.location_name,
+            confidence=req.confidence if req.confidence is not None else 0.95,
+            damage_depth_cm=req.damage_depth_cm,
+            affected_length_m=req.affected_length_m,
+            estimated_area_sqm=req.estimated_area_sqm,
+            z_shock=req.z_shock
+        )
+        return {
+            "status": "SUCCESS",
+            "detection": detection,
+            "metrics": orchestrator.get_system_metrics()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/api/export-geojson")
+def export_geojson():
+    """Exports all canonical road hazards in standard OGC GeoJSON FeatureCollection format for Smart Cities ICCC integration."""
+    features = []
+    for h in orchestrator.hazards:
+        features.append({
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [h.lng, h.lat]
+            },
+            "properties": {
+                "id": h.id,
+                "hazard_type": h.hazard_type,
+                "severity": h.severity,
+                "confidence": h.confidence,
+                "location_name": h.location_name,
+                "damage_depth_cm": h.damage_depth_cm,
+                "pass_count": h.pass_count,
+                "cluster_id": h.cluster_id,
+                "status": h.status,
+                "pwd_ticket_id": h.pwd_ticket_id,
+                "timestamp": h.timestamp
+            }
+        })
     return {
-        "status": "SUCCESS",
-        "detection": detection,
-        "metrics": orchestrator.get_system_metrics()
+        "type": "FeatureCollection",
+        "metadata": {
+            "generated_by": "UrbanSight AI Multi-Agent Intelligence Grid",
+            "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+            "total_features": len(features)
+        },
+        "features": features
+    }
+
+@app.get("/api/buses/{bus_id}/telemetry")
+def get_bus_telemetry(bus_id: str):
+    """Retrieves live telemetry and active in-cab driver advisories for a specific transit bus."""
+    bus = next((b for b in orchestrator.buses if b.bus_id == bus_id), None)
+    if not bus:
+        raise HTTPException(status_code=404, detail=f"Bus {bus_id} not found in fleet grid")
+    bus_advisories = [a for a in orchestrator.advisories if a.bus_id == bus_id]
+    return {
+        "bus": bus,
+        "active_advisories": bus_advisories,
+        "camera_feed": {
+            "status": bus.camera_status,
+            "privacy_redaction": "ACTIVE_DPDP_COMPLIANT",
+            "target_resolution": "1080p @ 30FPS"
+        }
     }
 
 @app.post("/api/reset")

@@ -47,6 +47,8 @@ class HazardDetection(BaseModel):
     location_name: str
     damage_depth_cm: Optional[float] = None
     affected_length_m: Optional[float] = None
+    estimated_area_sqm: Optional[float] = None
+    imu_verified: Optional[bool] = None
     pass_count: int = 1
     cluster_id: Optional[str] = None
     image_url: Optional[str] = None
@@ -66,6 +68,9 @@ class PWDWorkOrder(BaseModel):
     sla_hours: int = 48
     dispatched_to: str = "BBMP Ward 142 / PWD Division 4"
     status: TicketStatus = TicketStatus.AUTO_DISPATCHED
+    cpwd_sor_code: Optional[str] = None
+    repair_methodology: Optional[str] = None
+    estimated_cost_inr: Optional[float] = None
     created_at: str = Field(default_factory=lambda: datetime.now().isoformat())
 
 class DriverAdvisory(BaseModel):
@@ -75,6 +80,8 @@ class DriverAdvisory(BaseModel):
     distance_meters: int
     recommendation: str
     alert_level: str = "WARNING"
+    speed_reduction_kmh: Optional[int] = None
+    recommended_lane: Optional[str] = None
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat())
 
 class AgentEventLog(BaseModel):

@@ -1,43 +1,76 @@
+"""
+UrbanSight AI — Multi-Agent Orchestrator (Infothon 7.0 / SIH26124)
+Coordinates the 4-agent consensus pipeline:
+- Agent 1: Vision Perception (Edge YOLOv8/v10 & DPDP Act 2023 privacy)
+- Agent 2: Geo-Spatial Clustering (DBSCAN 15-30m deduplication & IMU fusion)
+- Agent 3: Autonomous Municipal Dispatcher (CPWD SOR & SLA enforcement)
+- Agent 4: Fleet Driver In-Cab Advisory (Real-time HUD & lane merge advice)
+"""
+
 import uuid
 from datetime import datetime
 from typing import List, Dict, Any, Optional
+
 from backend.models import (
     BusTelemetry, HazardDetection, PWDWorkOrder, DriverAdvisory,
     AgentEventLog, HazardType, SeverityLevel, TicketStatus
 )
 from backend.simulated_data import INITIAL_BUSES, INITIAL_HAZARDS, INITIAL_WORK_ORDERS
 
+from backend.agents.vision_perception import VisionPerceptionAgent, LowConfidenceError
+from backend.agents.geospatial_cluster import GeospatialClusteringAgent
+from backend.agents.municipal_dispatcher import MunicipalDispatcherAgent
+from backend.agents.fleet_advisory import FleetAdvisoryAgent
+
+
 class UrbanSightOrchestrator:
+    """
+    Central Coordinator managing data streams and orchestrating inter-agent handoffs.
+    """
+
     def __init__(self):
+        # 1. Instantiate the 4 Modular Specialized Agents
+        self.vision_agent = VisionPerceptionAgent(min_confidence=0.70)
+        self.clustering_agent = GeospatialClusteringAgent(epsilon_meters=25.0)
+        self.dispatcher_agent = MunicipalDispatcherAgent()
+        self.advisory_agent = FleetAdvisoryAgent(max_horizon_m=300)
+
+        # 2. Master System State
         self.buses: List[BusTelemetry] = [BusTelemetry(**b) for b in INITIAL_BUSES]
         self.hazards: List[HazardDetection] = [HazardDetection(**h) for h in INITIAL_HAZARDS]
         self.work_orders: List[PWDWorkOrder] = [PWDWorkOrder(**w) for w in INITIAL_WORK_ORDERS]
         self.advisories: List[DriverAdvisory] = []
         self.event_logs: List[AgentEventLog] = []
 
-        # Initial seed logs
+        # 3. Synchronize initial work orders with CPWD SOR codes if missing
+        for wo in self.work_orders:
+            if not wo.cpwd_sor_code:
+                wo.cpwd_sor_code = "CPWD-16.14.2" if wo.hazard_type == HazardType.POTHOLE else "CPWD-16.15.1"
+
+        # 4. Bootstrap Agent Activity Telemetry Logs
         self._log_event(
             "Agent 1: Vision Perception",
             "ON_CHIP_INFERENCE",
-            "YOLOv8-Nano initialized @ 30 FPS. DPDP Gaussian privacy blur active."
+            "YOLOv10s initialized @ 30 FPS. DPDP Act 2023 §2(t) in-memory Gaussian & solid-fill active."
         )
         self._log_event(
             "Agent 2: Geo-Spatial Clustering",
             "DBSCAN_OPTIMIZED",
-            "Spatial epsilon set to 15m; 5 active clusters indexed in PostGIS."
+            "Spatial epsilon set to 25m. IMU vertical acceleration (+az vs -az) fusion active."
         )
         self._log_event(
             "Agent 3: Municipal Dispatch",
             "PORTAL_LINKED",
-            "REST Gateway to BBMP Sahaya & PWD active. Auto-ticket SLA <180s."
+            "REST Gateway to BBMP Sahaaya & PWD active. CPWD SOR 2024 pricing and SLA matrix mapped."
         )
         self._log_event(
             "Agent 4: Fleet Advisory",
             "WEBSOCKET_READY",
-            "In-cab driver console advisory stream broadcasting live."
+            "In-cab driver console advisory stream broadcasting live (horizon: 300m)."
         )
 
     def _log_event(self, agent_name: str, action: str, detail: str):
+        """Appends structured audit log to in-memory telemetry ring buffer."""
         log = AgentEventLog(
             id=str(uuid.uuid4())[:8],
             agent_name=agent_name,
@@ -49,6 +82,7 @@ class UrbanSightOrchestrator:
             self.event_logs.pop()
 
     def get_system_metrics(self) -> Dict[str, Any]:
+        """Aggregates high-level telemetry metrics for the ICCC Command Dashboard."""
         return {
             "total_buses_online": len(self.buses),
             "km_scanned_today": 4820,
@@ -57,7 +91,7 @@ class UrbanSightOrchestrator:
             "pwd_work_orders_filed": len(self.work_orders),
             "average_dispatch_sla_min": 2.4,
             "bandwidth_saved_pct": 99.4,
-            "privacy_compliance": "100% DPDP Compliant (Zero PII)"
+            "privacy_compliance": "100% DPDP Act 2023 §2(t) Compliant (Zero PII)"
         }
 
     def process_edge_detection(
@@ -68,104 +102,124 @@ class UrbanSightOrchestrator:
         lng: float,
         location_name: str,
         confidence: float = 0.95,
-        damage_depth_cm: Optional[float] = None
+        damage_depth_cm: Optional[float] = None,
+        affected_length_m: Optional[float] = None,
+        estimated_area_sqm: Optional[float] = None,
+        z_shock: Optional[float] = None,
+        waveform: Optional[List[float]] = None
     ) -> HazardDetection:
         """
-        Agent 1 receives detection -> Agent 2 clusters -> Agent 3 auto-files ticket -> Agent 4 alerts fleet.
+        Coordinates full 4-agent consensus flow:
+        Agent 1 (Vision) -> Agent 2 (DBSCAN + IMU) -> Agent 3 (PWD Dispatch) -> Agent 4 (Driver Advisory).
         """
-        # 1. Agent 1: Vision Ingestion
-        self._log_event(
-            "Agent 1: Vision Perception",
-            "DEFECT_DETECTED",
-            f"Bus {bus_id} spotted {hazard_type.value} (conf: {confidence:.2f}) at {location_name}"
-        )
-
-        # 2. Agent 2: DBSCAN Spatial Deduplication
-        # Check if hazard exists within ~30 meters (rough 0.0003 lat/lng delta)
-        matching_cluster = None
-        for existing in self.hazards:
-            dist_sq = (existing.lat - lat)**2 + (existing.lng - lng)**2
-            if dist_sq < 0.0000001:  # within ~30m
-                matching_cluster = existing
-                break
-
-        if matching_cluster:
-            matching_cluster.pass_count += 1
-            matching_cluster.confidence = min(0.99, matching_cluster.confidence + 0.02)
-            self._log_event(
-                "Agent 2: Geo-Spatial Clustering",
-                "CLUSTER_INCREMENTED",
-                f"Merged repeat bus pass into Cluster {matching_cluster.cluster_id} (Pass count: {matching_cluster.pass_count})"
-            )
-            detection = matching_cluster
-        else:
-            cluster_id = f"DBSCAN-CL-{len(self.hazards) + 1:03d}"
-            severity = SeverityLevel.CRITICAL_P1 if hazard_type in [HazardType.POTHOLE, HazardType.ACCIDENT] else SeverityLevel.HIGH_P2
-            detection = HazardDetection(
-                id=f"HAZ-2026-{len(self.hazards) + 1:03d}",
+        # =====================================================================
+        # Step 1: Agent 1 - Edge Vision Perception & Privacy Redaction
+        # =====================================================================
+        try:
+            vision_result = self.vision_agent.detect(
                 bus_id=bus_id,
                 hazard_type=hazard_type,
-                severity=severity,
-                confidence=confidence,
                 lat=lat,
                 lng=lng,
                 location_name=location_name,
+                confidence=confidence,
                 damage_depth_cm=damage_depth_cm,
-                pass_count=1,
-                cluster_id=cluster_id,
-                image_url="image1.jpg",
-                status=TicketStatus.DETECTED
+                affected_length_m=affected_length_m,
+                estimated_area_sqm=estimated_area_sqm,
+                enable_dpdp=True
             )
-            self.hazards.append(detection)
+        except LowConfidenceError as e:
             self._log_event(
-                "Agent 2: Geo-Spatial Clustering",
-                "NEW_CANONICAL_CLUSTER",
-                f"Formed new canonical cluster {cluster_id} at {location_name}"
+                self.vision_agent.agent_name,
+                "LOW_CONFIDENCE_REJECTED",
+                f"Bus {bus_id} detection at {location_name} rejected: {str(e)}"
             )
+            raise
 
-        # 3. Agent 3: Autonomous Municipal Dispatch if passes >= 3 or Critical P1
-        if detection.status != TicketStatus.AUTO_DISPATCHED and (detection.pass_count >= 2 or detection.severity == SeverityLevel.CRITICAL_P1):
-            ticket_id = f"PWD-2026-OCT-{random_number():04d}"
-            work_order = PWDWorkOrder(
-                ticket_id=ticket_id,
-                hazard_id=detection.id,
-                hazard_type=detection.hazard_type,
-                severity=detection.severity,
-                location_name=detection.location_name,
-                lat=detection.lat,
-                lng=detection.lng,
-                cluster_count=detection.pass_count,
-                sla_hours=48 if detection.severity == SeverityLevel.CRITICAL_P1 else 24,
-                dispatched_to="BBMP Central Ward Dispatch / PWD Zone 1",
-                status=TicketStatus.AUTO_DISPATCHED
-            )
-            self.work_orders.insert(0, work_order)
-            detection.status = TicketStatus.AUTO_DISPATCHED
-            detection.pwd_ticket_id = ticket_id
-            self._log_event(
-                "Agent 3: Municipal Dispatch",
-                "WORK_ORDER_AUTO_FILED",
-                f"Auto-filed PWD Work Order #{ticket_id} for {detection.location_name} (SLA: <48h)"
-            )
-
-        # 4. Agent 4: Fleet Driver Advisory broadcast
-        advisory = DriverAdvisory(
-            id=str(uuid.uuid4())[:8],
-            bus_id=bus_id,
-            hazard_type=detection.hazard_type,
-            distance_meters=180,
-            recommendation=f"Caution: {detection.hazard_type.value} ahead at {location_name}. Lane merge recommended.",
-            alert_level="WARNING"
-        )
-        self.advisories.insert(0, advisory)
         self._log_event(
-            "Agent 4: Fleet Advisory",
-            "WEBSOCKET_ALERT_PUSHED",
-            f"Pushed warning alert to driver consoles on route: {location_name}"
+            self.vision_agent.agent_name,
+            "DEFECT_DETECTED",
+            f"Bus {bus_id} spotted {hazard_type.value} [{vision_result['rdd_code']}] "
+            f"(conf: {confidence:.2f}, depth: {vision_result['damage_depth_cm']}cm, "
+            f"area: {vision_result['estimated_area_sqm']}m²) at {location_name}. "
+            f"DPDP Act 2023 in-memory face/plate obfuscation verified."
         )
 
-        return detection
+        # =====================================================================
+        # Step 2: Agent 2 - DBSCAN Spatial Deduplication & IMU Fusion
+        # =====================================================================
+        try:
+            canonical_hazard, is_new_cluster, cluster_msg = self.clustering_agent.cluster_detection(
+                detection_data=vision_result,
+                existing_hazards=self.hazards,
+                z_shock=z_shock,
+                waveform=waveform
+            )
+        except ValueError as imu_err:
+            self._log_event(
+                self.clustering_agent.agent_name,
+                "FALSE_POSITIVE_REJECTED",
+                f"Bus {bus_id} at {location_name}: {str(imu_err)}"
+            )
+            raise
 
-def random_number():
-    import random
-    return random.randint(1000, 9999)
+        action_type = "NEW_CANONICAL_CLUSTER" if is_new_cluster else "CLUSTER_INCREMENTED"
+        self._log_event(
+            self.clustering_agent.agent_name,
+            action_type,
+            cluster_msg
+        )
+
+        # =====================================================================
+        # Step 3: Agent 3 - Autonomous Municipal PWD Work-Order Dispatch
+        # =====================================================================
+        work_order, dispatched, dispatch_msg = self.dispatcher_agent.evaluate_and_dispatch(
+            hazard=canonical_hazard,
+            work_orders_list=self.work_orders
+        )
+
+        if dispatched:
+            self._log_event(
+                self.dispatcher_agent.agent_name,
+                "WORK_ORDER_AUTO_FILED",
+                dispatch_msg
+            )
+        else:
+            self._log_event(
+                self.dispatcher_agent.agent_name,
+                "CONSENSUS_MONITORING",
+                dispatch_msg
+            )
+
+        # =====================================================================
+        # Step 4: Agent 4 - Fleet Driver In-Cab Advisory Dispatch
+        # =====================================================================
+        advisory = self.advisory_agent.generate_advisory(
+            hazard=canonical_hazard,
+            approaching_bus_id=bus_id,
+            distance_meters=180,
+            advisories_list=self.advisories
+        )
+
+        self._log_event(
+            self.advisory_agent.agent_name,
+            "WEBSOCKET_ALERT_PUSHED",
+            f"Pushed {advisory.alert_level} in-cab HUD alert to bus {bus_id} "
+            f"({advisory.distance_meters}m ahead): {advisory.recommended_lane}. "
+            f"Deceleration: -{advisory.speed_reduction_kmh} km/h."
+        )
+
+        # Also evaluate surrounding fleet proximity within 300m
+        surrounding_advisories = self.advisory_agent.evaluate_fleet_proximity(
+            hazard=canonical_hazard,
+            buses=self.buses,
+            advisories_list=self.advisories
+        )
+        if surrounding_advisories:
+            self._log_event(
+                self.advisory_agent.agent_name,
+                "FLEET_PROXIMITY_BROADCAST",
+                f"Broadcasted proximity alert to {len(surrounding_advisories)} approaching transit units."
+            )
+
+        return canonical_hazard
