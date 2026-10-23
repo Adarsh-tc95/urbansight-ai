@@ -3,114 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UrbanSight AI — Smart City ICCC Command System | Infothon 7.0</title>
+    <title>UrbanSight AI — Smart City ICCC Command System | Infothon 7.0 (PS #07)</title>
     
     <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Leaflet GIS Map CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-    <!-- Custom CSS -->
+    <!-- Custom Design System Stylesheet -->
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
-    <!-- App Header -->
+    <!-- 1. Branded Unified Header & Navigation Bar -->
     <header class="app-header">
-        <div class="logo-group">
-            <div class="logo-badge">
-                <i class="fa-solid fa-bus"></i>
+        <div class="brand-identity">
+            <div class="brand-emblem" title="UrbanSight AI Command Core">
+                <i class="fa-solid fa-satellite-dish"></i>
             </div>
-            <div>
-                <h1 class="brand-title">
-                    UrbanSight AI
-                    <span class="pill-tag pill-cyan">PS #07 · SIH26124</span>
-                    <span class="pill-tag pill-orange">VVCE MYSURU</span>
-                </h1>
-                <p class="brand-subtitle">Autonomous Mobile Urban Sensing Grid • 4 Agents Active</p>
+            <div class="brand-info">
+                <div class="brand-title-wrap">
+                    <span class="brand-title">UrbanSight AI</span>
+                    <span class="brand-meta-badge">PS #07 · SIH26124</span>
+                </div>
+                <div class="brand-subtitle">
+                    <span class="live-pulse-chip">
+                        <span class="pulse-dot"></span>
+                        ICCC PLATFORM · LIVE (30 FPS)
+                    </span>
+                    <span>· VVCE MYSURU</span>
+                </div>
             </div>
         </div>
 
-        <div class="header-status-center">
-            <div class="live-indicator">
-                <span class="pulse-dot"></span>
-                <span>GRID: LIVE (30 FPS)</span>
-            </div>
-            <div class="clock-telemetry" id="telemetry-clock">19:54:00 IST</div>
+        <!-- Portal Switcher: Unified 5-Component Navigation Pill Bar -->
+        <div class="header-nav-center">
+            <nav class="portal-nav-pills" aria-label="Smart City Portals">
+                <a href="index.html" class="portal-pill active" title="Integrated Command & Control Center">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Command Center</span>
+                </a>
+                <a href="driver_console.html" target="_blank" class="portal-pill" title="In-Cab Bus Driver HUD Console">
+                    <i class="fa-solid fa-tablet-screen-button"></i>
+                    <span>Driver HUD</span>
+                </a>
+                <a href="citizen_portal.html" target="_blank" class="portal-pill" title="Public Citizen Road Repair Tracker">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Citizen Portal</span>
+                </a>
+                <a href="field_crew.html" target="_blank" class="portal-pill" title="Mobile Field Crew Repair PWA">
+                    <i class="fa-solid fa-truck-pickup"></i>
+                    <span>Field Crew PWA</span>
+                </a>
+                <a href="voucher.html?ticket=PWD-OCT-0941" target="_blank" class="portal-pill" title="Official CPWD Tender Voucher">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <span>CPWD Voucher</span>
+                </a>
+            </nav>
         </div>
 
+        <!-- Header Action Controls -->
         <div class="header-actions">
-            <button class="btn btn-primary" id="btn-simulate-detect">
+            <button class="btn btn-primary" id="btn-simulate-detect" title="Trigger Multi-Agent Transit Bus Detection Pipeline">
                 <i class="fa-solid fa-bolt"></i> Simulate Bus Pass
             </button>
-            <a href="/driver" target="_blank" class="btn btn-secondary" title="In-Cab Bus Driver Console">
-                <i class="fa-solid fa-tablet-screen-button"></i> Driver HUD
-            </a>
-            <a href="/citizen" target="_blank" class="btn btn-outline" title="Public Citizen Repair Tracking Portal">
-                <i class="fa-solid fa-users"></i> Citizen Portal
-            </a>
-            <a href="/field-crew" target="_blank" class="btn btn-outline" title="Mobile Field Crew Repair PWA">
-                <i class="fa-solid fa-truck-pickup"></i> Field Crew
-            </a>
-            <a href="/voucher?ticket=PWD-OCT-0941" target="_blank" class="btn btn-outline" title="Official CPWD Schedule of Rates Tender Voucher">
-                <i class="fa-solid fa-file-invoice"></i> Voucher
-            </a>
-            <a href="/api/export-csv" target="_blank" class="btn btn-outline" title="Export CPWD Tabular CSV">
-                <i class="fa-solid fa-file-csv"></i> CSV
-            </a>
-            <a href="/api/export-geojson" target="_blank" class="btn btn-outline" title="Export OGC GeoJSON">
-                <i class="fa-solid fa-file-export"></i> GeoJSON
-            </a>
+            <button class="btn btn-glass" id="btn-export-csv" title="Export CPWD Tabular Work Orders CSV">
+                <i class="fa-solid fa-file-csv"></i> Export CSV
+            </button>
+            <button class="btn btn-glass" id="btn-export-geojson" title="Export OGC Standard GeoJSON Telemetry">
+                <i class="fa-solid fa-file-export"></i> Export GeoJSON
+            </button>
+            <button class="btn btn-glass active-toggle" id="btn-toggle-privacy" title="Toggle On-Device DPDP Act 2023 Gaussian Privacy Redaction">
+                <i class="fa-solid fa-shield-halved"></i> Privacy Blur: ON
+            </button>
+            <button class="btn btn-glass" id="btn-driver-alert" title="Test Live In-Cab Driver Tablet Alert Modal">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            <div class="telemetry-clock-box" id="telemetry-clock">19:54:00 IST</div>
         </div>
     </header>
 
-    <!-- Top Key Metric Strip -->
+    <!-- 2. Top Key Metric Strip (4 Clean KPI Cards) -->
     <section class="metrics-strip">
-        <div class="metric-pill-card">
-            <div class="metric-data">
-                <h4>Fleets Monitored</h4>
-                <div class="metric-val" id="metric-buses">10,000</div>
+        <!-- KPI Card 1: Fleets Monitored -->
+        <div class="metric-kpi-card">
+            <div class="kpi-content">
+                <span class="kpi-label">Fleets Online</span>
+                <div class="kpi-value-row">
+                    <span class="kpi-value cyan" id="metric-buses">10,000</span>
+                    <span style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);">e-Buses</span>
+                </div>
+                <span class="kpi-subtext">PM e-Bus Sewa Grid · 30 FPS Edge Nodes</span>
             </div>
-            <div class="metric-icon-box"><i class="fa-solid fa-bus-simple"></i></div>
+            <div class="kpi-icon-pod cyan">
+                <i class="fa-solid fa-bus-simple"></i>
+            </div>
         </div>
-        <div class="metric-pill-card">
-            <div class="metric-data">
-                <h4>Km Scanned Today</h4>
-                <div class="metric-val purple" id="metric-km">4,820</div>
+
+        <!-- KPI Card 2: Distance Scanned -->
+        <div class="metric-kpi-card">
+            <div class="kpi-content">
+                <span class="kpi-label">Distance Scanned</span>
+                <div class="kpi-value-row">
+                    <span class="kpi-value" id="metric-km">4,820</span>
+                    <span style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);">km</span>
+                </div>
+                <span class="kpi-subtext">Today across 28 arterial transit corridors</span>
             </div>
-            <div class="metric-icon-box"><i class="fa-solid fa-route"></i></div>
+            <div class="kpi-icon-pod indigo">
+                <i class="fa-solid fa-route"></i>
+            </div>
         </div>
-        <div class="metric-pill-card">
-            <div class="metric-data">
-                <h4>Arterial Coverage</h4>
-                <div class="metric-val green">85%+</div>
+
+        <!-- KPI Card 3: Autonomous PWD Dispatches -->
+        <div class="metric-kpi-card">
+            <div class="kpi-content">
+                <span class="kpi-label">Autonomous PWD Dispatches</span>
+                <div class="kpi-value-row">
+                    <span class="kpi-value amber">3 Active</span>
+                </div>
+                <span class="kpi-subtext">&lt; 24h SLA Compliance · Zero Paperwork</span>
             </div>
-            <div class="metric-icon-box"><i class="fa-solid fa-satellite"></i></div>
+            <div class="kpi-icon-pod amber">
+                <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
         </div>
-        <div class="metric-pill-card">
-            <div class="metric-data">
-                <h4>Repair Dispatch SLA</h4>
-                <div class="metric-val orange">&lt; 48 Hrs</div>
+
+        <!-- KPI Card 4: Privacy Compliance -->
+        <div class="metric-kpi-card">
+            <div class="kpi-content">
+                <span class="kpi-label">Privacy Compliance</span>
+                <div class="kpi-value-row">
+                    <span class="kpi-value green">100%</span>
+                </div>
+                <span class="kpi-subtext">DPDP Act 2023 §2(t) · Zero PII Disk Persistence</span>
             </div>
-            <div class="metric-icon-box"><i class="fa-solid fa-stopwatch-20"></i></div>
-        </div>
-        <div class="metric-pill-card">
-            <div class="metric-data">
-                <h4>Bandwidth Saved</h4>
-                <div class="metric-val green">99.4%</div>
+            <div class="kpi-icon-pod green">
+                <i class="fa-solid fa-shield-halved"></i>
             </div>
-            <div class="metric-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
         </div>
     </section>
 
-    <!-- Main Command Grid -->
+    <!-- 3. Main Command Grid -->
     <main class="command-grid-layout">
         
-        <!-- Left Column: Live GIS Map + Dashcam Simulator -->
+        <!-- Left Column: Live GIS Map + Edge Dashcam Simulator -->
         <div class="center-left-column">
             
             <!-- Panel 1: Leaflet GIS Real-Time Map -->
@@ -120,8 +161,8 @@
                         <i class="fa-solid fa-map-location-dot" style="color: var(--primary);"></i>
                         Smart City Integrated Command & Control Center (ICCC) GIS Canvas
                     </div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">
-                        Bengaluru & Mysuru Transit Mesh
+                    <div class="panel-header-meta">
+                        Bengaluru & Mysuru Transit Mesh · 30 FPS Telemetry
                     </div>
                 </div>
 
@@ -129,11 +170,23 @@
                     <div id="gis-map"></div>
                     
                     <div class="map-floating-legend">
-                        <div style="font-weight:700; margin-bottom:2px;">MAP OVERLAY KEY</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#00E5FF;"></span> BMTC/KSRTC Buses (30 FPS)</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#EF4444;"></span> Critical Potholes (P1)</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#3B82F6;"></span> Severe Waterlogging (P2)</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#8B5CF6;"></span> Live Traffic Chokepoint (P3)</div>
+                        <div class="legend-title">GIS LAYER KEY</div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#00F0FF; box-shadow:0 0 8px #00F0FF;"></span>
+                            <span>BMTC & KSRTC Buses (30 FPS)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#FF3B30; box-shadow:0 0 8px #FF3B30;"></span>
+                            <span>Critical Potholes (P1)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#00F0FF;"></span>
+                            <span>Severe Waterlogging (P2)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#AF52DE;"></span>
+                            <span>Live Traffic Chokepoint (P3)</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -142,10 +195,10 @@
             <div class="panel-container">
                 <div class="panel-header">
                     <div class="panel-header-title">
-                        <i class="fa-solid fa-video" style="color: var(--accent);"></i>
+                        <i class="fa-solid fa-video" style="color: var(--caution);"></i>
                         Edge Camera Perception HUD (BMTC-KA01-E542 Windshield Feed)
                     </div>
-                    <span class="pill-tag pill-cyan">TensorRT INT8 • 28ms</span>
+                    <span class="badge-pill badge-cyan">TensorRT INT8 · 28.2ms · 15W</span>
                 </div>
 
                 <div class="dashcam-split-panel">
@@ -153,13 +206,13 @@
                         <canvas id="dashcam-canvas" width="480" height="250"></canvas>
                         
                         <div class="hud-corner-telemetry">
-                            <div>YOLOv8-Nano: 30 FPS</div>
-                            <div>LATENCY: 28.2ms</div>
+                            <div>REC ● 30.0 FPS</div>
+                            <div>INFERENCE: 28.2ms</div>
                             <div>GPS: 12.9238°N, 77.6745°E</div>
                         </div>
 
                         <div class="hud-privacy-badge">
-                            <i class="fa-solid fa-shield-cat"></i> DPDP PRIVACY BLUR: ACTIVE
+                            <i class="fa-solid fa-shield-halved"></i> DPDP ACT 2023 §2(t) MASK: ACTIVE
                         </div>
                     </div>
 
@@ -167,20 +220,21 @@
                         <div class="hud-stats-group">
                             <div class="hud-stat-item">
                                 <label>Edge Model Architecture</label>
-                                <span>YOLOv8n (RDD2022 Fine-tuned)</span>
+                                <span>YOLOv8n (RDD2022 Fine-Tuned INT8)</span>
                             </div>
                             <div class="hud-stat-item">
-                                <label>Telemetry Payload Size</label>
-                                <span style="color: var(--success);">&lt; 14.8 KB GeoJSON</span>
+                                <label>Telemetry Uplink Payload</label>
+                                <span style="color: var(--success);">&lt; 14.8 KB GeoJSON (Zero Raw Video)</span>
                             </div>
                             <div class="hud-stat-item">
                                 <label>Hardware Profile</label>
-                                <span>NVIDIA Jetson Orin Nano (15W)</span>
+                                <span>NVIDIA Jetson Orin Nano (15W PoE)</span>
                             </div>
                         </div>
 
-                        <div style="font-size:0.75rem; color:var(--text-muted); background:rgba(255,255,255,0.02); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color);">
-                            Zero raw video stream. Only cryptographic metadata leaves the transit bus.
+                        <div class="hud-security-callout">
+                            <i class="fa-solid fa-lock"></i>
+                            <div>Zero raw camera footage stored on disk. Only cryptographic distress telemetry leaves the transit bus.</div>
                         </div>
                     </div>
                 </div>
@@ -188,7 +242,7 @@
 
         </div>
 
-        <!-- Right Column: Multi-Agent Engine & PWD Work Orders -->
+        <!-- Right Column: Multi-Agent Consensus Engine & PWD Work Orders -->
         <div class="right-column">
             
             <!-- Panel 3: 4-Agent Pipeline Workflow Stepper -->
@@ -198,59 +252,63 @@
                         <i class="fa-solid fa-robot" style="color: var(--primary);"></i>
                         Autonomous Multi-Agent Consensus Pipeline
                     </div>
+                    <span class="badge-pill badge-green">4 Agents Operational</span>
                 </div>
 
                 <div class="agent-pipeline-box">
                     <div class="agent-step-item active" id="agent-step-1">
                         <div class="agent-step-icon"><i class="fa-solid fa-eye"></i></div>
                         <div class="agent-step-content">
-                            <h5>Agent 1: Vision Perception</h5>
-                            <p>Detects defect & applies DPDP on-chip Gaussian privacy blur.</p>
+                            <h5>Agent 1: Vision Perception <span class="badge-pill badge-cyan">EDGE</span></h5>
+                            <p>Detects road distress & applies DPDP on-chip Gaussian privacy blur.</p>
                         </div>
                     </div>
                     <div class="agent-step-item" id="agent-step-2">
                         <div class="agent-step-icon"><i class="fa-solid fa-diagram-project"></i></div>
                         <div class="agent-step-content">
-                            <h5>Agent 2: Geo-Spatial Clustering</h5>
-                            <p>DBSCAN merges repeat bus passes into 1 canonical ticket.</p>
+                            <h5>Agent 2: Geo-Spatial Clustering <span class="badge-pill badge-cyan">DBSCAN</span></h5>
+                            <p>Merges multi-bus passes into 1 canonical hazard with IMU z-shock fusion.</p>
                         </div>
                     </div>
                     <div class="agent-step-item" id="agent-step-3">
                         <div class="agent-step-icon"><i class="fa-solid fa-ticket"></i></div>
                         <div class="agent-step-content">
-                            <h5>Agent 3: Municipal PWD Dispatch</h5>
-                            <p>Auto-files work order to BBMP/PWD portal in &lt;3 minutes.</p>
+                            <h5>Agent 3: Municipal PWD Dispatch <span class="badge-pill badge-amber">CPWD SOR</span></h5>
+                            <p>Matches CPWD Schedule of Rates and auto-files work order in &lt;180s.</p>
                         </div>
                     </div>
                     <div class="agent-step-item" id="agent-step-4">
                         <div class="agent-step-icon"><i class="fa-solid fa-bullhorn"></i></div>
                         <div class="agent-step-content">
-                            <h5>Agent 4: Fleet Advisory</h5>
-                            <p>Broadcasts real-time detour alert to upstream driver HUDs.</p>
+                            <h5>Agent 4: Fleet Advisory <span class="badge-pill badge-green">V2X HUD</span></h5>
+                            <p>Broadcasts low-latency lane detour alerts to approaching bus HUDs.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel 4: Live Event Decision Ticker -->
+            <!-- Panel 4: Real-Time Event Decision Terminal -->
             <div class="panel-container">
-                <div class="panel-header">
-                    <div class="panel-header-title">
-                        <i class="fa-solid fa-terminal" style="color: var(--accent);"></i>
-                        Real-Time Agent Decision Feed
+                <div class="terminal-window-header">
+                    <div class="terminal-dots">
+                        <span class="terminal-dot red"></span>
+                        <span class="terminal-dot yellow"></span>
+                        <span class="terminal-dot green"></span>
                     </div>
+                    <span class="terminal-title">AGENT CONSENSUS TELEMETRY STREAM</span>
+                    <i class="fa-solid fa-terminal" style="color:var(--text-tertiary); font-size:0.75rem;"></i>
                 </div>
                 <div class="activity-log-feed" id="activity-feed"></div>
             </div>
 
-            <!-- Panel 5: PWD Work-Order Queue -->
+            <!-- Panel 5: Autonomous PWD Work-Order Queue -->
             <div class="panel-container">
                 <div class="panel-header">
                     <div class="panel-header-title">
                         <i class="fa-solid fa-list-check" style="color: var(--success);"></i>
                         Autonomous PWD Work-Order Queue
                     </div>
-                    <span class="pill-tag pill-cyan">&lt; 48H SLA</span>
+                    <span class="badge-pill badge-amber">&lt; 48H SLA COMPLIANCE</span>
                 </div>
 
                 <div class="pwd-table-container">
@@ -258,11 +316,12 @@
                         <thead>
                             <tr>
                                 <th>Ticket ID</th>
-                                <th>Type</th>
+                                <th>Defect & SOR</th>
                                 <th>Location</th>
-                                <th>Cluster</th>
+                                <th>Cluster Passes</th>
                                 <th>SLA Countdown</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="work-orders-tbody">
@@ -276,33 +335,39 @@
 
     </main>
 
-    <!-- In-Cab Driver Alert Modal -->
+    <!-- In-Cab Driver Alert Modal (HUD Tablet) -->
     <div class="modal-overlay" id="driver-alert-modal">
         <div class="driver-hud-tablet">
             <div class="driver-hud-header">
-                <div style="display:flex; align-items:center; gap:0.6rem;">
-                    <i class="fa-solid fa-triangle-exclamation" style="color:var(--accent); font-size:1.4rem;"></i>
-                    <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary);">IN-CAB DRIVER ADVISORY (TABLET)</h3>
+                <div style="display:flex; align-items:center; gap:0.65rem;">
+                    <i class="fa-solid fa-triangle-exclamation" style="color:var(--caution); font-size:1.35rem;"></i>
+                    <h3 style="font-family:var(--font-heading); font-size:1.1rem; font-weight:800; color:var(--text-primary); letter-spacing:-0.01em;">
+                        IN-CAB TRANSIT DRIVER ADVISORY (TABLET)
+                    </h3>
                 </div>
-                <button class="btn btn-outline" id="modal-close-btn" style="padding:4px 10px;">Close HUD</button>
+                <button class="btn btn-glass" id="modal-close-btn" style="padding:4px 10px;">Close HUD</button>
             </div>
 
             <div class="driver-alert-box">
                 <div class="alert-hazard-icon"><i class="fa-solid fa-road-barrier"></i></div>
                 <div>
-                    <h4 id="driver-alert-title" style="color:var(--accent); font-size:1.1rem; margin-bottom:3px;">CRITICAL POTHOLE (9.4cm Depth)</h4>
-                    <p id="driver-alert-loc" style="font-size:0.85rem; color:var(--text-muted);">Outer Ring Road near Bellandur Flyover Pillar 34</p>
+                    <h4 id="driver-alert-title" style="color:var(--caution); font-size:1.1rem; margin-bottom:3px; font-weight:700;">
+                        CRITICAL POTHOLE (9.4cm Depth)
+                    </h4>
+                    <p id="driver-alert-loc" style="font-size:0.85rem; color:var(--text-secondary);">
+                        Outer Ring Road near Bellandur Flyover Pillar 34
+                    </p>
                 </div>
             </div>
 
             <div class="driver-action-nav">
                 <div>
-                    <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Agent 4 Guidance</div>
-                    <div id="driver-alert-advice" style="font-weight:700; color:var(--primary); font-size:0.95rem;">
+                    <div style="font-size:0.68rem; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">Agent 4 Guidance</div>
+                    <div id="driver-alert-advice" style="font-weight:700; color:var(--primary); font-size:0.92rem; margin-top:2px;">
                         Move to Right Lane. Speed cap: 25 km/h. Detour recommended at next exit.
                     </div>
                 </div>
-                <div style="font-family:var(--font-mono); font-size:1.1rem; font-weight:800; color:var(--warning);">
+                <div style="font-family:var(--font-mono); font-size:1.05rem; font-weight:800; color:var(--caution); white-space:nowrap; padding-left:1rem;">
                     150m AHEAD
                 </div>
             </div>

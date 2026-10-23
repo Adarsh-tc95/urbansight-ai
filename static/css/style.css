@@ -1,321 +1,525 @@
-/* UrbanSight AI — Smart City ICCC Command System Stylesheet */
+/* =============================================================================
+   UrbanSight AI — Smart City ICCC Command System (Infothon 7.0 / SIH26124)
+   Ultra-Modern Minimal Tech Design System
+   Inspired by Linear, Vercel, Apple, and Palantir Foundry Dark Mode
+   ============================================================================= */
+
 :root {
-    --bg-void: #090D16;
-    --bg-card: #0F172A;
-    --bg-card-hover: #1E293B;
-    --bg-panel: #111827;
-    --border-color: #1E293B;
-    --border-glow: rgba(0, 229, 255, 0.25);
-    
-    --primary: #00E5FF;
-    --primary-glow: rgba(0, 229, 255, 0.4);
-    --accent: #FF5E1E;
-    --accent-glow: rgba(255, 94, 30, 0.4);
-    --warning: #F59E0B;
-    --danger: #EF4444;
-    --success: #10B981;
-    --purple: #8B5CF6;
+    /* Background Hierarchy (Obsidian & Carbon Depths) */
+    --bg-base: #070A11;
+    --bg-subtle: #0B0F19;
+    --bg-surface: #0E1322;
+    --bg-card: rgba(13, 17, 29, 0.75);
+    --bg-card-hover: rgba(20, 27, 45, 0.85);
+    --bg-card-solid: #0D111D;
+    --bg-glass-panel: rgba(11, 16, 28, 0.78);
+    --bg-pill: rgba(255, 255, 255, 0.04);
+    --bg-pill-hover: rgba(255, 255, 255, 0.08);
 
-    --text-primary: #F8FAFC;
-    --text-muted: #94A3B8;
-    --text-dim: #64748B;
+    /* Borders & Hairlines */
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-medium: rgba(255, 255, 255, 0.14);
+    --border-hover: rgba(0, 240, 255, 0.35);
+    --border-glow: rgba(0, 240, 255, 0.25);
 
-    --font-heading: 'Plus Jakarta Sans', sans-serif;
+    /* Brand Accents */
+    --primary: #00F0FF;               /* Electric Cyan */
+    --primary-gradient: linear-gradient(135deg, #00F0FF 0%, #0070F3 100%);
+    --primary-glow: rgba(0, 240, 255, 0.35);
+    --primary-muted: rgba(0, 240, 255, 0.12);
+
+    /* Functional Telemetry Accents */
+    --caution: #FF9500;               /* Vivid Amber */
+    --caution-glow: rgba(255, 149, 0, 0.35);
+    --caution-muted: rgba(255, 149, 0, 0.12);
+
+    --critical: #FF3B30;              /* Crimson Red */
+    --critical-glow: rgba(255, 59, 48, 0.35);
+    --critical-muted: rgba(255, 59, 48, 0.12);
+
+    --success: #34C759;               /* Emerald Green */
+    --success-glow: rgba(52, 199, 89, 0.35);
+    --success-muted: rgba(52, 199, 89, 0.12);
+
+    --indigo: #5E5CE6;                /* Electric Indigo */
+    --purple: #AF52DE;                /* Vivid Purple */
+    --purple-muted: rgba(175, 82, 222, 0.12);
+
+    /* Typography */
+    --text-primary: #F5F7FA;
+    --text-secondary: #9BA3AF;
+    --text-tertiary: #5A6474;
+    --text-inverse: #040810;
+
+    --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+
+    /* Transitions & Curves */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: 0.15s var(--ease-out);
+    --transition-medium: 0.25s var(--ease-out);
 }
 
+/* Base Reset & Typography */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: var(--font-heading);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-    background-color: var(--bg-void);
+html, body {
+    background-color: var(--bg-base);
     color: var(--text-primary);
-    overflow-x: hidden;
+    font-family: var(--font-ui);
+    font-size: 14px;
     line-height: 1.5;
     min-height: 100vh;
+    overflow-x: hidden;
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.04) 0%, transparent 45%),
+        radial-gradient(circle at 90% 20%, rgba(94, 92, 230, 0.03) 0%, transparent 35%);
+    background-attachment: fixed;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: var(--bg-void);
+    background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background: #1E293B;
-    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #334155;
+    background: rgba(255, 255, 255, 0.22);
 }
 
-/* App Header */
+/* =============================================================================
+   1. Branded Unified Header & Navigation Bar
+   ============================================================================= */
 .app-header {
-    background: rgba(15, 23, 42, 0.9);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(7, 10, 17, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
     padding: 0.75rem 1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    gap: 1rem;
 }
 
-.logo-group {
+/* Brand Identity */
+.brand-identity {
     display: flex;
     align-items: center;
     gap: 0.85rem;
+    min-width: 260px;
 }
 
-.logo-badge {
-    background: linear-gradient(135deg, var(--accent), #FF8A00);
-    width: 42px;
-    height: 42px;
+.brand-emblem {
+    width: 40px;
+    height: 40px;
     border-radius: 10px;
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(0, 112, 243, 0.25));
+    border: 1px solid rgba(0, 240, 255, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
-    color: #fff;
-    box-shadow: 0 0 16px var(--accent-glow);
+    color: var(--primary);
+    font-size: 1.15rem;
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
 }
 
-.brand-title {
-    font-size: 1.25rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
+.brand-emblem:hover {
+    transform: scale(1.05);
+}
+
+.brand-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title-wrap {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.pill-tag {
+.brand-title {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+}
+
+.brand-meta-badge {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 0.65rem;
+    font-weight: 700;
     padding: 2px 7px;
     border-radius: 999px;
-    text-transform: uppercase;
-    font-weight: 600;
-}
-
-.pill-cyan {
-    background: rgba(0, 229, 255, 0.12);
+    background: rgba(0, 240, 255, 0.1);
     color: var(--primary);
-    border: 1px solid rgba(0, 229, 255, 0.3);
-}
-
-.pill-orange {
-    background: rgba(255, 94, 30, 0.12);
-    color: var(--accent);
-    border: 1px solid rgba(255, 94, 30, 0.3);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .brand-subtitle {
-    font-size: 0.76rem;
-    color: var(--text-muted);
-}
-
-/* Header Status Center */
-.header-status-center {
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-}
-
-.live-indicator {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    font-size: 0.82rem;
+    margin-top: 1px;
+}
+
+.live-pulse-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     font-family: var(--font-mono);
+    font-size: 0.68rem;
     color: var(--success);
-    background: rgba(16, 185, 129, 0.08);
-    border: 1px solid rgba(16, 185, 129, 0.25);
-    padding: 4px 10px;
-    border-radius: 6px;
+    font-weight: 600;
+    background: rgba(52, 199, 89, 0.08);
+    border: 1px solid rgba(52, 199, 89, 0.22);
+    padding: 1px 6px;
+    border-radius: 4px;
 }
 
 .pulse-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: var(--success);
     box-shadow: 0 0 8px var(--success);
-    animation: pulse 1.8s infinite;
+    animation: livePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes pulse {
-    0% { transform: scale(0.95); opacity: 0.8; }
-    50% { transform: scale(1.3); opacity: 1; }
-    100% { transform: scale(0.95); opacity: 0.8; }
+@keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(1.35); }
 }
 
-.clock-telemetry {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--text-muted);
+/* Center Navigation Pill Bar */
+.header-nav-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Header Action Buttons */
+.portal-nav-pills {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    padding: 3px;
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+}
+
+.portal-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.42rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+.portal-pill:hover {
+    color: var(--text-primary);
+    background: var(--bg-pill-hover);
+}
+
+.portal-pill.active {
+    background: rgba(0, 240, 255, 0.12);
+    color: var(--primary);
+    border-color: rgba(0, 240, 255, 0.3);
+    font-weight: 600;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+}
+
+.portal-pill i {
+    font-size: 0.78rem;
+}
+
+/* Right Header Action Suite */
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
+    gap: 0.55rem;
 }
 
 .btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.45rem;
-    padding: 0.5rem 1rem;
+    padding: 0.45rem 0.85rem;
     border-radius: 8px;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast);
     border: 1px solid transparent;
+    white-space: nowrap;
+    outline: none;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--accent), #FF7A00);
-    color: #fff;
-    box-shadow: 0 2px 10px var(--accent-glow);
+    background: var(--primary-gradient);
+    color: var(--text-inverse);
+    font-weight: 700;
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
 }
 
 .btn-primary:hover {
     opacity: 0.92;
     transform: translateY(-1px);
+    box-shadow: 0 0 22px rgba(0, 240, 255, 0.5);
 }
 
-.btn-secondary {
-    background: rgba(0, 229, 255, 0.1);
-    color: var(--primary);
-    border-color: rgba(0, 229, 255, 0.3);
+.btn-primary:active {
+    transform: translateY(0);
 }
 
-.btn-secondary:hover {
-    background: rgba(0, 229, 255, 0.18);
-}
-
-.btn-outline {
-    background: transparent;
+.btn-glass {
+    background: rgba(255, 255, 255, 0.04);
     color: var(--text-primary);
-    border-color: var(--border-color);
+    border: 1px solid var(--border-subtle);
+    backdrop-filter: blur(10px);
 }
 
-.btn-outline:hover {
-    background: var(--bg-card-hover);
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
 }
 
-/* Top Metric Ribbons */
+.btn-glass.active-toggle {
+    background: rgba(52, 199, 89, 0.12);
+    border-color: rgba(52, 199, 89, 0.35);
+    color: var(--success);
+}
+
+.telemetry-clock-box {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    padding: 0.42rem 0.65rem;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+}
+
+/* =============================================================================
+   2. KPI Metric Cards Strip
+   ============================================================================= */
 .metrics-strip {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
-    padding: 1rem 1.5rem 0.5rem;
+    padding: 1.25rem 1.5rem 0.5rem;
+    max-width: 1720px;
+    margin: 0 auto;
 }
 
-.metric-pill-card {
+.metric-kpi-card {
     background: var(--bg-card);
-    border: 1px solid var(--border-color);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-subtle);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
-    padding: 0.9rem 1.1rem;
+    padding: 1rem 1.2rem;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    transition: border-color 0.2s ease;
+    transition: all var(--transition-medium);
+    position: relative;
+    overflow: hidden;
 }
 
-.metric-pill-card:hover {
-    border-color: rgba(0, 229, 255, 0.4);
+.metric-kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
 }
 
-.metric-data h4 {
-    font-size: 0.72rem;
-    color: var(--text-muted);
+.metric-kpi-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-hover);
+    box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.5);
+}
+
+.kpi-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-label {
+    font-size: 0.68rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    margin-bottom: 0.35rem;
 }
 
-.metric-val {
-    font-family: var(--font-mono);
-    font-size: 1.45rem;
+.kpi-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    margin-bottom: 0.25rem;
+}
+
+.kpi-value {
+    font-family: var(--font-heading);
+    font-size: 1.65rem;
     font-weight: 800;
-    color: var(--primary);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--text-primary);
 }
 
-.metric-val.orange { color: var(--accent); }
-.metric-val.green { color: var(--success); }
-.metric-val.purple { color: var(--purple); }
+.kpi-value.cyan { color: var(--primary); text-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
+.kpi-value.amber { color: var(--caution); text-shadow: 0 0 20px rgba(255, 149, 0, 0.3); }
+.kpi-value.green { color: var(--success); text-shadow: 0 0 20px rgba(52, 199, 89, 0.3); }
 
-.metric-icon-box {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+.kpi-subtext {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    letter-spacing: -0.01em;
+}
+
+.kpi-icon-pod {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--text-muted);
+    font-size: 1.05rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
 }
 
-/* Main Command Grid Layout */
+.metric-kpi-card:hover .kpi-icon-pod {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--primary);
+    transform: scale(1.05);
+}
+
+.kpi-icon-pod.cyan { color: var(--primary); background: var(--primary-muted); border-color: rgba(0, 240, 255, 0.25); }
+.kpi-icon-pod.indigo { color: var(--indigo); background: rgba(94, 92, 230, 0.12); border-color: rgba(94, 92, 230, 0.25); }
+.kpi-icon-pod.amber { color: var(--caution); background: var(--caution-muted); border-color: rgba(255, 149, 0, 0.25); }
+.kpi-icon-pod.green { color: var(--success); background: var(--success-muted); border-color: rgba(52, 199, 89, 0.25); }
+
+/* =============================================================================
+   3. Main Command Grid Layout
+   ============================================================================= */
 .command-grid-layout {
     display: grid;
-    grid-template-columns: 2.1fr 1fr;
-    gap: 1rem;
-    padding: 0.75rem 1.5rem 1.5rem;
-    min-height: calc(100vh - 170px);
+    grid-template-columns: 1.85fr 1.15fr;
+    gap: 1.25rem;
+    padding: 0.85rem 1.5rem 2rem;
+    max-width: 1720px;
+    margin: 0 auto;
 }
 
-/* Left Section: Map + Edge Cam Simulator */
-.center-left-column {
+.center-left-column,
+.right-column {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
 }
 
+/* Glassmorphic Panel Container */
 .panel-container {
     background: var(--bg-card);
-    border: 1px solid var(--border-color);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-subtle);
     border-radius: 14px;
     overflow: hidden;
     position: relative;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+    transition: border-color var(--transition-fast);
+}
+
+.panel-container:hover {
+    border-color: rgba(255, 255, 255, 0.12);
 }
 
 .panel-header {
-    background: rgba(15, 23, 42, 0.7);
-    padding: 0.65rem 1.1rem;
-    border-bottom: 1px solid var(--border-color);
+    background: rgba(11, 16, 28, 0.85);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.75rem 1.15rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .panel-header-title {
-    font-size: 0.88rem;
+    font-family: var(--font-heading);
+    font-size: 0.86rem;
     font-weight: 700;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.55rem;
+    letter-spacing: -0.01em;
 }
 
+.panel-header-title i {
+    font-size: 0.95rem;
+}
+
+.panel-header-meta {
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+}
+
+/* =============================================================================
+   4. GIS Map Panel & Controls
+   ============================================================================= */
 .map-viewport {
-    height: 460px;
+    height: 440px;
     width: 100%;
     position: relative;
-    background: #0B0F19;
+    background: #060911;
 }
 
 #gis-map {
@@ -323,49 +527,99 @@ body {
     height: 100%;
 }
 
-/* Map Overlay Controls */
+/* Dark matter map controls restyling */
+.leaflet-bar a {
+    background-color: rgba(13, 17, 29, 0.9) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-subtle) !important;
+}
+.leaflet-bar a:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Map Floating Glassmorphic Legend */
 .map-floating-legend {
     position: absolute;
     bottom: 14px;
     left: 14px;
     z-index: 500;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--border-color);
+    background: rgba(11, 16, 28, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-subtle);
     border-radius: 8px;
-    padding: 0.6rem 0.9rem;
-    font-size: 0.75rem;
+    padding: 0.65rem 0.95rem;
+    font-size: 0.72rem;
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.legend-title {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    margin-bottom: 2px;
 }
 
 .legend-item {
     display: flex;
     align-items: center;
     gap: 0.45rem;
+    color: var(--text-secondary);
 }
 
 .legend-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
-/* Edge Dashcam Vision Simulator Panel */
+/* Leaflet Custom Marker & Popup Styles */
+.hazard-custom-marker {
+    background: transparent;
+    border: none;
+}
+
+.bus-custom-marker {
+    background: transparent;
+    border: none;
+}
+
+.leaflet-popup-content-wrapper {
+    background: rgba(13, 17, 29, 0.95) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 10px !important;
+    backdrop-filter: blur(16px) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+.leaflet-popup-tip {
+    background: rgba(13, 17, 29, 0.95) !important;
+}
+
+/* =============================================================================
+   5. Dashcam Edge Vision Simulator
+   ============================================================================= */
 .dashcam-split-panel {
     display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: 1rem;
-    padding: 1rem;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 1.15rem;
+    padding: 1.15rem;
 }
 
 .video-simulation-canvas-box {
     position: relative;
     border-radius: 10px;
     overflow: hidden;
-    border: 1px solid var(--border-color);
-    background: #05070D;
+    border: 1px solid var(--border-subtle);
+    background: #04060C;
     height: 250px;
 }
 
@@ -376,77 +630,105 @@ body {
     display: block;
 }
 
-/* Live HUD Telemetry Overlays */
+/* Clean Telemetry HUD Overlays on Canvas */
 .hud-corner-telemetry {
     position: absolute;
     top: 10px;
     left: 10px;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(4px);
-    border-left: 3px solid var(--primary);
-    padding: 4px 10px;
-    border-radius: 4px;
+    background: rgba(7, 10, 17, 0.75);
+    backdrop-filter: blur(8px);
+    border-left: 2px solid var(--primary);
+    padding: 5px 9px;
+    border-radius: 0 6px 6px 0;
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     color: var(--primary);
+    line-height: 1.4;
+    letter-spacing: 0.02em;
 }
 
 .hud-privacy-badge {
     position: absolute;
     bottom: 10px;
     right: 10px;
-    background: rgba(16, 185, 129, 0.2);
-    border: 1px solid var(--success);
+    background: rgba(7, 10, 17, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(52, 199, 89, 0.4);
     color: var(--success);
-    padding: 3px 8px;
-    border-radius: 4px;
+    padding: 4px 9px;
+    border-radius: 6px;
     font-size: 0.68rem;
     font-weight: 700;
     font-family: var(--font-mono);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    box-shadow: 0 0 12px rgba(52, 199, 89, 0.2);
 }
 
 .hud-controls-sidebar {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 0.85rem;
 }
 
 .hud-stats-group {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.55rem;
 }
 
 .hud-stat-item {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
     border-radius: 8px;
-    padding: 0.5rem 0.8rem;
+    padding: 0.6rem 0.85rem;
+    transition: border-color var(--transition-fast);
+}
+
+.hud-stat-item:hover {
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .hud-stat-item label {
-    font-size: 0.7rem;
-    color: var(--text-muted);
+    font-size: 0.68rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     display: block;
+    margin-bottom: 2px;
 }
 
 .hud-stat-item span {
     font-family: var(--font-mono);
-    font-size: 0.95rem;
-    font-weight: 700;
+    font-size: 0.82rem;
+    font-weight: 600;
     color: var(--text-primary);
 }
 
-/* Right Section: Multi-Agent Ticker & PWD Queue */
-.right-column {
+.hud-security-callout {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    background: rgba(52, 199, 89, 0.05);
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid rgba(52, 199, 89, 0.18);
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-/* 4-Agent Pipeline Workflow Stepper */
+.hud-security-callout i {
+    color: var(--success);
+    font-size: 0.95rem;
+}
+
+/* =============================================================================
+   6. Multi-Agent Consensus Pipeline Stepper
+   ============================================================================= */
 .agent-pipeline-box {
-    padding: 0.9rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.65rem;
@@ -455,110 +737,232 @@ body {
 .agent-step-item {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.65rem 0.85rem;
+    gap: 0.85rem;
+    padding: 0.75rem 0.95rem;
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    border: 1px solid var(--border-subtle);
+    border-radius: 9px;
+    transition: all var(--transition-medium);
+    position: relative;
 }
 
 .agent-step-item.active {
-    border-color: var(--primary);
-    background: rgba(0, 229, 255, 0.05);
+    background: rgba(0, 240, 255, 0.06);
+    border-color: rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.12);
 }
 
 .agent-step-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    background: rgba(0, 229, 255, 0.15);
-    color: var(--primary);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     flex-shrink: 0;
+    transition: all var(--transition-fast);
+}
+
+.agent-step-item.active .agent-step-icon {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: rgba(0, 240, 255, 0.4);
+    color: var(--primary);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.agent-step-content {
+    flex: 1;
 }
 
 .agent-step-content h5 {
-    font-size: 0.8rem;
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
     font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .agent-step-content p {
     font-size: 0.72rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
+    line-height: 1.35;
 }
 
-/* Event Logs Ticker */
+/* =============================================================================
+   7. Real-Time Event Stream Terminal
+   ============================================================================= */
+.terminal-window-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.95rem;
+    background: rgba(7, 10, 17, 0.95);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.terminal-dots {
+    display: flex;
+    gap: 6px;
+}
+
+.terminal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+.terminal-dot.red { background: #FF5F56; }
+.terminal-dot.yellow { background: #FFBD2E; }
+.terminal-dot.green { background: #27C93F; }
+
+.terminal-title {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
 .activity-log-feed {
-    max-height: 200px;
+    height: 180px;
     overflow-y: auto;
-    padding: 0.5rem 0.85rem;
+    padding: 0.65rem 0.95rem;
     display: flex;
     flex-direction: column;
     gap: 0.45rem;
+    background: #05070D;
+    font-family: var(--font-mono);
 }
 
 .log-entry {
-    font-family: var(--font-mono);
     font-size: 0.72rem;
-    padding: 4px 6px;
-    border-left: 2px solid var(--primary);
+    line-height: 1.45;
+    padding: 4px 8px;
+    border-left: 2px solid var(--border-subtle);
     background: rgba(255, 255, 255, 0.015);
     border-radius: 0 4px 4px 0;
+    transition: background var(--transition-fast);
+}
+
+.log-entry:hover {
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .log-time {
-    color: var(--text-dim);
-    margin-right: 5px;
+    color: var(--text-tertiary);
+    margin-right: 6px;
 }
 
 .log-agent {
-    color: var(--accent);
     font-weight: 700;
+    margin-right: 4px;
 }
 
-/* PWD Work-Order Queue Table */
+.agent-tag-vision { color: var(--primary); border-left-color: var(--primary) !important; }
+.agent-tag-dbscan { color: var(--purple); border-left-color: var(--purple) !important; }
+.agent-tag-dispatch { color: var(--caution); border-left-color: var(--caution) !important; }
+.agent-tag-advisory { color: var(--success); border-left-color: var(--success) !important; }
+
+/* =============================================================================
+   8. PWD Work Orders Queue Table
+   ============================================================================= */
 .pwd-table-container {
-    max-height: 260px;
+    max-height: 250px;
     overflow-y: auto;
 }
 
 .custom-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.76rem;
+    font-size: 0.75rem;
 }
 
 .custom-table th {
-    background: rgba(15, 23, 42, 0.9);
-    padding: 0.5rem 0.75rem;
+    position: sticky;
+    top: 0;
+    background: rgba(11, 16, 28, 0.96);
+    backdrop-filter: blur(10px);
+    padding: 0.6rem 0.85rem;
     text-align: left;
-    color: var(--text-muted);
+    color: var(--text-tertiary);
     font-weight: 600;
-    border-bottom: 1px solid var(--border-color);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 10;
 }
 
 .custom-table td {
-    padding: 0.55rem 0.75rem;
-    border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
 }
 
-.custom-table tr:hover {
+.custom-table tr:hover td {
     background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
 }
 
-/* In-Cab Driver Alert Modal */
+.table-ticket-code {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.badge-pill {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-weight: 600;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.badge-cyan { background: var(--primary-muted); color: var(--primary); border: 1px solid rgba(0, 240, 255, 0.3); }
+.badge-amber { background: var(--caution-muted); color: var(--caution); border: 1px solid rgba(255, 149, 0, 0.3); }
+.badge-red { background: var(--critical-muted); color: var(--critical); border: 1px solid rgba(255, 59, 48, 0.3); }
+.badge-green { background: var(--success-muted); color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
+
+.btn-table-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.btn-table-action:hover {
+    background: var(--primary-muted);
+    border-color: rgba(0, 240, 255, 0.3);
+    color: var(--primary);
+}
+
+/* =============================================================================
+   9. Driver Advisory Modal (HUD Tablet)
+   ============================================================================= */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -570,40 +974,51 @@ body {
 }
 
 .driver-hud-tablet {
-    background: #0B1120;
-    border: 3px solid var(--accent);
-    border-radius: 20px;
+    background: #090D18;
+    border: 2px solid var(--caution);
+    border-radius: 18px;
     width: 90%;
-    max-width: 600px;
-    box-shadow: 0 0 50px rgba(255, 94, 30, 0.4);
-    padding: 1.8rem;
+    max-width: 580px;
+    box-shadow: 0 0 50px rgba(255, 149, 0, 0.35);
+    padding: 1.65rem;
     position: relative;
+    animation: modalIn 0.25s var(--ease-out);
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
 }
 
 .driver-hud-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1rem;
-    margin-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.85rem;
+    margin-bottom: 1.15rem;
 }
 
 .driver-alert-box {
-    background: rgba(255, 94, 30, 0.1);
-    border: 1px solid var(--accent);
-    border-radius: 12px;
-    padding: 1.2rem;
+    background: rgba(255, 149, 0, 0.08);
+    border: 1px solid var(--caution);
+    border-radius: 10px;
+    padding: 1.15rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 1.15rem;
+    margin-bottom: 1.25rem;
 }
 
 .alert-hazard-icon {
-    font-size: 2.5rem;
-    color: var(--accent);
-    animation: pulse 1.2s infinite;
+    font-size: 2.2rem;
+    color: var(--caution);
+    animation: pulseAlert 1.2s infinite;
+}
+
+@keyframes pulseAlert {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.7; }
 }
 
 .driver-action-nav {
@@ -611,16 +1026,43 @@ body {
     justify-content: space-between;
     align-items: center;
     background: rgba(255, 255, 255, 0.03);
-    padding: 0.85rem 1.2rem;
-    border-radius: 10px;
+    border: 1px solid var(--border-subtle);
+    padding: 0.85rem 1.15rem;
+    border-radius: 9px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
+/* =============================================================================
+   10. Responsive Breakpoints
+   ============================================================================= */
+@media (max-width: 1200px) {
+    .metrics-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
     .command-grid-layout {
         grid-template-columns: 1fr;
     }
+}
+
+@media (max-width: 860px) {
+    .app-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    .header-nav-center {
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+    .header-actions {
+        flex-wrap: wrap;
+    }
     .dashcam-split-panel {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 540px) {
+    .metrics-strip {
         grid-template-columns: 1fr;
     }
 }

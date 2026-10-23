@@ -3,706 +3,1222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UrbanSight AI — Smart City ICCC Command System | Infothon 7.0</title>
+    <title>UrbanSight AI — Smart City ICCC Command System | Infothon 7.0 (PS #07)</title>
     
     <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Leaflet GIS Map CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-    <!-- Embedded CSS for complete standalone GitHub Pages deployment -->
+    <!-- Embedded CSS for Standalone GitHub Pages Deployment -->
     <style>
-        /* UrbanSight AI — Smart City ICCC Command System Stylesheet */
-        :root {
-            --bg-void: #090D16;
-            --bg-card: #0F172A;
-            --bg-card-hover: #1E293B;
-            --border-color: #1E293B;
-            --border-glow: rgba(0, 229, 255, 0.25);
-            
-            --primary: #00E5FF;
-            --primary-glow: rgba(0, 229, 255, 0.4);
-            --accent: #FF5E1E;
-            --accent-glow: rgba(255, 94, 30, 0.4);
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --success: #10B981;
-            --purple: #8B5CF6;
-
-            --text-primary: #F8FAFC;
-            --text-muted: #94A3B8;
-            --text-dim: #64748B;
-
-            --font-heading: 'Plus Jakarta Sans', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: var(--font-heading);
-        }
-
-        body {
-            background-color: var(--bg-void);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            line-height: 1.5;
-            min-height: 100vh;
-        }
-
-        /* Header */
-        .app-header {
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0.75rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo-group {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-        }
-
-        .logo-badge {
-            background: linear-gradient(135deg, var(--accent), #FF8A00);
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            color: #fff;
-            box-shadow: 0 0 16px var(--accent-glow);
-        }
-
-        .brand-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .pill-tag {
-            font-family: var(--font-mono);
-            font-size: 0.68rem;
-            padding: 2px 7px;
-            border-radius: 999px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .pill-cyan {
-            background: rgba(0, 229, 255, 0.12);
-            color: var(--primary);
-            border: 1px solid rgba(0, 229, 255, 0.3);
-        }
-
-        .pill-orange {
-            background: rgba(255, 94, 30, 0.12);
-            color: var(--accent);
-            border: 1px solid rgba(255, 94, 30, 0.3);
-        }
-
-        .brand-subtitle {
-            font-size: 0.76rem;
-            color: var(--text-muted);
-        }
-
-        .header-status-center {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-        }
-
-        .live-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.45rem;
-            font-size: 0.82rem;
-            font-family: var(--font-mono);
-            color: var(--success);
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.25);
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
-
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--success);
-            box-shadow: 0 0 8px var(--success);
-            animation: pulse 1.8s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.3); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.8; }
-        }
-
-        .clock-telemetry {
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent), #FF7A00);
-            color: #fff;
-            box-shadow: 0 2px 10px var(--accent-glow);
-        }
-
-        .btn-primary:hover {
-            opacity: 0.92;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: rgba(0, 229, 255, 0.1);
-            color: var(--primary);
-            border-color: rgba(0, 229, 255, 0.3);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(0, 229, 255, 0.18);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-primary);
-            border-color: var(--border-color);
-        }
-
-        .btn-outline:hover {
-            background: var(--bg-card-hover);
-        }
-
-        /* Top Metric Ribbons */
-        .metrics-strip {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            padding: 1rem 1.5rem 0.5rem;
-        }
-
-        .metric-pill-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 0.9rem 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .metric-pill-card:hover {
-            border-color: rgba(0, 229, 255, 0.4);
-        }
-
-        .metric-data h4 {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
-        }
-
-        .metric-val {
-            font-family: var(--font-mono);
-            font-size: 1.45rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .metric-val.orange { color: var(--accent); }
-        .metric-val.green { color: var(--success); }
-        .metric-val.purple { color: var(--purple); }
-
-        .metric-icon-box {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text-muted);
-        }
-
-        /* Command Grid Layout */
-        .command-grid-layout {
-            display: grid;
-            grid-template-columns: 2.1fr 1fr;
-            gap: 1rem;
-            padding: 0.75rem 1.5rem 1.5rem;
-        }
-
-        .center-left-column {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .panel-container {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .panel-header {
-            background: rgba(15, 23, 42, 0.7);
-            padding: 0.65rem 1.1rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .panel-header-title {
-            font-size: 0.88rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .map-viewport {
-            height: 460px;
-            width: 100%;
-            position: relative;
-            background: #0B0F19;
-        }
-
-        #gis-map {
-            width: 100%;
-            height: 100%;
-        }
-
-        .map-floating-legend {
-            position: absolute;
-            bottom: 14px;
-            left: 14px;
-            z-index: 500;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.6rem 0.9rem;
-            font-size: 0.75rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.35rem;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.45rem;
-        }
-
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .dashcam-split-panel {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            gap: 1rem;
-            padding: 1rem;
-        }
-
-        .video-simulation-canvas-box {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            background: #05070D;
-            height: 250px;
-        }
-
-        #dashcam-canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .hud-corner-telemetry {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(4px);
-            border-left: 3px solid var(--primary);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            color: var(--primary);
-        }
-
-        .hud-privacy-badge {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid var(--success);
-            color: var(--success);
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.68rem;
-            font-weight: 700;
-            font-family: var(--font-mono);
-        }
-
-        .hud-controls-sidebar {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .hud-stats-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .hud-stat-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.5rem 0.8rem;
-        }
-
-        .hud-stat-item label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            display: block;
-        }
-
-        .hud-stat-item span {
-            font-family: var(--font-mono);
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        /* Right Section */
-        .right-column {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .agent-pipeline-box {
-            padding: 0.9rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.65rem;
-        }
-
-        .agent-step-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 0.65rem 0.85rem;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .agent-step-item.active {
-            border-color: var(--primary);
-            background: rgba(0, 229, 255, 0.05);
-        }
-
-        .agent-step-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            background: rgba(0, 229, 255, 0.15);
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            flex-shrink: 0;
-        }
-
-        .agent-step-content h5 {
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-
-        .agent-step-content p {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-        }
-
-        .activity-log-feed {
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 0.5rem 0.85rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.45rem;
-        }
-
-        .log-entry {
-            font-family: var(--font-mono);
-            font-size: 0.72rem;
-            padding: 4px 6px;
-            border-left: 2px solid var(--primary);
-            background: rgba(255, 255, 255, 0.015);
-            border-radius: 0 4px 4px 0;
-        }
-
-        .log-time {
-            color: var(--text-dim);
-            margin-right: 5px;
-        }
-
-        .log-agent {
-            color: var(--accent);
-            font-weight: 700;
-        }
-
-        .pwd-table-container {
-            max-height: 260px;
-            overflow-y: auto;
-        }
-
-        .custom-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.76rem;
-        }
-
-        .custom-table th {
-            background: rgba(15, 23, 42, 0.9);
-            padding: 0.5rem 0.75rem;
-            text-align: left;
-            color: var(--text-muted);
-            font-weight: 600;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .custom-table td {
-            padding: 0.55rem 0.75rem;
-            border-bottom: 1px solid rgba(30, 41, 59, 0.6);
-        }
-
-        .custom-table tr:hover {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        /* In-Cab Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
-        .driver-hud-tablet {
-            background: #0B1120;
-            border: 3px solid var(--accent);
-            border-radius: 20px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 0 50px rgba(255, 94, 30, 0.4);
-            padding: 1.8rem;
-            position: relative;
-        }
-
-        .driver-hud-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
-            margin-bottom: 1.2rem;
-        }
-
-        .driver-alert-box {
-            background: rgba(255, 94, 30, 0.1);
-            border: 1px solid var(--accent);
-            border-radius: 12px;
-            padding: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .alert-hazard-icon {
-            font-size: 2.5rem;
-            color: var(--accent);
-            animation: pulse 1.2s infinite;
-        }
-
-        .driver-action-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 0.85rem 1.2rem;
-            border-radius: 10px;
-        }
-
-        @media (max-width: 1024px) {
-            .command-grid-layout { grid-template-columns: 1fr; }
-            .dashcam-split-panel { grid-template-columns: 1fr; }
-        }
+/* =============================================================================
+   UrbanSight AI — Smart City ICCC Command System (Infothon 7.0 / SIH26124)
+   Ultra-Modern Minimal Tech Design System
+   Inspired by Linear, Vercel, Apple, and Palantir Foundry Dark Mode
+   ============================================================================= */
+
+:root {
+    /* Background Hierarchy (Obsidian & Carbon Depths) */
+    --bg-base: #070A11;
+    --bg-subtle: #0B0F19;
+    --bg-surface: #0E1322;
+    --bg-card: rgba(13, 17, 29, 0.75);
+    --bg-card-hover: rgba(20, 27, 45, 0.85);
+    --bg-card-solid: #0D111D;
+    --bg-glass-panel: rgba(11, 16, 28, 0.78);
+    --bg-pill: rgba(255, 255, 255, 0.04);
+    --bg-pill-hover: rgba(255, 255, 255, 0.08);
+
+    /* Borders & Hairlines */
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-medium: rgba(255, 255, 255, 0.14);
+    --border-hover: rgba(0, 240, 255, 0.35);
+    --border-glow: rgba(0, 240, 255, 0.25);
+
+    /* Brand Accents */
+    --primary: #00F0FF;               /* Electric Cyan */
+    --primary-gradient: linear-gradient(135deg, #00F0FF 0%, #0070F3 100%);
+    --primary-glow: rgba(0, 240, 255, 0.35);
+    --primary-muted: rgba(0, 240, 255, 0.12);
+
+    /* Functional Telemetry Accents */
+    --caution: #FF9500;               /* Vivid Amber */
+    --caution-glow: rgba(255, 149, 0, 0.35);
+    --caution-muted: rgba(255, 149, 0, 0.12);
+
+    --critical: #FF3B30;              /* Crimson Red */
+    --critical-glow: rgba(255, 59, 48, 0.35);
+    --critical-muted: rgba(255, 59, 48, 0.12);
+
+    --success: #34C759;               /* Emerald Green */
+    --success-glow: rgba(52, 199, 89, 0.35);
+    --success-muted: rgba(52, 199, 89, 0.12);
+
+    --indigo: #5E5CE6;                /* Electric Indigo */
+    --purple: #AF52DE;                /* Vivid Purple */
+    --purple-muted: rgba(175, 82, 222, 0.12);
+
+    /* Typography */
+    --text-primary: #F5F7FA;
+    --text-secondary: #9BA3AF;
+    --text-tertiary: #5A6474;
+    --text-inverse: #040810;
+
+    --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Transitions & Curves */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: 0.15s var(--ease-out);
+    --transition-medium: 0.25s var(--ease-out);
+}
+
+/* Base Reset & Typography */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.04) 0%, transparent 45%),
+        radial-gradient(circle at 90% 20%, rgba(94, 92, 230, 0.03) 0%, transparent 35%);
+    background-attachment: fixed;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* =============================================================================
+   1. Branded Unified Header & Navigation Bar
+   ============================================================================= */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(7, 10, 17, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Brand Identity */
+.brand-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    min-width: 260px;
+}
+
+.brand-emblem {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(0, 112, 243, 0.25));
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 1.15rem;
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
+}
+
+.brand-emblem:hover {
+    transform: scale(1.05);
+}
+
+.brand-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-title {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+}
+
+.brand-meta-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(0, 240, 255, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.brand-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 1px;
+}
+
+.live-pulse-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--success);
+    font-weight: 600;
+    background: rgba(52, 199, 89, 0.08);
+    border: 1px solid rgba(52, 199, 89, 0.22);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+.pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+    animation: livePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(1.35); }
+}
+
+/* Center Navigation Pill Bar */
+.header-nav-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.portal-nav-pills {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    padding: 3px;
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+}
+
+.portal-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.42rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+.portal-pill:hover {
+    color: var(--text-primary);
+    background: var(--bg-pill-hover);
+}
+
+.portal-pill.active {
+    background: rgba(0, 240, 255, 0.12);
+    color: var(--primary);
+    border-color: rgba(0, 240, 255, 0.3);
+    font-weight: 600;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+}
+
+.portal-pill i {
+    font-size: 0.78rem;
+}
+
+/* Right Header Action Suite */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+    white-space: nowrap;
+    outline: none;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: var(--text-inverse);
+    font-weight: 700;
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+}
+
+.btn-primary:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+    box-shadow: 0 0 22px rgba(0, 240, 255, 0.5);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-glass {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+    backdrop-filter: blur(10px);
+}
+
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
+}
+
+.btn-glass.active-toggle {
+    background: rgba(52, 199, 89, 0.12);
+    border-color: rgba(52, 199, 89, 0.35);
+    color: var(--success);
+}
+
+.telemetry-clock-box {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    padding: 0.42rem 0.65rem;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+}
+
+/* =============================================================================
+   2. KPI Metric Cards Strip
+   ============================================================================= */
+.metrics-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 1.25rem 1.5rem 0.5rem;
+    max-width: 1720px;
+    margin: 0 auto;
+}
+
+.metric-kpi-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-subtle);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    transition: all var(--transition-medium);
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
+
+.metric-kpi-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-hover);
+    box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.5);
+}
+
+.kpi-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    margin-bottom: 0.35rem;
+}
+
+.kpi-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    margin-bottom: 0.25rem;
+}
+
+.kpi-value {
+    font-family: var(--font-heading);
+    font-size: 1.65rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.kpi-value.cyan { color: var(--primary); text-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
+.kpi-value.amber { color: var(--caution); text-shadow: 0 0 20px rgba(255, 149, 0, 0.3); }
+.kpi-value.green { color: var(--success); text-shadow: 0 0 20px rgba(52, 199, 89, 0.3); }
+
+.kpi-subtext {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    letter-spacing: -0.01em;
+}
+
+.kpi-icon-pod {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+}
+
+.metric-kpi-card:hover .kpi-icon-pod {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--primary);
+    transform: scale(1.05);
+}
+
+.kpi-icon-pod.cyan { color: var(--primary); background: var(--primary-muted); border-color: rgba(0, 240, 255, 0.25); }
+.kpi-icon-pod.indigo { color: var(--indigo); background: rgba(94, 92, 230, 0.12); border-color: rgba(94, 92, 230, 0.25); }
+.kpi-icon-pod.amber { color: var(--caution); background: var(--caution-muted); border-color: rgba(255, 149, 0, 0.25); }
+.kpi-icon-pod.green { color: var(--success); background: var(--success-muted); border-color: rgba(52, 199, 89, 0.25); }
+
+/* =============================================================================
+   3. Main Command Grid Layout
+   ============================================================================= */
+.command-grid-layout {
+    display: grid;
+    grid-template-columns: 1.85fr 1.15fr;
+    gap: 1.25rem;
+    padding: 0.85rem 1.5rem 2rem;
+    max-width: 1720px;
+    margin: 0 auto;
+}
+
+.center-left-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* Glassmorphic Panel Container */
+.panel-container {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+    transition: border-color var(--transition-fast);
+}
+
+.panel-container:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.panel-header {
+    background: rgba(11, 16, 28, 0.85);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.75rem 1.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.panel-header-title {
+    font-family: var(--font-heading);
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    letter-spacing: -0.01em;
+}
+
+.panel-header-title i {
+    font-size: 0.95rem;
+}
+
+.panel-header-meta {
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+}
+
+/* =============================================================================
+   4. GIS Map Panel & Controls
+   ============================================================================= */
+.map-viewport {
+    height: 440px;
+    width: 100%;
+    position: relative;
+    background: #060911;
+}
+
+#gis-map {
+    width: 100%;
+    height: 100%;
+}
+
+.leaflet-bar a {
+    background-color: rgba(13, 17, 29, 0.9) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-subtle) !important;
+}
+.leaflet-bar a:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Map Floating Glassmorphic Legend */
+.map-floating-legend {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    z-index: 500;
+    background: rgba(11, 16, 28, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.65rem 0.95rem;
+    font-size: 0.72rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.legend-title {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Leaflet Custom Marker & Popup Styles */
+.hazard-custom-marker {
+    background: transparent;
+    border: none;
+}
+
+.bus-custom-marker {
+    background: transparent;
+    border: none;
+}
+
+.leaflet-popup-content-wrapper {
+    background: rgba(13, 17, 29, 0.95) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 10px !important;
+    backdrop-filter: blur(16px) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+.leaflet-popup-tip {
+    background: rgba(13, 17, 29, 0.95) !important;
+}
+
+/* =============================================================================
+   5. Dashcam Edge Vision Simulator
+   ============================================================================= */
+.dashcam-split-panel {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 1.15rem;
+    padding: 1.15rem;
+}
+
+.video-simulation-canvas-box {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    background: #04060C;
+    height: 250px;
+}
+
+#dashcam-canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hud-corner-telemetry {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(7, 10, 17, 0.75);
+    backdrop-filter: blur(8px);
+    border-left: 2px solid var(--primary);
+    padding: 5px 9px;
+    border-radius: 0 6px 6px 0;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--primary);
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+}
+
+.hud-privacy-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(7, 10, 17, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(52, 199, 89, 0.4);
+    color: var(--success);
+    padding: 4px 9px;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    box-shadow: 0 0 12px rgba(52, 199, 89, 0.2);
+}
+
+.hud-controls-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.85rem;
+}
+
+.hud-stats-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.hud-stat-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.6rem 0.85rem;
+    transition: border-color var(--transition-fast);
+}
+
+.hud-stat-item:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.hud-stat-item label {
+    font-size: 0.68rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.hud-stat-item span {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.hud-security-callout {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    background: rgba(52, 199, 89, 0.05);
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid rgba(52, 199, 89, 0.18);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hud-security-callout i {
+    color: var(--success);
+    font-size: 0.95rem;
+}
+
+/* =============================================================================
+   6. Multi-Agent Consensus Pipeline Stepper
+   ============================================================================= */
+.agent-pipeline-box {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.agent-step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.75rem 0.95rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: 9px;
+    transition: all var(--transition-medium);
+    position: relative;
+}
+
+.agent-step-item.active {
+    background: rgba(0, 240, 255, 0.06);
+    border-color: rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.12);
+}
+
+.agent-step-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+}
+
+.agent-step-item.active .agent-step-icon {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: rgba(0, 240, 255, 0.4);
+    color: var(--primary);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.agent-step-content {
+    flex: 1;
+}
+
+.agent-step-content h5 {
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.agent-step-content p {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+}
+
+/* =============================================================================
+   7. Real-Time Event Stream Terminal
+   ============================================================================= */
+.terminal-window-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.95rem;
+    background: rgba(7, 10, 17, 0.95);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.terminal-dots {
+    display: flex;
+    gap: 6px;
+}
+
+.terminal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+.terminal-dot.red { background: #FF5F56; }
+.terminal-dot.yellow { background: #FFBD2E; }
+.terminal-dot.green { background: #27C93F; }
+
+.terminal-title {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.activity-log-feed {
+    height: 180px;
+    overflow-y: auto;
+    padding: 0.65rem 0.95rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    background: #05070D;
+    font-family: var(--font-mono);
+}
+
+.log-entry {
+    font-size: 0.72rem;
+    line-height: 1.45;
+    padding: 4px 8px;
+    border-left: 2px solid var(--border-subtle);
+    background: rgba(255, 255, 255, 0.015);
+    border-radius: 0 4px 4px 0;
+    transition: background var(--transition-fast);
+}
+
+.log-entry:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.log-time {
+    color: var(--text-tertiary);
+    margin-right: 6px;
+}
+
+.log-agent {
+    font-weight: 700;
+    margin-right: 4px;
+}
+
+.agent-tag-vision { color: var(--primary); border-left-color: var(--primary) !important; }
+.agent-tag-dbscan { color: var(--purple); border-left-color: var(--purple) !important; }
+.agent-tag-dispatch { color: var(--caution); border-left-color: var(--caution) !important; }
+.agent-tag-advisory { color: var(--success); border-left-color: var(--success) !important; }
+
+/* =============================================================================
+   8. PWD Work Orders Queue Table
+   ============================================================================= */
+.pwd-table-container {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+}
+
+.custom-table th {
+    position: sticky;
+    top: 0;
+    background: rgba(11, 16, 28, 0.96);
+    backdrop-filter: blur(10px);
+    padding: 0.6rem 0.85rem;
+    text-align: left;
+    color: var(--text-tertiary);
+    font-weight: 600;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 10;
+}
+
+.custom-table td {
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+}
+
+.custom-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+}
+
+.table-ticket-code {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.badge-pill {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-weight: 600;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.badge-cyan { background: var(--primary-muted); color: var(--primary); border: 1px solid rgba(0, 240, 255, 0.3); }
+.badge-amber { background: var(--caution-muted); color: var(--caution); border: 1px solid rgba(255, 149, 0, 0.3); }
+.badge-red { background: var(--critical-muted); color: var(--critical); border: 1px solid rgba(255, 59, 48, 0.3); }
+.badge-green { background: var(--success-muted); color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
+
+.btn-table-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.btn-table-action:hover {
+    background: var(--primary-muted);
+    border-color: rgba(0, 240, 255, 0.3);
+    color: var(--primary);
+}
+
+/* =============================================================================
+   9. Driver Advisory Modal (HUD Tablet)
+   ============================================================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.driver-hud-tablet {
+    background: #090D18;
+    border: 2px solid var(--caution);
+    border-radius: 18px;
+    width: 90%;
+    max-width: 580px;
+    box-shadow: 0 0 50px rgba(255, 149, 0, 0.35);
+    padding: 1.65rem;
+    position: relative;
+    animation: modalIn 0.25s var(--ease-out);
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.driver-hud-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.85rem;
+    margin-bottom: 1.15rem;
+}
+
+.driver-alert-box {
+    background: rgba(255, 149, 0, 0.08);
+    border: 1px solid var(--caution);
+    border-radius: 10px;
+    padding: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+    margin-bottom: 1.25rem;
+}
+
+.alert-hazard-icon {
+    font-size: 2.2rem;
+    color: var(--caution);
+    animation: pulseAlert 1.2s infinite;
+}
+
+@keyframes pulseAlert {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.7; }
+}
+
+.driver-action-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    padding: 0.85rem 1.15rem;
+    border-radius: 9px;
+}
+
+/* =============================================================================
+   10. Responsive Breakpoints
+   ============================================================================= */
+@media (max-width: 1200px) {
+    .metrics-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .command-grid-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 860px) {
+    .app-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    .header-nav-center {
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+    .header-actions {
+        flex-wrap: wrap;
+    }
+    .dashcam-split-panel {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 540px) {
+    .metrics-strip {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
 </head>
 <body>
 
-    <!-- App Header -->
+    <!-- 1. Branded Unified Header & Navigation Bar -->
     <header class="app-header">
-        <div class="logo-group">
-            <div class="logo-badge"><i class="fa-solid fa-bus"></i></div>
-            <div>
-                <h1 class="brand-title">
-                    UrbanSight AI
-                    <span class="pill-tag pill-cyan">PS #07 · SIH26124</span>
-                    <span class="pill-tag pill-orange">VVCE MYSURU</span>
-                </h1>
-                <p class="brand-subtitle">Autonomous Mobile Urban Sensing Grid • 4 Agents Active</p>
+        <div class="brand-identity">
+            <div class="brand-emblem" title="UrbanSight AI Command Core">
+                <i class="fa-solid fa-satellite-dish"></i>
+            </div>
+            <div class="brand-info">
+                <div class="brand-title-wrap">
+                    <span class="brand-title">UrbanSight AI</span>
+                    <span class="brand-meta-badge">PS #07 · SIH26124</span>
+                </div>
+                <div class="brand-subtitle">
+                    <span class="live-pulse-chip">
+                        <span class="pulse-dot"></span>
+                        ICCC PLATFORM · LIVE (30 FPS)
+                    </span>
+                    <span>· VVCE MYSURU</span>
+                </div>
             </div>
         </div>
 
-        <div class="header-status-center">
-            <div class="live-indicator">
-                <span class="pulse-dot"></span>
-                <span>GRID: LIVE (30 FPS)</span>
-            </div>
-            <div class="clock-telemetry" id="telemetry-clock">19:54:00 IST</div>
+        <!-- Portal Switcher: Unified 5-Component Navigation Pill Bar -->
+        <div class="header-nav-center">
+            <nav class="portal-nav-pills" aria-label="Smart City Portals">
+                <a href="index.html" class="portal-pill active" title="Integrated Command & Control Center">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Command Center</span>
+                </a>
+                <a href="driver_console.html" target="_blank" class="portal-pill" title="In-Cab Bus Driver HUD Console">
+                    <i class="fa-solid fa-tablet-screen-button"></i>
+                    <span>Driver HUD</span>
+                </a>
+                <a href="citizen_portal.html" target="_blank" class="portal-pill" title="Public Citizen Road Repair Tracker">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Citizen Portal</span>
+                </a>
+                <a href="field_crew.html" target="_blank" class="portal-pill" title="Mobile Field Crew Repair PWA">
+                    <i class="fa-solid fa-truck-pickup"></i>
+                    <span>Field Crew PWA</span>
+                </a>
+                <a href="voucher.html?ticket=PWD-OCT-0941" target="_blank" class="portal-pill" title="Official CPWD Tender Voucher">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <span>CPWD Voucher</span>
+                </a>
+            </nav>
         </div>
 
+        <!-- Header Action Controls -->
         <div class="header-actions">
-            <button class="btn btn-primary" id="btn-simulate-detect">
+            <button class="btn btn-primary" id="btn-simulate-detect" title="Trigger Multi-Agent Transit Bus Detection Pipeline">
                 <i class="fa-solid fa-bolt"></i> Simulate Bus Pass
             </button>
-            <a href="driver_console.html" target="_blank" class="btn btn-secondary" title="In-Cab Bus Driver Console">
-                <i class="fa-solid fa-tablet-screen-button"></i> Driver HUD
-            </a>
-            <a href="citizen_portal.html" target="_blank" class="btn btn-outline" title="Public Citizen Repair Tracking Portal">
-                <i class="fa-solid fa-users"></i> Citizen Portal
-            </a>
-            <a href="field_crew.html" target="_blank" class="btn btn-outline" title="Mobile Field Crew Repair PWA">
-                <i class="fa-solid fa-truck-pickup"></i> Field Crew
-            </a>
-            <a href="voucher.html?ticket=PWD-OCT-0941" target="_blank" class="btn btn-outline" title="Official CPWD Schedule of Rates Tender Voucher">
-                <i class="fa-solid fa-file-invoice"></i> Voucher
-            </a>
-            <button class="btn btn-outline" id="btn-driver-alert">
-                <i class="fa-solid fa-bell"></i> Alert
+            <button class="btn btn-glass" id="btn-export-csv" title="Export CPWD Tabular Work Orders CSV">
+                <i class="fa-solid fa-file-csv"></i> Export CSV
             </button>
-            <a href="final.md" target="_blank" class="btn btn-outline">
-                <i class="fa-regular fa-file-lines"></i> PPT
-            </a>
+            <button class="btn btn-glass" id="btn-export-geojson" title="Export OGC Standard GeoJSON Telemetry">
+                <i class="fa-solid fa-file-export"></i> Export GeoJSON
+            </button>
+            <button class="btn btn-glass active-toggle" id="btn-toggle-privacy" title="Toggle On-Device DPDP Act 2023 Gaussian Privacy Redaction">
+                <i class="fa-solid fa-shield-halved"></i> Privacy Blur: ON
+            </button>
+            <button class="btn btn-glass" id="btn-driver-alert" title="Test Live In-Cab Driver Tablet Alert Modal">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            <div class="telemetry-clock-box" id="telemetry-clock">19:54:00 IST</div>
         </div>
     </header>
 
-    <!-- Top Key Metric Strip -->
+    <!-- 2. Top Key Metric Strip (4 Clean KPI Cards) -->
     <section class="metrics-strip">
-        <div class="metric-pill-card">
-            <div class="metric-data">
-                <h4>Fleets Monitored</h4>
-                <div class="metric-val" id="metric-buses">10,000</div>
+        <!-- KPI Card 1: Fleets Monitored -->
+        <div class="metric-kpi-card">
+            <div class="kpi-content">
+                <span class="kpi-label">Fleets Online</span>
+                <div class="kpi-value-row">
+                    <span class="kpi-value cyan" id="metric-buses">10,000</span>
+                    <span style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);">e-Buses</span>
+                </div>
+                <span class="kpi-subtext">PM e-Bus Sewa Grid · 30 FPS Edge Nodes</span>
             </div>
-            <div class="metric-icon-box"><i class="fa-solid fa-bus-simple"></i></div>
+            <div class="kpi-icon-pod cyan">
+                <i class="fa-solid fa-bus-simple"></i>
+            </div>
         </div>
-        <div class="metric-pill-card">
-            <div class="metric-data">
-                <h4>Km Scanned Today</h4>
-                <div class="metric-val purple" id="metric-km">4,820</div>
+
+        <!-- KPI Card 2: Distance Scanned -->
+        <div class="metric-kpi-card">
+            <div class="kpi-content">
+                <span class="kpi-label">Distance Scanned</span>
+                <div class="kpi-value-row">
+                    <span class="kpi-value" id="metric-km">4,820</span>
+                    <span style="font-size:0.8rem; font-weight:700; color:var(--text-secondary);">km</span>
+                </div>
+                <span class="kpi-subtext">Today across 28 arterial transit corridors</span>
             </div>
-            <div class="metric-icon-box"><i class="fa-solid fa-route"></i></div>
+            <div class="kpi-icon-pod indigo">
+                <i class="fa-solid fa-route"></i>
+            </div>
         </div>
-        <div class="metric-pill-card">
-            <div class="metric-data">
-                <h4>Arterial Coverage</h4>
-                <div class="metric-val green">85%+</div>
+
+        <!-- KPI Card 3: Autonomous PWD Dispatches -->
+        <div class="metric-kpi-card">
+            <div class="kpi-content">
+                <span class="kpi-label">Autonomous PWD Dispatches</span>
+                <div class="kpi-value-row">
+                    <span class="kpi-value amber">3 Active</span>
+                </div>
+                <span class="kpi-subtext">&lt; 24h SLA Compliance · Zero Paperwork</span>
             </div>
-            <div class="metric-icon-box"><i class="fa-solid fa-satellite"></i></div>
+            <div class="kpi-icon-pod amber">
+                <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
         </div>
-        <div class="metric-pill-card">
-            <div class="metric-data">
-                <h4>Repair Dispatch SLA</h4>
-                <div class="metric-val orange">&lt; 48 Hrs</div>
+
+        <!-- KPI Card 4: Privacy Compliance -->
+        <div class="metric-kpi-card">
+            <div class="kpi-content">
+                <span class="kpi-label">Privacy Compliance</span>
+                <div class="kpi-value-row">
+                    <span class="kpi-value green">100%</span>
+                </div>
+                <span class="kpi-subtext">DPDP Act 2023 §2(t) · Zero PII Disk Persistence</span>
             </div>
-            <div class="metric-icon-box"><i class="fa-solid fa-stopwatch-20"></i></div>
-        </div>
-        <div class="metric-pill-card">
-            <div class="metric-data">
-                <h4>Bandwidth Saved</h4>
-                <div class="metric-val green">99.4%</div>
+            <div class="kpi-icon-pod green">
+                <i class="fa-solid fa-shield-halved"></i>
             </div>
-            <div class="metric-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
         </div>
     </section>
 
-    <!-- Main Command Grid -->
+    <!-- 3. Main Command Grid -->
     <main class="command-grid-layout">
         
-        <!-- Left Column: Live GIS Map + Dashcam Simulator -->
+        <!-- Left Column: Live GIS Map + Edge Dashcam Simulator -->
         <div class="center-left-column">
             
             <!-- Panel 1: Leaflet GIS Real-Time Map -->
@@ -712,8 +1228,8 @@
                         <i class="fa-solid fa-map-location-dot" style="color: var(--primary);"></i>
                         Smart City Integrated Command & Control Center (ICCC) GIS Canvas
                     </div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">
-                        Bengaluru & Mysuru Transit Mesh
+                    <div class="panel-header-meta">
+                        Bengaluru & Mysuru Transit Mesh · 30 FPS Telemetry
                     </div>
                 </div>
 
@@ -721,11 +1237,23 @@
                     <div id="gis-map"></div>
                     
                     <div class="map-floating-legend">
-                        <div style="font-weight:700; margin-bottom:2px;">MAP OVERLAY KEY</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#00E5FF;"></span> BMTC/KSRTC Buses (30 FPS)</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#EF4444;"></span> Critical Potholes (P1)</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#3B82F6;"></span> Severe Waterlogging (P2)</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#8B5CF6;"></span> Live Traffic Chokepoint (P3)</div>
+                        <div class="legend-title">GIS LAYER KEY</div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#00F0FF; box-shadow:0 0 8px #00F0FF;"></span>
+                            <span>BMTC & KSRTC Buses (30 FPS)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#FF3B30; box-shadow:0 0 8px #FF3B30;"></span>
+                            <span>Critical Potholes (P1)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#00F0FF;"></span>
+                            <span>Severe Waterlogging (P2)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#AF52DE;"></span>
+                            <span>Live Traffic Chokepoint (P3)</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -734,10 +1262,10 @@
             <div class="panel-container">
                 <div class="panel-header">
                     <div class="panel-header-title">
-                        <i class="fa-solid fa-video" style="color: var(--accent);"></i>
+                        <i class="fa-solid fa-video" style="color: var(--caution);"></i>
                         Edge Camera Perception HUD (BMTC-KA01-E542 Windshield Feed)
                     </div>
-                    <span class="pill-tag pill-cyan">TensorRT INT8 • 28ms</span>
+                    <span class="badge-pill badge-cyan">TensorRT INT8 · 28.2ms · 15W</span>
                 </div>
 
                 <div class="dashcam-split-panel">
@@ -745,13 +1273,13 @@
                         <canvas id="dashcam-canvas" width="480" height="250"></canvas>
                         
                         <div class="hud-corner-telemetry">
-                            <div>YOLOv8-Nano: 30 FPS</div>
-                            <div>LATENCY: 28.2ms</div>
+                            <div>REC ● 30.0 FPS</div>
+                            <div>INFERENCE: 28.2ms</div>
                             <div>GPS: 12.9238°N, 77.6745°E</div>
                         </div>
 
                         <div class="hud-privacy-badge">
-                            <i class="fa-solid fa-shield-cat"></i> DPDP PRIVACY BLUR: ACTIVE
+                            <i class="fa-solid fa-shield-halved"></i> DPDP ACT 2023 §2(t) MASK: ACTIVE
                         </div>
                     </div>
 
@@ -759,20 +1287,21 @@
                         <div class="hud-stats-group">
                             <div class="hud-stat-item">
                                 <label>Edge Model Architecture</label>
-                                <span>YOLOv8n (RDD2022 Fine-tuned)</span>
+                                <span>YOLOv8n (RDD2022 Fine-Tuned INT8)</span>
                             </div>
                             <div class="hud-stat-item">
-                                <label>Telemetry Payload Size</label>
-                                <span style="color: var(--success);">&lt; 14.8 KB GeoJSON</span>
+                                <label>Telemetry Uplink Payload</label>
+                                <span style="color: var(--success);">&lt; 14.8 KB GeoJSON (Zero Raw Video)</span>
                             </div>
                             <div class="hud-stat-item">
                                 <label>Hardware Profile</label>
-                                <span>NVIDIA Jetson Orin Nano (15W)</span>
+                                <span>NVIDIA Jetson Orin Nano (15W PoE)</span>
                             </div>
                         </div>
 
-                        <div style="font-size:0.75rem; color:var(--text-muted); background:rgba(255,255,255,0.02); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color);">
-                            Zero raw video stream. Only cryptographic metadata leaves the transit bus.
+                        <div class="hud-security-callout">
+                            <i class="fa-solid fa-lock"></i>
+                            <div>Zero raw camera footage stored on disk. Only cryptographic distress telemetry leaves the transit bus.</div>
                         </div>
                     </div>
                 </div>
@@ -780,7 +1309,7 @@
 
         </div>
 
-        <!-- Right Column: Multi-Agent Engine & PWD Work Orders -->
+        <!-- Right Column: Multi-Agent Consensus Engine & PWD Work Orders -->
         <div class="right-column">
             
             <!-- Panel 3: 4-Agent Pipeline Workflow Stepper -->
@@ -790,59 +1319,63 @@
                         <i class="fa-solid fa-robot" style="color: var(--primary);"></i>
                         Autonomous Multi-Agent Consensus Pipeline
                     </div>
+                    <span class="badge-pill badge-green">4 Agents Operational</span>
                 </div>
 
                 <div class="agent-pipeline-box">
                     <div class="agent-step-item active" id="agent-step-1">
                         <div class="agent-step-icon"><i class="fa-solid fa-eye"></i></div>
                         <div class="agent-step-content">
-                            <h5>Agent 1: Vision Perception</h5>
-                            <p>Detects defect & applies DPDP on-chip Gaussian privacy blur.</p>
+                            <h5>Agent 1: Vision Perception <span class="badge-pill badge-cyan">EDGE</span></h5>
+                            <p>Detects road distress & applies DPDP on-chip Gaussian privacy blur.</p>
                         </div>
                     </div>
                     <div class="agent-step-item" id="agent-step-2">
                         <div class="agent-step-icon"><i class="fa-solid fa-diagram-project"></i></div>
                         <div class="agent-step-content">
-                            <h5>Agent 2: Geo-Spatial Clustering</h5>
-                            <p>DBSCAN merges repeat bus passes into 1 canonical ticket.</p>
+                            <h5>Agent 2: Geo-Spatial Clustering <span class="badge-pill badge-cyan">DBSCAN</span></h5>
+                            <p>Merges multi-bus passes into 1 canonical hazard with IMU z-shock fusion.</p>
                         </div>
                     </div>
                     <div class="agent-step-item" id="agent-step-3">
                         <div class="agent-step-icon"><i class="fa-solid fa-ticket"></i></div>
                         <div class="agent-step-content">
-                            <h5>Agent 3: Municipal PWD Dispatch</h5>
-                            <p>Auto-files work order to BBMP/PWD portal in &lt;3 minutes.</p>
+                            <h5>Agent 3: Municipal PWD Dispatch <span class="badge-pill badge-amber">CPWD SOR</span></h5>
+                            <p>Matches CPWD Schedule of Rates and auto-files work order in &lt;180s.</p>
                         </div>
                     </div>
                     <div class="agent-step-item" id="agent-step-4">
                         <div class="agent-step-icon"><i class="fa-solid fa-bullhorn"></i></div>
                         <div class="agent-step-content">
-                            <h5>Agent 4: Fleet Advisory</h5>
-                            <p>Broadcasts real-time detour alert to upstream driver HUDs.</p>
+                            <h5>Agent 4: Fleet Advisory <span class="badge-pill badge-green">V2X HUD</span></h5>
+                            <p>Broadcasts low-latency lane detour alerts to approaching bus HUDs.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel 4: Live Event Decision Ticker -->
+            <!-- Panel 4: Real-Time Event Decision Terminal -->
             <div class="panel-container">
-                <div class="panel-header">
-                    <div class="panel-header-title">
-                        <i class="fa-solid fa-terminal" style="color: var(--accent);"></i>
-                        Real-Time Agent Decision Feed
+                <div class="terminal-window-header">
+                    <div class="terminal-dots">
+                        <span class="terminal-dot red"></span>
+                        <span class="terminal-dot yellow"></span>
+                        <span class="terminal-dot green"></span>
                     </div>
+                    <span class="terminal-title">AGENT CONSENSUS TELEMETRY STREAM</span>
+                    <i class="fa-solid fa-terminal" style="color:var(--text-tertiary); font-size:0.75rem;"></i>
                 </div>
                 <div class="activity-log-feed" id="activity-feed"></div>
             </div>
 
-            <!-- Panel 5: PWD Work-Order Queue -->
+            <!-- Panel 5: Autonomous PWD Work-Order Queue -->
             <div class="panel-container">
                 <div class="panel-header">
                     <div class="panel-header-title">
                         <i class="fa-solid fa-list-check" style="color: var(--success);"></i>
                         Autonomous PWD Work-Order Queue
                     </div>
-                    <span class="pill-tag pill-cyan">&lt; 48H SLA</span>
+                    <span class="badge-pill badge-amber">&lt; 48H SLA COMPLIANCE</span>
                 </div>
 
                 <div class="pwd-table-container">
@@ -850,15 +1383,16 @@
                         <thead>
                             <tr>
                                 <th>Ticket ID</th>
-                                <th>Type</th>
+                                <th>Defect & SOR</th>
                                 <th>Location</th>
-                                <th>Cluster</th>
+                                <th>Cluster Passes</th>
                                 <th>SLA Countdown</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="work-orders-tbody">
-                            <!-- Populated dynamically -->
+                            <!-- Populated dynamically via script below -->
                         </tbody>
                     </table>
                 </div>
@@ -868,33 +1402,39 @@
 
     </main>
 
-    <!-- In-Cab Driver Alert Modal -->
+    <!-- In-Cab Driver Alert Modal (HUD Tablet) -->
     <div class="modal-overlay" id="driver-alert-modal">
         <div class="driver-hud-tablet">
             <div class="driver-hud-header">
-                <div style="display:flex; align-items:center; gap:0.6rem;">
-                    <i class="fa-solid fa-triangle-exclamation" style="color:var(--accent); font-size:1.4rem;"></i>
-                    <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary);">IN-CAB DRIVER ADVISORY (TABLET)</h3>
+                <div style="display:flex; align-items:center; gap:0.65rem;">
+                    <i class="fa-solid fa-triangle-exclamation" style="color:var(--caution); font-size:1.35rem;"></i>
+                    <h3 style="font-family:var(--font-heading); font-size:1.1rem; font-weight:800; color:var(--text-primary); letter-spacing:-0.01em;">
+                        IN-CAB TRANSIT DRIVER ADVISORY (TABLET)
+                    </h3>
                 </div>
-                <button class="btn btn-outline" id="modal-close-btn" style="padding:4px 10px;">Close HUD</button>
+                <button class="btn btn-glass" id="modal-close-btn" style="padding:4px 10px;">Close HUD</button>
             </div>
 
             <div class="driver-alert-box">
                 <div class="alert-hazard-icon"><i class="fa-solid fa-road-barrier"></i></div>
                 <div>
-                    <h4 id="driver-alert-title" style="color:var(--accent); font-size:1.1rem; margin-bottom:3px;">CRITICAL POTHOLE (9.4cm Depth)</h4>
-                    <p id="driver-alert-loc" style="font-size:0.85rem; color:var(--text-muted);">Outer Ring Road near Bellandur Flyover Pillar 34</p>
+                    <h4 id="driver-alert-title" style="color:var(--caution); font-size:1.1rem; margin-bottom:3px; font-weight:700;">
+                        CRITICAL POTHOLE (9.4cm Depth)
+                    </h4>
+                    <p id="driver-alert-loc" style="font-size:0.85rem; color:var(--text-secondary);">
+                        Outer Ring Road near Bellandur Flyover Pillar 34
+                    </p>
                 </div>
             </div>
 
             <div class="driver-action-nav">
                 <div>
-                    <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Agent 4 Guidance</div>
-                    <div id="driver-alert-advice" style="font-weight:700; color:var(--primary); font-size:0.95rem;">
+                    <div style="font-size:0.68rem; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">Agent 4 Guidance</div>
+                    <div id="driver-alert-advice" style="font-weight:700; color:var(--primary); font-size:0.92rem; margin-top:2px;">
                         Move to Right Lane. Speed cap: 25 km/h. Detour recommended at next exit.
                     </div>
                 </div>
-                <div style="font-family:var(--font-mono); font-size:1.1rem; font-weight:800; color:var(--warning);">
+                <div style="font-family:var(--font-mono); font-size:1.05rem; font-weight:800; color:var(--caution); white-space:nowrap; padding-left:1rem;">
                     150m AHEAD
                 </div>
             </div>
@@ -904,7 +1444,7 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Embedded Standalone App JS -->
+    <!-- Embedded Standalone Application JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             initClock();
@@ -916,46 +1456,53 @@
             startRealtimePolling();
         });
 
+        // Central Application State
         const state = {
             buses: [
-                { id: "BMTC-KA01-E542", route: "Outer Ring Road Express", lat: 12.9238, lng: 77.6745, speed: 24, heading: 45, marker: null },
-                { id: "BMTC-KA57-E912", route: "Route 500D (Hebbal ↔ E-City)", lat: 12.9112, lng: 77.6380, speed: 18, heading: 180, marker: null },
-                { id: "KSRTC-KA09-E102", route: "Mysuru Ring Road (VVCE)", lat: 12.3160, lng: 76.6413, speed: 32, heading: 90, marker: null },
-                { id: "BMTC-KA03-E304", route: "Majestic ↔ Whitefield ITPL", lat: 12.9716, lng: 77.5946, speed: 15, heading: 115, marker: null }
+                { id: "BMTC-KA01-E542", route: "Outer Ring Road Express (Silk Board ↔ Marathahalli)", lat: 12.9238, lng: 77.6745, speed: 32, heading: 45, marker: null },
+                { id: "BMTC-KA57-E912", route: "Route 500D (Hebbal ↔ Electronic City)", lat: 12.9112, lng: 77.6380, speed: 26, heading: 180, marker: null },
+                { id: "KSRTC-KA09-E102", route: "Mysuru Ring Road (VVCE Campus Corridor)", lat: 12.3160, lng: 76.6413, speed: 38, heading: 90, marker: null },
+                { id: "BMTC-KA03-E304", route: "Majestic ↔ Whitefield ITPL Expressway", lat: 12.9716, lng: 77.5946, speed: 19, heading: 115, marker: null }
             ],
             hazards: [
-                { id: "HAZ-001", type: "POTHOLE", sev: "CRITICAL_P1", lat: 12.9250, lng: 77.6760, name: "ORR Bellandur Flyover Pillar 34", depth: "9.4cm", conf: "96.4%", passes: 14, ticket: "PWD-OCT-0941" },
-                { id: "HAZ-002", type: "WATERLOGGING", sev: "HIGH_P2", lat: 12.9125, lng: 77.6395, name: "Silk Board Underpass South Lane", length: "35m", conf: "92.1%", passes: 8, ticket: "PWD-OCT-0882" },
-                { id: "HAZ-003", type: "POTHOLE", sev: "CRITICAL_P1", lat: 12.3190, lng: 76.6450, name: "VVCE Ring Road Junction, Mysuru", depth: "8.6cm", conf: "94.8%", passes: 6, ticket: "PWD-OCT-0715" },
-                { id: "HAZ-004", type: "CONGESTION", sev: "MEDIUM_P3", lat: 12.9730, lng: 77.5960, name: "Kasturba Road Bottleneck (9 km/h)", conf: "88.5%", passes: 12, ticket: null }
+                { id: "HAZ-001", type: "POTHOLE", sev: "CRITICAL_P1", lat: 12.9250, lng: 77.6760, name: "ORR Bellandur Flyover Pillar 34", depth: "9.4cm", conf: "96.4%", passes: 14, ticket: "PWD-OCT-0941", sorCode: "CPWD-16.14.2" },
+                { id: "HAZ-002", type: "WATERLOGGING", sev: "HIGH_P2", lat: 12.9125, lng: 77.6395, name: "Silk Board Underpass South Lane", length: "35m", conf: "92.1%", passes: 8, ticket: "PWD-OCT-0882", sorCode: "CPWD-11.4.2" },
+                { id: "HAZ-003", type: "POTHOLE", sev: "CRITICAL_P1", lat: 12.3190, lng: 76.6450, name: "VVCE Ring Road Junction, Mysuru", depth: "8.6cm", conf: "94.8%", passes: 6, ticket: "PWD-OCT-0715", sorCode: "CPWD-16.14.2" },
+                { id: "HAZ-004", type: "CONGESTION", sev: "MEDIUM_P3", lat: 12.9730, lng: 77.5960, name: "Kasturba Road Bottleneck (9 km/h)", conf: "88.5%", passes: 12, ticket: null, sorCode: "TRAFFIC-CORRIDOR" }
             ],
             workOrders: [
-                { ticket: "PWD-OCT-0941", type: "POTHOLE", sev: "CRITICAL_P1", loc: "ORR Bellandur Flyover Pillar 34", passes: 14, sla: "41h 20m remaining", status: "DISPATCHED" },
-                { ticket: "PWD-OCT-0882", type: "WATERLOGGING", sev: "HIGH_P2", loc: "Silk Board Underpass South Lane", passes: 8, sla: "19h 45m remaining", status: "CREW_ASSIGNED" },
-                { ticket: "PWD-OCT-0715", type: "POTHOLE", sev: "CRITICAL_P1", loc: "VVCE Ring Road Junction, Mysuru", passes: 6, sla: "44h 10m remaining", status: "IN_PROGRESS" }
+                { ticket: "PWD-OCT-0941", type: "POTHOLE", sev: "CRITICAL_P1", loc: "ORR Bellandur Flyover Pillar 34", passes: 14, sla: "41h 20m remaining", status: "DISPATCHED", sorCode: "CPWD 16.14.2 (DBM Patch)" },
+                { ticket: "PWD-OCT-0882", type: "WATERLOGGING", sev: "HIGH_P2", loc: "Silk Board Underpass South Lane", passes: 8, sla: "19h 45m remaining", status: "CREW_ASSIGNED", sorCode: "CPWD 11.4.2 (Drain De-silt)" },
+                { ticket: "PWD-OCT-0715", type: "POTHOLE", sev: "CRITICAL_P1", loc: "VVCE Ring Road Junction, Mysuru", passes: 6, sla: "44h 10m remaining", status: "IN_PROGRESS", sorCode: "CPWD 16.14.2 (DBM Patch)" }
             ],
             logs: [
-                { time: "19:54:10", agent: "Agent 1: Vision", text: "YOLOv8-Nano running @ 30 FPS. DPDP Gaussian face & plate blur ACTIVE." },
-                { time: "19:54:02", agent: "Agent 2: DBSCAN", text: "Clustered 14 bus passes into canonical hazard #HAZ-001 (5m epsilon match)." },
-                { time: "19:53:50", agent: "Agent 3: PWD Dispatch", text: "Auto-filed PWD Work Order #PWD-OCT-0941 with GPS & photo evidence (<180s SLA)." },
-                { time: "19:53:35", agent: "Agent 4: Fleet Advisory", text: "Pushed WebSocket warning alert to oncoming buses on Bellandur corridor." }
+                { time: "19:54:10", agent: "Agent 1: Vision", tagClass: "agent-tag-vision", text: "YOLOv8-Nano running @ 30 FPS. DPDP Gaussian face & plate blur ACTIVE." },
+                { time: "19:54:02", agent: "Agent 2: DBSCAN", tagClass: "agent-tag-dbscan", text: "Clustered 14 bus passes into canonical hazard #HAZ-001 (5m epsilon match)." },
+                { time: "19:53:50", agent: "Agent 3: PWD Dispatch", tagClass: "agent-tag-dispatch", text: "Auto-filed PWD Work Order #PWD-OCT-0941 with GPS & photo evidence (<180s SLA)." },
+                { time: "19:53:35", agent: "Agent 4: Fleet Advisory", tagClass: "agent-tag-advisory", text: "Pushed WebSocket warning alert to oncoming buses on Bellandur corridor." }
             ],
-            settings: { privacyBlur: true },
+            settings: {
+                privacyBlur: true
+            },
             map: null
         };
 
+        // 1. Telemetry Clock
         function initClock() {
             const clockEl = document.getElementById('telemetry-clock');
             if (!clockEl) return;
-            setInterval(() => {
+            const updateTime = () => {
                 const now = new Date();
                 clockEl.textContent = now.toTimeString().split(' ')[0] + " IST";
-            }, 1000);
+            };
+            updateTime();
+            setInterval(updateTime, 1000);
         }
 
+        // 2. Leaflet GIS Real-Time Map
         function initLeafletMap() {
             const mapContainer = document.getElementById('gis-map');
-            if (!mapContainer) return;
+            if (!mapContainer || typeof L === 'undefined') return;
 
             state.map = L.map('gis-map', {
                 zoomControl: true,
@@ -972,25 +1519,26 @@
         }
 
         function renderHazardsOnMap() {
+            if (!state.map) return;
             state.hazards.forEach(h => {
-                let color = '#FF5E1E';
+                let color = '#FF9500';
                 let iconClass = 'fa-triangle-exclamation';
 
                 if (h.type === 'POTHOLE') {
-                    color = h.sev === 'CRITICAL_P1' ? '#EF4444' : '#FF5E1E';
+                    color = h.sev === 'CRITICAL_P1' ? '#FF3B30' : '#FF9500';
                     iconClass = 'fa-road';
                 } else if (h.type === 'WATERLOGGING') {
-                    color = '#3B82F6';
+                    color = '#00F0FF';
                     iconClass = 'fa-water';
                 } else if (h.type === 'CONGESTION') {
-                    color = '#8B5CF6';
+                    color = '#AF52DE';
                     iconClass = 'fa-car';
                 }
 
                 const markerHtml = `
-                    <div style="position:relative; width:30px; height:30px; display:flex; align-items:center; justify-content:center;">
-                        <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:${color}; opacity:0.3; animation:pulse 1.8s infinite;"></div>
-                        <div style="width:20px; height:20px; border-radius:50%; background:${color}; color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; box-shadow:0 0 10px ${color};">
+                    <div style="position:relative; width:32px; height:32px; display:flex; align-items:center; justify-content:center;">
+                        <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:${color}; opacity:0.3; animation:livePulse 1.8s infinite;"></div>
+                        <div style="width:22px; height:22px; border-radius:50%; background:${color}; color:#070A11; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; box-shadow:0 0 14px ${color};">
                             <i class="fa-solid ${iconClass}"></i>
                         </div>
                     </div>
@@ -999,20 +1547,25 @@
                 const hazardIcon = L.divIcon({
                     className: 'hazard-custom-marker',
                     html: markerHtml,
-                    iconSize: [30, 30]
+                    iconSize: [32, 32]
                 });
 
+                const voucherLink = h.ticket ? `<div style="margin-top:8px; border-top:1px solid rgba(255,255,255,0.08); padding-top:6px;"><a href="voucher.html?ticket=${h.ticket}" target="_blank" style="color:#00F0FF; font-size:11px; font-weight:700; text-decoration:none;"><i class="fa-solid fa-file-invoice"></i> View CPWD Voucher #${h.ticket} &rarr;</a></div>` : '';
+
                 const popupContent = `
-                    <div style="color:#0F172A; font-family:'Plus Jakarta Sans',sans-serif; min-width:180px;">
-                        <div style="font-weight:800; font-size:12px; color:${color}; margin-bottom:4px;">
-                            [${h.sev}] ${h.type}
+                    <div style="color:#F5F7FA; font-family:'Plus Jakarta Sans',sans-serif; min-width:200px; padding:4px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                            <span style="font-weight:800; font-size:11px; color:${color}; font-family:'JetBrains Mono';">[${h.sev}] ${h.type}</span>
+                            <span style="font-size:10px; color:#9BA3AF; font-family:'JetBrains Mono';">${h.conf}</span>
                         </div>
-                        <div style="font-size:11px; margin-bottom:6px;"><b>${h.name}</b></div>
-                        <div style="font-size:10px; color:#475569; margin-bottom:2px;">AI Confidence: <b>${h.conf}</b></div>
-                        ${h.depth ? `<div style="font-size:10px; color:#475569;">Measured Depth: <b>${h.depth}</b></div>` : ''}
-                        ${h.length ? `<div style="font-size:10px; color:#475569;">Submerged Length: <b>${h.length}</b></div>` : ''}
-                        <div style="font-size:10px; color:#475569; margin-top:4px;">DBSCAN Cluster Passes: <b>${h.passes} verified</b></div>
-                        ${h.ticket ? `<div style="margin-top:6px; background:#DCFCE7; color:#15803D; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px;">Auto Work-Order: ${h.ticket}</div>` : ''}
+                        <div style="font-size:12px; font-weight:600; margin-bottom:6px; color:#FFFFFF;">${h.name}</div>
+                        <div style="font-size:11px; color:#9BA3AF; display:flex; flex-direction:column; gap:2px;">
+                            ${h.depth ? `<div>Measured Depth: <b style="color:#F5F7FA;">${h.depth}</b></div>` : ''}
+                            ${h.length ? `<div>Submerged Length: <b style="color:#F5F7FA;">${h.length}</b></div>` : ''}
+                            <div>DBSCAN Cluster Passes: <b style="color:#00F0FF;">${h.passes} passes verified</b></div>
+                            ${h.sorCode ? `<div>CPWD SOR Code: <b style="color:#FF9500;">${h.sorCode}</b></div>` : ''}
+                        </div>
+                        ${voucherLink}
                     </div>
                 `;
 
@@ -1023,9 +1576,10 @@
         }
 
         function renderBusesOnMap() {
+            if (!state.map) return;
             state.buses.forEach(b => {
                 const busHtml = `
-                    <div style="background:#00E5FF; color:#090D16; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; box-shadow:0 0 12px #00E5FF;">
+                    <div style="background:#00F0FF; color:#070A11; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; box-shadow:0 0 16px rgba(0,240,255,0.6); border:2px solid #FFFFFF;">
                         <i class="fa-solid fa-bus"></i>
                     </div>
                 `;
@@ -1038,18 +1592,19 @@
 
                 b.marker = L.marker([b.lat, b.lng], { icon: busIcon })
                     .bindPopup(`
-                        <div style="color:#0F172A; font-family:'Plus Jakarta Sans',sans-serif;">
-                            <div style="font-weight:800; font-size:12px; color:#0891B2;">${b.id}</div>
-                            <div style="font-size:11px; margin:2px 0 6px;">${b.route}</div>
-                            <div style="font-size:10px; color:#10B981;">● Camera: ONLINE (30 FPS)</div>
-                            <div style="font-size:10px; color:#475569;">Speed: ${b.speed} km/h • Heading: ${b.heading}°</div>
-                            <div style="font-size:10px; color:#475569;">Privacy Blur: <b>ACTIVE (DPDP)</b></div>
+                        <div style="color:#F5F7FA; font-family:'Plus Jakarta Sans',sans-serif; min-width:180px; padding:4px;">
+                            <div style="font-weight:800; font-size:12px; color:#00F0FF; font-family:'JetBrains Mono';">${b.id}</div>
+                            <div style="font-size:11px; margin:4px 0 6px; color:#FFFFFF;">${b.route}</div>
+                            <div style="font-size:10px; color:#34C759; font-weight:600;">● CAMERA: ONLINE (30 FPS)</div>
+                            <div style="font-size:10px; color:#9BA3AF; margin-top:2px;">Speed: ${b.speed} km/h • Heading: ${b.heading}°</div>
+                            <div style="font-size:10px; color:#9BA3AF;">Privacy: <b style="color:#34C759;">DPDP ACT 2023 §2(t) MASK ON</b></div>
                         </div>
                     `)
                     .addTo(state.map);
             });
         }
 
+        // 3. Live Edge Dashcam Vision Canvas Simulator
         function initDashcamSimulator() {
             const canvas = document.getElementById('dashcam-canvas');
             if (!canvas) return;
@@ -1057,6 +1612,12 @@
 
             let frameCount = 0;
             const baseImage = new Image();
+            baseImage.crossOrigin = "anonymous";
+            baseImage.onerror = () => {
+                if (!baseImage.src.includes('static/')) {
+                    baseImage.src = 'static/image1.jpg';
+                }
+            };
             baseImage.src = 'image1.jpg';
 
             function drawFrame() {
@@ -1066,69 +1627,122 @@
                     ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
                 } else {
                     const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                    grad.addColorStop(0, '#1E293B');
-                    grad.addColorStop(0.5, '#0F172A');
-                    grad.addColorStop(1, '#05070D');
+                    grad.addColorStop(0, '#0F1626');
+                    grad.addColorStop(0.45, '#0B0F1A');
+                    grad.addColorStop(1, '#05070E');
                     ctx.fillStyle = grad;
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+                    ctx.lineWidth = 1.5;
                     ctx.beginPath();
-                    ctx.moveTo(canvas.width * 0.45, canvas.height * 0.4);
-                    ctx.lineTo(canvas.width * 0.1, canvas.height);
-                    ctx.moveTo(canvas.width * 0.55, canvas.height * 0.4);
-                    ctx.lineTo(canvas.width * 0.9, canvas.height);
+                    ctx.moveTo(canvas.width * 0.46, canvas.height * 0.38);
+                    ctx.lineTo(canvas.width * 0.08, canvas.height);
+                    ctx.moveTo(canvas.width * 0.54, canvas.height * 0.38);
+                    ctx.lineTo(canvas.width * 0.92, canvas.height);
                     ctx.stroke();
+
+                    ctx.strokeStyle = 'rgba(255, 200, 0, 0.25)';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([12, 16]);
+                    ctx.lineDashOffset = -frameCount * 3;
+                    ctx.beginPath();
+                    ctx.moveTo(canvas.width * 0.5, canvas.height * 0.38);
+                    ctx.lineTo(canvas.width * 0.5, canvas.height);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
                 }
 
-                const timeOsc = Math.sin(frameCount * 0.05);
+                const bracketColor = 'rgba(0, 240, 255, 0.4)';
+                ctx.strokeStyle = bracketColor;
+                ctx.lineWidth = 1.5;
+                const bLen = 14;
 
-                const potX = canvas.width * 0.58 + timeOsc * 2;
-                const potY = canvas.height * 0.62;
-                const potW = 140;
-                const potH = 65;
+                ctx.beginPath();
+                ctx.moveTo(10, 10 + bLen); ctx.lineTo(10, 10); ctx.lineTo(10 + bLen, 10);
+                ctx.moveTo(canvas.width - 10 - bLen, 10); ctx.lineTo(canvas.width - 10, 10); ctx.lineTo(canvas.width - 10, 10 + bLen);
+                ctx.moveTo(10, canvas.height - 10 - bLen); ctx.lineTo(10, canvas.height - 10); ctx.lineTo(10 + bLen, canvas.height - 10);
+                ctx.moveTo(canvas.width - 10 - bLen, canvas.height - 10); ctx.lineTo(canvas.width - 10, canvas.height - 10); ctx.lineTo(canvas.width - 10, canvas.height - 10 - bLen);
+                ctx.stroke();
 
-                ctx.strokeStyle = '#FF5E1E';
-                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(canvas.width * 0.5 - 15, canvas.height * 0.5);
+                ctx.lineTo(canvas.width * 0.5 + 15, canvas.height * 0.5);
+                ctx.moveTo(canvas.width * 0.5, canvas.height * 0.5 - 15);
+                ctx.lineTo(canvas.width * 0.5, canvas.height * 0.5 + 15);
+                ctx.stroke();
+
+                const timeOsc = Math.sin(frameCount * 0.04);
+
+                const potX = canvas.width * 0.56 + timeOsc * 1.5;
+                const potY = canvas.height * 0.61;
+                const potW = 148;
+                const potH = 68;
+
+                ctx.strokeStyle = '#FF9500';
+                ctx.lineWidth = 2;
                 ctx.strokeRect(potX, potY, potW, potH);
 
-                ctx.fillStyle = '#FF5E1E';
-                ctx.fillRect(potX, potY - 20, 130, 20);
-                ctx.fillStyle = '#FFFFFF';
+                ctx.fillStyle = '#FF9500';
+                ctx.fillRect(potX, potY - 20, 142, 20);
+                ctx.fillStyle = '#070A11';
                 ctx.font = 'bold 9px "JetBrains Mono"';
-                ctx.fillText('POTHOLE | 96.4%', potX + 5, potY - 6);
+                ctx.fillText('POTHOLE D40 · 96.4%', potX + 6, potY - 6);
 
-                const watX = canvas.width * 0.22 - timeOsc * 2;
+                ctx.fillStyle = 'rgba(7, 10, 17, 0.85)';
+                ctx.fillRect(potX, potY + potH + 4, 148, 16);
+                ctx.fillStyle = '#FF9500';
+                ctx.font = '8px "JetBrains Mono"';
+                ctx.fillText('depth: 9.8cm · z-shock: 2.4g', potX + 6, potY + potH + 15);
+
+                const watX = canvas.width * 0.18 - timeOsc * 1.5;
                 const watY = canvas.height * 0.52;
-                const watW = 160;
-                const watH = 60;
+                const watW = 155;
+                const watH = 58;
 
-                ctx.strokeStyle = '#00E5FF';
+                ctx.strokeStyle = '#00F0FF';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(watX, watY, watW, watH);
 
-                ctx.fillStyle = '#00E5FF';
-                ctx.fillRect(watX, watY - 20, 150, 20);
-                ctx.fillStyle = '#090D16';
+                ctx.fillStyle = '#00F0FF';
+                ctx.fillRect(watX, watY - 20, 148, 20);
+                ctx.fillStyle = '#070A11';
                 ctx.font = 'bold 9px "JetBrains Mono"';
-                ctx.fillText('WATERLOGGING | 25m', watX + 5, watY - 6);
+                ctx.fillText('WATERLOGGING · 92.1%', watX + 6, watY - 6);
+
+                ctx.fillStyle = 'rgba(7, 10, 17, 0.85)';
+                ctx.fillRect(watX, watY + watH + 4, 145, 16);
+                ctx.fillStyle = '#00F0FF';
+                ctx.font = '8px "JetBrains Mono"';
+                ctx.fillText('length: 35.0m · lane 1', watX + 6, watY + watH + 15);
 
                 if (state.settings.privacyBlur) {
-                    const blurX = canvas.width * 0.12;
-                    const blurY = canvas.height * 0.45;
-                    const blurW = 35;
-                    const blurH = 45;
+                    const blurX = canvas.width * 0.10;
+                    const blurY = canvas.height * 0.44;
+                    const blurW = 42;
+                    const blurH = 50;
 
-                    ctx.fillStyle = 'rgba(100, 116, 139, 0.85)';
+                    ctx.fillStyle = 'rgba(20, 28, 48, 0.88)';
                     ctx.fillRect(blurX, blurY, blurW, blurH);
-                    ctx.strokeStyle = '#10B981';
+
+                    ctx.strokeStyle = 'rgba(52, 199, 89, 0.25)';
                     ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    for (let i = 0; i < blurW; i += 6) {
+                        ctx.moveTo(blurX + i, blurY);
+                        ctx.lineTo(blurX + i, blurY + blurH);
+                    }
+                    ctx.stroke();
+
+                    ctx.strokeStyle = '#34C759';
+                    ctx.lineWidth = 1.5;
                     ctx.strokeRect(blurX, blurY, blurW, blurH);
 
-                    ctx.fillStyle = '#10B981';
-                    ctx.font = '7px "JetBrains Mono"';
-                    ctx.fillText('DPDP BLUR', blurX, blurY - 4);
+                    ctx.fillStyle = '#34C759';
+                    ctx.font = 'bold 7px "JetBrains Mono"';
+                    ctx.fillText('DPDP BLUR', blurX + 2, blurY - 4);
                 }
 
                 frameCount++;
@@ -1138,11 +1752,12 @@
             drawFrame();
         }
 
+        // 4. Real-Time Activity Log Feed
         function initEventLogFeed() {
             const feed = document.getElementById('activity-feed');
             if (!feed) return;
             feed.innerHTML = state.logs.map(log => `
-                <div class="log-entry">
+                <div class="log-entry ${log.tagClass || ''}">
                     <span class="log-time">${log.time}</span>
                     <span class="log-agent">${log.agent}:</span>
                     <span>${log.text}</span>
@@ -1150,37 +1765,38 @@
             `).join('');
         }
 
-        function pushLog(agent, text) {
+        function pushLog(agent, text, tagClass = "") {
             const now = new Date();
             const timeStr = now.toTimeString().split(' ')[0];
-            state.logs.unshift({ time: timeStr, agent, text });
-            if (state.logs.length > 30) state.logs.pop();
+            state.logs.unshift({ time: timeStr, agent, text, tagClass });
+            if (state.logs.length > 40) state.logs.pop();
             initEventLogFeed();
         }
 
+        // 5. Interactive Action Listeners
         function initActionListeners() {
             const btnDetect = document.getElementById('btn-simulate-detect');
             if (btnDetect) {
                 btnDetect.addEventListener('click', () => {
-                    pushLog("Agent 1: Vision Perception", "Spotted critical POTHOLE (depth: 9.8cm) on Sarjapur Outer Ring Road. Transmitting <12KB GeoJSON.");
+                    pushLog("Agent 1: Vision Perception", "Spotted critical POTHOLE D40 (depth: 9.8cm, z-shock: 2.4g) on Sarjapur ORR. Transmitting <14.8KB GeoJSON metadata.", "agent-tag-vision");
                     highlightAgent(1);
 
                     setTimeout(() => {
-                        pushLog("Agent 2: Geo-Spatial Clustering", "DBSCAN matched coordinates to existing cluster #DBSCAN-CL-041 (15th verified pass).");
+                        pushLog("Agent 2: Geo-Spatial Clustering", "DBSCAN fused coordinates with historical cluster #DBSCAN-CL-041 (15th verified transit bus pass).", "agent-tag-dbscan");
                         highlightAgent(2);
                     }, 600);
 
                     setTimeout(() => {
                         const newTicket = `PWD-OCT-${Math.floor(1000 + Math.random() * 9000)}`;
-                        pushLog("Agent 3: Municipal Dispatch", `Auto-filed PWD Work Order #${newTicket} to BBMP Mahadevapura Ward portal. SLA: <48h.`);
+                        pushLog("Agent 3: Municipal Dispatch", `Matched CPWD SOR 16.14.2 (Dense Bituminous Macadam). Auto-filed PWD Work Order #${newTicket} to BBMP Ward portal (<180s SLA).`, "agent-tag-dispatch");
                         highlightAgent(3);
-                        addNewWorkOrder(newTicket, "POTHOLE", "CRITICAL_P1", "Sarjapur Outer Ring Road", 15);
+                        addNewWorkOrder(newTicket, "POTHOLE", "CRITICAL_P1", "Sarjapur Outer Ring Road", 15, "CPWD 16.14.2 (DBM Patch)");
                     }, 1200);
 
                     setTimeout(() => {
-                        pushLog("Agent 4: Fleet Advisory", "Broadcasted WebSocket detour alert to 6 upstream buses approaching Sarjapur junction.");
+                        pushLog("Agent 4: Fleet Advisory", "Broadcasted low-latency V2X detour alert via WebSocket to 6 oncoming buses approaching Sarjapur corridor.", "agent-tag-advisory");
                         highlightAgent(4);
-                        triggerDriverAlert("CRITICAL POTHOLE (9.8cm Depth)", "Sarjapur-ORR Junction (180m Ahead)", "Left lane merge recommended");
+                        triggerDriverAlert("CRITICAL POTHOLE (9.8cm Depth)", "Sarjapur Outer Ring Road (180m Ahead)", "Merge to Right Lane. Speed cap: 25 km/h.");
                     }, 1800);
                 });
             }
@@ -1188,7 +1804,7 @@
             const btnAlert = document.getElementById('btn-driver-alert');
             if (btnAlert) {
                 btnAlert.addEventListener('click', () => {
-                    triggerDriverAlert("CRITICAL POTHOLE", "VVCE Ring Road Junction (150m Ahead)", "Slow down to 20 km/h; move to center lane");
+                    triggerDriverAlert("CRITICAL POTHOLE (9.4cm Depth)", "Outer Ring Road near Bellandur Flyover (150m Ahead)", "Slow down to 20 km/h; move to center lane.");
                 });
             }
 
@@ -1199,14 +1815,37 @@
                     modalOverlay.classList.remove('show');
                 });
             }
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', (e) => {
+                    if (e.target === modalOverlay) modalOverlay.classList.remove('show');
+                });
+            }
 
             const btnPrivacy = document.getElementById('btn-toggle-privacy');
             if (btnPrivacy) {
                 btnPrivacy.addEventListener('click', () => {
                     state.settings.privacyBlur = !state.settings.privacyBlur;
-                    btnPrivacy.textContent = state.settings.privacyBlur ? "Privacy Blur: ON" : "Privacy Blur: OFF";
-                    btnPrivacy.classList.toggle('btn-secondary', state.settings.privacyBlur);
-                    pushLog("Privacy Guard", `DPDP On-Device Gaussian Blur toggled ${state.settings.privacyBlur ? 'ENABLED' : 'DISABLED'}.`);
+                    btnPrivacy.innerHTML = state.settings.privacyBlur 
+                        ? '<i class="fa-solid fa-shield-halved"></i> Privacy Blur: ON' 
+                        : '<i class="fa-solid fa-shield-slash"></i> Privacy Blur: OFF';
+                    btnPrivacy.classList.toggle('active-toggle', state.settings.privacyBlur);
+                    pushLog("Privacy Guard", `DPDP Act 2023 §2(t) On-Device Gaussian Mask toggled ${state.settings.privacyBlur ? 'ENABLED' : 'DISABLED'}.`, "agent-tag-vision");
+                });
+            }
+
+            const btnCsv = document.getElementById('btn-export-csv');
+            if (btnCsv) {
+                btnCsv.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    exportCSV();
+                });
+            }
+
+            const btnGeo = document.getElementById('btn-export-geojson');
+            if (btnGeo) {
+                btnGeo.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    exportGeoJSON();
                 });
             }
         }
@@ -1218,9 +1857,9 @@
             }
         }
 
-        function addNewWorkOrder(ticket, type, sev, loc, passes) {
+        function addNewWorkOrder(ticket, type, sev, loc, passes, sorCode) {
             state.workOrders.unshift({
-                ticket, type, sev, loc, passes, sla: "47h 58m remaining", status: "DISPATCHED"
+                ticket, type, sev, loc, passes, sla: "47h 58m remaining", status: "DISPATCHED", sorCode: sorCode || "CPWD 16.14.2 (DBM Patch)"
             });
             renderWorkOrdersTable();
         }
@@ -1230,12 +1869,20 @@
             if (!tbody) return;
             tbody.innerHTML = state.workOrders.map(w => `
                 <tr>
-                    <td><strong style="color:#00E5FF;">${w.ticket}</strong></td>
-                    <td><span class="pill-tag ${w.sev.includes('CRITICAL') ? 'pill-orange' : 'pill-cyan'}">${w.type}</span></td>
+                    <td><span class="table-ticket-code">${w.ticket}</span></td>
+                    <td>
+                        <div style="font-weight:600; color:#FFFFFF;">${w.type}</div>
+                        <div style="font-size:10px; color:#9BA3AF; font-family:'JetBrains Mono';">${w.sorCode || 'CPWD 16.14.2'}</div>
+                    </td>
                     <td>${w.loc}</td>
-                    <td><strong>${w.passes} passes</strong></td>
-                    <td><span style="color:#10B981;">${w.sla}</span></td>
-                    <td><span class="pill-tag pill-cyan">${w.status}</span></td>
+                    <td><strong style="color:#00F0FF; font-family:'JetBrains Mono';">${w.passes} passes</strong></td>
+                    <td><span class="badge-pill badge-green">${w.sla}</span></td>
+                    <td><span class="badge-pill badge-cyan">${w.status}</span></td>
+                    <td>
+                        <a href="voucher.html?ticket=${w.ticket}" target="_blank" class="btn-table-action" title="View CPWD Tender Voucher">
+                            <i class="fa-solid fa-file-invoice"></i> Voucher
+                        </a>
+                    </td>
                 </tr>
             `).join('');
         }
@@ -1253,11 +1900,83 @@
             if (modal) modal.classList.add('show');
         }
 
+        // 6. CSV Export Function
+        function exportCSV() {
+            const headers = ["Ticket ID", "Hazard Type", "Severity", "Location", "Cluster Passes", "SLA Countdown", "CPWD SOR Code", "Status"];
+            const rows = state.workOrders.map(w => [
+                w.ticket,
+                w.type,
+                w.sev,
+                `"${w.loc}"`,
+                w.passes,
+                `"${w.sla}"`,
+                `"${w.sorCode || 'CPWD-16.14.2'}"`,
+                w.status
+            ]);
+            const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `urbansight_cpwd_work_orders_${new Date().toISOString().slice(0, 10)}.csv`;
+            link.click();
+            pushLog("Municipal Dispatch", "Exported official CPWD work-orders CSV report.", "agent-tag-dispatch");
+        }
+
+        // 7. GeoJSON Export Function
+        function exportGeoJSON() {
+            const featureCollection = {
+                type: "FeatureCollection",
+                metadata: {
+                    platform: "UrbanSight AI",
+                    version: "2.1.0",
+                    timestamp: new Date().toISOString(),
+                    standard: "OGC GeoJSON / RFC 7946"
+                },
+                features: [
+                    ...state.hazards.map(h => ({
+                        type: "Feature",
+                        geometry: { type: "Point", coordinates: [h.lng, h.lat] },
+                        properties: {
+                            id: h.id,
+                            type: h.type,
+                            severity: h.sev,
+                            location_name: h.name,
+                            damage_depth_cm: h.depth || null,
+                            affected_length_m: h.length || null,
+                            confidence: h.conf,
+                            cluster_passes: h.passes,
+                            ticket_id: h.ticket,
+                            cpwd_sor_code: h.sorCode || "CPWD-16.14.2"
+                        }
+                    })),
+                    ...state.buses.map(b => ({
+                        type: "Feature",
+                        geometry: { type: "Point", coordinates: [b.lng, b.lat] },
+                        properties: {
+                            bus_id: b.id,
+                            route: b.route,
+                            speed_kmh: b.speed,
+                            heading_deg: b.heading,
+                            status: "ONLINE",
+                            fps: 30.0
+                        }
+                    }))
+                ]
+            };
+            const blob = new Blob([JSON.stringify(featureCollection, null, 2)], { type: "application/geo+json" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `urbansight_geospatial_telemetry_${new Date().toISOString().slice(0, 10)}.geojson`;
+            link.click();
+            pushLog("Geo-Spatial Clustering", "Exported live OGC GeoJSON transit & hazard feature collection.", "agent-tag-dbscan");
+        }
+
+        // 8. Real-Time Bus Coordinate Jitter / Movement Simulation
         function startRealtimePolling() {
             setInterval(() => {
                 state.buses.forEach(b => {
-                    b.lat += (Math.random() - 0.5) * 0.0006;
-                    b.lng += (Math.random() - 0.5) * 0.0006;
+                    b.lat += (Math.random() - 0.5) * 0.0004;
+                    b.lng += (Math.random() - 0.5) * 0.0004;
                     if (b.marker) {
                         b.marker.setLatLng([b.lat, b.lng]);
                     }

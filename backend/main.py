@@ -67,29 +67,34 @@ TicketStatusUpdateRequest = WorkOrderStatusUpdate
 # =============================================================================
 
 @app.get("/")
+@app.get("/index.html")
 def read_root(request: Request):
     """Renders the main UrbanSight AI Command Dashboard."""
     return templates.TemplateResponse(request=request, name="index.html")
 
 @app.get("/driver")
 @app.get("/console")
+@app.get("/driver_console.html")
 def read_driver_console(request: Request):
     """Renders the dedicated In-Cab Driver HUD Console UI."""
     return templates.TemplateResponse(request=request, name="driver_console.html")
 
 @app.get("/citizen")
 @app.get("/portal")
+@app.get("/citizen_portal.html")
 def read_citizen_portal(request: Request):
     """Renders the public citizen repair tracking portal."""
     return templates.TemplateResponse(request=request, name="citizen_portal.html")
 
 @app.get("/field-crew")
 @app.get("/crew")
+@app.get("/field_crew.html")
 def read_field_crew(request: Request):
     """Renders the mobile PWD field technician PWA."""
     return templates.TemplateResponse(request=request, name="field_crew.html")
 
 @app.get("/voucher")
+@app.get("/voucher.html")
 def read_voucher(request: Request):
     """Renders the official printable CPWD tender voucher."""
     return templates.TemplateResponse(request=request, name="voucher.html")
