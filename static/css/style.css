@@ -527,7 +527,6 @@ html, body {
     height: 100%;
 }
 
-/* Dark matter map controls restyling */
 .leaflet-bar a {
     background-color: rgba(13, 17, 29, 0.9) !important;
     color: var(--text-primary) !important;
@@ -535,6 +534,62 @@ html, body {
 }
 .leaflet-bar a:hover {
     background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ASTM D6433 PCI Predictive Degradation Forecast Bar */
+.map-pci-forecast-bar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 500;
+    background: rgba(11, 16, 28, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.forecast-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--primary);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-left: 6px;
+}
+
+.btn-decay-step {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-decay-step:hover {
+    border-color: rgba(0, 240, 255, 0.3);
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-decay-step.active {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: rgba(0, 240, 255, 0.45);
+    color: var(--primary);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
 }
 
 /* Map Floating Glassmorphic Legend */
@@ -630,7 +685,6 @@ html, body {
     display: block;
 }
 
-/* Clean Telemetry HUD Overlays on Canvas */
 .hud-corner-telemetry {
     position: absolute;
     top: 10px;

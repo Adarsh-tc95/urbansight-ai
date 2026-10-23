@@ -1,6 +1,7 @@
 /**
  * UrbanSight AI — Smart City ICCC Command System (Infothon 7.0 / SIH26124)
- * Real-Time Multi-Agent Perception, DBSCAN Spatial Clustering, Automated PWD Dispatch & Fleet Advisory
+ * Real-Time Multi-Agent Perception, DBSCAN Spatial Clustering, Automated PWD Dispatch,
+ * ASTM D6433 PCI Degradation Forecasting, and In-Cab Transit Fleet Advisory
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -41,8 +42,145 @@ const state = {
     settings: {
         privacyBlur: true
     },
-    map: null
+    map: null,
+    pciLayerGroup: null
 };
+
+// ASTM D6433 PCI Baseline Corridors for Predictive Degradation Heatmap
+const FALLBACK_PCI_CORRIDORS = [
+    {
+        corridor_id: "ORR-EAST-01",
+        name: "Outer Ring Road (Iblur ➔ Bellandur ➔ Marathahalli)",
+        jurisdiction: "BBMP Mahadevapura Ward 85",
+        coordinates: [
+            [12.9220, 77.6710],
+            [12.9275, 77.6785],
+            [12.9360, 77.6840],
+            [12.9430, 77.6910],
+            [12.9550, 77.7010]
+        ],
+        base_pci: 68.5,
+        decay_rate_k: 0.016,
+        distress_items: ["3 Severe Potholes (D40)", "1 Longitudinal Joint Separation"]
+    },
+    {
+        corridor_id: "HOSUR-EXP-02",
+        name: "Hosur Road Expressway (Silk Board Underpass ➔ Bommanahalli)",
+        jurisdiction: "BBMP Bommanahalli Ward 174",
+        coordinates: [
+            [12.9170, 77.6225],
+            [12.9110, 77.6320],
+            [12.9030, 77.6410],
+            [12.8950, 77.6495]
+        ],
+        base_pci: 48.0,
+        decay_rate_k: 0.022,
+        distress_items: ["1 Severe Waterlogging Segment (D80)", "2 Ravelling Pockets"]
+    },
+    {
+        corridor_id: "MYS-RING-03",
+        name: "Mysuru Outer Ring Road (Gokulam ➔ VVCE Campus Section)",
+        jurisdiction: "Mysuru City Corporation (MCC) Zone 3",
+        coordinates: [
+            [12.3120, 76.6350],
+            [12.3165, 76.6415],
+            [12.3210, 76.6490],
+            [12.3270, 76.6570]
+        ],
+        base_pci: 74.0,
+        decay_rate_k: 0.011,
+        distress_items: ["1 Edge Spall (D20)", "1 High-Impact Pothole (D40)"]
+    },
+    {
+        corridor_id: "AIRPORT-CORR-04",
+        name: "Hebbal Flyover ➔ Yelahanka Expressway Link",
+        jurisdiction: "BBMP Yelahanka Ward 04",
+        coordinates: [
+            [13.0350, 77.5970],
+            [13.0390, 77.6265],
+            [13.0450, 77.6205],
+            [13.0485, 77.6240]
+        ],
+        base_pci: 82.0,
+        decay_rate_k: 0.009,
+        distress_items: ["1 Minor Transverse Crack (Repaired)"]
+    }
+];
+
+function calculatePciDecay(basePci, decayK, days) {
+    const projected = basePci * Math.exp(-decayK * days);
+    return Math.round(Math.max(10.0, Math.min(100.0, projected)) * 10) / 10;
+}
+
+function getPciCategory(pci) {
+    if (pci >= 80.0) return { band: "GOOD", color: "#34C759", treatment: "Routine Slurry Seal & Sweeping" };
+    if (pci >= 65.0) return { band: "FAIR", color: "#FF9500", treatment: "Polymeric Crack Sealing (CPWD 14.1)" };
+    if (pci >= 40.0) return { band: "POOR", color: "#FF3B30", treatment: "Milled Cold Mastic Patch (CPWD 16.2.2)" };
+    return { band: "CRITICAL", color: "#EF4444", treatment: "Emergency Base-Course Overhaul" };
+}
+
+function renderPCIHeatmap(days = 0) {
+    if (!state.map) return;
+    if (!state.pciLayerGroup) {
+        state.pciLayerGroup = L.layerGroup().addTo(state.map);
+    } else {
+        state.pciLayerGroup.clearLayers();
+    }
+
+    fetch(`/api/pci-heatmap?days=${days}`)
+        .then(res => res.ok ? res.json() : Promise.reject())
+        .then(corridors => drawCorridors(corridors, days))
+        .catch(() => {
+            const fallbackCorridors = FALLBACK_PCI_CORRIDORS.map(c => {
+                const projected = calculatePciDecay(c.base_pci, c.decay_rate_k, days);
+                const cat = getPciCategory(projected);
+                return {
+                    corridor_id: c.corridor_id,
+                    name: c.name,
+                    jurisdiction: c.jurisdiction,
+                    coordinates: c.coordinates,
+                    base_pci: c.base_pci,
+                    projected_pci: projected,
+                    forecast_days: days,
+                    rating_band: cat.band,
+                    color: cat.color,
+                    recommended_treatment: cat.treatment,
+                    distress_items: c.distress_items
+                };
+            });
+            drawCorridors(fallbackCorridors, days);
+        });
+}
+
+function drawCorridors(corridors, days) {
+    corridors.forEach(c => {
+        const polyline = L.polyline(c.coordinates, {
+            color: c.color,
+            weight: 5,
+            opacity: 0.85,
+            lineJoin: 'round',
+            dashArray: days > 0 && c.projected_pci < 55 ? '8, 8' : null
+        });
+
+        const popupContent = `
+            <div style="color:#F5F7FA; font-family:'Plus Jakarta Sans',sans-serif; min-width:210px; padding:4px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <span style="font-weight:800; font-size:11px; color:${c.color}; font-family:'JetBrains Mono';">${c.corridor_id} • [${c.rating_band}]</span>
+                    <span style="background:${c.color}; color:#070A11; font-weight:800; font-size:10px; padding:2px 6px; border-radius:4px; font-family:'JetBrains Mono';">PCI: ${c.projected_pci}/100</span>
+                </div>
+                <div style="font-size:11px; font-weight:700; margin-bottom:4px; color:#FFFFFF;">${c.name}</div>
+                <div style="font-size:10px; color:#9BA3AF; margin-bottom:2px;">Jurisdiction: <b style="color:#F5F7FA;">${c.jurisdiction}</b></div>
+                <div style="font-size:10px; color:#9BA3AF; margin-bottom:2px;">Baseline PCI: <b>${c.base_pci}</b> ${days > 0 ? `➔ Day +${days} Decay: <b style="color:${c.color};">${c.projected_pci}</b>` : ''}</div>
+                <div style="font-size:10px; color:#9BA3AF; margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.08);">
+                    <b style="color:#00F0FF;">ASTM Action:</b> ${c.recommended_treatment}
+                </div>
+            </div>
+        `;
+
+        polyline.bindPopup(popupContent);
+        polyline.addTo(state.pciLayerGroup);
+    });
+}
 
 // 1. Telemetry Clock
 function initClock() {
@@ -74,6 +212,7 @@ function initLeafletMap() {
 
     renderHazardsOnMap();
     renderBusesOnMap();
+    renderPCIHeatmap(0);
 }
 
 function renderHazardsOnMap() {
@@ -173,7 +312,7 @@ function initDashcamSimulator() {
     baseImage.crossOrigin = "anonymous";
     baseImage.onerror = () => {
         if (!baseImage.src.includes('static/')) {
-            baseImage.src = '/static/image1.jpg';
+            baseImage.src = 'static/image1.jpg';
         }
     };
     baseImage.src = 'image1.jpg';
@@ -181,11 +320,10 @@ function initDashcamSimulator() {
     function drawFrame() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. Draw base photo or procedural high-tech highway
+        // Draw photo or procedural highway
         if (baseImage.complete && baseImage.naturalWidth > 0) {
             ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
         } else {
-            // Procedural night expressway
             const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             grad.addColorStop(0, '#0F1626');
             grad.addColorStop(0.45, '#0B0F1A');
@@ -193,7 +331,6 @@ function initDashcamSimulator() {
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Perspective Road Lines
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
             ctx.lineWidth = 1.5;
             ctx.beginPath();
@@ -203,7 +340,6 @@ function initDashcamSimulator() {
             ctx.lineTo(canvas.width * 0.92, canvas.height);
             ctx.stroke();
 
-            // Center lane markings (animated dashes)
             ctx.strokeStyle = 'rgba(255, 200, 0, 0.25)';
             ctx.lineWidth = 2;
             ctx.setLineDash([12, 16]);
@@ -215,24 +351,19 @@ function initDashcamSimulator() {
             ctx.setLineDash([]);
         }
 
-        // 2. Optical Reticles & Corner Alignment Brackets
+        // Optical Reticles & Brackets
         const bracketColor = 'rgba(0, 240, 255, 0.4)';
         ctx.strokeStyle = bracketColor;
         ctx.lineWidth = 1.5;
         const bLen = 14;
 
-        // Top-left bracket
         ctx.beginPath();
         ctx.moveTo(10, 10 + bLen); ctx.lineTo(10, 10); ctx.lineTo(10 + bLen, 10);
-        // Top-right bracket
         ctx.moveTo(canvas.width - 10 - bLen, 10); ctx.lineTo(canvas.width - 10, 10); ctx.lineTo(canvas.width - 10, 10 + bLen);
-        // Bottom-left bracket
         ctx.moveTo(10, canvas.height - 10 - bLen); ctx.lineTo(10, canvas.height - 10); ctx.lineTo(10 + bLen, canvas.height - 10);
-        // Bottom-right bracket
         ctx.moveTo(canvas.width - 10 - bLen, canvas.height - 10); ctx.lineTo(canvas.width - 10, canvas.height - 10); ctx.lineTo(canvas.width - 10, canvas.height - 10 - bLen);
         ctx.stroke();
 
-        // Subtle horizon crosshair
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -244,32 +375,29 @@ function initDashcamSimulator() {
 
         const timeOsc = Math.sin(frameCount * 0.04);
 
-        // 3. Pothole D40 AI Bounding Box (Amber / Red with Corner Accents)
+        // Pothole D40 AI Bounding Box
         const potX = canvas.width * 0.56 + timeOsc * 1.5;
         const potY = canvas.height * 0.61;
         const potW = 148;
         const potH = 68;
 
-        // Box border with glow
         ctx.strokeStyle = '#FF9500';
         ctx.lineWidth = 2;
         ctx.strokeRect(potX, potY, potW, potH);
 
-        // Header Tag
         ctx.fillStyle = '#FF9500';
         ctx.fillRect(potX, potY - 20, 142, 20);
         ctx.fillStyle = '#070A11';
         ctx.font = 'bold 9px "JetBrains Mono"';
         ctx.fillText('POTHOLE D40 · 96.4%', potX + 6, potY - 6);
 
-        // Metric Sub-badge
         ctx.fillStyle = 'rgba(7, 10, 17, 0.85)';
         ctx.fillRect(potX, potY + potH + 4, 148, 16);
         ctx.fillStyle = '#FF9500';
         ctx.font = '8px "JetBrains Mono"';
         ctx.fillText('depth: 9.8cm · z-shock: 2.4g', potX + 6, potY + potH + 15);
 
-        // 4. Waterlogging D80 AI Bounding Box (Electric Cyan)
+        // Waterlogging D80 AI Bounding Box
         const watX = canvas.width * 0.18 - timeOsc * 1.5;
         const watY = canvas.height * 0.52;
         const watW = 155;
@@ -291,18 +419,16 @@ function initDashcamSimulator() {
         ctx.font = '8px "JetBrains Mono"';
         ctx.fillText('length: 35.0m · lane 1', watX + 6, watY + watH + 15);
 
-        // 5. On-Device DPDP Gaussian Privacy Mask (Faces & Vehicle Plates)
+        // On-Device DPDP Gaussian Privacy Mask
         if (state.settings.privacyBlur) {
             const blurX = canvas.width * 0.10;
             const blurY = canvas.height * 0.44;
             const blurW = 42;
             const blurH = 50;
 
-            // Pixelated/Frosted fill
             ctx.fillStyle = 'rgba(20, 28, 48, 0.88)';
             ctx.fillRect(blurX, blurY, blurW, blurH);
 
-            // Crosshatch texture
             ctx.strokeStyle = 'rgba(52, 199, 89, 0.25)';
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -312,12 +438,10 @@ function initDashcamSimulator() {
             }
             ctx.stroke();
 
-            // Green bounding border
             ctx.strokeStyle = '#34C759';
             ctx.lineWidth = 1.5;
             ctx.strokeRect(blurX, blurY, blurW, blurH);
 
-            // DPDP Label
             ctx.fillStyle = '#34C759';
             ctx.font = 'bold 7px "JetBrains Mono"';
             ctx.fillText('DPDP BLUR', blurX + 2, blurY - 4);
@@ -353,7 +477,6 @@ function pushLog(agent, text, tagClass = "") {
 
 // 5. Interactive Action Listeners
 function initActionListeners() {
-    // 1. Simulate Bus Pass Button
     const btnDetect = document.getElementById('btn-simulate-detect');
     if (btnDetect) {
         btnDetect.addEventListener('click', () => {
@@ -380,7 +503,6 @@ function initActionListeners() {
         });
     }
 
-    // 2. Trigger Driver Alert Direct Button
     const btnAlert = document.getElementById('btn-driver-alert');
     if (btnAlert) {
         btnAlert.addEventListener('click', () => {
@@ -388,7 +510,6 @@ function initActionListeners() {
         });
     }
 
-    // 3. Modal Close
     const modalClose = document.getElementById('modal-close-btn');
     const modalOverlay = document.getElementById('driver-alert-modal');
     if (modalClose && modalOverlay) {
@@ -402,7 +523,6 @@ function initActionListeners() {
         });
     }
 
-    // 4. Privacy Toggle Button
     const btnPrivacy = document.getElementById('btn-toggle-privacy');
     if (btnPrivacy) {
         btnPrivacy.addEventListener('click', () => {
@@ -415,7 +535,6 @@ function initActionListeners() {
         });
     }
 
-    // 5. Export CSV Button
     const btnCsv = document.getElementById('btn-export-csv');
     if (btnCsv) {
         btnCsv.addEventListener('click', (e) => {
@@ -424,7 +543,6 @@ function initActionListeners() {
         });
     }
 
-    // 6. Export GeoJSON Button
     const btnGeo = document.getElementById('btn-export-geojson');
     if (btnGeo) {
         btnGeo.addEventListener('click', (e) => {
@@ -432,6 +550,27 @@ function initActionListeners() {
             exportGeoJSON();
         });
     }
+
+    // ASTM D6433 PCI Predictive Degradation Decay Buttons
+    const decayButtons = [
+        { id: 'btn-decay-0', days: 0 },
+        { id: 'btn-decay-14', days: 14 },
+        { id: 'btn-decay-30', days: 30 }
+    ];
+
+    decayButtons.forEach(btnInfo => {
+        const btn = document.getElementById(btnInfo.id);
+        if (btn) {
+            btn.addEventListener('click', () => {
+                decayButtons.forEach(b => {
+                    const el = document.getElementById(b.id);
+                    if (el) el.classList.toggle('active', b.id === btnInfo.id);
+                });
+                renderPCIHeatmap(btnInfo.days);
+                pushLog("PCI Forecast Engine", `Markov Chain degradation projection computed for Day +${btnInfo.days}. Corridor condition overlay updated.`, "agent-tag-dbscan");
+            });
+        }
+    });
 }
 
 function highlightAgent(stepNumber) {

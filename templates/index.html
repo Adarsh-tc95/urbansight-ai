@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <!-- Portal Switcher: Unified 5-Component Navigation Pill Bar -->
+        <!-- Portal Switcher: Unified Smart City Navigation Pill Bar -->
         <div class="header-nav-center">
             <nav class="portal-nav-pills" aria-label="Smart City Portals">
                 <a href="index.html" class="portal-pill active" title="Integrated Command & Control Center">
@@ -62,6 +62,10 @@
                 <a href="voucher.html?ticket=PWD-OCT-0941" target="_blank" class="portal-pill" title="Official CPWD Tender Voucher">
                     <i class="fa-solid fa-file-invoice"></i>
                     <span>CPWD Voucher</span>
+                </a>
+                <a href="analytics.html" target="_blank" class="portal-pill" title="Municipal Ward Analytics & SLA Leaderboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Ward Analytics</span>
                 </a>
             </nav>
         </div>
@@ -168,6 +172,14 @@
 
                 <div class="map-viewport">
                     <div id="gis-map"></div>
+
+                    <!-- ASTM D6433 PCI Predictive Degradation Forecast Bar -->
+                    <div class="map-pci-forecast-bar">
+                        <span class="forecast-label"><i class="fa-solid fa-chart-line"></i> ASTM D6433 PCI:</span>
+                        <button class="btn-decay-step active" id="btn-decay-0" data-days="0">Day 0 (Now)</button>
+                        <button class="btn-decay-step" id="btn-decay-14" data-days="14">+14 Days</button>
+                        <button class="btn-decay-step" id="btn-decay-30" data-days="30">+30 Days</button>
+                    </div>
                     
                     <div class="map-floating-legend">
                         <div class="legend-title">GIS LAYER KEY</div>
@@ -186,6 +198,14 @@
                         <div class="legend-item">
                             <span class="legend-dot" style="background:#AF52DE;"></span>
                             <span>Live Traffic Chokepoint (P3)</span>
+                        </div>
+                        <div class="legend-item" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:4px; margin-top:4px;">
+                            <span class="legend-dot" style="background:#34C759;"></span>
+                            <span>PCI Good (80–100)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#FF9500;"></span>
+                            <span>PCI Poor / Decay Risk (&lt;65)</span>
                         </div>
                     </div>
                 </div>

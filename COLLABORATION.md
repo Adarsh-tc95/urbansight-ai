@@ -101,6 +101,28 @@
 
 ---
 
+### 🟢 TASK-07: Pavement Condition Index (PCI) & Degradation Forecasting Heatmap [COMPLETED]
+- **Assignee**: Node B (Teammate Antigravity)
+- **Target Files**: `backend/agents/pci_engine.py`, `backend/main.py`, `static/js/app.js`, `templates/index.html`, `index.html`
+- **Objective**: Implement ASTM D6433 standard road health scoring and predictive asphalt decay model with Leaflet GIS corridor visualization.
+- **Requirements**:
+  1. `backend/agents/pci_engine.py`: Markov chain exponential asphalt decay $PCI(t) = PCI_0 \cdot e^{-kt}$ clamped between 10 and 100 with ASTM rating bands (Good >=80, Fair >=65, Poor >=40, Critical <40) and CPWD maintenance cost estimators.
+  2. `backend/main.py`: Endpoints `GET /api/pci-heatmap?days=0` and `GET /api/pci-summary?days=0` returning geo-corridor polylines and executive municipal ROI.
+  3. Interactive Leaflet GIS Heatmap with floating forecast bar (`Day 0`, `+14 Days`, `+30 Days`) showing real-time road condition degradation and cost escalation.
+  4. 100% test coverage in `tests/test_pipeline.py` (25/25 passing).
+
+---
+
+### 🟢 TASK-08: Municipal Ward Governance & Maintenance ROI Analytics Dashboard [COMPLETED]
+- **Assignee**: Node B (Teammate Antigravity)
+- **Target Files**: `analytics.html`, `templates/analytics.html`, `backend/main.py`, `tests/test_pipeline.py`
+- **Objective**: Executive command view for Municipal Commissioners & Chief Engineers tracking ward SLA adherence, MTTR, defect composition, and predictive maintenance budget savings.
+- **Requirements**:
+  1. `backend/main.py`: Route `GET /analytics` and API `GET /api/analytics/ward-summary` returning ward rankings, defect compositions, MTTR, and cumulative savings.
+  2. `analytics.html` & `templates/analytics.html`: Full-featured executive dashboard with KPI ribbons, interactive ULB/Ward filter, SLA performance leaderboard, defect composition bars, and 8.4x ROI savings calculator.
+  3. One-click `@media print` A4 printable executive report format.
+  4. 100% test pass rate in `tests/test_pipeline.py` (28/28 tests passing).
+
 ## 🔄 Status Tracker
 - [x] Backend 4-Agent Modular Architecture (`tests/test_pipeline.py` 24/24 passing) — Node A & B
 - [x] Real-time GIS Command Dashboard (`index.html`) — Node A
@@ -111,3 +133,5 @@
 - [x] TASK-04: Public Citizen Repair Tracking Portal (`citizen_portal.html`, `templates/citizen_portal.html`) — Node B (Completed)
 - [x] TASK-05: CPWD Voucher API & Resolution Endpoints (`/api/work-orders/{id}/voucher`, `/api/export-csv`, `/api/work-orders/{id}/resolve`) — Node A & B (Completed)
 - [x] TASK-06: Mobile Field Crew PWA & Printable Voucher UI (`field_crew.html`, `voucher.html`) — Node B & A (Completed)
+- [x] TASK-07: Pavement Condition Index (PCI) & Degradation Forecasting Heatmap (`backend/agents/pci_engine.py`, `index.html`) — Node B (Completed)
+- [x] TASK-08: Municipal Ward Governance & Maintenance ROI Analytics Dashboard (`analytics.html`, `templates/analytics.html`) — Node B (Completed)

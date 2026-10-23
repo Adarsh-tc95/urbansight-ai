@@ -554,6 +554,62 @@ html, body {
     background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
+/* ASTM D6433 PCI Predictive Degradation Forecast Bar */
+.map-pci-forecast-bar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 500;
+    background: rgba(11, 16, 28, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.forecast-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--primary);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-left: 6px;
+}
+
+.btn-decay-step {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-decay-step:hover {
+    border-color: rgba(0, 240, 255, 0.3);
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-decay-step.active {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: rgba(0, 240, 255, 0.45);
+    color: var(--primary);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+}
+
 /* Map Floating Glassmorphic Legend */
 .map-floating-legend {
     position: absolute;
@@ -1107,7 +1163,7 @@ html, body {
             </div>
         </div>
 
-        <!-- Portal Switcher: Unified 5-Component Navigation Pill Bar -->
+        <!-- Portal Switcher: Unified Smart City Navigation Pill Bar -->
         <div class="header-nav-center">
             <nav class="portal-nav-pills" aria-label="Smart City Portals">
                 <a href="index.html" class="portal-pill active" title="Integrated Command & Control Center">
@@ -1129,6 +1185,10 @@ html, body {
                 <a href="voucher.html?ticket=PWD-OCT-0941" target="_blank" class="portal-pill" title="Official CPWD Tender Voucher">
                     <i class="fa-solid fa-file-invoice"></i>
                     <span>CPWD Voucher</span>
+                </a>
+                <a href="analytics.html" target="_blank" class="portal-pill" title="Municipal Ward Analytics & SLA Leaderboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Ward Analytics</span>
                 </a>
             </nav>
         </div>
@@ -1235,6 +1295,14 @@ html, body {
 
                 <div class="map-viewport">
                     <div id="gis-map"></div>
+
+                    <!-- ASTM D6433 PCI Predictive Degradation Forecast Bar -->
+                    <div class="map-pci-forecast-bar">
+                        <span class="forecast-label"><i class="fa-solid fa-chart-line"></i> ASTM D6433 PCI:</span>
+                        <button class="btn-decay-step active" id="btn-decay-0" data-days="0">Day 0 (Now)</button>
+                        <button class="btn-decay-step" id="btn-decay-14" data-days="14">+14 Days</button>
+                        <button class="btn-decay-step" id="btn-decay-30" data-days="30">+30 Days</button>
+                    </div>
                     
                     <div class="map-floating-legend">
                         <div class="legend-title">GIS LAYER KEY</div>
@@ -1253,6 +1321,14 @@ html, body {
                         <div class="legend-item">
                             <span class="legend-dot" style="background:#AF52DE;"></span>
                             <span>Live Traffic Chokepoint (P3)</span>
+                        </div>
+                        <div class="legend-item" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:4px; margin-top:4px;">
+                            <span class="legend-dot" style="background:#34C759;"></span>
+                            <span>PCI Good (80–100)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:#FF9500;"></span>
+                            <span>PCI Poor / Decay Risk (&lt;65)</span>
                         </div>
                     </div>
                 </div>
@@ -1484,8 +1560,144 @@ html, body {
             settings: {
                 privacyBlur: true
             },
-            map: null
+            map: null,
+            pciLayerGroup: null
         };
+
+        const FALLBACK_PCI_CORRIDORS = [
+            {
+                corridor_id: "ORR-EAST-01",
+                name: "Outer Ring Road (Iblur ➔ Bellandur ➔ Marathahalli)",
+                jurisdiction: "BBMP Mahadevapura Ward 85",
+                coordinates: [
+                    [12.9220, 77.6710],
+                    [12.9275, 77.6785],
+                    [12.9360, 77.6840],
+                    [12.9430, 77.6910],
+                    [12.9550, 77.7010]
+                ],
+                base_pci: 68.5,
+                decay_rate_k: 0.016,
+                distress_items: ["3 Severe Potholes (D40)", "1 Longitudinal Joint Separation"]
+            },
+            {
+                corridor_id: "HOSUR-EXP-02",
+                name: "Hosur Road Expressway (Silk Board Underpass ➔ Bommanahalli)",
+                jurisdiction: "BBMP Bommanahalli Ward 174",
+                coordinates: [
+                    [12.9170, 77.6225],
+                    [12.9110, 77.6320],
+                    [12.9030, 77.6410],
+                    [12.8950, 77.6495]
+                ],
+                base_pci: 48.0,
+                decay_rate_k: 0.022,
+                distress_items: ["1 Severe Waterlogging Segment (D80)", "2 Ravelling Pockets"]
+            },
+            {
+                corridor_id: "MYS-RING-03",
+                name: "Mysuru Outer Ring Road (Gokulam ➔ VVCE Campus Section)",
+                jurisdiction: "Mysuru City Corporation (MCC) Zone 3",
+                coordinates: [
+                    [12.3120, 76.6350],
+                    [12.3165, 76.6415],
+                    [12.3210, 76.6490],
+                    [12.3270, 76.6570]
+                ],
+                base_pci: 74.0,
+                decay_rate_k: 0.011,
+                distress_items: ["1 Edge Spall (D20)", "1 High-Impact Pothole (D40)"]
+            },
+            {
+                corridor_id: "AIRPORT-CORR-04",
+                name: "Hebbal Flyover ➔ Yelahanka Expressway Link",
+                jurisdiction: "BBMP Yelahanka Ward 04",
+                coordinates: [
+                    [13.0350, 77.5970],
+                    [13.0390, 77.6265],
+                    [13.0450, 77.6205],
+                    [13.0485, 77.6240]
+                ],
+                base_pci: 82.0,
+                decay_rate_k: 0.009,
+                distress_items: ["1 Minor Transverse Crack (Repaired)"]
+            }
+        ];
+
+        function calculatePciDecay(basePci, decayK, days) {
+            const projected = basePci * Math.exp(-decayK * days);
+            return Math.round(Math.max(10.0, Math.min(100.0, projected)) * 10) / 10;
+        }
+
+        function getPciCategory(pci) {
+            if (pci >= 80.0) return { band: "GOOD", color: "#34C759", treatment: "Routine Slurry Seal & Sweeping" };
+            if (pci >= 65.0) return { band: "FAIR", color: "#FF9500", treatment: "Polymeric Crack Sealing (CPWD 14.1)" };
+            if (pci >= 40.0) return { band: "POOR", color: "#FF3B30", treatment: "Milled Cold Mastic Patch (CPWD 16.2.2)" };
+            return { band: "CRITICAL", color: "#EF4444", treatment: "Emergency Base-Course Overhaul" };
+        }
+
+        function renderPCIHeatmap(days = 0) {
+            if (!state.map) return;
+            if (!state.pciLayerGroup) {
+                state.pciLayerGroup = L.layerGroup().addTo(state.map);
+            } else {
+                state.pciLayerGroup.clearLayers();
+            }
+
+            fetch(`/api/pci-heatmap?days=${days}`)
+                .then(res => res.ok ? res.json() : Promise.reject())
+                .then(corridors => drawCorridors(corridors, days))
+                .catch(() => {
+                    const fallbackCorridors = FALLBACK_PCI_CORRIDORS.map(c => {
+                        const projected = calculatePciDecay(c.base_pci, c.decay_rate_k, days);
+                        const cat = getPciCategory(projected);
+                        return {
+                            corridor_id: c.corridor_id,
+                            name: c.name,
+                            jurisdiction: c.jurisdiction,
+                            coordinates: c.coordinates,
+                            base_pci: c.base_pci,
+                            projected_pci: projected,
+                            forecast_days: days,
+                            rating_band: cat.band,
+                            color: cat.color,
+                            recommended_treatment: cat.treatment,
+                            distress_items: c.distress_items
+                        };
+                    });
+                    drawCorridors(fallbackCorridors, days);
+                });
+        }
+
+        function drawCorridors(corridors, days) {
+            corridors.forEach(c => {
+                const polyline = L.polyline(c.coordinates, {
+                    color: c.color,
+                    weight: 5,
+                    opacity: 0.85,
+                    lineJoin: 'round',
+                    dashArray: days > 0 && c.projected_pci < 55 ? '8, 8' : null
+                });
+
+                const popupContent = `
+                    <div style="color:#F5F7FA; font-family:'Plus Jakarta Sans',sans-serif; min-width:210px; padding:4px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <span style="font-weight:800; font-size:11px; color:${c.color}; font-family:'JetBrains Mono';">${c.corridor_id} • [${c.rating_band}]</span>
+                            <span style="background:${c.color}; color:#070A11; font-weight:800; font-size:10px; padding:2px 6px; border-radius:4px; font-family:'JetBrains Mono';">PCI: ${c.projected_pci}/100</span>
+                        </div>
+                        <div style="font-size:11px; font-weight:700; margin-bottom:4px; color:#FFFFFF;">${c.name}</div>
+                        <div style="font-size:10px; color:#9BA3AF; margin-bottom:2px;">Jurisdiction: <b style="color:#F5F7FA;">${c.jurisdiction}</b></div>
+                        <div style="font-size:10px; color:#9BA3AF; margin-bottom:2px;">Baseline PCI: <b>${c.base_pci}</b> ${days > 0 ? `➔ Day +${days} Decay: <b style="color:${c.color};">${c.projected_pci}</b>` : ''}</div>
+                        <div style="font-size:10px; color:#9BA3AF; margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.08);">
+                            <b style="color:#00F0FF;">ASTM Action:</b> ${c.recommended_treatment}
+                        </div>
+                    </div>
+                `;
+
+                polyline.bindPopup(popupContent);
+                polyline.addTo(state.pciLayerGroup);
+            });
+        }
 
         // 1. Telemetry Clock
         function initClock() {
@@ -1516,6 +1728,7 @@ html, body {
 
             renderHazardsOnMap();
             renderBusesOnMap();
+            renderPCIHeatmap(0);
         }
 
         function renderHazardsOnMap() {
@@ -1848,6 +2061,27 @@ html, body {
                     exportGeoJSON();
                 });
             }
+
+            // ASTM D6433 PCI Predictive Degradation Decay Buttons
+            const decayButtons = [
+                { id: 'btn-decay-0', days: 0 },
+                { id: 'btn-decay-14', days: 14 },
+                { id: 'btn-decay-30', days: 30 }
+            ];
+
+            decayButtons.forEach(btnInfo => {
+                const btn = document.getElementById(btnInfo.id);
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        decayButtons.forEach(b => {
+                            const el = document.getElementById(b.id);
+                            if (el) el.classList.toggle('active', b.id === btnInfo.id);
+                        });
+                        renderPCIHeatmap(btnInfo.days);
+                        pushLog("PCI Forecast Engine", `Markov Chain degradation projection computed for Day +${btnInfo.days}. Corridor condition overlay updated.`, "agent-tag-dbscan");
+                    });
+                }
+            });
         }
 
         function highlightAgent(stepNumber) {

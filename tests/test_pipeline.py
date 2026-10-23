@@ -552,5 +552,49 @@ class TestEndToEndPipelineOrchestrator(unittest.TestCase):
         self.assertEqual(wo.assigned_crew_id, "CREW-VAN-04")
 
 
+class TestPCIEngine(unittest.TestCase):
+    """Verifies ASTM D6433 Pavement Condition Index (PCI) and Markov degradation decay forecasting."""
+
+    def setUp(self):
+        from backend.agents.pci_engine import PCIEngine
+        self.pci = PCIEngine()
+
+    def test_corridor_forecasts(self):
+        corridors = self.pci.get_corridor_forecasts(days=0)
+        self.assertGreater(len(corridors), 0)
+        c0 = corridors[0]
+        self.assertIn("projected_pci", c0)
+        self.assertIn("rating_band", c0)
+        self.assertIn("color", c0)
+
+    def test_decay_progression(self):
+        d0 = self.pci.get_corridor_forecasts(days=0)[0]["projected_pci"]
+        d30 = self.pci.get_corridor_forecasts(days=30)[0]["projected_pci"]
+        self.assertLess(d30, d0)
+
+    def test_network_summary(self):
+        summary = self.pci.get_network_governance_summary(days=0)
+        self.assertIn("average_network_pci", summary)
+        self.assertIn("economic_roi", summary)
+
+
+
+class TestWardAnalytics(unittest.TestCase):
+    """Verifies Municipal Ward Governance and Expenditure Analytics endpoint."""
+
+    def test_ward_summary_endpoint(self):
+        from backend.main import get_ward_analytics_summary
+        data = get_ward_analytics_summary()
+        self.assertIn("summary", data)
+        self.assertIn("wards", data)
+        self.assertIn("distress_breakdown", data)
+        self.assertGreaterEqual(len(data["wards"]), 3)
+        w0 = data["wards"][0]
+        self.assertIn("ward_name", w0)
+        self.assertIn("sla_compliance", w0)
+        self.assertIn("grade", w0)
+        self.assertGreaterEqual(w0["sla_compliance"], 90.0)
+
+
 if __name__ == '__main__':
     unittest.main()
