@@ -78,7 +78,7 @@
 
 ---
 
-### 🟢 TASK-05: CPWD Voucher API & Resolution Endpoints (HIGH PRIORITY)
+### 🟢 TASK-05: CPWD Voucher API & Resolution Endpoints [COMPLETED]
 - **Assignee**: Node A (Gagan Antigravity)
 - **Target Files**: `backend/main.py`, `backend/agents/municipal_dispatcher.py`
 - **Objective**: Implement backend endpoints for itemized CPWD tender calculation, resolution state transitions, and CSV exports.
@@ -109,5 +109,5 @@
 - [x] TASK-02: Multi-Route Karnataka GPS Telemetry (`distributed/routes/*.json`) — Node B (Completed)
 - [x] TASK-03: Edge Hardware & AI Model Benchmark Suite (`distributed/edge_benchmark.py`, `BENCHMARK_RESULTS.md`) — Node B (Completed)
 - [x] TASK-04: Public Citizen Repair Tracking Portal (`citizen_portal.html`, `templates/citizen_portal.html`) — Node B (Completed)
-- [ ] TASK-05: CPWD Voucher API & Resolution Endpoints — Node A (Assigned to Computer A)
+- [x] TASK-05: CPWD Voucher API & Resolution Endpoints (`/api/work-orders/{id}/voucher`, `/api/export-csv`) — Node A & B (Completed)
 - [x] TASK-06: Mobile Field Crew PWA & Printable Voucher UI (`field_crew.html`, `voucher.html`) — Node B (Completed)

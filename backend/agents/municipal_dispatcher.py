@@ -194,3 +194,62 @@ class MunicipalDispatcherAgent:
             f"[{work_order.cpwd_sor_code} · SLA <{work_order.sla_hours}h] -> Dispatched to: {work_order.dispatched_to}"
         )
         return work_order, True, msg
+
+    def generate_voucher_data(self, work_order: PWDWorkOrder, hazard: Optional[HazardDetection] = None) -> Dict[str, Any]:
+        """
+        Generates itemized CPWD Schedule of Rates (SOR 2024) voucher breakdown
+        for official municipal tender approval and public works auditing.
+        """
+        base_cost = work_order.estimated_cost_inr or 2190.0
+        gst_amount = round(base_cost * 0.18, 2)
+        total_sanction_inr = round(base_cost + gst_amount, 2)
+
+        boq_items = [
+            {
+                "item_code": "16.2.1",
+                "description": "Surface cleaning, pneumatic dust blast & tack coat with bitumen emulsion @ 0.25 kg/sqm",
+                "quantity": 2.40,
+                "unit": "sqm",
+                "rate_inr": 45.0,
+                "amount_inr": 108.0
+            },
+            {
+                "item_code": "16.2.2",
+                "description": f"Supplying and laying cold-mix bituminous mastic patch per {work_order.cpwd_sor_code or 'CPWD-16.14.2'}",
+                "quantity": round(base_cost / 10000.0, 3) if base_cost > 0 else 0.24,
+                "unit": "cum",
+                "rate_inr": 6800.0,
+                "amount_inr": round(base_cost - 558.0, 2) if base_cost > 558 else base_cost
+            },
+            {
+                "item_code": "LAB-04",
+                "description": "Skilled pavement compactor labor and retro-reflective traffic barricades deployment",
+                "quantity": 1.0,
+                "unit": "shift",
+                "rate_inr": 450.0,
+                "amount_inr": 450.0
+            }
+        ]
+
+        return {
+            "ticket_id": work_order.ticket_id,
+            "hazard_id": work_order.hazard_id,
+            "hazard_type": work_order.hazard_type.value if hasattr(work_order.hazard_type, 'value') else str(work_order.hazard_type),
+            "severity": work_order.severity.value if hasattr(work_order.severity, 'value') else str(work_order.severity),
+            "location_name": work_order.location_name,
+            "ward": work_order.dispatched_to,
+            "lat": work_order.lat,
+            "lng": work_order.lng,
+            "cluster_count": work_order.cluster_count,
+            "sla_hours": work_order.sla_hours,
+            "penalty_clause": f"Liquidated damages of Rs. 500/day for resolution exceeding {work_order.sla_hours} hours per CPWD Works Manual 2024 section 14.3",
+            "cpwd_sor_code": work_order.cpwd_sor_code,
+            "repair_methodology": work_order.repair_methodology,
+            "subtotal_inr": base_cost,
+            "gst_rate_percent": 18.0,
+            "gst_amount_inr": gst_amount,
+            "total_sanction_inr": total_sanction_inr,
+            "boq_items": boq_items,
+            "status": work_order.status.value if hasattr(work_order.status, 'value') else str(work_order.status),
+            "created_at": work_order.created_at
+        }

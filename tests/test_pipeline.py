@@ -328,6 +328,31 @@ class TestMunicipalDispatcherAgent(unittest.TestCase):
         self.assertEqual(self.agent.compute_sla_hours(SeverityLevel.MEDIUM_P3), 72)
         self.assertEqual(self.agent.compute_sla_hours(SeverityLevel.LOW_P4), 120)
 
+    def test_voucher_data_generation(self):
+        """Verifies itemized CPWD SOR voucher generation for official municipal tenders."""
+        wo = PWDWorkOrder(
+            ticket_id="PWD-TEST-001",
+            hazard_id="HAZ-TEST-001",
+            hazard_type=HazardType.POTHOLE,
+            severity=SeverityLevel.CRITICAL_P1,
+            location_name="Bellandur Flyover",
+            lat=12.9250,
+            lng=77.6760,
+            cluster_count=14,
+            sla_hours=24,
+            dispatched_to="BBMP Mahadevapura Ward 85",
+            status=TicketStatus.AUTO_DISPATCHED,
+            cpwd_sor_code="CPWD-16.14.2",
+            estimated_cost_inr=2190.0
+        )
+        voucher = self.agent.generate_voucher_data(wo)
+        self.assertEqual(voucher["ticket_id"], "PWD-TEST-001")
+        self.assertIn("boq_items", voucher)
+        self.assertEqual(voucher["subtotal_inr"], 2190.0)
+        self.assertEqual(voucher["gst_rate_percent"], 18.0)
+        self.assertAlmostEqual(voucher["total_sanction_inr"], 2584.20, places=2)
+
+
 
 class TestFleetAdvisoryAgent(unittest.TestCase):
     """Verifies driver in-cab advisory alerts, horizon gating (<300m), and tactical maneuver guidance."""
