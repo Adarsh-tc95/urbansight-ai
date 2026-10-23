@@ -21,9 +21,9 @@
 
 | Benchmark Component | Primary Model / Algorithm | Mean Latency | p95 Latency | p99 Latency | Throughput / FPS | Edge SLA Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Vision Perception Engine** | YOLOv8-Nano / ORDDC24 Gated | **0.95 ms** | 1.24 ms | 1.26 ms | **1050.8 FPS** |  PASS (&gt;30 FPS) |
-| **DPDP Privacy Guard** | YuNet + Plate Mask §2(t) | **0.2 ms** | 0.25 ms | 0.29 ms | **5050.5 frames/s** |  PASS (Zero-Disk) |
-| **Spatial Deduplication** | DBSCAN (Haversine $\epsilon=25m$) | **0.28 ms** | 0.38 ms | 0.44 ms | 100 Coords/Batch |  PASS (&lt;10ms) |
+| **Vision Perception Engine** | YOLOv8-Nano / ORDDC24 Gated | **0.71 ms** | 0.97 ms | 1.1 ms | **1408.8 FPS** |  PASS (&gt;30 FPS) |
+| **DPDP Privacy Guard** | YuNet + Plate Mask §2(t) | **0.2 ms** | 0.25 ms | 0.39 ms | **4906.2 frames/s** |  PASS (Zero-Disk) |
+| **Spatial Deduplication** | DBSCAN (Haversine $\epsilon=25m$) | **0.24 ms** | 0.33 ms | 0.43 ms | 100 Coords/Batch |  PASS (&lt;10ms) |
 | **IMU Sensor Fusion Filter** | 6-Axis Vert Shock Shock/Bump | **&lt;0.05 ms** | &lt;0.10 ms | &lt;0.15 ms | Instantaneous |  PASS (+az Rejected) |
 
 ---
@@ -32,17 +32,17 @@
 
 ```
 +-----------------------------------------------------------------------------------------+
-| TOTAL END-TO-END EDGE FRAME PROCESSING LATENCY:   1.15 ms (867.7 FPS)            |
+| TOTAL END-TO-END EDGE FRAME PROCESSING LATENCY:   0.92 ms (1091.7 FPS)            |
 | MAXIMUM PERMISSIBLE REAL-TIME BUDGET (30 FPS):   33.33 ms                               |
-| REAL-TIME MARGIN / HEADROOM:                     32.18 ms headroom (96.5%)        |
+| REAL-TIME MARGIN / HEADROOM:                     32.41 ms headroom (97.2%)        |
 | CONCLUSION: FULL REAL-TIME EDGE COMPLIANCE ACHIEVED WITH ZERO FRAME DROPS               |
 +-----------------------------------------------------------------------------------------+
 ```
 
 ### Key Technical Findings:
-1. **YOLOv8-Nano Inference:** Delivers an average latency of **0.95 ms**, operating well beyond the target 30 FPS dashcam threshold.
+1. **YOLOv8-Nano Inference:** Delivers an average latency of **0.71 ms**, operating well beyond the target 30 FPS dashcam threshold.
 2. **DPDP Act 2023 §2(t) Compliance:** In-memory zero-entropy Gaussian redaction adds only **0.2 ms** of overhead per frame with zero persistent storage writing.
-3. **DBSCAN Clustering Efficiency:** 100 geographic coordinate points clustered in **0.28 ms**, proving microsecond scalability for transit bus fleet sweeps.
+3. **DBSCAN Clustering Efficiency:** 100 geographic coordinate points clustered in **0.24 ms**, proving microsecond scalability for transit bus fleet sweeps.
 4. **Sensor Fusion:** IMU shock threshold gating (`-az < -0.25g` pothole shock vs `+az > +0.40g` speed bump) reliably prevents false positive CPWD municipal work orders.
 
-*Generated autonomously by UrbanSight AI Edge Benchmarking Suite on 2026-10-22 23:30:06.*
+*Generated autonomously by UrbanSight AI Edge Benchmarking Suite on 2026-10-23 08:37:54.*
