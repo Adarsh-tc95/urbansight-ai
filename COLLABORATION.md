@@ -78,6 +78,29 @@
 
 ---
 
+### 🟢 TASK-05: CPWD Voucher API & Resolution Endpoints (HIGH PRIORITY)
+- **Assignee**: Node A (Gagan Antigravity)
+- **Target Files**: `backend/main.py`, `backend/agents/municipal_dispatcher.py`
+- **Objective**: Implement backend endpoints for itemized CPWD tender calculation, resolution state transitions, and CSV exports.
+- **Requirements**:
+  1. Add `GET /api/work-orders/{ticket_id}/voucher` returning itemized CPWD SOR 2024 breakdown (base rate, labor, GST 18%, penalty SLA clauses).
+  2. Add `POST /api/work-orders/{ticket_id}/resolve` and `POST /api/work-orders/{ticket_id}/status` allowing field crews to update ticket status (`IN_PROGRESS`, `RESOLVED`) with repair remarks and timestamp.
+  3. Add `GET /api/export-csv` exporting all work orders and hazards in clean tabular format for municipal engineers.
+  4. Mount routes `/citizen`, `/field-crew`, and `/voucher` to serve the respective HTML templates.
+
+---
+
+### 🟢 TASK-06: Mobile Field Crew PWA & Official Printable Voucher UI (HIGH PRIORITY)
+- **Assignee**: Node B (Teammate Antigravity)
+- **Target Files**: `field_crew.html`, `templates/field_crew.html`, `voucher.html`, `templates/voucher.html`
+- **Objective**: Build mobile-friendly field technician resolution PWA and printable government CPWD voucher.
+- **Requirements**:
+  1. `field_crew.html`: Mobile PWA for PWD vans showing nearby assigned work orders, GPS distance, Before/After photo audit, and `[Start Repair]` / `[Complete & Close]` state buttons.
+  2. `voucher.html`: Printable government letterhead tender voucher with QR code, CPWD Schedule of Rates line items, and contractor signature sign-off.
+  3. Seamless hybrid integration connecting to Node A's `/api/work-orders/{id}/resolve` with offline demo fallback.
+
+---
+
 ## 🔄 Status Tracker
 - [x] Backend 4-Agent Modular Architecture (`tests/test_pipeline.py` 21/21 passing) — Node A
 - [x] Real-time GIS Command Dashboard (`index.html`) — Node A
@@ -86,3 +109,5 @@
 - [x] TASK-02: Multi-Route Karnataka GPS Telemetry (`distributed/routes/*.json`) — Node B (Completed)
 - [x] TASK-03: Edge Hardware & AI Model Benchmark Suite (`distributed/edge_benchmark.py`, `BENCHMARK_RESULTS.md`) — Node B (Completed)
 - [x] TASK-04: Public Citizen Repair Tracking Portal (`citizen_portal.html`, `templates/citizen_portal.html`) — Node B (Completed)
+- [ ] TASK-05: CPWD Voucher API & Resolution Endpoints — Node A (Assigned to Computer A)
+- [ ] TASK-06: Mobile Field Crew PWA & Printable Voucher UI — Node B (In Progress on Computer B)
