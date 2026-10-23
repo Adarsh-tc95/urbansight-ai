@@ -3,21 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPWD Official Repair Voucher | UrbanSight AI</title>
+    <title>UrbanSight AI — Official CPWD Municipal Tender Voucher | PWD-2026-OCT-0941</title>
+
+    <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         :root {
-            --bg-body: #0B0F17;
-            --bg-paper: #FFFFFF;
-            --text-dark: #0F172A;
-            --text-muted: #64748B;
-            --border: #CBD5E1;
-            --primary: #0284C7;
-            --accent: #EA580C;
-            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --bg-void: #090D16;
+            --bg-card: #0F172A;
+            --bg-card-hover: #1E293B;
+            --bg-panel: #111827;
+            --border-color: #1E293B;
+
+            --primary: #00E5FF;
+            --primary-glow: rgba(0, 229, 255, 0.4);
+            --accent: #FF5E1E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --success: #10B981;
+
+            --text-primary: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+
+            --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
 
@@ -25,366 +38,681 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: var(--font-main);
+            font-family: var(--font-heading);
         }
 
         body {
-            background-color: var(--bg-body);
-            color: var(--text-dark);
-            padding: 2rem 1rem;
+            background-color: var(--bg-void);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            overflow-x: hidden;
+            line-height: 1.5;
         }
 
-        .action-bar {
-            width: 100%;
-            max-width: 840px;
+        /* Top Action Ribbon */
+        .voucher-nav-ribbon {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 2px solid var(--border-color);
+            padding: 14px 24px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            color: #F8FAFC;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
         }
 
-        .btn {
-            padding: 0.6rem 1.2rem;
+        .ribbon-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ribbon-brand i {
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .ribbon-title {
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .ribbon-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: var(--text-primary);
+            padding: 8px 16px;
             border-radius: 8px;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
             cursor: pointer;
-            border: none;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            font-size: 0.9rem;
+            gap: 8px;
             transition: all 0.2s;
         }
 
-        .btn-primary { background: #00E5FF; color: #090D16; }
-        .btn-primary:hover { background: #38bdf8; }
-        .btn-outline { background: transparent; color: #F8FAFC; border: 1px solid #334155; }
-        .btn-outline:hover { background: #1E293B; }
+        .btn-action:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
 
-        /* The Printable Paper Voucher */
-        .voucher-sheet {
-            background: var(--bg-paper);
-            width: 100%;
-            max-width: 840px;
+        .btn-print {
+            background: linear-gradient(135deg, #00E5FF, #00B4D8);
+            color: #090D16;
+            border: none;
+        }
+
+        .btn-print:hover {
+            box-shadow: 0 0 15px var(--primary-glow);
+            transform: translateY(-1px);
+        }
+
+        .ticket-select-dropdown {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: #FFFFFF;
+            padding: 8px 12px;
             border-radius: 8px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            padding: 3rem 3.5rem;
-            border-top: 6px solid #0284C7;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Voucher Paper Container */
+        .voucher-sheet-wrap {
+            max-width: 900px;
+            margin: 32px auto 50px;
+            padding: 0 16px;
+            width: 100%;
+        }
+
+        .voucher-document {
+            background: #FFFFFF;
+            color: #0F172A;
+            border-radius: 8px;
+            padding: 48px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        /* Government Letterhead */
+        .govt-header {
+            text-align: center;
+            border-bottom: 3px double #0F172A;
+            padding-bottom: 20px;
+            margin-bottom: 24px;
             position: relative;
         }
 
-        .header-emblem {
-            text-align: center;
-            border-bottom: 2px solid #0F172A;
-            padding-bottom: 1.2rem;
-            margin-bottom: 1.5rem;
+        .emblem-icon {
+            font-size: 2.2rem;
+            color: #991B1B;
+            margin-bottom: 6px;
         }
 
-        .govt-title {
-            font-size: 0.85rem;
+        .govt-agency {
+            font-size: 1.15rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 0.8px;
+            color: #0F172A;
+        }
+
+        .govt-dept {
+            font-size: 0.9rem;
             font-weight: 700;
             color: #475569;
+            text-transform: uppercase;
         }
 
-        .dept-title {
-            font-size: 1.4rem;
+        .voucher-heading {
+            font-size: 1.35rem;
             font-weight: 800;
-            color: #0F172A;
-            margin: 0.25rem 0;
+            color: #991B1B;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .sub-dept {
-            font-size: 0.9rem;
-            color: #334155;
-            font-weight: 600;
-        }
-
-        .badge-bar {
+        .doc-meta-strip {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: #F1F5F9;
-            padding: 0.75rem 1rem;
+            border: 1px solid #CBD5E1;
+            padding: 10px 16px;
             border-radius: 6px;
-            margin-bottom: 1.5rem;
             font-family: var(--font-mono);
-            font-size: 0.85rem;
+            font-size: 0.82rem;
+            margin-bottom: 24px;
         }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem 2rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
+        /* Section Styling */
+        .doc-section {
+            margin-bottom: 24px;
         }
 
-        .info-row {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .info-label {
-            font-size: 0.75rem;
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-        }
-
-        .info-val {
-            font-weight: 700;
+            letter-spacing: 0.5px;
             color: #0F172A;
+            border-bottom: 1.5px solid #0F172A;
+            padding-bottom: 4px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .table-container {
-            margin: 1.5rem 0;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        table {
+        .data-grid-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.88rem;
+            margin-bottom: 14px;
+        }
+
+        .data-grid-table th, .data-grid-table td {
+            border: 1px solid #CBD5E1;
+            padding: 8px 12px;
             text-align: left;
         }
 
-        th {
+        .data-grid-table th {
             background: #F8FAFC;
-            color: #334155;
-            padding: 0.75rem 1rem;
             font-weight: 700;
-            border-bottom: 1px solid var(--border);
+            color: #334155;
+            text-transform: uppercase;
+            font-size: 0.78rem;
+        }
+
+        .font-mono {
+            font-family: var(--font-mono);
+        }
+
+        /* Photographic & Detection Evidence Block */
+        .evidence-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 16px;
+            background: #F8FAFC;
+            border: 1px solid #CBD5E1;
+            border-radius: 6px;
+            padding: 14px;
+            align-items: center;
+        }
+
+        .evidence-photo-box {
+            width: 100%;
+            height: 120px;
+            background: #000;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .evidence-photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .watermark-badge {
+            position: absolute;
+            bottom: 4px;
+            left: 4px;
+            background: rgba(0, 0, 0, 0.75);
+            color: #10B981;
+            font-size: 0.62rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        /* Bill of Quantities (BOQ) Table */
+        .boq-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.86rem;
+        }
+
+        .boq-table th, .boq-table td {
+            border: 1px solid #0F172A;
+            padding: 8px 10px;
+        }
+
+        .boq-table th {
+            background: #0F172A;
+            color: #FFFFFF;
             text-transform: uppercase;
             font-size: 0.75rem;
             letter-spacing: 0.5px;
         }
 
-        td {
-            padding: 0.85rem 1rem;
-            border-bottom: 1px solid #E2E8F0;
-            color: #1E293B;
-        }
-
-        tr:last-child td { border-bottom: none; }
-
-        .total-row {
-            background: #F8FAFC;
-            font-weight: 800;
-            font-size: 0.95rem;
-        }
-
-        .legal-clause-box {
-            background: #FFFBEB;
-            border-left: 4px solid #F59E0B;
-            padding: 0.85rem 1rem;
-            margin: 1.5rem 0;
-            font-size: 0.82rem;
-            color: #92400E;
-            line-height: 1.5;
-        }
-
-        .sign-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 2rem;
-            margin-top: 3rem;
-            padding-top: 1.5rem;
-            border-top: 1px dashed #CBD5E1;
-            text-align: center;
-            font-size: 0.8rem;
-        }
-
-        .sign-line {
-            height: 45px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            margin-bottom: 0.5rem;
+        .boq-table td.text-right {
+            text-align: right;
             font-family: var(--font-mono);
-            color: #0284C7;
-            font-weight: bold;
         }
 
-        .sign-title {
+        .boq-total-row {
+            font-weight: 800;
+            background: #F1F5F9;
+        }
+
+        /* Penalty & Statutory Clause */
+        .statutory-box {
+            background: #FEF2F2;
+            border: 1.5px solid #EF4444;
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 0.82rem;
+            color: #991B1B;
+            margin-top: 16px;
+        }
+
+        /* Signature Blocks */
+        .signature-strip {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px dashed #94A3B8;
+        }
+
+        .sig-block {
+            text-align: center;
+            width: 240px;
+        }
+
+        .sig-space {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.5rem;
+            color: #1E3A8A;
+        }
+
+        .sig-title {
+            border-top: 1px solid #0F172A;
+            padding-top: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #0F172A;
+        }
+
+        .sig-dept {
+            font-size: 0.72rem;
             color: #64748B;
-            font-weight: 600;
         }
 
+        /* Print Media Styling for Pristine A4 Document */
         @media print {
-            body { background: white; padding: 0; }
-            .action-bar { display: none; }
-            .voucher-sheet { box-shadow: none; max-width: 100%; padding: 1.5rem; }
+            body {
+                background: #FFFFFF !important;
+                color: #000000 !important;
+                padding: 0 !important;
+            }
+            .voucher-nav-ribbon {
+                display: none !important;
+            }
+            .voucher-sheet-wrap {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .voucher-document {
+                box-shadow: none !important;
+                padding: 20px !important;
+                border: none !important;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="action-bar">
-        <a href="/" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Command Center</a>
-        <div>
-            <button class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Official Voucher</button>
-        </div>
-    </div>
-
-    <div class="voucher-sheet">
-        <div class="header-emblem">
-            <div class="govt-title">Government of Karnataka · Urban Development Department</div>
-            <div class="dept-title">BRUHAT BENGALURU MAHANAGARA PALIKE / PWD</div>
-            <div class="sub-dept">Road Infrastructure & Arterial Pavement Maintenance Division · CPWD SOR 2024</div>
-        </div>
-
-        <div class="badge-bar">
-            <div><strong>TENDER SANCTION VOUCHER:</strong> <span id="v-voucher-id">VOUCHER-OCT-0941</span></div>
-            <div><strong>SLA:</strong> <span id="v-sla" style="color:#DC2626; font-weight:bold;">&lt;24 HOURS (CRITICAL P1)</span></div>
-        </div>
-
-        <div class="info-grid">
-            <div class="info-row">
-                <span class="info-label">Assigned Work Order Ticket</span>
-                <span class="info-val" id="v-ticket-id">PWD-OCT-0941</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Sanction Timestamp</span>
-                <span class="info-val" id="v-date">2026-10-23 08:15:00 IST</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Defect Category & CPWD Code</span>
-                <span class="info-val" id="v-sor-code">POTHOLE · CPWD-16.14.2</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Jurisdiction & Ward Division</span>
-                <span class="info-val" id="v-jurisdiction">BBMP Mahadevapura Ward 85 / PWD Division 3</span>
-            </div>
-            <div class="info-row" style="grid-column: span 2;">
-                <span class="info-label">Carriageway Geolocation / Landmark</span>
-                <span class="info-val" id="v-location">Outer Ring Road Bellandur Flyover Pillar 34 (12.9250°N, 77.6760°E)</span>
-            </div>
-        </div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>CPWD Specification & Description</th>
-                        <th>Classification</th>
-                        <th style="text-align: right;">Amount (INR)</th>
-                    </tr>
-                </thead>
-                <tbody id="v-line-items">
-                    <tr>
-                        <td>1.1</td>
-                        <td>Dense Bituminous Macadam (DBM) hot asphalt mix conforming to MORTH Sec 3000 & RS-1 emulsion tack coat</td>
-                        <td>Material</td>
-                        <td style="text-align: right; font-family: monospace;">₹ 2,310.00</td>
-                    </tr>
-                    <tr>
-                        <td>1.2</td>
-                        <td>Skilled asphalt road gang, mechanical screed operator, and safety flaggers</td>
-                        <td>Labor</td>
-                        <td style="text-align: right; font-family: monospace;">₹ 1,176.00</td>
-                    </tr>
-                    <tr>
-                        <td>1.3</td>
-                        <td>8-10 Tonne tandem vibratory compaction roller and high-pressure pneumatic air lance hire</td>
-                        <td>Machinery</td>
-                        <td style="text-align: right; font-family: monospace;">₹ 714.00</td>
-                    </tr>
-                    <tr class="total-row">
-                        <td colspan="3" style="text-align: right;">Subtotal (Base CPWD Schedule Cost):</td>
-                        <td style="text-align: right; font-family: monospace;">₹ 4,200.00</td>
-                    </tr>
-                    <tr class="total-row">
-                        <td colspan="3" style="text-align: right;">Goods & Services Tax (GST @ 18.0%):</td>
-                        <td style="text-align: right; font-family: monospace;">₹ 756.00</td>
-                    </tr>
-                    <tr class="total-row" style="background:#EFF6FF; color:#1E3A8A; font-size:1.05rem;">
-                        <td colspan="3" style="text-align: right;"><strong>TOTAL SANCTIONED TENDER ESTIMATE:</strong></td>
-                        <td style="text-align: right; font-family: monospace; font-weight:800; color:#0284C7;" id="v-total-cost">₹ 4,956.00</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="legal-clause-box">
-            <strong>CPWD Statutory Liquidated Damages & Penalty Clause:</strong><br>
-            <span id="v-penalty-clause">Work must be executed and inspected within 24 hours of autonomous dispatch. Liquidated damages penalty of 1.0% per 12 hours delay beyond SLA, capped at 10% contract value, as per CPWD Works Manual Section 29.3. Mandatory compliance with IRC:SP:72-2015 & MORTH Section 3000 road maintenance quality standards.</span>
-        </div>
-
-        <div class="sign-grid">
+    <!-- Top Action Ribbon -->
+    <header class="voucher-nav-ribbon">
+        <div class="ribbon-brand">
+            <i class="fa-solid fa-file-invoice"></i>
             <div>
-                <div class="sign-line">DIGITALLY VERIFIED</div>
-                <div class="sign-title">UrbanSight AI Autonomous Dispatch</div>
-            </div>
-            <div>
-                <div class="sign-line">_______________</div>
-                <div class="sign-title">Assistant Executive Engineer (AEE)</div>
-            </div>
-            <div>
-                <div class="sign-line">_______________</div>
-                <div class="sign-title">Empanelled Repair Contractor</div>
+                <div class="ribbon-title">CPWD Tender Voucher Generator · UrbanSight AI</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">
+                    Official Municipal Public Works Repair Sanction
+                </div>
             </div>
         </div>
-    </div>
 
+        <div class="ribbon-actions">
+            <!-- Ticket Switcher -->
+            <select class="ticket-select-dropdown" id="ticket-select" onchange="switchTicket(this.value);">
+                <option value="PWD-2026-OCT-0941">PWD-OCT-0941 (Bellandur Pothole)</option>
+                <option value="PWD-2026-OCT-0882">PWD-OCT-0882 (Silk Board Waterlogging)</option>
+                <option value="PWD-2026-OCT-0715">PWD-OCT-0715 (VVCE Mysuru Road)</option>
+                <option value="PWD-2026-OCT-0604">PWD-OCT-0604 (Hebbal Crack - Closed)</option>
+            </select>
+
+            <button class="btn-action btn-print" onclick="window.print();">
+                <i class="fa-solid fa-print"></i> Print Official Voucher (PDF)
+            </button>
+            <a href="citizen_portal.html" class="btn-action" id="link-citizen">
+                <i class="fa-solid fa-users"></i> Citizen Tracker
+            </a>
+            <a href="field_crew.html" class="btn-action">
+                <i class="fa-solid fa-truck-pickup"></i> Field Crew App
+            </a>
+        </div>
+    </header>
+
+    <!-- Voucher Sheet Wrapper -->
+    <main class="voucher-sheet-wrap">
+        <article class="voucher-document" id="printable-voucher">
+
+            <!-- Government Letterhead -->
+            <header class="govt-header">
+                <div class="emblem-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <div class="govt-agency" id="doc-agency">BRUHAT BENGALURU MAHANAGARA PALIKE (BBMP)</div>
+                <div class="govt-dept">OFFICE OF THE EXECUTIVE ENGINEER — ROAD INFRASTRUCTURE DIVISION</div>
+                <div style="font-size:0.75rem; color:#64748B; font-family:var(--font-mono); margin-top:2px;">
+                    Under the CPWD Schedule of Rates (SOR 2024) & Smart Cities Mission (SIH26124)
+                </div>
+                <h2 class="voucher-heading">Official Municipal Work-Order & Tender Dispatch Voucher</h2>
+            </header>
+
+            <!-- Document Meta Strip -->
+            <div class="doc-meta-strip">
+                <div>
+                    <strong>WORK ORDER NO:</strong> <span id="doc-ticket-id">PWD-2026-OCT-0941</span>
+                </div>
+                <div>
+                    <strong>DATE DISPATCHED:</strong> <span id="doc-date">07-OCT-2026 14:10 IST</span>
+                </div>
+                <div>
+                    <strong>STATUS:</strong> <span id="doc-status" style="color:#B91C1C; font-weight:700;">AUTO_DISPATCHED</span>
+                </div>
+            </div>
+
+            <!-- Section 1: Work Particulars & Location -->
+            <section class="doc-section">
+                <h3 class="section-title">
+                    <span>1. Defect Particulars & Transit Sensing Evidence</span>
+                    <span style="font-size:0.75rem; color:#64748B; font-family:var(--font-mono);">SOURCE: BMTC ONBOARD EDGE AI</span>
+                </h3>
+
+                <table class="data-grid-table">
+                    <tr>
+                        <th style="width:25%;">Defect Category</th>
+                        <td id="doc-hazard-type" style="font-weight:700;">POTHOLE / SUBSIDENCE (RDD Code D40)</td>
+                        <th style="width:25%;">Severity Rating</th>
+                        <td id="doc-severity" style="color:#B91C1C; font-weight:700;">CRITICAL P1 (High Impact)</td>
+                    </tr>
+                    <tr>
+                        <th>Road / Corridor Name</th>
+                        <td id="doc-location" colspan="3">Outer Ring Road near Bellandur Flyover Pillar 34</td>
+                    </tr>
+                    <tr>
+                        <th>Municipal Jurisdiction</th>
+                        <td id="doc-ward">BBMP Mahadevapura Ward 85 / PWD Division 4</td>
+                        <th>GPS Geotag</th>
+                        <td class="font-mono" id="doc-coords">12.925000° N, 77.676000° E</td>
+                    </tr>
+                    <tr>
+                        <th>Transit Fleet Verification</th>
+                        <td id="doc-fleet">BMTC-KA01-E542 (14 Multi-Pass DBSCAN Confirmations)</td>
+                        <th>6-Axis IMU Shock</th>
+                        <td class="font-mono" id="doc-imu">-0.42g az (Verified True Pothole Crater)</td>
+                    </tr>
+                </table>
+
+                <!-- Sighting Photographic Crop -->
+                <div class="evidence-row">
+                    <div class="evidence-photo-box">
+                        <img src="image1.jpg" alt="Pothole Visual Evidence" id="doc-evidence-img">
+                        <div class="watermark-badge">DPDP §2(t) BLURRED</div>
+                    </div>
+                    <div>
+                        <div style="font-weight:700; font-size:0.88rem; margin-bottom:4px;">
+                            Computer Vision Telemetry (YOLOv8-Nano TensorRT FP16)
+                        </div>
+                        <div style="font-size:0.8rem; color:#475569; font-family:var(--font-mono);">
+                            • Physical Distress Depth: <strong id="doc-depth">9.4 cm</strong> (Critical threshold &gt;8.0cm)<br>
+                            • Estimated Repair Surface Area: <strong>1.82 m²</strong><br>
+                            • Redaction Audit: DPDP Act 2023 §2(t) in-memory face & plate mask applied.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: CPWD Schedule of Rates Itemized Bill of Quantities (BOQ) -->
+            <section class="doc-section">
+                <h3 class="section-title">
+                    <span>2. Itemized Bill of Quantities (CPWD Schedule of Rates 2024)</span>
+                    <span style="font-size:0.75rem; color:#64748B; font-family:var(--font-mono);">STANDARD REPAIR ESTIMATE</span>
+                </h3>
+
+                <table class="boq-table">
+                    <thead>
+                        <tr>
+                            <th style="width:12%;">Item Code</th>
+                            <th>Description of CPWD Works</th>
+                            <th style="width:10%;">Qty</th>
+                            <th style="width:10%;">Unit</th>
+                            <th style="width:14%;" class="text-right">Rate (₹)</th>
+                            <th style="width:16%;" class="text-right">Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="boq-tbody">
+                        <tr>
+                            <td class="font-mono">16.2.1</td>
+                            <td>Surface preparation, pneumatic cleaning & tack coat with bitumen emulsion @ 0.25 kg/sqm</td>
+                            <td class="text-right">2.40</td>
+                            <td>sqm</td>
+                            <td class="text-right">45.00</td>
+                            <td class="text-right">108.00</td>
+                        </tr>
+                        <tr>
+                            <td class="font-mono">16.2.2</td>
+                            <td>Providing and laying cold-mix bituminous mastic asphalt (50mm compacted depth)</td>
+                            <td class="text-right">0.24</td>
+                            <td>cum</td>
+                            <td class="text-right">6,800.00</td>
+                            <td class="text-right">1,632.00</td>
+                        </tr>
+                        <tr>
+                            <td class="font-mono">LAB-04</td>
+                            <td>Skilled municipal pavement compactor labor & traffic safety cones deployment</td>
+                            <td class="text-right">1.00</td>
+                            <td>shift</td>
+                            <td class="text-right">450.00</td>
+                            <td class="text-right">450.00</td>
+                        </tr>
+                        <tr class="boq-total-row">
+                            <td colspan="5" style="text-align:right;">SUBTOTAL BASIC COST:</td>
+                            <td class="text-right" id="doc-subtotal">₹2,190.00</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="text-align:right;">GOODS & SERVICES TAX (GST @ 18%):</td>
+                            <td class="text-right" id="doc-gst">₹394.20</td>
+                        </tr>
+                        <tr class="boq-total-row" style="background:#E2E8F0; font-size:1rem;">
+                            <td colspan="5" style="text-align:right;">TOTAL SANCTIONED REPAIR VALUE:</td>
+                            <td class="text-right" id="doc-total" style="color:#0F172A;">₹2,584.20 INR</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Section 3: Statutory SLA & Liquidated Damages -->
+            <section class="doc-section">
+                <div class="statutory-box">
+                    <strong>⚠️ STATUTORY SLA RESOLUTION MANDATE (CPWD Works Manual 2024 §14.3):</strong><br>
+                    This defect is classified as <span id="doc-sla-text"><strong>CRITICAL P1 with an enforceable resolution SLA of 48 Hours</strong></span> from ticket issuance. 
+                    Failure to complete patching within the stipulated timeline incurs liquidated damages of <strong>₹500.00 per diem</strong> deducted from contractor escrow.
+                </div>
+            </section>
+
+            <!-- Section 4: Authorized Signatures -->
+            <footer class="signature-strip">
+                <div class="sig-block">
+                    <div class="sig-space">V. Ramesh Rao</div>
+                    <div class="sig-title">Assistant Executive Engineer</div>
+                    <div class="sig-dept">PWD Mahadevapura Sub-Division</div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                    <i class="fa-solid fa-qrcode" style="font-size:3rem; color:#0F172A;"></i>
+                    <div style="font-size:0.65rem; color:#64748B; font-family:var(--font-mono); margin-top:4px;">
+                        SCAN TO VERIFY LIVE STATUS
+                    </div>
+                </div>
+
+                <div class="sig-block">
+                    <div class="sig-space" style="color:#059669;">K. Suresh Gowda</div>
+                    <div class="sig-title">Authorized Contractor</div>
+                    <div class="sig-dept">Infra Road Care Pvt. Ltd. (Empanelled)</div>
+                </div>
+            </footer>
+
+        </article>
+    </main>
+
+    <!-- Client-Side Ticket Switcher Logic -->
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const ticketId = urlParams.get('ticket') || 'PWD-OCT-0941';
+        const VOUCHER_DATA = {
+            "PWD-2026-OCT-0941": {
+                ticket_id: "PWD-2026-OCT-0941",
+                agency: "BRUHAT BENGALURU MAHANAGARA PALIKE (BBMP)",
+                hazard_type: "POTHOLE / SUBSIDENCE (RDD Code D40)",
+                severity: "CRITICAL P1 (High Impact)",
+                location: "Outer Ring Road near Bellandur Flyover Pillar 34",
+                ward: "BBMP Mahadevapura Ward 85 / PWD Division 4",
+                coords: "12.925000° N, 77.676000° E",
+                fleet: "BMTC-KA01-E542 (14 Multi-Pass DBSCAN Confirmations)",
+                imu: "-0.42g az (Verified True Pothole Crater)",
+                depth: "9.4 cm",
+                date: "07-OCT-2026 14:10 IST",
+                status: "AUTO_DISPATCHED",
+                image: "image1.jpg",
+                subtotal: "₹2,190.00",
+                gst: "₹394.20",
+                total: "₹2,584.20 INR",
+                sla_text: "CRITICAL P1 with an enforceable resolution SLA of 48 Hours"
+            },
+            "PWD-2026-OCT-0882": {
+                ticket_id: "PWD-2026-OCT-0882",
+                agency: "BRUHAT BENGALURU MAHANAGARA PALIKE (BBMP)",
+                hazard_type: "WATERLOGGING / MONSOON PUDDLE (RDD Code W01)",
+                severity: "HIGH P2 (Drainage Failure)",
+                location: "Silk Board Underpass Southbound Service Arterial",
+                ward: "BBMP Bommanahalli Ward 174 / Stormwater Drain Div",
+                coords: "12.912500° N, 77.639500° E",
+                fleet: "BMTC-KA57-E912 (8 Multi-Pass DBSCAN Confirmations)",
+                imu: "-0.08g az (Hydroplaning Submersion)",
+                depth: "15.0 cm Standing Water",
+                date: "07-OCT-2026 13:45 IST",
+                status: "CREW_ASSIGNED",
+                image: "image2.jpg",
+                subtotal: "₹3,400.00",
+                gst: "₹612.00",
+                total: "₹4,012.00 INR",
+                sla_text: "HIGH P2 with an enforceable resolution SLA of 24 Hours"
+            },
+            "PWD-2026-OCT-0715": {
+                ticket_id: "PWD-2026-OCT-0715",
+                agency: "MYSURU CITY CORPORATION (MCC) / MUDA",
+                hazard_type: "POTHOLE / ROAD CRATER (RDD Code D40)",
+                severity: "CRITICAL P1 (High Impact)",
+                location: "VVCE Ring Road Junction, Gokulam, Mysuru",
+                ward: "MCC Mysuru Engineering Ward 9 / MUDA Zone",
+                coords: "12.319000° N, 76.645000° E",
+                fleet: "KSRTC-KA09-E102 (6 Multi-Pass DBSCAN Confirmations)",
+                imu: "-0.40g az (Verified True Pothole Crater)",
+                depth: "8.6 cm",
+                date: "07-OCT-2026 12:30 IST",
+                status: "IN_PROGRESS",
+                image: "image1.jpg",
+                subtotal: "₹1,620.00",
+                gst: "₹291.60",
+                total: "₹1,911.60 INR",
+                sla_text: "CRITICAL P1 with an enforceable resolution SLA of 48 Hours"
+            },
+            "PWD-2026-OCT-0604": {
+                ticket_id: "PWD-2026-OCT-0604",
+                agency: "BRUHAT BENGALURU MAHANAGARA PALIKE (BBMP)",
+                hazard_type: "TRANSVERSE ROAD CRACK (RDD Code D10)",
+                severity: "MEDIUM P3 (Preventive Maintenance)",
+                location: "Hebbal Flyover Kempapura Bus Bay Ramp",
+                ward: "BBMP East Zone / Yelahanka Division",
+                coords: "13.035800° N, 77.597000° E",
+                fleet: "BMTC-KA03-E304 (9 Multi-Pass DBSCAN Confirmations)",
+                imu: "-0.14g az (Surface Fissure)",
+                depth: "2.8 cm",
+                date: "05-OCT-2026 10:00 IST",
+                status: "RESOLVED (Audited)",
+                image: "image2.jpg",
+                subtotal: "₹950.00",
+                gst: "₹171.00",
+                total: "₹1,121.00 INR",
+                sla_text: "MEDIUM P3 with an enforceable resolution SLA of 72 Hours"
+            }
+        };
 
-            try {
-                const res = await fetch(`/api/work-orders/${ticketId}/voucher`);
-                if (res.ok) {
-                    const data = await res.json();
-                    document.getElementById('v-voucher-id').textContent = data.voucher_id;
-                    document.getElementById('v-ticket-id').textContent = data.ticket_id;
-                    document.getElementById('v-date').textContent = data.sanction_date;
-                    document.getElementById('v-sor-code').textContent = `${data.hazard_type} · ${data.cpwd_sor_code}`;
-                    document.getElementById('v-jurisdiction').textContent = data.jurisdiction;
-                    document.getElementById('v-location').textContent = data.location;
-                    document.getElementById('v-sla').textContent = `<${data.sla_hours} HOURS (${data.severity})`;
-                    document.getElementById('v-total-cost').textContent = `₹ ${data.total_estimated_inr.toLocaleString('en-IN')}`;
-                    document.getElementById('v-penalty-clause').textContent = data.penalty_clause;
+        function switchTicket(ticketId) {
+            const data = VOUCHER_DATA[ticketId];
+            if (!data) return;
 
-                    if (data.line_items && data.line_items.length) {
-                        const tbody = document.getElementById('v-line-items');
-                        tbody.innerHTML = data.line_items.map(item => `
-                            <tr>
-                                <td>${item.item_no}</td>
-                                <td>${item.description}</td>
-                                <td>${item.category}</td>
-                                <td style="text-align: right; font-family: monospace;">₹ ${item.amount_inr.toLocaleString('en-IN')}</td>
-                            </tr>
-                        `).join('') + `
-                            <tr class="total-row">
-                                <td colspan="3" style="text-align: right;">Subtotal (Base CPWD Schedule Cost):</td>
-                                <td style="text-align: right; font-family: monospace;">₹ ${data.subtotal_inr.toLocaleString('en-IN')}</td>
-                            </tr>
-                            <tr class="total-row">
-                                <td colspan="3" style="text-align: right;">Goods & Services Tax (GST @ 18.0%):</td>
-                                <td style="text-align: right; font-family: monospace;">₹ ${data.gst_amount_inr.toLocaleString('en-IN')}</td>
-                            </tr>
-                            <tr class="total-row" style="background:#EFF6FF; color:#1E3A8A; font-size:1.05rem;">
-                                <td colspan="3" style="text-align: right;"><strong>TOTAL SANCTIONED TENDER ESTIMATE:</strong></td>
-                                <td style="text-align: right; font-family: monospace; font-weight:800; color:#0284C7;">₹ ${data.total_estimated_inr.toLocaleString('en-IN')}</td>
-                            </tr>
-                        `;
-                    }
-                }
-            } catch (err) {
-                console.warn("Using offline fallback data for voucher:", err);
+            document.getElementById('doc-ticket-id').textContent = data.ticket_id;
+            document.getElementById('doc-agency').textContent = data.agency;
+            document.getElementById('doc-hazard-type').textContent = data.hazard_type;
+            document.getElementById('doc-severity').textContent = data.severity;
+            document.getElementById('doc-location').textContent = data.location;
+            document.getElementById('doc-ward').textContent = data.ward;
+            document.getElementById('doc-coords').textContent = data.coords;
+            document.getElementById('doc-fleet').textContent = data.fleet;
+            document.getElementById('doc-imu').textContent = data.imu;
+            document.getElementById('doc-depth').textContent = data.depth;
+            document.getElementById('doc-date').textContent = data.date;
+            document.getElementById('doc-status').textContent = data.status;
+            document.getElementById('doc-evidence-img').src = data.image;
+            document.getElementById('doc-subtotal').textContent = data.subtotal;
+            document.getElementById('doc-gst').textContent = data.gst;
+            document.getElementById('doc-total').textContent = data.total;
+            document.getElementById('doc-sla-text').innerHTML = `<strong>${data.sla_text}</strong>`;
+
+            // Update URL hash / query
+            history.replaceState(null, '', `?ticket=${ticketId}`);
+        }
+
+        // On Load: Check URL parameters (e.g. ?ticket=PWD-2026-OCT-0882)
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const ticket = params.get('ticket');
+            if (ticket && VOUCHER_DATA[ticket]) {
+                document.getElementById('ticket-select').value = ticket;
+                switchTicket(ticket);
             }
         });
     </script>

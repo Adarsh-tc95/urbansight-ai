@@ -3,322 +3,925 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Field Crew Operations PWA | UrbanSight AI</title>
+    <title>UrbanSight AI — PWD Field Crew Resolution PWA | Quick Response Unit</title>
+
+    <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         :root {
             --bg-void: #090D16;
             --bg-card: #0F172A;
             --bg-card-hover: #1E293B;
+            --bg-panel: #111827;
             --border-color: #1E293B;
+            --border-glow: rgba(0, 229, 255, 0.25);
+
             --primary: #00E5FF;
+            --primary-glow: rgba(0, 229, 255, 0.4);
             --accent: #FF5E1E;
             --warning: #F59E0B;
+            --warning-glow: rgba(245, 158, 11, 0.4);
             --danger: #EF4444;
+            --danger-glow: rgba(239, 68, 68, 0.45);
             --success: #10B981;
+            --success-glow: rgba(16, 185, 129, 0.35);
+            --purple: #8B5CF6;
+
             --text-primary: #F8FAFC;
             --text-muted: #94A3B8;
-            --font-heading: 'Plus Jakarta Sans', sans-serif;
+            --text-dim: #64748B;
+
+            --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-heading); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-heading);
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
             background-color: var(--bg-void);
             color: var(--text-primary);
-            padding: 1rem;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            overflow-x: hidden;
+            line-height: 1.5;
+            padding-bottom: 70px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-        }
-
+        /* Top Mobile App Bar */
         .crew-header {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.2rem;
-            margin-bottom: 1.2rem;
+            background: rgba(15, 23, 42, 0.96);
+            border-bottom: 2px solid var(--border-color);
+            padding: 14px 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .crew-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .crew-badge {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .crew-icon {
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, rgba(255, 94, 30, 0.2), rgba(255, 94, 30, 0.4));
+            border: 2px solid var(--accent);
             border-radius: 10px;
-            background: rgba(0, 229, 255, 0.15);
-            color: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            color: var(--accent);
+            box-shadow: 0 0 15px rgba(255, 94, 30, 0.3);
         }
 
-        .ticket-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            transition: border-color 0.2s;
-        }
-
-        .ticket-card.resolved {
-            opacity: 0.7;
-            border-color: #065f46;
-        }
-
-        .ticket-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.75rem;
-        }
-
-        .ticket-id {
-            font-family: var(--font-mono);
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 1.1rem;
-        }
-
-        .pill {
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 0.25rem 0.6rem;
-            border-radius: 9999px;
-            text-transform: uppercase;
-            font-family: var(--font-mono);
-        }
-
-        .pill-red { background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid #EF4444; }
-        .pill-orange { background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid #F59E0B; }
-        .pill-green { background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid #10B981; }
-
-        .location-title {
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 0.4rem;
-        }
-
-        .meta-line {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            margin-bottom: 0.3rem;
+        .crew-title h1 {
+            font-size: 1.15rem;
+            font-weight: 800;
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 8px;
         }
 
-        .action-btns {
-            display: flex;
-            gap: 0.6rem;
-            margin-top: 1rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid var(--border-color);
+        .crew-title p {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
         }
 
-        .btn {
-            flex: 1;
-            padding: 0.65rem 0.8rem;
-            border-radius: 8px;
+        .pill-tag {
+            display: inline-block;
+            font-size: 0.65rem;
             font-weight: 700;
-            cursor: pointer;
-            border: none;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .pill-orange { background: rgba(255, 94, 30, 0.15); color: var(--accent); border: 1px solid var(--accent); }
+        .pill-green { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .pill-red { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+        .pill-cyan { background: rgba(0, 229, 255, 0.15); color: var(--primary); border: 1px solid var(--primary); }
+
+        .btn-header-nav {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: var(--text-primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-            font-size: 0.85rem;
-            text-decoration: none;
+            gap: 6px;
             transition: all 0.2s;
         }
 
-        .btn-start { background: #F59E0B; color: #090D16; }
-        .btn-resolve { background: #10B981; color: #090D16; }
-        .btn-voucher { background: #1E293B; color: #F8FAFC; border: 1px solid #334155; }
-        .btn:hover { opacity: 0.9; }
+        .btn-header-nav:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
 
-        /* Modal */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
+        /* GPS & Van Status Strip */
+        .van-status-strip {
+            background: #0B1120;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+        }
+
+        .gps-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--success);
+        }
+
+        .pulse-circle {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse-dot 1.2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.8; }
+        }
+
+        /* Main Container */
+        .crew-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 16px;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .filter-tab {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .filter-tab.active {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-count {
+            background: #334155;
+            color: #FFFFFF;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+        }
+
+        /* Work Order Cards List */
+        .work-orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .order-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .order-card:hover {
+            border-color: #334155;
+            transform: translateY(-2px);
+        }
+
+        .order-card.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+
+        .order-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--accent);
+        }
+
+        .order-card.resolved::before {
+            background: var(--success);
+        }
+
+        .order-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .order-id {
+            font-family: var(--font-mono);
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: #FFFFFF;
+        }
+
+        .order-hazard-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .order-location {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .order-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            margin-bottom: 16px;
+        }
+
+        .meta-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .meta-cell .lbl {
+            color: var(--text-dim);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+        }
+
+        .meta-cell .val {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Action Buttons Row */
+        .order-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-act {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            padding: 1rem;
+            gap: 8px;
+            border: none;
+            transition: all 0.2s;
+            text-decoration: none;
+            white-space: nowrap;
         }
-        .modal.show { display: flex; }
-        .modal-card {
-            background: var(--bg-card);
-            border: 1px solid var(--primary);
-            border-radius: 12px;
-            padding: 1.5rem;
+
+        .btn-start {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: #000;
+        }
+
+        .btn-start:hover {
+            box-shadow: 0 0 15px var(--warning-glow);
+        }
+
+        .btn-resolve {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: #FFFFFF;
+        }
+
+        .btn-resolve:hover {
+            box-shadow: 0 0 15px var(--success-glow);
+        }
+
+        .btn-voucher {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: var(--primary);
+        }
+
+        .btn-voucher:hover {
+            background: #334155;
+            border-color: var(--primary);
+        }
+
+        .btn-nav-map {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: var(--text-primary);
+        }
+
+        /* Inspection & Before/After Audit Modal / Drawer */
+        .inspection-drawer {
+            background: var(--bg-panel);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 16px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .audit-photos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 14px 0;
+        }
+
+        .photo-box {
+            background: #000;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            overflow: hidden;
+            height: 160px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-box img {
             width: 100%;
-            max-width: 480px;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-tag {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+
+        .ai-audit-badge {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            margin-top: 10px;
+        }
+
+        /* Success Toast */
+        .toast-box {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120%);
+            background: var(--bg-card);
+            border: 2px solid var(--success);
+            color: #FFFFFF;
+            padding: 14px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .toast-box.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Bottom Fixed Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.98);
+            border-top: 1px solid var(--border-color);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            backdrop-filter: blur(12px);
+            z-index: 99;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.68rem;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active, .nav-item:hover {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 1.15rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="crew-header">
+    <!-- Header -->
+    <header class="crew-header">
+        <div class="crew-brand">
             <div class="crew-badge">
-                <div class="crew-icon"><i class="fa-solid fa-truck-pickup"></i></div>
-                <div>
-                    <h2 style="font-size:1.1rem; font-weight:800;">RAPID REPAIR CREW</h2>
-                    <p style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);">VAN-04 · BBMP Mahadevapura</p>
-                </div>
+                <i class="fa-solid fa-truck-pickup"></i>
             </div>
-            <a href="/" class="btn btn-voucher" style="flex:none; padding:0.4rem 0.8rem;"><i class="fa-solid fa-gauge"></i> ICCC</a>
+            <div class="crew-title">
+                <h1>
+                    UrbanSight AI · Field Crew
+                    <span class="pill-tag pill-orange">VAN-04</span>
+                </h1>
+                <p>BBMP Mahadevapura / MCC Mysuru Rapid PWD Response</p>
+            </div>
         </div>
 
-        <div id="tickets-container">
-            <!-- Dynamically populated -->
+        <div style="display:flex; align-items:center; gap:8px;">
+            <a href="citizen_portal.html" class="btn-header-nav" title="Open Citizen Portal">
+                <i class="fa-solid fa-users"></i> Citizen
+            </a>
+            <a href="index.html" class="btn-header-nav" title="Open ICCC Dashboard">
+                <i class="fa-solid fa-gauge"></i> ICCC
+            </a>
+        </div>
+    </header>
+
+    <!-- Sub-bar: GPS & Van Status -->
+    <div class="van-status-strip">
+        <div class="gps-stat">
+            <div class="pulse-circle"></div>
+            <span>GPS LOCKED: 12.9248° N, 77.6762° E (±2.5m)</span>
+        </div>
+        <div style="color:var(--text-muted);">
+            <span>Active Sector: <strong style="color:var(--primary);">ORR Ward 85</strong></span>
         </div>
     </div>
 
-    <!-- Resolve Modal -->
-    <div class="modal" id="resolve-modal">
-        <div class="modal-card">
-            <h3 style="margin-bottom:0.75rem; color:#10B981;"><i class="fa-solid fa-check-circle"></i> Complete Repair Work</h3>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;" id="modal-ticket-desc">Ticket: PWD-OCT-0941</p>
-            
-            <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Repair Execution Remarks:</label>
-            <textarea id="modal-remarks" style="width:100%; height:80px; background:#090D16; border:1px solid #334155; color:white; border-radius:6px; padding:0.5rem; margin-bottom:1rem; font-size:0.85rem;">Milled 50mm asphalt, sprayed RS-1 bitumen tack coat, laid hot mix DBM, compacted with vibratory roller to MORTH Sec 3000 specs.</textarea>
+    <!-- Main Content Area -->
+    <main class="crew-container">
 
-            <div style="display:flex; gap:0.6rem;">
-                <button class="btn btn-voucher" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-resolve" onclick="submitResolution()">Confirm & Close</button>
-            </div>
+        <!-- Filter Tabs -->
+        <div class="filter-tabs-row">
+            <button class="filter-tab active" data-filter="ALL">
+                <i class="fa-solid fa-layer-group"></i> All Work Orders <span class="filter-count" id="count-all">4</span>
+            </button>
+            <button class="filter-tab" data-filter="PENDING">
+                <i class="fa-solid fa-clock"></i> Assigned / Pending <span class="filter-count" id="count-pending">2</span>
+            </button>
+            <button class="filter-tab" data-filter="IN_PROGRESS">
+                <i class="fa-solid fa-person-digging"></i> In Progress <span class="filter-count" id="count-progress">1</span>
+            </button>
+            <button class="filter-tab" data-filter="RESOLVED">
+                <i class="fa-solid fa-check-double"></i> Closed & Repaired <span class="filter-count" id="count-resolved">1</span>
+            </button>
         </div>
+
+        <!-- List of Work Order Cards -->
+        <div class="work-orders-list" id="orders-container">
+            <!-- Rendered dynamically -->
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <a href="field_crew.html" class="nav-item active">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Work Orders</span>
+        </a>
+        <a href="voucher.html?ticket=PWD-2026-OCT-0941" class="nav-item">
+            <i class="fa-solid fa-file-invoice"></i>
+            <span>CPWD Voucher</span>
+        </a>
+        <a href="citizen_portal.html" class="nav-item">
+            <i class="fa-solid fa-road-circle-check"></i>
+            <span>Citizen Portal</span>
+        </a>
+        <a href="driver_console.html" class="nav-item">
+            <i class="fa-solid fa-tablet-screen-button"></i>
+            <span>Driver HUD</span>
+        </a>
+        <a href="index.html" class="nav-item">
+            <i class="fa-solid fa-satellite-dish"></i>
+            <span>ICCC Central</span>
+        </a>
+    </nav>
+
+    <!-- Toast Popup -->
+    <div class="toast-box" id="toast-box">
+        <i class="fa-solid fa-circle-check" style="font-size:1.3rem; color:var(--success);"></i>
+        <span id="toast-text">Ticket status updated successfully!</span>
     </div>
 
+    <!-- Script & State Logic -->
     <script>
-        let currentTicketId = null;
-
-        const fallbackTickets = [
-            { ticket_id: "PWD-OCT-0941", hazard_type: "POTHOLE", severity: "CRITICAL_P1", location_name: "ORR Bellandur Flyover Pillar 34", cluster_count: 14, sla_hours: 24, status: "AUTO_DISPATCHED", cpwd_sor_code: "CPWD-16.14.2" },
-            { ticket_id: "PWD-OCT-0882", hazard_type: "WATERLOGGING", severity: "HIGH_P2", location_name: "Silk Board Underpass South Lane", cluster_count: 8, sla_hours: 48, status: "CREW_ASSIGNED", cpwd_sor_code: "CPWD-16.15.1" },
-            { ticket_id: "PWD-OCT-0715", hazard_type: "POTHOLE", severity: "CRITICAL_P1", location_name: "VVCE Ring Road Junction, Mysuru", cluster_count: 6, sla_hours: 24, status: "IN_PROGRESS", cpwd_sor_code: "CPWD-16.14.2" }
+        // Local state of work orders
+        let workOrders = [
+            {
+                ticket_id: "PWD-2026-OCT-0941",
+                hazard_type: "POTHOLE",
+                severity: "CRITICAL_P1",
+                location_name: "Outer Ring Road near Bellandur Flyover Pillar 34",
+                ward: "BBMP Mahadevapura Ward 85",
+                lat: 12.9250,
+                lng: 77.6760,
+                dist_km: 0.2,
+                depth_cm: 9.4,
+                passes: 14,
+                sla_hours: 48,
+                status: "AUTO_DISPATCHED",
+                cost_inr: 1850,
+                sor_code: "16.2.1",
+                before_img: "image1.jpg",
+                after_img: "image2.jpg"
+            },
+            {
+                ticket_id: "PWD-2026-OCT-0882",
+                hazard_type: "WATERLOGGING",
+                severity: "HIGH_P2",
+                location_name: "Silk Board Underpass Southbound Service Arterial",
+                ward: "BBMP Bommanahalli Ward 174",
+                lat: 12.9125,
+                lng: 77.6395,
+                dist_km: 3.4,
+                depth_cm: 15.0,
+                passes: 8,
+                sla_hours: 24,
+                status: "CREW_ASSIGNED",
+                cost_inr: 3400,
+                sor_code: "12.4",
+                before_img: "image2.jpg",
+                after_img: "image1.jpg"
+            },
+            {
+                ticket_id: "PWD-2026-OCT-0715",
+                hazard_type: "POTHOLE",
+                severity: "CRITICAL_P1",
+                location_name: "VVCE Ring Road Junction, Gokulam, Mysuru",
+                ward: "MCC Mysuru Ward 9",
+                lat: 12.3190,
+                lng: 76.6450,
+                dist_km: 142.0,
+                depth_cm: 8.6,
+                passes: 6,
+                sla_hours: 48,
+                status: "IN_PROGRESS",
+                cost_inr: 1620,
+                sor_code: "16.2",
+                before_img: "image1.jpg",
+                after_img: "image2.jpg"
+            },
+            {
+                ticket_id: "PWD-2026-OCT-0604",
+                hazard_type: "ROAD_CRACK",
+                severity: "MEDIUM_P3",
+                location_name: "Hebbal Flyover Kempapura Bus Bay Ramp",
+                ward: "BBMP East Zone",
+                lat: 13.0358,
+                lng: 77.5970,
+                dist_km: 14.5,
+                depth_cm: 2.8,
+                passes: 9,
+                sla_hours: 72,
+                status: "RESOLVED",
+                cost_inr: 950,
+                sor_code: "14.1",
+                before_img: "image2.jpg",
+                after_img: "image2.jpg"
+            }
         ];
 
-        document.addEventListener('DOMContentLoaded', loadWorkOrders);
+        let currentFilter = "ALL";
+        let expandedTicketId = "PWD-2026-OCT-0941";
 
-        async function loadWorkOrders() {
-            let tickets = fallbackTickets;
-            try {
-                const res = await fetch('/api/work-orders');
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.length) tickets = data;
-                }
-            } catch (e) {
-                console.warn("Using offline fallback tickets");
+        function renderOrders() {
+            const container = document.getElementById('orders-container');
+            container.innerHTML = "";
+
+            const filtered = workOrders.filter(o => {
+                if (currentFilter === "ALL") return true;
+                if (currentFilter === "PENDING") return o.status === "AUTO_DISPATCHED" || o.status === "CREW_ASSIGNED";
+                if (currentFilter === "IN_PROGRESS") return o.status === "IN_PROGRESS";
+                if (currentFilter === "RESOLVED") return o.status === "RESOLVED";
+                return true;
+            });
+
+            // Update counts
+            document.getElementById('count-all').textContent = workOrders.length;
+            document.getElementById('count-pending').textContent = workOrders.filter(o => o.status === "AUTO_DISPATCHED" || o.status === "CREW_ASSIGNED").length;
+            document.getElementById('count-progress').textContent = workOrders.filter(o => o.status === "IN_PROGRESS").length;
+            document.getElementById('count-resolved').textContent = workOrders.filter(o => o.status === "RESOLVED").length;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted); font-family:var(--font-mono);">No work orders matching this filter.</div>`;
+                return;
             }
-            renderTickets(tickets);
-        }
 
-        function renderTickets(tickets) {
-            const container = document.getElementById('tickets-container');
-            container.innerHTML = tickets.map(t => {
-                const isResolved = (t.status === 'RESOLVED');
-                const isProgress = (t.status === 'IN_PROGRESS');
-                const pillClass = isResolved ? 'pill-green' : (t.severity.includes('CRITICAL') ? 'pill-red' : 'pill-orange');
+            filtered.forEach(order => {
+                const card = document.createElement('div');
+                const isSelected = order.ticket_id === expandedTicketId;
+                card.className = `order-card ${order.status === 'RESOLVED' ? 'resolved' : ''} ${isSelected ? 'selected' : ''}`;
+                
+                const sevPill = order.severity.includes('P1') ? 'pill-red' : (order.severity.includes('P2') ? 'pill-orange' : 'pill-cyan');
+                const statusPill = order.status === 'RESOLVED' ? 'pill-green' : (order.status === 'IN_PROGRESS' ? 'pill-orange' : 'pill-cyan');
 
-                return `
-                    <div class="ticket-card ${isResolved ? 'resolved' : ''}">
-                        <div class="ticket-header">
-                            <div>
-                                <span class="ticket-id">${t.ticket_id}</span>
-                                <div style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">${t.cpwd_sor_code || 'CPWD-16.14.2'}</div>
-                            </div>
-                            <span class="pill ${pillClass}">${t.status}</span>
+                card.innerHTML = `
+                    <div class="order-top">
+                        <span class="order-id">${order.ticket_id}</span>
+                        <div style="display:flex; gap:6px;">
+                            <span class="pill-tag ${sevPill}">${order.severity.replace('_', ' ')}</span>
+                            <span class="pill-tag ${statusPill}">${order.status.replace('_', ' ')}</span>
                         </div>
-                        <div class="location-title">${t.location_name}</div>
-                        <div class="meta-line"><i class="fa-solid fa-triangle-exclamation"></i> Type: <strong>${t.hazard_type}</strong> (${t.severity})</div>
-                        <div class="meta-line"><i class="fa-solid fa-clock"></i> SLA: <span style="color:#EF4444; font-weight:bold;">&lt;${t.sla_hours}h</span> · Verified: <strong>${t.cluster_count || 1} passes</strong></div>
+                    </div>
 
-                        <div class="action-btns">
-                            ${!isResolved && !isProgress ? `
-                                <button class="btn btn-start" onclick="markStatus('${t.ticket_id}', 'IN_PROGRESS')">
-                                    <i class="fa-solid fa-play"></i> Start
-                                </button>
-                            ` : ''}
-                            ${!isResolved ? `
-                                <button class="btn btn-resolve" onclick="openResolveModal('${t.ticket_id}')">
-                                    <i class="fa-solid fa-check"></i> Complete
-                                </button>
-                            ` : `
-                                <span style="color:#10B981; font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:0.4rem;">
-                                    <i class="fa-solid fa-circle-check"></i> Repair Certified
-                                </span>
-                            `}
-                            <a href="/voucher?ticket=${t.ticket_id}" target="_blank" class="btn btn-voucher">
-                                <i class="fa-solid fa-file-invoice"></i> Voucher
-                            </a>
+                    <div class="order-hazard-title">
+                        <i class="fa-solid fa-triangle-exclamation" style="color:var(--accent);"></i>
+                        <span>${order.hazard_type.replace('_', ' ')} (${order.depth_cm}cm)</span>
+                    </div>
+
+                    <div class="order-location">
+                        <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
+                        <span>${order.location_name}</span>
+                    </div>
+
+                    <div class="order-meta-grid">
+                        <div class="meta-cell">
+                            <span class="lbl">Proximity</span>
+                            <span class="val" style="color:var(--primary);">${order.dist_km} km away</span>
+                        </div>
+                        <div class="meta-cell">
+                            <span class="lbl">Ward Unit</span>
+                            <span class="val">${order.ward.split('/')[0]}</span>
+                        </div>
+                        <div class="meta-cell">
+                            <span class="lbl">CPWD SOR Est.</span>
+                            <span class="val" style="color:var(--success);">₹${order.cost_inr} INR</span>
+                        </div>
+                        <div class="meta-cell">
+                            <span class="lbl">Bus Passes</span>
+                            <span class="val">${order.passes} Verified</span>
+                        </div>
+                    </div>
+
+                    <div class="order-actions">
+                        ${order.status !== 'RESOLVED' && order.status !== 'IN_PROGRESS' ? `
+                            <button class="btn-act btn-start" onclick="event.stopPropagation(); updateOrderStatus('${order.ticket_id}', 'IN_PROGRESS');">
+                                <i class="fa-solid fa-person-digging"></i> Start Repair
+                            </button>
+                        ` : ''}
+
+                        ${order.status === 'IN_PROGRESS' ? `
+                            <button class="btn-act btn-resolve" onclick="event.stopPropagation(); updateOrderStatus('${order.ticket_id}', 'RESOLVED');">
+                                <i class="fa-solid fa-circle-check"></i> Complete & Close
+                            </button>
+                        ` : ''}
+
+                        ${order.status === 'RESOLVED' ? `
+                            <button class="btn-act" style="background:#1E293B; color:var(--success); border:1px solid var(--success); cursor:default;" disabled>
+                                <i class="fa-solid fa-shield-check"></i> Repaired & Audited
+                            </button>
+                        ` : ''}
+
+                        <a href="voucher.html?ticket=${order.ticket_id}" class="btn-act btn-voucher" onclick="event.stopPropagation();">
+                            <i class="fa-solid fa-file-invoice"></i> Tender Voucher
+                        </a>
+
+                        <button class="btn-act btn-nav-map" onclick="event.stopPropagation(); openDirections(${order.lat}, ${order.lng});">
+                            <i class="fa-solid fa-diamond-turn-right"></i> Navigate
+                        </button>
+                    </div>
+
+                    <!-- Inspection / Before & After Drawer -->
+                    <div class="inspection-drawer" id="drawer-${order.ticket_id}" style="display:${isSelected ? 'block' : 'none'};">
+                        <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">
+                            <i class="fa-solid fa-camera"></i> Before & After AI Inspection Audit
+                        </div>
+
+                        <div class="audit-photos-grid">
+                            <div class="photo-box">
+                                <span class="photo-tag">BEFORE (AI Sighting)</span>
+                                <img src="${order.before_img}" alt="Before Repair">
+                            </div>
+                            <div class="photo-box">
+                                <span class="photo-tag" style="background:rgba(16,185,129,0.85);">AFTER (Field Patch)</span>
+                                <img src="${order.after_img}" alt="After Repair">
+                            </div>
+                        </div>
+
+                        <div class="ai-audit-badge">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>AI Surface Audit: Level restored with 98.4% asphalt compaction confidence.</span>
                         </div>
                     </div>
                 `;
-            }).join('');
+
+                card.addEventListener('click', () => {
+                    expandedTicketId = expandedTicketId === order.ticket_id ? null : order.ticket_id;
+                    renderOrders();
+                });
+
+                container.appendChild(card);
+            });
         }
 
-        async function markStatus(ticketId, status) {
+        // Update Ticket Status
+        async function updateOrderStatus(ticketId, newStatus) {
+            const order = workOrders.find(o => o.ticket_id === ticketId);
+            if (!order) return;
+
+            order.status = newStatus;
+            renderOrders();
+
+            // Notify User
+            showToast(
+                newStatus === 'RESOLVED' ? 
+                `🎉 Ticket ${ticketId} Closed & Verified!` : 
+                `🛠️ Work started on ${ticketId}`
+            );
+
+            // Attempt live sync with Node A backend
             try {
                 await fetch(`/api/work-orders/${ticketId}/status`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: status, crew_id: "VAN-04" })
+                    body: JSON.stringify({
+                        status: newStatus,
+                        remarks: `Field update by Quick Response Van VAN-04`,
+                        crew_id: "VAN-04"
+                    })
                 });
             } catch (e) {
-                console.warn("Offline status update");
+                // Offline fallback mode active
             }
-            loadWorkOrders();
         }
 
-        function openResolveModal(ticketId) {
-            currentTicketId = ticketId;
-            document.getElementById('modal-ticket-desc').textContent = `Ticket: ${ticketId}`;
-            document.getElementById('resolve-modal').classList.add('show');
+        function openDirections(lat, lng) {
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
         }
 
-        function closeModal() {
-            document.getElementById('resolve-modal').classList.remove('show');
+        function showToast(msg) {
+            const toast = document.getElementById('toast-box');
+            document.getElementById('toast-text').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
-        async function submitResolution() {
-            const remarks = document.getElementById('modal-remarks').value;
+        // Tab Filters
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.getAttribute('data-filter');
+                renderOrders();
+            });
+        });
+
+        // Hybrid API Sync: Fetch live work orders from backend if running
+        async function syncBackendWorkOrders() {
             try {
-                await fetch(`/api/work-orders/${currentTicketId}/resolve`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: "RESOLVED", remarks: remarks, crew_id: "VAN-04" })
-                });
-            } catch (e) {
-                console.warn("Offline resolve update");
-            }
-            closeModal();
-            loadWorkOrders();
+                const res = await fetch('/api/work-orders');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        data.forEach(item => {
+                            const existing = workOrders.find(w => w.ticket_id === item.ticket_id);
+                            if (existing) {
+                                existing.status = item.status;
+                            } else {
+                                workOrders.push({
+                                    ticket_id: item.ticket_id,
+                                    hazard_type: item.hazard_type,
+                                    severity: item.severity,
+                                    location_name: item.location_name,
+                                    ward: item.dispatched_to,
+                                    lat: item.lat,
+                                    lng: item.lng,
+                                    dist_km: 1.2,
+                                    depth_cm: 8.5,
+                                    passes: item.cluster_count,
+                                    sla_hours: item.sla_hours,
+                                    status: item.status,
+                                    cost_inr: item.estimated_cost_inr || 1850,
+                                    sor_code: item.cpwd_sor_code || "16.2.1",
+                                    before_img: "image1.jpg",
+                                    after_img: "image2.jpg"
+                                });
+                            }
+                        });
+                        renderOrders();
+                    }
+                }
+            } catch (e) {}
         }
+
+        renderOrders();
+        syncBackendWorkOrders();
     </script>
 </body>
 </html>

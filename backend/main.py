@@ -1,14 +1,14 @@
 import os
 import random
-import csv
 import io
+import csv
 from datetime import datetime
 from fastapi import FastAPI, Request, HTTPException, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 
 from backend.models import (
     BusTelemetry, HazardDetection, PWDWorkOrder, DriverAdvisory,
@@ -59,8 +59,11 @@ class WorkOrderStatusUpdate(BaseModel):
     remarks: Optional[str] = "Pothole patch completed with hot DBM and compacted with vibratory roller."
     crew_id: Optional[str] = "BBMP-CREW-VAN-04"
 
+# Alias for compatibility with Node B
+TicketStatusUpdateRequest = WorkOrderStatusUpdate
+
 # =============================================================================
-# HTML Template Navigation Endpoints
+# Frontend View Routes
 # =============================================================================
 
 @app.get("/")
@@ -75,23 +78,24 @@ def read_driver_console(request: Request):
     return templates.TemplateResponse(request=request, name="driver_console.html")
 
 @app.get("/citizen")
+@app.get("/portal")
 def read_citizen_portal(request: Request):
-    """Renders the Public Citizen Road Repair Tracking Portal."""
+    """Renders the public citizen repair tracking portal."""
     return templates.TemplateResponse(request=request, name="citizen_portal.html")
 
 @app.get("/field-crew")
 @app.get("/crew")
 def read_field_crew(request: Request):
-    """Renders the Mobile Field Crew Resolution PWA."""
+    """Renders the mobile PWD field technician PWA."""
     return templates.TemplateResponse(request=request, name="field_crew.html")
 
 @app.get("/voucher")
 def read_voucher(request: Request):
-    """Renders the Official Printable Government CPWD Voucher."""
+    """Renders the official printable CPWD tender voucher."""
     return templates.TemplateResponse(request=request, name="voucher.html")
 
 # =============================================================================
-# System Health & Agent Telemetry
+# Core API & Telemetry Endpoints
 # =============================================================================
 
 @app.get("/api/health")
@@ -221,6 +225,7 @@ def update_work_order_status(ticket_id: str, req: WorkOrderStatusUpdate):
         "new_status": new_status.value,
         "resolved_at": wo.resolved_at,
         "crew_id": wo.assigned_crew_id,
+        "remarks": req.remarks,
         "work_order": wo
     }
 
