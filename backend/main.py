@@ -54,13 +54,13 @@ class DetectSimulationRequest(BaseModel):
 @app.get("/")
 def read_root(request: Request):
     """Renders the main UrbanSight AI Command Dashboard."""
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="index.html")
 
 @app.get("/driver")
 @app.get("/console")
 def read_driver_console(request: Request):
     """Renders the dedicated In-Cab Driver HUD Console UI."""
-    return templates.TemplateResponse("driver_console.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="driver_console.html")
 
 
 @app.get("/api/health")
