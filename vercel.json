@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/driver",
+      "dest": "/driver_console.html"
+    },
+    {
+      "src": "/console",
+      "dest": "/driver_console.html"
+    },
+    {
+      "src": "/citizen",
+      "dest": "/citizen_portal.html"
+    },
+    {
+      "src": "/portal",
+      "dest": "/citizen_portal.html"
+    },
+    {
+      "src": "/field-crew",
+      "dest": "/field_crew.html"
+    },
+    {
+      "src": "/crew",
+      "dest": "/field_crew.html"
+    },
+    {
+      "src": "/voucher",
+      "dest": "/voucher.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}

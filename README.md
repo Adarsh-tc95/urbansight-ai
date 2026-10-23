@@ -8,6 +8,20 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
 [![YOLOv8](https://img.shields.io/badge/AI%20Model-YOLOv8%20Nano-FF5E1E.svg)](#)
 [![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)](#)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgaganks2006-ind%2Furbansight-ai)
+[![GitHub Pages](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-00E5FF.svg)](https://gaganks2006-ind.github.io/urbansight-ai/)
+
+---
+
+## 🌐 Live Cloud Portals & Deployments
+
+| Component | Cloud URL | Description |
+| :--- | :--- | :--- |
+| 🏙️ **Smart City ICCC Command Center** | [**gaganks2006-ind.github.io/urbansight-ai**](https://gaganks2006-ind.github.io/urbansight-ai/) | Real-time Leaflet GIS tracking of bus fleets, hazard clusters, and PWD ticket queues. |
+| 🚌 **In-Cab Driver HUD Console** | [**.../driver_console.html**](https://gaganks2006-ind.github.io/urbansight-ai/driver_console.html) | Tablet HUD with animated speedometer, audio chime alert, and approaching hazard lane-merge advice. |
+| 👥 **Citizen Repair Tracking Portal** | [**.../citizen_portal.html**](https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html) | Public lookup page tracking repair stages from dashcam detection to final municipal fix. |
+| 🛠️ **Mobile Field Crew PWA** | [**.../field_crew.html**](https://gaganks2006-ind.github.io/urbansight-ai/field_crew.html) | Mobile PWA for PWD repair vans with Google Maps directions, Before/After image audits, and resolution triggers. |
+| 📄 **Official CPWD Tender Voucher** | [**.../voucher.html?ticket=PWD-OCT-0941**](https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=PWD-OCT-0941) | Government letterhead voucher with itemized SOR 2024 breakdown, 18% GST, penalty clauses, and signature blocks. |
 
 ---
 
@@ -95,7 +109,7 @@
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/<your-username>/UrbanSight-AI.git
+git clone https://github.com/gaganks2006-ind/urbansight-ai.git
 cd UrbanSight-AI
 
 # 2. Set up virtual environment
