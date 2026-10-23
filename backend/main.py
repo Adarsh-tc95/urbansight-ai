@@ -56,6 +56,13 @@ def read_root(request: Request):
     """Renders the main UrbanSight AI Command Dashboard."""
     return templates.TemplateResponse("index.html", {"request": request})
 
+@app.get("/driver")
+@app.get("/console")
+def read_driver_console(request: Request):
+    """Renders the dedicated In-Cab Driver HUD Console UI."""
+    return templates.TemplateResponse("driver_console.html", {"request": request})
+
+
 @app.get("/api/health")
 def health_check():
     """Health check endpoint for local and distributed monitoring."""
