@@ -64,6 +64,20 @@
 
 ---
 
+### 🟢 TASK-04: Public Citizen Repair Tracking Portal [COMPLETED]
+- **Assignee**: Node B (Teammate Antigravity)
+- **Target File**: `citizen_portal.html` (root) & `templates/citizen_portal.html`
+- **Objective**: Create a citizen-facing lookup page with search bar to track PWD road repair status.
+- **Requirements**:
+  1. Status Stepper: [1. Spotted by Bus Dashcam] -> [2. Multi-Pass Verified] -> [3. PWD Work Order Dispatched] -> [4. Repair In Progress] -> [5. Closed].
+  2. Ward Information: BBMP Mahadevapura Ward 85 / MCC Mysuru Ward 9.
+  3. SLA countdown timer (e.g., "38h 15m remaining").
+  4. DPDP-blurred camera snapshot preview with bounding box.
+  5. "Notify Me on WhatsApp / SMS" button mockup.
+  6. Hybrid API integration connecting to `/api/work-orders` with fallback sample dataset for static GitHub Pages.
+
+---
+
 ## 🔄 Status Tracker
 - [x] Backend 4-Agent Modular Architecture (`tests/test_pipeline.py` 21/21 passing) — Node A
 - [x] Real-time GIS Command Dashboard (`index.html`) — Node A
@@ -71,3 +85,4 @@
 - [x] TASK-01: In-Cab Driver HUD Console UI (`driver_console.html`, `templates/driver_console.html`) — Node B (Completed)
 - [x] TASK-02: Multi-Route Karnataka GPS Telemetry (`distributed/routes/*.json`) — Node B (Completed)
 - [x] TASK-03: Edge Hardware & AI Model Benchmark Suite (`distributed/edge_benchmark.py`, `BENCHMARK_RESULTS.md`) — Node B (Completed)
+- [x] TASK-04: Public Citizen Repair Tracking Portal (`citizen_portal.html`, `templates/citizen_portal.html`) — Node B (Completed)

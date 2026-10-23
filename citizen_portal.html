@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UrbanSight AI — Public Citizen Road Repair Portal | PWD Ticket Tracker</title>
+
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-void: #090D16;
+            --bg-card: #0F172A;
+            --bg-card-hover: #1E293B;
+            --bg-panel: #111827;
+            --border-color: #1E293B;
+            --border-glow: rgba(0, 229, 255, 0.25);
+
+            --primary: #00E5FF;
+            --primary-glow: rgba(0, 229, 255, 0.4);
+            --accent: #FF5E1E;
+            --accent-glow: rgba(255, 94, 30, 0.4);
+            --warning: #F59E0B;
+            --warning-glow: rgba(245, 158, 11, 0.4);
+            --danger: #EF4444;
+            --danger-glow: rgba(239, 68, 68, 0.45);
+            --success: #10B981;
+            --success-glow: rgba(16, 185, 129, 0.35);
+            --purple: #8B5CF6;
+
+            --text-primary: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+
+            --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-heading);
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* Portal Header */
+        .portal-header {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 2px solid var(--border-color);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .portal-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .portal-badge {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, #00E5FF22, #00E5FF44);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .portal-title-block h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.3px;
+        }
+
+        .portal-title-block p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .pill-tag {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .pill-cyan { background: rgba(0, 229, 255, 0.15); color: var(--primary); border: 1px solid var(--primary); }
+        .pill-green { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .pill-amber { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+        .pill-red { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+        .pill-purple { background: rgba(139, 92, 246, 0.15); color: var(--purple); border: 1px solid var(--purple); }
+
+        .header-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-portal {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-portal:hover {
+            background: #334155;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Hero Search Section */
+        .hero-search-section {
+            background: radial-gradient(circle at 50% 20%, rgba(0, 229, 255, 0.08) 0%, transparent 60%);
+            padding: 48px 24px 32px;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-headline {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+        }
+
+        .hero-headline span {
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .hero-sub {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Search Bar */
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 6px 10px 6px 18px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+            margin-bottom: 16px;
+        }
+
+        .search-container:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+
+        .search-icon {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            margin-right: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #FFFFFF;
+            font-size: 1.05rem;
+            font-family: var(--font-mono);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-dim);
+            font-family: var(--font-heading);
+            font-size: 0.95rem;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #00E5FF, #00B4D8);
+            color: #090D16;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* Sample Quick-Click Pills */
+        .sample-pills-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .quick-pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-pill:hover {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.03);
+        }
+
+        /* Main Content Container */
+        .portal-content {
+            max-width: 1100px;
+            margin: 0 auto 40px;
+            padding: 0 24px;
+            width: 100%;
+        }
+
+        /* Ticket Result Card */
+        .ticket-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .ticket-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--purple), var(--success));
+        }
+
+        /* Ticket Top Summary Row */
+        .ticket-top-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 24px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .ticket-id-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .ticket-id-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+            letter-spacing: 0.5px;
+        }
+
+        .ticket-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            color: #FFFFFF;
+            letter-spacing: -0.5px;
+        }
+
+        .ticket-hazard-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .ticket-meta-badges {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* 5-Stage Status Stepper */
+        .stepper-section {
+            margin: 36px 0;
+        }
+
+        .stepper-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stepper-track {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .stepper-line {
+            position: absolute;
+            top: 24px;
+            left: 5%;
+            right: 5%;
+            height: 4px;
+            background: #1E293B;
+            z-index: 1;
+        }
+
+        .stepper-line-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--primary));
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .step-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            width: 18%;
+        }
+
+        .step-bubble {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #1E293B;
+            border: 3px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            transition: all 0.3s;
+            margin-bottom: 12px;
+        }
+
+        .step-node.completed .step-bubble {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--success);
+            color: var(--success);
+            box-shadow: 0 0 15px var(--success-glow);
+        }
+
+        .step-node.active .step-bubble {
+            background: rgba(0, 229, 255, 0.2);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+            animation: pulse-active 1.5s infinite;
+        }
+
+        @keyframes pulse-active {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
+            50% { transform: scale(1.1); box-shadow: 0 0 25px var(--primary-glow); }
+            100% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
+        }
+
+        .step-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 4px;
+        }
+
+        .step-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            line-height: 1.3;
+        }
+
+        /* Two-Column Grid: Details & Camera Preview */
+        .ticket-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 28px;
+        }
+
+        .detail-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .detail-panel-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 0.88rem;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-lbl {
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-val {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            text-align: right;
+        }
+
+        /* SLA Timer Box */
+        .sla-timer-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(15, 23, 42, 0.8));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sla-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sla-lbl {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--warning);
+            font-family: var(--font-mono);
+        }
+
+        .sla-countdown {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            font-family: var(--font-mono);
+        }
+
+        .sla-badge {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+
+        /* DPDP Blurred Camera Snapshot Preview */
+        .snapshot-container {
+            width: 100%;
+            height: 250px;
+            background: #000;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .snapshot-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+        }
+
+        /* Simulated Bounding Box */
+        .bbox-overlay {
+            position: absolute;
+            top: 45%;
+            left: 35%;
+            width: 32%;
+            height: 38%;
+            border: 2px solid var(--danger);
+            background: rgba(239, 68, 68, 0.15);
+            box-shadow: 0 0 15px var(--danger-glow);
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        .bbox-label {
+            position: absolute;
+            top: -24px;
+            left: 0;
+            background: var(--danger);
+            color: #FFFFFF;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* DPDP Privacy Badge Overlay */
+        .dpdp-privacy-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(16, 185, 129, 0.9);
+            color: #FFFFFF;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            backdrop-filter: blur(4px);
+            z-index: 5;
+        }
+
+        .camera-telemetry-tag {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-family: var(--font-mono);
+            z-index: 5;
+        }
+
+        /* Notification & Citizen Action Card */
+        .notification-card {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.05), rgba(15, 23, 42, 0.95));
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .notif-text h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notif-text p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .notif-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .phone-input {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: #FFFFFF;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+            outline: none;
+            width: 190px;
+        }
+
+        .phone-input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-wa {
+            background: #25D366;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-wa:hover {
+            background: #1EBE5D;
+            transform: translateY(-1px);
+        }
+
+        .btn-sms {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: #FFFFFF;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-sms:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Success Toast */
+        .toast-popup {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg-card);
+            border: 2px solid var(--success);
+            color: #FFFFFF;
+            padding: 16px 22px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            transform: translateY(120%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast-popup.show {
+            transform: translateY(0);
+        }
+
+        /* Portal Footer */
+        .portal-footer {
+            margin-top: auto;
+            background: #0B0F19;
+            border-top: 1px solid var(--border-color);
+            padding: 20px 24px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .ticket-grid {
+                grid-template-columns: 1fr;
+            }
+            .stepper-track {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            .stepper-line {
+                display: none;
+            }
+            .step-node {
+                width: 100%;
+                flex-direction: row;
+                text-align: left;
+                gap: 16px;
+            }
+            .step-bubble {
+                margin-bottom: 0;
+            }
+            .notification-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Portal Header -->
+    <header class="portal-header">
+        <div class="portal-brand">
+            <div class="portal-badge">
+                <i class="fa-solid fa-road-circle-check"></i>
+            </div>
+            <div class="portal-title-block">
+                <h1>
+                    UrbanSight AI · Citizen Road Repair Portal
+                    <span class="pill-tag pill-cyan">PUBLIC ACCESS</span>
+                </h1>
+                <p>Track Municipal PWD Road Work Orders & Fleet Perception Status</p>
+            </div>
+        </div>
+
+        <div class="header-nav-links">
+            <a href="index.html" class="btn-portal" title="Open Master ICCC Command System">
+                <i class="fa-solid fa-gauge"></i> ICCC Command Center
+            </a>
+            <a href="driver_console.html" class="btn-portal" title="Open In-Cab Driver Tablet HUD">
+                <i class="fa-solid fa-tablet-screen-button"></i> Driver HUD
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Search Section -->
+    <section class="hero-search-section">
+        <h2 class="hero-headline">Track <span>PWD Road Repair</span> Status</h2>
+        <p class="hero-sub">
+            Real-time verification of roadway distress reported by BMTC transit dashcams, verified via multi-pass DBSCAN clustering, and dispatched under the CPWD Schedule of Rates.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input 
+                type="text" 
+                class="search-input" 
+                id="search-ticket-input" 
+                placeholder="Enter PWD Ticket ID (e.g., PWD-OCT-0941, PWD-OCT-0882)..."
+                autocomplete="off"
+                spellcheck="false"
+            />
+            <button class="btn-search" id="btn-search">
+                <i class="fa-solid fa-arrow-right"></i> Track Ticket
+            </button>
+        </div>
+
+        <!-- Sample Quick Click Pills -->
+        <div class="sample-pills-row">
+            <span>Quick Samples:</span>
+            <button class="quick-pill" data-ticket="PWD-2026-OCT-0941">📍 PWD-OCT-0941 (Bellandur Pothole)</button>
+            <button class="quick-pill" data-ticket="PWD-2026-OCT-0882">🌊 PWD-OCT-0882 (Silk Board Waterlogging)</button>
+            <button class="quick-pill" data-ticket="PWD-2026-OCT-0715">🛠️ PWD-OCT-0715 (VVCE Mysuru Road)</button>
+            <button class="quick-pill" data-ticket="PWD-2026-OCT-0604">✅ PWD-OCT-0604 (Hebbal Crack - Closed)</button>
+        </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <main class="portal-content">
+
+        <!-- Ticket Result Card -->
+        <article class="ticket-card" id="ticket-result-card">
+
+            <!-- Top Row: Ticket ID, Severity, Status -->
+            <div class="ticket-top-row">
+                <div class="ticket-id-group">
+                    <span class="ticket-id-tag">Official Municipal Work Order</span>
+                    <div class="ticket-number" id="ticket-number-display">PWD-2026-OCT-0941</div>
+                    <div class="ticket-hazard-title" id="ticket-hazard-title">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>CRITICAL POTHOLE (9.4cm Depth)</span>
+                    </div>
+                </div>
+
+                <div class="ticket-meta-badges">
+                    <span class="pill-tag pill-red" id="ticket-severity-badge">CRITICAL P1</span>
+                    <span class="pill-tag pill-cyan" id="ticket-ward-badge">BBMP WARD 85</span>
+                    <span class="pill-tag pill-green" id="ticket-privacy-badge"><i class="fa-solid fa-shield"></i> DPDP COMPLIANT</span>
+                </div>
+            </div>
+
+            <!-- 5-Stage Status Stepper -->
+            <section class="stepper-section">
+                <div class="stepper-title">
+                    <i class="fa-solid fa-list-check" style="color:var(--primary);"></i>
+                    <span>Autonomous Resolution Pipeline Status</span>
+                </div>
+
+                <div class="stepper-track">
+                    <div class="stepper-line">
+                        <div class="stepper-line-fill" id="stepper-fill" style="width: 50%;"></div>
+                    </div>
+
+                    <!-- Step 1: Spotted by Bus Dashcam -->
+                    <div class="step-node completed" id="step-1">
+                        <div class="step-bubble"><i class="fa-solid fa-video"></i></div>
+                        <div class="step-name">1. Spotted by Bus</div>
+                        <div class="step-desc">YOLOv8 Edge AI<br><span id="step-1-time">Oct 7, 14:02 IST</span></div>
+                    </div>
+
+                    <!-- Step 2: Multi-Pass Verified -->
+                    <div class="step-node completed" id="step-2">
+                        <div class="step-bubble"><i class="fa-solid fa-circle-nodes"></i></div>
+                        <div class="step-name">2. Multi-Pass Verified</div>
+                        <div class="step-desc">DBSCAN Clustering<br><span id="step-2-time">14 Fleet Passes</span></div>
+                    </div>
+
+                    <!-- Step 3: PWD Work Order Dispatched -->
+                    <div class="step-node active" id="step-3">
+                        <div class="step-bubble"><i class="fa-solid fa-file-invoice"></i></div>
+                        <div class="step-name">3. PWD Dispatched</div>
+                        <div class="step-desc">CPWD SOR Code<br><span id="step-3-time">Ticket Dispatched</span></div>
+                    </div>
+
+                    <!-- Step 4: Repair In Progress -->
+                    <div class="step-node" id="step-4">
+                        <div class="step-bubble"><i class="fa-solid fa-person-digging"></i></div>
+                        <div class="step-name">4. In Progress</div>
+                        <div class="step-desc">Field Crew Assigned<br><span id="step-4-time">Pending Site Arrival</span></div>
+                    </div>
+
+                    <!-- Step 5: Closed / Repaired -->
+                    <div class="step-node" id="step-5">
+                        <div class="step-bubble"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="step-name">5. Closed & Verified</div>
+                        <div class="step-desc">Post-Repair Audit<br><span id="step-5-time">Final Inspection</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Two-Column Grid: Details & Camera Preview -->
+            <div class="ticket-grid">
+
+                <!-- Left Column: Municipal Details & SLA -->
+                <div class="detail-panel">
+                    <div class="detail-panel-title">
+                        <i class="fa-solid fa-landmark" style="color:var(--primary);"></i>
+                        <span>Municipal Ward & Jurisdiction</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-lbl"><i class="fa-solid fa-map-pin"></i> Location Name</span>
+                        <span class="detail-val" id="detail-loc">Outer Ring Road near Bellandur Flyover Pillar 34</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-lbl"><i class="fa-solid fa-building-columns"></i> Ward & Division</span>
+                        <span class="detail-val" id="detail-ward">BBMP Mahadevapura Ward 85 / PWD Div 4</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-lbl"><i class="fa-solid fa-crosshairs"></i> GPS Coordinates</span>
+                        <span class="detail-val" id="detail-coords">12.9250° N, 77.6760° E</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-lbl"><i class="fa-solid fa-bus"></i> Verification Fleet</span>
+                        <span class="detail-val" id="detail-fleet">BMTC-KA01-E542 (14 Confirmed Passes)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-lbl"><i class="fa-solid fa-calculator"></i> CPWD Repair Estimate</span>
+                        <span class="detail-val" id="detail-cost" style="color:var(--primary);">₹1,850 INR (SOR Code 16.2.1)</span>
+                    </div>
+
+                    <!-- SLA Countdown Timer Box -->
+                    <div class="sla-timer-box">
+                        <div class="sla-left">
+                            <span class="sla-lbl"><i class="fa-regular fa-clock"></i> Resolution SLA Timer</span>
+                            <div class="sla-countdown" id="sla-countdown-display">38h 15m 24s</div>
+                            <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">
+                                Maximum SLA Limit: <span id="sla-total-hours">48</span> Hours
+                            </span>
+                        </div>
+                        <div class="sla-badge" id="sla-status-badge">
+                            ON TRACK (&lt;24h)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: DPDP Camera Snapshot Preview -->
+                <div class="detail-panel">
+                    <div class="detail-panel-title">
+                        <i class="fa-solid fa-camera" style="color:var(--primary);"></i>
+                        <span>Edge Camera Snapshot & Privacy Guard</span>
+                    </div>
+
+                    <div class="snapshot-container">
+                        <!-- Privacy Badge -->
+                        <div class="dpdp-privacy-badge">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <span>DPDP Act 2023 §2(t) Active (Zero-Persistence Blur)</span>
+                        </div>
+
+                        <!-- Real Dashcam Photo -->
+                        <img src="image1.jpg" alt="Road Surface Distress" class="snapshot-img" id="snapshot-img" onerror="this.src='image2.jpg';">
+
+                        <!-- Detection Bounding Box -->
+                        <div class="bbox-overlay" id="bbox-box">
+                            <div class="bbox-label" id="bbox-label">POTHOLE: 9.4cm (96.5%)</div>
+                        </div>
+
+                        <!-- Camera Telemetry -->
+                        <div class="camera-telemetry-tag" id="cam-telemetry-tag">
+                            CAM-01 [1080p @ 30 FPS] · CONF: 0.965
+                        </div>
+                    </div>
+
+                    <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">
+                        <span><i class="fa-solid fa-lock" style="color:var(--success);"></i> License Plates & Faces Anonymized in Volatile RAM</span>
+                        <a href="https://github.com/gaganks2006-ind/urbansight-ai" target="_blank" style="color:var(--primary); text-decoration:none;">
+                            Audit Log <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </article>
+
+        <!-- Citizen SMS / WhatsApp Notification Subscription Card -->
+        <section class="notification-card">
+            <div class="notif-text">
+                <h3><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> Stay Updated on this Road Repair</h3>
+                <p>Receive instant SMS & WhatsApp notifications when the municipal crew arrives on-site and closes the ticket.</p>
+            </div>
+
+            <form class="notif-form" id="notif-form" onsubmit="event.preventDefault(); subscribeNotification();">
+                <input type="tel" class="phone-input" id="subscriber-phone" placeholder="+91 98765 43210" required />
+                <button type="submit" class="btn-wa">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp Alerts
+                </button>
+                <button type="button" class="btn-sms" onclick="subscribeNotification('SMS')">
+                    <i class="fa-solid fa-comment-sms"></i> SMS
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Notification Toast Popup -->
+    <div class="toast-popup" id="toast-popup">
+        <i class="fa-solid fa-circle-check" style="font-size:1.4rem; color:var(--success);"></i>
+        <div>
+            <div style="font-weight:700;" id="toast-title">Notification Subscribed!</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);" id="toast-msg">
+                Live repair status updates will be sent to your phone.
+            </div>
+        </div>
+    </div>
+
+    <!-- Portal Footer -->
+    <footer class="portal-footer">
+        <p>UrbanSight AI — Smart Cities & Mobility Track (Problem Statement #07 · SIH26124) | VVCE Mysuru</p>
+        <p style="margin-top:4px; font-size:0.72rem; color:var(--text-dim);">
+            Automated PWD Dispatch conforms to CPWD Schedule of Rates 2024 & Digital Personal Data Protection Act 2023 §2(t).
+        </p>
+    </footer>
+
+    <!-- Client-Side State, Dynamic Search, and Hybrid Polling -->
+    <script>
+        // Sample static fallback dataset for offline and GitHub Pages view
+        const SAMPLE_TICKETS = {
+            "PWD-2026-OCT-0941": {
+                ticket_id: "PWD-2026-OCT-0941",
+                short_id: "PWD-OCT-0941",
+                hazard_type: "POTHOLE",
+                severity: "CRITICAL_P1",
+                hazard_name: "CRITICAL POTHOLE (9.4cm Depth)",
+                location_name: "Outer Ring Road near Bellandur Flyover Pillar 34",
+                ward: "BBMP Mahadevapura Ward 85 / PWD Div 4",
+                lat: 12.9250,
+                lng: 77.6760,
+                cluster_count: 14,
+                fleet_bus: "BMTC-KA01-E542",
+                cpwd_sor: "₹1,850 INR (SOR Code 16.2.1 - Bituminous Mastic Patch)",
+                sla_hours: 48,
+                remaining_sec: 137724, // ~38h 15m
+                status: "AUTO_DISPATCHED",
+                step: 3,
+                step1_time: "Oct 7, 14:02 IST",
+                step2_time: "14 Fleet Passes",
+                step3_time: "Oct 7, 14:10 IST",
+                step4_time: "Pending Crew Arrival",
+                step5_time: "Scheduled Oct 9",
+                image_src: "image1.jpg",
+                bbox_label: "POTHOLE: 9.4cm (96.5%)",
+                bbox_style: { top: "45%", left: "35%", width: "32%", height: "38%" }
+            },
+            "PWD-2026-OCT-0882": {
+                ticket_id: "PWD-2026-OCT-0882",
+                short_id: "PWD-OCT-0882",
+                hazard_type: "WATERLOGGING",
+                severity: "HIGH_P2",
+                hazard_name: "WATERLOGGING (15cm Hydroplaning Puddle)",
+                location_name: "Silk Board Underpass Southbound Service Arterial",
+                ward: "BBMP Bommanahalli Ward 174 / Stormwater Division",
+                lat: 12.9125,
+                lng: 77.6395,
+                cluster_count: 8,
+                fleet_bus: "BMTC-KA57-E912",
+                cpwd_sor: "₹3,400 INR (SOR Code 12.4 - High-Flow Sump Pump Outflow)",
+                sla_hours: 24,
+                remaining_sec: 58200, // ~16h 10m
+                status: "CREW_ASSIGNED",
+                step: 4,
+                step1_time: "Oct 7, 13:30 IST",
+                step2_time: "8 Fleet Passes",
+                step3_time: "Oct 7, 13:45 IST",
+                step4_time: "Crew En Route (Van #KA01-G82)",
+                step5_time: "Pending Clearance",
+                image_src: "image2.jpg",
+                bbox_label: "WATERLOGGING: 15cm (94.2%)",
+                bbox_style: { top: "40%", left: "25%", width: "50%", height: "42%" }
+            },
+            "PWD-2026-OCT-0715": {
+                ticket_id: "PWD-2026-OCT-0715",
+                short_id: "PWD-OCT-0715",
+                hazard_type: "POTHOLE",
+                severity: "CRITICAL_P1",
+                hazard_name: "CRITICAL POTHOLE (8.6cm Depth)",
+                location_name: "VVCE Ring Road Junction, Gokulam, Mysuru",
+                ward: "MCC Mysuru Engineering Ward 9 / MUDA Zone",
+                lat: 12.3190,
+                lng: 76.6450,
+                cluster_count: 6,
+                fleet_bus: "KSRTC-KA09-E102",
+                cpwd_sor: "₹1,620 INR (SOR Code 16.2 - Cold Asphalt Rapid Patch)",
+                sla_hours: 48,
+                remaining_sec: 76400, // ~21h 13m
+                status: "IN_PROGRESS",
+                step: 4,
+                step1_time: "Oct 7, 12:15 IST",
+                step2_time: "6 Fleet Passes",
+                step3_time: "Oct 7, 12:30 IST",
+                step4_time: "Asphalt Compactor Active",
+                step5_time: "Finishing Layer",
+                image_src: "image1.jpg",
+                bbox_label: "POTHOLE: 8.6cm (97.1%)",
+                bbox_style: { top: "50%", left: "30%", width: "35%", height: "35%" }
+            },
+            "PWD-2026-OCT-0604": {
+                ticket_id: "PWD-2026-OCT-0604",
+                short_id: "PWD-OCT-0604",
+                hazard_type: "ROAD_CRACK",
+                severity: "MEDIUM_P3",
+                hazard_name: "TRANSVERSE ROAD CRACK (4.5m Length)",
+                location_name: "Hebbal Flyover Kempapura Bus Bay Ramp",
+                ward: "BBMP East / Yelahanka Division",
+                lat: 13.0358,
+                lng: 77.5970,
+                cluster_count: 9,
+                fleet_bus: "BMTC-KA03-E304",
+                cpwd_sor: "₹950 INR (SOR Code 14.1 - Polymeric Crack Sealant)",
+                sla_hours: 72,
+                remaining_sec: 0,
+                status: "RESOLVED",
+                step: 5,
+                step1_time: "Oct 5, 09:20 IST",
+                step2_time: "9 Fleet Passes",
+                step3_time: "Oct 5, 10:00 IST",
+                step4_time: "Oct 6, 11:30 IST",
+                step5_time: "Oct 6, 16:45 IST (Resolved)",
+                image_src: "image2.jpg",
+                bbox_label: "CRACK REPAIRED (Audit PASS)",
+                bbox_style: { top: "45%", left: "20%", width: "60%", height: "30%" }
+            }
+        };
+
+        let currentRemainingSec = 137724;
+        let slaInterval = null;
+
+        // Render Ticket
+        function renderTicket(ticket) {
+            document.getElementById('ticket-number-display').textContent = ticket.ticket_id;
+            document.getElementById('ticket-hazard-title').innerHTML = `
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>${ticket.hazard_name}</span>
+            `;
+
+            // Severity Badge
+            const sevBadge = document.getElementById('ticket-severity-badge');
+            sevBadge.textContent = ticket.severity.replace('_', ' ');
+            if (ticket.severity.includes('P1')) {
+                sevBadge.className = 'pill-tag pill-red';
+            } else if (ticket.severity.includes('P2')) {
+                sevBadge.className = 'pill-tag pill-amber';
+            } else {
+                sevBadge.className = 'pill-tag pill-cyan';
+            }
+
+            // Ward
+            document.getElementById('ticket-ward-badge').textContent = ticket.ward.split('/')[0].trim();
+
+            // Details
+            document.getElementById('detail-loc').textContent = ticket.location_name;
+            document.getElementById('detail-ward').textContent = ticket.ward;
+            document.getElementById('detail-coords').textContent = `${ticket.lat.toFixed(4)}° N, ${ticket.lng.toFixed(4)}° E`;
+            document.getElementById('detail-fleet').textContent = `${ticket.fleet_bus} (${ticket.cluster_count} Confirmed Passes)`;
+            document.getElementById('detail-cost').textContent = ticket.cpwd_sor;
+            document.getElementById('sla-total-hours').textContent = ticket.sla_hours;
+
+            // Step Times
+            document.getElementById('step-1-time').textContent = ticket.step1_time;
+            document.getElementById('step-2-time').textContent = ticket.step2_time;
+            document.getElementById('step-3-time').textContent = ticket.step3_time;
+            document.getElementById('step-4-time').textContent = ticket.step4_time;
+            document.getElementById('step-5-time').textContent = ticket.step5_time;
+
+            // Stepper Nodes
+            const currentStep = ticket.step;
+            for (let i = 1; i <= 5; i++) {
+                const node = document.getElementById(`step-${i}`);
+                node.className = 'step-node';
+                if (i < currentStep) {
+                    node.classList.add('completed');
+                } else if (i === currentStep) {
+                    if (currentStep === 5) {
+                        node.classList.add('completed');
+                    } else {
+                        node.classList.add('active');
+                    }
+                }
+            }
+
+            // Stepper Line Fill
+            const percent = ((currentStep - 1) / 4) * 100;
+            document.getElementById('stepper-fill').style.width = percent + '%';
+
+            // Snapshot & Bbox
+            document.getElementById('snapshot-img').src = ticket.image_src;
+            const bbox = document.getElementById('bbox-box');
+            bbox.style.top = ticket.bbox_style.top;
+            bbox.style.left = ticket.bbox_style.left;
+            bbox.style.width = ticket.bbox_style.width;
+            bbox.style.height = ticket.bbox_style.height;
+            document.getElementById('bbox-label').textContent = ticket.bbox_label;
+
+            // SLA Countdown
+            currentRemainingSec = ticket.remaining_sec;
+            updateSlaTimerDisplay();
+            if (slaInterval) clearInterval(slaInterval);
+            if (ticket.status !== 'RESOLVED' && currentRemainingSec > 0) {
+                slaInterval = setInterval(() => {
+                    currentRemainingSec = Math.max(0, currentRemainingSec - 1);
+                    updateSlaTimerDisplay();
+                }, 1000);
+            }
+        }
+
+        function updateSlaTimerDisplay() {
+            const display = document.getElementById('sla-countdown-display');
+            const badge = document.getElementById('sla-status-badge');
+
+            if (currentRemainingSec <= 0) {
+                display.textContent = "COMPLETED / CLOSED";
+                display.style.color = "var(--success)";
+                badge.textContent = "SLA ACHIEVED";
+                badge.style.background = "rgba(16, 185, 129, 0.2)";
+                badge.style.color = "var(--success)";
+                return;
+            }
+
+            const h = Math.floor(currentRemainingSec / 3600);
+            const m = Math.floor((currentRemainingSec % 3600) / 60);
+            const s = currentRemainingSec % 60;
+
+            display.textContent = `${h}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
+            display.style.color = "#FFFFFF";
+
+            if (h < 12) {
+                badge.textContent = "EXPEDITED SLA (<12h)";
+                badge.style.background = "rgba(239, 68, 68, 0.2)";
+                badge.style.color = "var(--danger)";
+            } else {
+                badge.textContent = "ON TRACK (<24h)";
+                badge.style.background = "rgba(245, 158, 11, 0.2)";
+                badge.style.color = "var(--warning)";
+            }
+        }
+
+        // Search logic
+        function searchTicket(query) {
+            if (!query) return;
+            const cleanQuery = query.trim().toUpperCase();
+
+            // Match sample key or substring
+            let matched = null;
+            for (const key in SAMPLE_TICKETS) {
+                const item = SAMPLE_TICKETS[key];
+                if (
+                    item.ticket_id.toUpperCase().includes(cleanQuery) ||
+                    item.short_id.toUpperCase().includes(cleanQuery) ||
+                    item.location_name.toUpperCase().includes(cleanQuery) ||
+                    item.hazard_type.toUpperCase().includes(cleanQuery)
+                ) {
+                    matched = item;
+                    break;
+                }
+            }
+
+            if (matched) {
+                renderTicket(matched);
+                document.getElementById('ticket-result-card').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showToast("Ticket Not Found", `No matching ticket for "${query}". Try sample tickets.`);
+            }
+        }
+
+        // Quick Click Pills
+        document.querySelectorAll('.quick-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tid = btn.getAttribute('data-ticket');
+                document.getElementById('search-ticket-input').value = tid;
+                searchTicket(tid);
+            });
+        });
+
+        // Search Input listeners
+        document.getElementById('btn-search').addEventListener('click', () => {
+            searchTicket(document.getElementById('search-ticket-input').value);
+        });
+
+        document.getElementById('search-ticket-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                searchTicket(e.target.value);
+            }
+        });
+
+        // Toast feedback
+        function showToast(title, msg) {
+            const toast = document.getElementById('toast-popup');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-msg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3800);
+        }
+
+        function subscribeNotification(channel = 'WhatsApp') {
+            const phone = document.getElementById('subscriber-phone').value || '+91 98765 43210';
+            showToast(
+                `Subscribed via ${channel}!`,
+                `Live repair updates for ${document.getElementById('ticket-number-display').textContent} will be sent to ${phone}.`
+            );
+        }
+
+        // Hybrid API Fetch: Load live work orders if FastAPI backend is available
+        async function loadBackendWorkOrders() {
+            try {
+                const res = await fetch('/api/work-orders');
+                if (res.ok) {
+                    const orders = await res.json();
+                    if (orders && orders.length > 0) {
+                        orders.forEach(wo => {
+                            if (!SAMPLE_TICKETS[wo.ticket_id]) {
+                                SAMPLE_TICKETS[wo.ticket_id] = {
+                                    ticket_id: wo.ticket_id,
+                                    short_id: wo.ticket_id.replace('2026-', ''),
+                                    hazard_type: wo.hazard_type,
+                                    severity: wo.severity,
+                                    hazard_name: `${wo.hazard_type.replace('_', ' ')} (${wo.severity})`,
+                                    location_name: wo.location_name,
+                                    ward: wo.dispatched_to,
+                                    lat: wo.lat,
+                                    lng: wo.lng,
+                                    cluster_count: wo.cluster_count,
+                                    fleet_bus: "BMTC Transit Grid",
+                                    cpwd_sor: wo.estimated_cost_inr ? `₹${wo.estimated_cost_inr} INR` : "CPWD SOR Standard Rate",
+                                    sla_hours: wo.sla_hours,
+                                    remaining_sec: wo.sla_hours * 3600,
+                                    status: wo.status,
+                                    step: wo.status === 'RESOLVED' ? 5 : (wo.status === 'IN_PROGRESS' ? 4 : 3),
+                                    step1_time: "Auto-Logged",
+                                    step2_time: `${wo.cluster_count} Passes`,
+                                    step3_time: wo.created_at,
+                                    step4_time: "Field Crew Assigned",
+                                    step5_time: "Pending Verification",
+                                    image_src: "image1.jpg",
+                                    bbox_label: `${wo.hazard_type} (Detected)`,
+                                    bbox_style: { top: "45%", left: "35%", width: "32%", height: "38%" }
+                                };
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                // Offline fallback is active by default
+            }
+        }
+
+        // Initialize with default ticket
+        renderTicket(SAMPLE_TICKETS["PWD-2026-OCT-0941"]);
+        loadBackendWorkOrders();
+    </script>
+</body>
+</html>
