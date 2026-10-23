@@ -552,5 +552,31 @@ class TestEndToEndPipelineOrchestrator(unittest.TestCase):
         self.assertEqual(wo.assigned_crew_id, "CREW-VAN-04")
 
 
+class TestPCIEngine(unittest.TestCase):
+    """Verifies ASTM D6433 Pavement Condition Index (PCI) and Markov degradation decay forecasting."""
+
+    def setUp(self):
+        from backend.agents.pci_engine import PCIEngine
+        self.pci = PCIEngine()
+
+    def test_corridor_forecasts(self):
+        corridors = self.pci.get_corridor_forecasts(days=0)
+        self.assertGreater(len(corridors), 0)
+        c0 = corridors[0]
+        self.assertIn("projected_pci", c0)
+        self.assertIn("rating_band", c0)
+        self.assertIn("color", c0)
+
+    def test_decay_progression(self):
+        d0 = self.pci.get_corridor_forecasts(days=0)[0]["projected_pci"]
+        d30 = self.pci.get_corridor_forecasts(days=30)[0]["projected_pci"]
+        self.assertLess(d30, d0)
+
+    def test_network_summary(self):
+        summary = self.pci.get_network_governance_summary(days=0)
+        self.assertIn("average_network_pci", summary)
+        self.assertIn("economic_roi", summary)
+
+
 if __name__ == '__main__':
     unittest.main()

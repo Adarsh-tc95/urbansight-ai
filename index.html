@@ -609,6 +609,55 @@
             .command-grid-layout { grid-template-columns: 1fr; }
             .dashcam-split-panel { grid-template-columns: 1fr; }
         }
+
+        /* PCI Degradation Floating Controls (TASK-07) */
+        .map-pci-forecast-bar {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 500;
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+        .forecast-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            color: var(--primary);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-decay-step {
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: var(--text-muted);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-decay-step:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .btn-decay-step.active {
+            background: rgba(0, 229, 255, 0.2);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
     </style>
 </head>
 <body>
@@ -654,6 +703,15 @@
             <button class="btn btn-outline" id="btn-driver-alert">
                 <i class="fa-solid fa-bell"></i> Alert
             </button>
+            <a href="citizen_portal.html" target="_blank" class="btn btn-outline" title="Citizen Repair Tracking Portal">
+                <i class="fa-solid fa-users"></i> Citizen
+            </a>
+            <a href="field_crew.html" target="_blank" class="btn btn-outline" title="Field Crew Repair PWA">
+                <i class="fa-solid fa-wrench"></i> Field Crew
+            </a>
+            <a href="voucher.html" target="_blank" class="btn btn-outline" title="CPWD Official Tender Voucher">
+                <i class="fa-solid fa-file-invoice"></i> Voucher
+            </a>
             <a href="final.md" target="_blank" class="btn btn-outline">
                 <i class="fa-regular fa-file-lines"></i> PPT
             </a>
@@ -720,12 +778,22 @@
                 <div class="map-viewport">
                     <div id="gis-map"></div>
                     
+                    <!-- ASTM D6433 PCI Predictive Degradation Forecast Bar -->
+                    <div class="map-pci-forecast-bar">
+                        <span class="forecast-label"><i class="fa-solid fa-chart-line"></i> ASTM D6433 PCI:</span>
+                        <button class="btn-decay-step active" id="btn-decay-0" data-days="0">Day 0 (Now)</button>
+                        <button class="btn-decay-step" id="btn-decay-14" data-days="14">+14 Days</button>
+                        <button class="btn-decay-step" id="btn-decay-30" data-days="30">+30 Days</button>
+                    </div>
+                    
                     <div class="map-floating-legend">
                         <div style="font-weight:700; margin-bottom:2px;">MAP OVERLAY KEY</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#00E5FF;"></span> BMTC/KSRTC Buses (30 FPS)</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#EF4444;"></span> Critical Potholes (P1)</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#3B82F6;"></span> Severe Waterlogging (P2)</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#8B5CF6;"></span> Live Traffic Chokepoint (P3)</div>
+                        <div class="legend-item" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:4px; margin-top:4px;"><span class="legend-dot" style="background:#10B981;"></span> PCI Good (80–100)</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#F97316;"></span> PCI Poor / Decay Risk (&lt;65)</div>
                     </div>
                 </div>
             </div>
@@ -941,7 +1009,8 @@
                 { time: "19:53:35", agent: "Agent 4: Fleet Advisory", text: "Pushed WebSocket warning alert to oncoming buses on Bellandur corridor." }
             ],
             settings: { privacyBlur: true },
-            map: null
+            map: null,
+            pciLayerGroup: null
         };
 
         function initClock() {
@@ -969,6 +1038,7 @@
 
             renderHazardsOnMap();
             renderBusesOnMap();
+            renderPCIHeatmap(0);
         }
 
         function renderHazardsOnMap() {
@@ -1047,6 +1117,157 @@
                         </div>
                     `)
                     .addTo(state.map);
+            });
+        }
+
+
+        const FALLBACK_PCI_CORRIDORS = [
+            {
+                corridor_id: "CORR-01",
+                name: "Outer Ring Road: Marathahalli ↔ Bellandur EcoSpace",
+                jurisdiction: "BBMP Mahadevapura Ward 85",
+                coordinates: [
+                    [12.9560, 77.7010],
+                    [12.9480, 77.6965],
+                    [12.9410, 77.6900],
+                    [12.9350, 77.6820],
+                    [12.9260, 77.6765],
+                    [12.9240, 77.6730]
+                ],
+                base_pci: 58.0,
+                decay_rate_k: 0.019,
+                distress_items: ["3 Potholes (>8cm)", "2 Fatigue Cracks", "1 Flood Puddle"]
+            },
+            {
+                corridor_id: "CORR-02",
+                name: "Central Silk Board Junction ↔ HSR Layout Sector 1",
+                jurisdiction: "BBMP South Ward 142",
+                coordinates: [
+                    [12.9172, 77.6228],
+                    [12.9174, 77.6280],
+                    [12.9178, 77.6365],
+                    [12.9180, 77.6410]
+                ],
+                base_pci: 44.0,
+                decay_rate_k: 0.024,
+                distress_items: ["4 Deep Potholes (9.4cm)", "High Camber Waterlogging"]
+            },
+            {
+                corridor_id: "CORR-03",
+                name: "Electronic City Elevated Tollway Service Approach",
+                jurisdiction: "BBMP Bommanahalli / ELCITA",
+                coordinates: [
+                    [12.8960, 77.6445],
+                    [12.8840, 77.6565],
+                    [12.8705, 77.6685],
+                    [12.8600, 77.6750]
+                ],
+                base_pci: 74.0,
+                decay_rate_k: 0.012,
+                distress_items: ["1 Surface Crack", "1 Minor Dip"]
+            },
+            {
+                corridor_id: "CORR-04",
+                name: "Mysuru Ring Road: VVCE Gokulam ↔ Hunsur Road",
+                jurisdiction: "MCC Mysuru Ward 9",
+                coordinates: [
+                    [12.3360, 76.6210],
+                    [12.3315, 76.6270],
+                    [12.3190, 76.6450],
+                    [12.3140, 76.6320]
+                ],
+                base_pci: 52.0,
+                decay_rate_k: 0.016,
+                distress_items: ["2 Severe Potholes (8.6cm)", "1 Longitudinal Fissure"]
+            },
+            {
+                corridor_id: "CORR-05",
+                name: "Hebbal Flyover ↔ Manyata Tech Park North Corridor",
+                jurisdiction: "BBMP East / Yelahanka",
+                coordinates: [
+                    [13.0358, 77.5970],
+                    [13.0390, 77.6265],
+                    [13.0450, 77.6205],
+                    [13.0485, 77.6240]
+                ],
+                base_pci: 82.0,
+                decay_rate_k: 0.009,
+                distress_items: ["1 Minor Transverse Crack (Repaired)"]
+            }
+        ];
+
+        function calculatePciDecay(basePci, decayK, days) {
+            const projected = basePci * Math.exp(-decayK * days);
+            return Math.round(Math.max(10.0, Math.min(100.0, projected)) * 10) / 10;
+        }
+
+        function getPciCategory(pci) {
+            if (pci >= 80.0) return { band: "GOOD", color: "#10B981", treatment: "Routine Slurry Seal & Sweeping" };
+            if (pci >= 65.0) return { band: "FAIR", color: "#FBBF24", treatment: "Polymeric Crack Sealing (CPWD 14.1)" };
+            if (pci >= 40.0) return { band: "POOR", color: "#F97316", treatment: "Milled Cold Mastic Patch (CPWD 16.2.2)" };
+            return { band: "CRITICAL", color: "#EF4444", treatment: "Emergency Base-Course Overhaul" };
+        }
+
+        function renderPCIHeatmap(days = 0) {
+            if (!state.map) return;
+            if (!state.pciLayerGroup) {
+                state.pciLayerGroup = L.layerGroup().addTo(state.map);
+            } else {
+                state.pciLayerGroup.clearLayers();
+            }
+
+            fetch(`/api/pci-heatmap?days=${days}`)
+                .then(res => res.ok ? res.json() : Promise.reject())
+                .then(corridors => drawCorridors(corridors, days))
+                .catch(() => {
+                    const fallbackCorridors = FALLBACK_PCI_CORRIDORS.map(c => {
+                        const projected = calculatePciDecay(c.base_pci, c.decay_rate_k, days);
+                        const cat = getPciCategory(projected);
+                        return {
+                            corridor_id: c.corridor_id,
+                            name: c.name,
+                            jurisdiction: c.jurisdiction,
+                            coordinates: c.coordinates,
+                            base_pci: c.base_pci,
+                            projected_pci: projected,
+                            forecast_days: days,
+                            rating_band: cat.band,
+                            color: cat.color,
+                            recommended_treatment: cat.treatment,
+                            distress_items: c.distress_items
+                        };
+                    });
+                    drawCorridors(fallbackCorridors, days);
+                });
+        }
+
+        function drawCorridors(corridors, days) {
+            corridors.forEach(c => {
+                const polyline = L.polyline(c.coordinates, {
+                    color: c.color,
+                    weight: 6,
+                    opacity: 0.88,
+                    lineJoin: 'round',
+                    dashArray: days > 0 && c.projected_pci < 50 ? '8, 8' : null
+                });
+
+                const popupContent = `
+                    <div style="color:#0F172A; font-family:'Plus Jakarta Sans',sans-serif; min-width:210px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <span style="font-weight:800; font-size:12px; color:${c.color};">${c.corridor_id} • [${c.rating_band}]</span>
+                            <span style="background:${c.color}; color:#fff; font-weight:800; font-size:10px; padding:2px 6px; border-radius:4px;">PCI: ${c.projected_pci}/100</span>
+                        </div>
+                        <div style="font-size:11px; font-weight:700; margin-bottom:4px;">${c.name}</div>
+                        <div style="font-size:10px; color:#64748B; margin-bottom:2px;">Jurisdiction: <b>${c.jurisdiction}</b></div>
+                        <div style="font-size:10px; color:#64748B; margin-bottom:2px;">Baseline PCI: <b>${c.base_pci}</b> ${days > 0 ? `➔ Day +${days} Decay: <b style="color:${c.color};">${c.projected_pci}</b>` : ''}</div>
+                        <div style="font-size:10px; color:#475569; margin-top:4px; padding-top:4px; border-top:1px solid #E2E8F0;">
+                            <b>ASTM Action:</b> ${c.recommended_treatment}
+                        </div>
+                    </div>
+                `;
+
+                polyline.bindPopup(popupContent);
+                polyline.addTo(state.pciLayerGroup);
             });
         }
 

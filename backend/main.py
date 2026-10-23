@@ -15,6 +15,7 @@ from backend.models import (
     AgentEventLog, HazardType, SeverityLevel, TicketStatus
 )
 from backend.agents.orchestrator import UrbanSightOrchestrator
+from backend.agents.pci_engine import PCIEngine
 
 app = FastAPI(
     title="UrbanSight AI — Mobile Urban Intelligence Platform",
@@ -41,6 +42,7 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 # Initialize Orchestrator Singleton
 orchestrator = UrbanSightOrchestrator()
+pci_engine = PCIEngine()
 
 class DetectSimulationRequest(BaseModel):
     bus_id: Optional[str] = "BMTC-KA01-E542"
@@ -342,6 +344,16 @@ def get_bus_telemetry(bus_id: str):
             "target_resolution": "1080p @ 30FPS"
         }
     }
+
+@app.get("/api/pci-heatmap")
+def get_pci_heatmap(days: int = 0):
+    """Returns geospatial corridor polylines with ASTM D6433 Pavement Condition Index and degradation forecast."""
+    return pci_engine.get_corridor_forecasts(days=days)
+
+@app.get("/api/pci-summary")
+def get_pci_summary(days: int = 0):
+    """Returns executive city-wide road network health KPIs and predictive maintenance ROI."""
+    return pci_engine.get_network_governance_summary(days=days)
 
 @app.post("/api/reset")
 def reset_system():

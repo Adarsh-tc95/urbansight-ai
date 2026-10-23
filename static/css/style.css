@@ -624,3 +624,59 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ============================================================= */
+/* PCI PREDICTIVE DEGRADATION FLOATING BAR (TASK-07)             */
+/* ============================================================= */
+.map-pci-forecast-bar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 500;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.forecast-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: var(--primary);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-decay-step {
+    background: #1E293B;
+    border: 1px solid #334155;
+    color: var(--text-muted);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-decay-step:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-decay-step.active {
+    background: rgba(0, 229, 255, 0.2);
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+}

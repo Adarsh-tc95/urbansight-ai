@@ -50,11 +50,17 @@
             <a href="/driver" target="_blank" class="btn btn-secondary" title="In-Cab Bus Driver Console">
                 <i class="fa-solid fa-tablet-screen-button"></i> Driver HUD
             </a>
+            <button class="btn btn-outline" id="btn-driver-alert">
+                <i class="fa-solid fa-bell"></i> Alert Popup
+            </button>
+            <button class="btn btn-outline" id="btn-toggle-privacy">
+                Privacy Blur: ON
+            </button>
             <a href="/citizen" target="_blank" class="btn btn-outline" title="Public Citizen Repair Tracking Portal">
-                <i class="fa-solid fa-users"></i> Citizen Portal
+                <i class="fa-solid fa-users"></i> Citizen
             </a>
             <a href="/field-crew" target="_blank" class="btn btn-outline" title="Mobile Field Crew Repair PWA">
-                <i class="fa-solid fa-truck-pickup"></i> Field Crew
+                <i class="fa-solid fa-wrench"></i> Field Crew
             </a>
             <a href="/voucher?ticket=PWD-OCT-0941" target="_blank" class="btn btn-outline" title="Official CPWD Schedule of Rates Tender Voucher">
                 <i class="fa-solid fa-file-invoice"></i> Voucher
@@ -64,6 +70,7 @@
             </a>
             <a href="/api/export-geojson" target="_blank" class="btn btn-outline" title="Export OGC GeoJSON">
                 <i class="fa-solid fa-file-export"></i> GeoJSON
+            </a>
             </a>
         </div>
     </header>
@@ -128,12 +135,22 @@
                 <div class="map-viewport">
                     <div id="gis-map"></div>
                     
+                    <!-- ASTM D6433 PCI Predictive Degradation Forecast Bar -->
+                    <div class="map-pci-forecast-bar">
+                        <span class="forecast-label"><i class="fa-solid fa-chart-line"></i> ASTM D6433 PCI:</span>
+                        <button class="btn-decay-step active" id="btn-decay-0" data-days="0">Day 0 (Now)</button>
+                        <button class="btn-decay-step" id="btn-decay-14" data-days="14">+14 Days</button>
+                        <button class="btn-decay-step" id="btn-decay-30" data-days="30">+30 Days</button>
+                    </div>
+                    
                     <div class="map-floating-legend">
                         <div style="font-weight:700; margin-bottom:2px;">MAP OVERLAY KEY</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#00E5FF;"></span> BMTC/KSRTC Buses (30 FPS)</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#EF4444;"></span> Critical Potholes (P1)</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#3B82F6;"></span> Severe Waterlogging (P2)</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#8B5CF6;"></span> Live Traffic Chokepoint (P3)</div>
+                        <div class="legend-item" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:4px; margin-top:4px;"><span class="legend-dot" style="background:#10B981;"></span> PCI Good (80–100)</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#F97316;"></span> PCI Poor / Decay Risk (&lt;65)</div>
                     </div>
                 </div>
             </div>
