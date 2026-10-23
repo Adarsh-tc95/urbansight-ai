@@ -71,6 +71,9 @@ class PWDWorkOrder(BaseModel):
     cpwd_sor_code: Optional[str] = None
     repair_methodology: Optional[str] = None
     estimated_cost_inr: Optional[float] = None
+    resolved_at: Optional[str] = None
+    resolution_remarks: Optional[str] = None
+    assigned_crew_id: Optional[str] = None
     created_at: str = Field(default_factory=lambda: datetime.now().isoformat())
 
 class DriverAdvisory(BaseModel):

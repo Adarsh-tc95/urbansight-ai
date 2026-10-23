@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Field Crew Operations PWA | UrbanSight AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-void: #090D16;
+            --bg-card: #0F172A;
+            --bg-card-hover: #1E293B;
+            --border-color: #1E293B;
+            --primary: #00E5FF;
+            --accent: #FF5E1E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --success: #10B981;
+            --text-primary: #F8FAFC;
+            --text-muted: #94A3B8;
+            --font-heading: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-heading); }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .crew-header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .crew-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .crew-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .ticket-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .ticket-card.resolved {
+            opacity: 0.7;
+            border-color: #065f46;
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .ticket-id {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .pill {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+        }
+
+        .pill-red { background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid #EF4444; }
+        .pill-orange { background: rgba(245, 158, 11, 0.2); color: #F59E0B; border: 1px solid #F59E0B; }
+        .pill-green { background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid #10B981; }
+
+        .location-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .meta-line {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.65rem 0.8rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-start { background: #F59E0B; color: #090D16; }
+        .btn-resolve { background: #10B981; color: #090D16; }
+        .btn-voucher { background: #1E293B; color: #F8FAFC; border: 1px solid #334155; }
+        .btn:hover { opacity: 0.9; }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        .modal.show { display: flex; }
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 480px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="crew-header">
+            <div class="crew-badge">
+                <div class="crew-icon"><i class="fa-solid fa-truck-pickup"></i></div>
+                <div>
+                    <h2 style="font-size:1.1rem; font-weight:800;">RAPID REPAIR CREW</h2>
+                    <p style="font-size:0.8rem; color:var(--text-muted); font-family:var(--font-mono);">VAN-04 · BBMP Mahadevapura</p>
+                </div>
+            </div>
+            <a href="/" class="btn btn-voucher" style="flex:none; padding:0.4rem 0.8rem;"><i class="fa-solid fa-gauge"></i> ICCC</a>
+        </div>
+
+        <div id="tickets-container">
+            <!-- Dynamically populated -->
+        </div>
+    </div>
+
+    <!-- Resolve Modal -->
+    <div class="modal" id="resolve-modal">
+        <div class="modal-card">
+            <h3 style="margin-bottom:0.75rem; color:#10B981;"><i class="fa-solid fa-check-circle"></i> Complete Repair Work</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;" id="modal-ticket-desc">Ticket: PWD-OCT-0941</p>
+            
+            <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Repair Execution Remarks:</label>
+            <textarea id="modal-remarks" style="width:100%; height:80px; background:#090D16; border:1px solid #334155; color:white; border-radius:6px; padding:0.5rem; margin-bottom:1rem; font-size:0.85rem;">Milled 50mm asphalt, sprayed RS-1 bitumen tack coat, laid hot mix DBM, compacted with vibratory roller to MORTH Sec 3000 specs.</textarea>
+
+            <div style="display:flex; gap:0.6rem;">
+                <button class="btn btn-voucher" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-resolve" onclick="submitResolution()">Confirm & Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTicketId = null;
+
+        const fallbackTickets = [
+            { ticket_id: "PWD-OCT-0941", hazard_type: "POTHOLE", severity: "CRITICAL_P1", location_name: "ORR Bellandur Flyover Pillar 34", cluster_count: 14, sla_hours: 24, status: "AUTO_DISPATCHED", cpwd_sor_code: "CPWD-16.14.2" },
+            { ticket_id: "PWD-OCT-0882", hazard_type: "WATERLOGGING", severity: "HIGH_P2", location_name: "Silk Board Underpass South Lane", cluster_count: 8, sla_hours: 48, status: "CREW_ASSIGNED", cpwd_sor_code: "CPWD-16.15.1" },
+            { ticket_id: "PWD-OCT-0715", hazard_type: "POTHOLE", severity: "CRITICAL_P1", location_name: "VVCE Ring Road Junction, Mysuru", cluster_count: 6, sla_hours: 24, status: "IN_PROGRESS", cpwd_sor_code: "CPWD-16.14.2" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', loadWorkOrders);
+
+        async function loadWorkOrders() {
+            let tickets = fallbackTickets;
+            try {
+                const res = await fetch('/api/work-orders');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.length) tickets = data;
+                }
+            } catch (e) {
+                console.warn("Using offline fallback tickets");
+            }
+            renderTickets(tickets);
+        }
+
+        function renderTickets(tickets) {
+            const container = document.getElementById('tickets-container');
+            container.innerHTML = tickets.map(t => {
+                const isResolved = (t.status === 'RESOLVED');
+                const isProgress = (t.status === 'IN_PROGRESS');
+                const pillClass = isResolved ? 'pill-green' : (t.severity.includes('CRITICAL') ? 'pill-red' : 'pill-orange');
+
+                return `
+                    <div class="ticket-card ${isResolved ? 'resolved' : ''}">
+                        <div class="ticket-header">
+                            <div>
+                                <span class="ticket-id">${t.ticket_id}</span>
+                                <div style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">${t.cpwd_sor_code || 'CPWD-16.14.2'}</div>
+                            </div>
+                            <span class="pill ${pillClass}">${t.status}</span>
+                        </div>
+                        <div class="location-title">${t.location_name}</div>
+                        <div class="meta-line"><i class="fa-solid fa-triangle-exclamation"></i> Type: <strong>${t.hazard_type}</strong> (${t.severity})</div>
+                        <div class="meta-line"><i class="fa-solid fa-clock"></i> SLA: <span style="color:#EF4444; font-weight:bold;">&lt;${t.sla_hours}h</span> · Verified: <strong>${t.cluster_count || 1} passes</strong></div>
+
+                        <div class="action-btns">
+                            ${!isResolved && !isProgress ? `
+                                <button class="btn btn-start" onclick="markStatus('${t.ticket_id}', 'IN_PROGRESS')">
+                                    <i class="fa-solid fa-play"></i> Start
+                                </button>
+                            ` : ''}
+                            ${!isResolved ? `
+                                <button class="btn btn-resolve" onclick="openResolveModal('${t.ticket_id}')">
+                                    <i class="fa-solid fa-check"></i> Complete
+                                </button>
+                            ` : `
+                                <span style="color:#10B981; font-weight:bold; font-size:0.85rem; display:flex; align-items:center; gap:0.4rem;">
+                                    <i class="fa-solid fa-circle-check"></i> Repair Certified
+                                </span>
+                            `}
+                            <a href="/voucher?ticket=${t.ticket_id}" target="_blank" class="btn btn-voucher">
+                                <i class="fa-solid fa-file-invoice"></i> Voucher
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function markStatus(ticketId, status) {
+            try {
+                await fetch(`/api/work-orders/${ticketId}/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: status, crew_id: "VAN-04" })
+                });
+            } catch (e) {
+                console.warn("Offline status update");
+            }
+            loadWorkOrders();
+        }
+
+        function openResolveModal(ticketId) {
+            currentTicketId = ticketId;
+            document.getElementById('modal-ticket-desc').textContent = `Ticket: ${ticketId}`;
+            document.getElementById('resolve-modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('resolve-modal').classList.remove('show');
+        }
+
+        async function submitResolution() {
+            const remarks = document.getElementById('modal-remarks').value;
+            try {
+                await fetch(`/api/work-orders/${currentTicketId}/resolve`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: "RESOLVED", remarks: remarks, crew_id: "VAN-04" })
+                });
+            } catch (e) {
+                console.warn("Offline resolve update");
+            }
+            closeModal();
+            loadWorkOrders();
+        }
+    </script>
+</body>
+</html>

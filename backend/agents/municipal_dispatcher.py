@@ -59,6 +59,7 @@ class MunicipalDispatcherAgent:
     - Maps defect to official Central Public Works Department (CPWD) Schedule of Rates (SOR).
     - Enforces municipal repair SLA: <24h (P1), <48h (P2), <72h (P3).
     - Auto-generates structured PWD Work Orders.
+    - Produces itemized CPWD tender vouchers and cost estimates.
     """
 
     def __init__(self):
@@ -143,6 +144,7 @@ class MunicipalDispatcherAgent:
         sla_hours = self.compute_sla_hours(hazard.severity)
         sor_info = CPWD_SOR_REGISTRY.get(hazard.hazard_type, {
             "sor_code": "CPWD-16.14.2",
+            "description": "Standard carriageway bituminous maintenance.",
             "methodology": "Standard carriageway bituminous maintenance.",
             "base_cost_inr": 3500.0
         })
@@ -194,3 +196,86 @@ class MunicipalDispatcherAgent:
             f"[{work_order.cpwd_sor_code} · SLA <{work_order.sla_hours}h] -> Dispatched to: {work_order.dispatched_to}"
         )
         return work_order, True, msg
+
+    def generate_voucher_data(self, ticket_id: str, work_order: Optional[PWDWorkOrder] = None) -> Dict[str, Any]:
+        """
+        Generates an itemized CPWD Schedule of Rates (SOR 2024) cost breakdown and tender voucher:
+        - Item code, unit rate, material cost, labor charges, machinery, 18% GST, total INR.
+        - SLA penalty clause (<24h for Critical P1).
+        """
+        sor_code = work_order.cpwd_sor_code if work_order and work_order.cpwd_sor_code else "CPWD-16.14.2"
+        base_cost = work_order.estimated_cost_inr if work_order and work_order.estimated_cost_inr else 4200.0
+        severity = work_order.severity if work_order else SeverityLevel.CRITICAL_P1
+        hazard_type = work_order.hazard_type if work_order else HazardType.POTHOLE
+        location_name = work_order.location_name if work_order else "Bengaluru Transit Corridor"
+        dispatched_to = work_order.dispatched_to if work_order else "BBMP Mahadevapura Ward 85 / PWD Division 3"
+        sla_hours = work_order.sla_hours if work_order else 24
+        status = work_order.status.value if work_order else "AUTO_DISPATCHED"
+
+        # Itemized cost distribution as per CPWD Works Analysis
+        material_cost = round(base_cost * 0.55, 2)
+        labor_cost = round(base_cost * 0.28, 2)
+        machinery_cost = round(base_cost * 0.17, 2)
+        subtotal = round(material_cost + labor_cost + machinery_cost, 2)
+        gst_18_pct = round(subtotal * 0.18, 2)
+        total_estimated_inr = round(subtotal + gst_18_pct, 2)
+
+        sor_details = CPWD_SOR_REGISTRY.get(hazard_type, {
+            "description": "Bituminous carriageway repair under CPWD Works Manual",
+            "methodology": "Mill defective patch, apply tack coat, lay hot mix DBM, compact with vibratory roller."
+        })
+
+        penalty_clause = (
+            f"Mandatory SLA compliance: <{sla_hours} hours. "
+            "Liquidated damages penalty of 1.0% per 12 hours delay beyond SLA, "
+            "capped at 10% contract value, as per CPWD Works Manual Section 29.3 & BBMP Standard Tender Conditions."
+        )
+
+        clean_ticket = ticket_id.replace("PWD-", "")
+        checksum = f"CPWD-{clean_ticket}-INR-{int(total_estimated_inr)}"
+
+        return {
+            "voucher_id": f"VOUCHER-{clean_ticket}",
+            "ticket_id": ticket_id,
+            "sanction_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S IST"),
+            "issuing_authority": "Office of Executive Engineer, Road Infrastructure Division, Urban Development Dept.",
+            "jurisdiction": dispatched_to,
+            "location": location_name,
+            "hazard_type": hazard_type.value if hasattr(hazard_type, "value") else str(hazard_type),
+            "severity": severity.value if hasattr(severity, "value") else str(severity),
+            "status": status,
+            "cpwd_sor_code": sor_code,
+            "sor_description": sor_details.get("description", "Standard Bituminous Repair"),
+            "repair_methodology": sor_details.get("methodology", ""),
+            "line_items": [
+                {
+                    "item_no": "1.1",
+                    "description": "Bituminous mix (DBM/Bitumen Emulsion RS-1) conforming to MORTH Sec 3000",
+                    "category": "Material",
+                    "unit": "sq.m / cu.m",
+                    "amount_inr": material_cost
+                },
+                {
+                    "item_no": "1.2",
+                    "description": "Skilled & Semi-skilled asphalt mason, road gang, and traffic flagger charges",
+                    "category": "Labor",
+                    "unit": "Mandays",
+                    "amount_inr": labor_cost
+                },
+                {
+                    "item_no": "1.3",
+                    "description": "Tandem vibratory roller (8-10 tonne), air compressor lance, asphalt cutter fuel & hire",
+                    "category": "Plant & Machinery",
+                    "unit": "Machine Hours",
+                    "amount_inr": machinery_cost
+                }
+            ],
+            "subtotal_inr": subtotal,
+            "gst_rate_pct": 18.0,
+            "gst_amount_inr": gst_18_pct,
+            "total_estimated_inr": total_estimated_inr,
+            "sla_hours": sla_hours,
+            "penalty_clause": penalty_clause,
+            "compliance_standards": ["CPWD SOR 2024", "IRC:SP:72-2015", "MORTH Sec 3000", "DPDP Act 2023 §2(t)"],
+            "verification_checksum": checksum
+        }

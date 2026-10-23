@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPWD Official Repair Voucher | UrbanSight AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-body: #0B0F17;
+            --bg-paper: #FFFFFF;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --border: #CBD5E1;
+            --primary: #0284C7;
+            --accent: #EA580C;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .action-bar {
+            width: 100%;
+            max-width: 840px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            color: #F8FAFC;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: #00E5FF; color: #090D16; }
+        .btn-primary:hover { background: #38bdf8; }
+        .btn-outline { background: transparent; color: #F8FAFC; border: 1px solid #334155; }
+        .btn-outline:hover { background: #1E293B; }
+
+        /* The Printable Paper Voucher */
+        .voucher-sheet {
+            background: var(--bg-paper);
+            width: 100%;
+            max-width: 840px;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            padding: 3rem 3.5rem;
+            border-top: 6px solid #0284C7;
+            position: relative;
+        }
+
+        .header-emblem {
+            text-align: center;
+            border-bottom: 2px solid #0F172A;
+            padding-bottom: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .govt-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .dept-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #0F172A;
+            margin: 0.25rem 0;
+        }
+
+        .sub-dept {
+            font-size: 0.9rem;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .badge-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F1F5F9;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem 2rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .info-row {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .info-val {
+            font-weight: 700;
+            color: #0F172A;
+        }
+
+        .table-container {
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            text-align: left;
+        }
+
+        th {
+            background: #F8FAFC;
+            color: #334155;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid #E2E8F0;
+            color: #1E293B;
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .total-row {
+            background: #F8FAFC;
+            font-weight: 800;
+            font-size: 0.95rem;
+        }
+
+        .legal-clause-box {
+            background: #FFFBEB;
+            border-left: 4px solid #F59E0B;
+            padding: 0.85rem 1rem;
+            margin: 1.5rem 0;
+            font-size: 0.82rem;
+            color: #92400E;
+            line-height: 1.5;
+        }
+
+        .sign-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed #CBD5E1;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        .sign-line {
+            height: 45px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-mono);
+            color: #0284C7;
+            font-weight: bold;
+        }
+
+        .sign-title {
+            color: #64748B;
+            font-weight: 600;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .action-bar { display: none; }
+            .voucher-sheet { box-shadow: none; max-width: 100%; padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="action-bar">
+        <a href="/" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Command Center</a>
+        <div>
+            <button class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Official Voucher</button>
+        </div>
+    </div>
+
+    <div class="voucher-sheet">
+        <div class="header-emblem">
+            <div class="govt-title">Government of Karnataka · Urban Development Department</div>
+            <div class="dept-title">BRUHAT BENGALURU MAHANAGARA PALIKE / PWD</div>
+            <div class="sub-dept">Road Infrastructure & Arterial Pavement Maintenance Division · CPWD SOR 2024</div>
+        </div>
+
+        <div class="badge-bar">
+            <div><strong>TENDER SANCTION VOUCHER:</strong> <span id="v-voucher-id">VOUCHER-OCT-0941</span></div>
+            <div><strong>SLA:</strong> <span id="v-sla" style="color:#DC2626; font-weight:bold;">&lt;24 HOURS (CRITICAL P1)</span></div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-row">
+                <span class="info-label">Assigned Work Order Ticket</span>
+                <span class="info-val" id="v-ticket-id">PWD-OCT-0941</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Sanction Timestamp</span>
+                <span class="info-val" id="v-date">2026-10-23 08:15:00 IST</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Defect Category & CPWD Code</span>
+                <span class="info-val" id="v-sor-code">POTHOLE · CPWD-16.14.2</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Jurisdiction & Ward Division</span>
+                <span class="info-val" id="v-jurisdiction">BBMP Mahadevapura Ward 85 / PWD Division 3</span>
+            </div>
+            <div class="info-row" style="grid-column: span 2;">
+                <span class="info-label">Carriageway Geolocation / Landmark</span>
+                <span class="info-val" id="v-location">Outer Ring Road Bellandur Flyover Pillar 34 (12.9250°N, 77.6760°E)</span>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>CPWD Specification & Description</th>
+                        <th>Classification</th>
+                        <th style="text-align: right;">Amount (INR)</th>
+                    </tr>
+                </thead>
+                <tbody id="v-line-items">
+                    <tr>
+                        <td>1.1</td>
+                        <td>Dense Bituminous Macadam (DBM) hot asphalt mix conforming to MORTH Sec 3000 & RS-1 emulsion tack coat</td>
+                        <td>Material</td>
+                        <td style="text-align: right; font-family: monospace;">₹ 2,310.00</td>
+                    </tr>
+                    <tr>
+                        <td>1.2</td>
+                        <td>Skilled asphalt road gang, mechanical screed operator, and safety flaggers</td>
+                        <td>Labor</td>
+                        <td style="text-align: right; font-family: monospace;">₹ 1,176.00</td>
+                    </tr>
+                    <tr>
+                        <td>1.3</td>
+                        <td>8-10 Tonne tandem vibratory compaction roller and high-pressure pneumatic air lance hire</td>
+                        <td>Machinery</td>
+                        <td style="text-align: right; font-family: monospace;">₹ 714.00</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3" style="text-align: right;">Subtotal (Base CPWD Schedule Cost):</td>
+                        <td style="text-align: right; font-family: monospace;">₹ 4,200.00</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3" style="text-align: right;">Goods & Services Tax (GST @ 18.0%):</td>
+                        <td style="text-align: right; font-family: monospace;">₹ 756.00</td>
+                    </tr>
+                    <tr class="total-row" style="background:#EFF6FF; color:#1E3A8A; font-size:1.05rem;">
+                        <td colspan="3" style="text-align: right;"><strong>TOTAL SANCTIONED TENDER ESTIMATE:</strong></td>
+                        <td style="text-align: right; font-family: monospace; font-weight:800; color:#0284C7;" id="v-total-cost">₹ 4,956.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="legal-clause-box">
+            <strong>CPWD Statutory Liquidated Damages & Penalty Clause:</strong><br>
+            <span id="v-penalty-clause">Work must be executed and inspected within 24 hours of autonomous dispatch. Liquidated damages penalty of 1.0% per 12 hours delay beyond SLA, capped at 10% contract value, as per CPWD Works Manual Section 29.3. Mandatory compliance with IRC:SP:72-2015 & MORTH Section 3000 road maintenance quality standards.</span>
+        </div>
+
+        <div class="sign-grid">
+            <div>
+                <div class="sign-line">DIGITALLY VERIFIED</div>
+                <div class="sign-title">UrbanSight AI Autonomous Dispatch</div>
+            </div>
+            <div>
+                <div class="sign-line">_______________</div>
+                <div class="sign-title">Assistant Executive Engineer (AEE)</div>
+            </div>
+            <div>
+                <div class="sign-line">_______________</div>
+                <div class="sign-title">Empanelled Repair Contractor</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ticketId = urlParams.get('ticket') || 'PWD-OCT-0941';
+
+            try {
+                const res = await fetch(`/api/work-orders/${ticketId}/voucher`);
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('v-voucher-id').textContent = data.voucher_id;
+                    document.getElementById('v-ticket-id').textContent = data.ticket_id;
+                    document.getElementById('v-date').textContent = data.sanction_date;
+                    document.getElementById('v-sor-code').textContent = `${data.hazard_type} · ${data.cpwd_sor_code}`;
+                    document.getElementById('v-jurisdiction').textContent = data.jurisdiction;
+                    document.getElementById('v-location').textContent = data.location;
+                    document.getElementById('v-sla').textContent = `<${data.sla_hours} HOURS (${data.severity})`;
+                    document.getElementById('v-total-cost').textContent = `₹ ${data.total_estimated_inr.toLocaleString('en-IN')}`;
+                    document.getElementById('v-penalty-clause').textContent = data.penalty_clause;
+
+                    if (data.line_items && data.line_items.length) {
+                        const tbody = document.getElementById('v-line-items');
+                        tbody.innerHTML = data.line_items.map(item => `
+                            <tr>
+                                <td>${item.item_no}</td>
+                                <td>${item.description}</td>
+                                <td>${item.category}</td>
+                                <td style="text-align: right; font-family: monospace;">₹ ${item.amount_inr.toLocaleString('en-IN')}</td>
+                            </tr>
+                        `).join('') + `
+                            <tr class="total-row">
+                                <td colspan="3" style="text-align: right;">Subtotal (Base CPWD Schedule Cost):</td>
+                                <td style="text-align: right; font-family: monospace;">₹ ${data.subtotal_inr.toLocaleString('en-IN')}</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td colspan="3" style="text-align: right;">Goods & Services Tax (GST @ 18.0%):</td>
+                                <td style="text-align: right; font-family: monospace;">₹ ${data.gst_amount_inr.toLocaleString('en-IN')}</td>
+                            </tr>
+                            <tr class="total-row" style="background:#EFF6FF; color:#1E3A8A; font-size:1.05rem;">
+                                <td colspan="3" style="text-align: right;"><strong>TOTAL SANCTIONED TENDER ESTIMATE:</strong></td>
+                                <td style="text-align: right; font-family: monospace; font-weight:800; color:#0284C7;">₹ ${data.total_estimated_inr.toLocaleString('en-IN')}</td>
+                            </tr>
+                        `;
+                    }
+                }
+            } catch (err) {
+                console.warn("Using offline fallback data for voucher:", err);
+            }
+        });
+    </script>
+</body>
+</html>

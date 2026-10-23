@@ -1,6 +1,9 @@
 import os
 import random
-from fastapi import FastAPI, Request, HTTPException
+import csv
+import io
+from datetime import datetime
+from fastapi import FastAPI, Request, HTTPException, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,14 +12,14 @@ from typing import Optional, List
 
 from backend.models import (
     BusTelemetry, HazardDetection, PWDWorkOrder, DriverAdvisory,
-    AgentEventLog, HazardType, SeverityLevel
+    AgentEventLog, HazardType, SeverityLevel, TicketStatus
 )
 from backend.agents.orchestrator import UrbanSightOrchestrator
 
 app = FastAPI(
     title="UrbanSight AI — Mobile Urban Intelligence Platform",
     description="Multi-Agent AI framework for continuous transit-fleet road sensing, DBSCAN spatial clustering, automated PWD dispatch, and driver advisories (SIH26124).",
-    version="2.0.0"
+    version="2.1.0"
 )
 
 # CORS Middleware for local and cross-origin dashboard access
@@ -51,6 +54,15 @@ class DetectSimulationRequest(BaseModel):
     estimated_area_sqm: Optional[float] = None
     z_shock: Optional[float] = None
 
+class WorkOrderStatusUpdate(BaseModel):
+    status: Optional[str] = "RESOLVED"
+    remarks: Optional[str] = "Pothole patch completed with hot DBM and compacted with vibratory roller."
+    crew_id: Optional[str] = "BBMP-CREW-VAN-04"
+
+# =============================================================================
+# HTML Template Navigation Endpoints
+# =============================================================================
+
 @app.get("/")
 def read_root(request: Request):
     """Renders the main UrbanSight AI Command Dashboard."""
@@ -62,6 +74,25 @@ def read_driver_console(request: Request):
     """Renders the dedicated In-Cab Driver HUD Console UI."""
     return templates.TemplateResponse(request=request, name="driver_console.html")
 
+@app.get("/citizen")
+def read_citizen_portal(request: Request):
+    """Renders the Public Citizen Road Repair Tracking Portal."""
+    return templates.TemplateResponse(request=request, name="citizen_portal.html")
+
+@app.get("/field-crew")
+@app.get("/crew")
+def read_field_crew(request: Request):
+    """Renders the Mobile Field Crew Resolution PWA."""
+    return templates.TemplateResponse(request=request, name="field_crew.html")
+
+@app.get("/voucher")
+def read_voucher(request: Request):
+    """Renders the Official Printable Government CPWD Voucher."""
+    return templates.TemplateResponse(request=request, name="voucher.html")
+
+# =============================================================================
+# System Health & Agent Telemetry
+# =============================================================================
 
 @app.get("/api/health")
 def health_check():
@@ -69,7 +100,7 @@ def health_check():
     return {
         "status": "HEALTHY",
         "service": "UrbanSight AI Command Orchestrator",
-        "version": "2.0.0",
+        "version": "2.1.0",
         "active_agents": 4,
         "agents": [
             "VisionPerceptionAgent (YOLOv8/DPDP Blur)",
@@ -138,6 +169,99 @@ def get_agents_status():
             "status": "ACTIVE"
         }
     }
+
+# =============================================================================
+# Municipal Dispatch & CPWD Voucher APIs
+# =============================================================================
+
+def _find_work_order(ticket_id: str) -> Optional[PWDWorkOrder]:
+    tid_clean = ticket_id.strip()
+    tid_norm = tid_clean.replace("-2026", "")
+    for w in orchestrator.work_orders:
+        w_norm = w.ticket_id.replace("-2026", "")
+        if w.ticket_id == tid_clean or w_norm == tid_norm or tid_clean in w.ticket_id:
+            return w
+    return None
+
+@app.get("/api/work-orders/{ticket_id}/voucher")
+def get_work_order_voucher(ticket_id: str):
+    """Retrieves itemized CPWD Schedule of Rates tender voucher for a specific PWD ticket."""
+    wo = _find_work_order(ticket_id)
+    voucher = orchestrator.dispatcher_agent.generate_voucher_data(ticket_id=ticket_id, work_order=wo)
+    return voucher
+
+@app.post("/api/work-orders/{ticket_id}/resolve")
+@app.post("/api/work-orders/{ticket_id}/status")
+def update_work_order_status(ticket_id: str, req: WorkOrderStatusUpdate):
+    """Updates work order lifecycle status (e.g. IN_PROGRESS, RESOLVED) from field crew."""
+    wo = _find_work_order(ticket_id)
+    if not wo:
+        raise HTTPException(status_code=404, detail=f"Work Order {ticket_id} not found")
+
+    new_status = TicketStatus.RESOLVED if "RESOLV" in (req.status or "").upper() else TicketStatus.IN_PROGRESS
+    wo.status = new_status
+    wo.resolved_at = datetime.now().isoformat() if new_status == TicketStatus.RESOLVED else None
+    wo.resolution_remarks = req.remarks
+    wo.assigned_crew_id = req.crew_id
+
+    # Sync corresponding canonical hazard
+    matched_hazard = next((h for h in orchestrator.hazards if h.pwd_ticket_id == ticket_id or h.id == wo.hazard_id), None)
+    if matched_hazard:
+        matched_hazard.status = new_status
+
+    orchestrator._log_event(
+        "Agent 3: Municipal Dispatch",
+        f"WORK_ORDER_{new_status.value}",
+        f"Ticket #{ticket_id} updated to {new_status.value} by field crew [{req.crew_id}]: {req.remarks}"
+    )
+
+    return {
+        "status": "SUCCESS",
+        "ticket_id": ticket_id,
+        "new_status": new_status.value,
+        "resolved_at": wo.resolved_at,
+        "crew_id": wo.assigned_crew_id,
+        "work_order": wo
+    }
+
+@app.get("/api/export-csv")
+def export_csv():
+    """Exports all municipal work orders in official CPWD tabular CSV format."""
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "Ticket ID", "Hazard Type", "Severity", "Ward / Jurisdiction",
+        "Location", "Latitude", "Longitude", "Passes", "Status",
+        "SLA Hours", "Cost INR", "CPWD SOR Code", "Created At", "Resolved At", "Crew ID"
+    ])
+    for w in orchestrator.work_orders:
+        writer.writerow([
+            w.ticket_id,
+            w.hazard_type.value if hasattr(w.hazard_type, 'value') else str(w.hazard_type),
+            w.severity.value if hasattr(w.severity, 'value') else str(w.severity),
+            w.dispatched_to,
+            w.location_name,
+            w.lat,
+            w.lng,
+            w.cluster_count,
+            w.status.value if hasattr(w.status, 'value') else str(w.status),
+            w.sla_hours,
+            w.estimated_cost_inr or 0.0,
+            w.cpwd_sor_code or "CPWD-16.14.2",
+            w.created_at,
+            w.resolved_at or "PENDING",
+            w.assigned_crew_id or "UNASSIGNED"
+        ])
+    csv_bytes = output.getvalue().encode("utf-8")
+    return Response(
+        content=csv_bytes,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=urbansight_cpwd_work_orders.csv"}
+    )
+
+# =============================================================================
+# Edge Detection Simulation & Telemetry
+# =============================================================================
 
 @app.post("/api/simulate-detection")
 def simulate_detection(req: DetectSimulationRequest):

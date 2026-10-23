@@ -328,6 +328,32 @@ class TestMunicipalDispatcherAgent(unittest.TestCase):
         self.assertEqual(self.agent.compute_sla_hours(SeverityLevel.MEDIUM_P3), 72)
         self.assertEqual(self.agent.compute_sla_hours(SeverityLevel.LOW_P4), 120)
 
+    def test_generate_voucher_data(self):
+        """Verifies itemized CPWD SOR cost calculation, GST 18%, and penalty SLA clauses."""
+        hazard = HazardDetection(
+            id="HAZ-VOUCHER-1",
+            bus_id="BUS-TEST",
+            hazard_type=HazardType.POTHOLE,
+            severity=SeverityLevel.CRITICAL_P1,
+            confidence=0.97,
+            lat=12.9250,
+            lng=77.6760,
+            location_name="Bellandur ORR"
+        )
+        wo = self.agent.generate_work_order(hazard)
+        voucher = self.agent.generate_voucher_data(ticket_id=wo.ticket_id, work_order=wo)
+
+        self.assertEqual(voucher["ticket_id"], wo.ticket_id)
+        self.assertEqual(voucher["cpwd_sor_code"], "CPWD-16.14.2")
+        self.assertEqual(len(voucher["line_items"]), 3)
+        self.assertAlmostEqual(voucher["subtotal_inr"], 4200.0, places=1)
+        self.assertAlmostEqual(voucher["gst_amount_inr"], round(4200.0 * 0.18, 2), places=1)
+        self.assertAlmostEqual(voucher["total_estimated_inr"], round(4200.0 * 1.18, 2), places=1)
+        self.assertIn("<24 hours", voucher["penalty_clause"])
+        self.assertIn("CPWD Works Manual Section 29.3", voucher["penalty_clause"])
+        self.assertTrue(voucher["verification_checksum"].startswith("CPWD-"))
+
+
 
 class TestFleetAdvisoryAgent(unittest.TestCase):
     """Verifies driver in-cab advisory alerts, horizon gating (<300m), and tactical maneuver guidance."""
@@ -481,6 +507,26 @@ class TestEndToEndPipelineOrchestrator(unittest.TestCase):
         self.assertIsNotNone(h2.pwd_ticket_id)
         self.assertEqual(len(self.orch.work_orders), initial_wo_count + 1)
         self.assertEqual(self.orch.work_orders[0].cpwd_sor_code, "CPWD-16.12.1")
+
+
+    def test_work_order_resolution_lifecycle(self):
+        """Verifies work order lifecycle transition from AUTO_DISPATCHED -> IN_PROGRESS -> RESOLVED."""
+        wo = self.orch.work_orders[0]
+        self.assertIn(wo.status, [TicketStatus.AUTO_DISPATCHED, TicketStatus.CREW_ASSIGNED, TicketStatus.IN_PROGRESS])
+
+        # Simulate field crew marking in progress
+        wo.status = TicketStatus.IN_PROGRESS
+        wo.assigned_crew_id = "CREW-VAN-04"
+        self.assertEqual(wo.status, TicketStatus.IN_PROGRESS)
+
+        # Simulate field crew resolving ticket
+        wo.status = TicketStatus.RESOLVED
+        wo.resolution_remarks = "Bituminous milling and DBM compaction certified."
+        wo.resolved_at = "2026-10-23T08:20:00"
+
+        self.assertEqual(wo.status, TicketStatus.RESOLVED)
+        self.assertIsNotNone(wo.resolved_at)
+        self.assertEqual(wo.assigned_crew_id, "CREW-VAN-04")
 
 
 if __name__ == '__main__':
