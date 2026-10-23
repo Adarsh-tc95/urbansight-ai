@@ -578,5 +578,23 @@ class TestPCIEngine(unittest.TestCase):
         self.assertIn("economic_roi", summary)
 
 
+
+class TestWardAnalytics(unittest.TestCase):
+    """Verifies Municipal Ward Governance and Expenditure Analytics endpoint."""
+
+    def test_ward_summary_endpoint(self):
+        from backend.main import get_ward_analytics_summary
+        data = get_ward_analytics_summary()
+        self.assertIn("summary", data)
+        self.assertIn("wards", data)
+        self.assertIn("distress_breakdown", data)
+        self.assertGreaterEqual(len(data["wards"]), 3)
+        w0 = data["wards"][0]
+        self.assertIn("ward_name", w0)
+        self.assertIn("sla_compliance", w0)
+        self.assertIn("grade", w0)
+        self.assertGreaterEqual(w0["sla_compliance"], 90.0)
+
+
 if __name__ == '__main__':
     unittest.main()
