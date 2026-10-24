@@ -2211,12 +2211,6 @@ h1, h2, h3 {
                     <span>Field Crew</span>
                 </a>
 
-                <!-- 5. Ward Analytics: Corporators & Finance -->
-                <a href="#analytics" class="portal-pill" id="tab-pill-analytics" onclick="switchDashboardTab('analytics', event)" title="Municipal Ward Analytics & SLA Leaderboard (For Corporators & Finance)">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <span>Ward Analytics</span>
-                </a>
-
                 <!-- 6. CPWD Voucher: Auditors & Contractors -->
                 <a href="#voucher" class="portal-pill" id="tab-pill-voucher" onclick="switchDashboardTab('voucher', event)" title="Official CPWD Statutory Tender Voucher (For Auditors & Contractors)">
                     <i class="fa-solid fa-file-invoice"></i>
@@ -2512,11 +2506,11 @@ h1, h2, h3 {
                             </button>
                             <button class="btn-playback-ctrl" id="btn-dpdp-toggle" onclick="toggleDPDPMask()" title="Toggle DPDP Act 2023 §2(t) Privacy Mask">
                                 <i class="fa-solid fa-shield-halved" style="color:var(--success);"></i>
-                                <span id="dpdp-status-text">DPDP: ON</span>
+                                <span id="dpdp-status-text">DPDP: OFF</span>
                             </button>
                         </div>
 
-                        <div class="hud-privacy-badge" id="hud-dpdp-badge">
+                        <div class="hud-privacy-badge" id="hud-dpdp-badge" style="display:none;">
                             <i class="fa-solid fa-shield-halved"></i> DPDP ACT 2023 §2(t) MASK: ACTIVE
                         </div>
                     </div>
@@ -2659,11 +2653,6 @@ h1, h2, h3 {
     <!-- Tab View 4: Field Crew PWA (Runs on same website, same fonts & manner) -->
     <div id="view-field-crew" class="spa-view" style="display:none;">
         <iframe src="field_crew.html" class="spa-portal-frame" id="iframe-crew" title="Mobile Field Crew Repair PWA"></iframe>
-    </div>
-
-    <!-- Tab View 5: Ward Analytics (Runs on same website, same fonts & manner) -->
-    <div id="view-analytics" class="spa-view" style="display:none;">
-        <iframe src="analytics.html" class="spa-portal-frame" id="iframe-analytics" title="Municipal Ward Analytics & SLA Leaderboard"></iframe>
     </div>
 
     <!-- Tab View 6: CPWD Voucher (Runs on same website, same fonts & manner) -->
@@ -3339,7 +3328,7 @@ const mediaState = {
     mode: 'video', // 'video' | 'image' | 'live-camera'
     sourceName: 'Mysuru ORR Dashcam (KSRTC-KA09-E102)',
     isPlaying: true,
-    dpdpActive: true,
+    dpdpActive: false,
     isLiveCameraActive: false,
     cameraFacing: 'environment',
     cameraStream: null,
@@ -3718,7 +3707,35 @@ const edgePerceptionEngine = {
             tProg = ((mediaState.frameCount % 300) / 300);
         }
 
-        // 1. Try Sampling Actual Video / Image Pixels via Offscreen Canvas
+        const cycleT = (tProg % 1.0);
+        const corrKey = currentItem ? currentItem.corridorKey : currentCorridorKey;
+        const targetType = currentItem ? currentItem.defectType : (mediaState.defect.type || 'POTHOLE');
+        const targetRdd = currentItem ? currentItem.rdd : (mediaState.defect.rdd || 'D40 (Pothole / Subsidence)');
+        const baseNominalDepth = currentItem ? (parseFloat(currentItem.depth) || 9.4) : (parseFloat(mediaState.defect.depth) || 9.4);
+
+        // 1. Perspective Kinematic Road Prior (Vehicle driving forward on asphalt carriageway)
+        // Defect appears down the lane at persY ~0.55 and approaches vehicle bumper at persY ~0.78
+        const persY = 0.54 + (0.24 * Math.pow(cycleT, 1.3));
+        let persX = 0.48 + (0.05 * Math.sin(cycleT * Math.PI));
+        if (corrKey === 'hunsur-rd') persX = 0.52 - (0.04 * Math.sin(cycleT * Math.PI));
+        else if (corrKey === 'sayyaji-rao') persX = 0.46 + (0.04 * Math.cos(cycleT * Math.PI));
+
+        const scaleFactor = 0.65 + (0.60 * Math.pow(cycleT, 1.2));
+        let baseW = 150 * scaleFactor;
+        let baseH = 60 * scaleFactor;
+
+        if (targetType === 'ROAD_CRACK') {
+            baseW = 175 * scaleFactor;
+            baseH = 32 * scaleFactor;
+        } else if (targetType === 'WATERLOGGING') {
+            baseW = 200 * scaleFactor;
+            baseH = 52 * scaleFactor;
+        }
+
+        const kinX = Math.round(persX * cw - (baseW / 2));
+        const kinY = Math.round(persY * ch - (baseH / 2));
+
+        // 2. Strict Road Asphalt Optical Sampling (Excludes all oncoming cars & upper horizon)
         let sampledPixelBox = null;
         let sampledContrast = 0;
         let sampledLum = 128;
@@ -3731,8 +3748,9 @@ const edgePerceptionEngine = {
                     const imgData = this.offCtx.getImageData(0, 0, 160, 90);
                     const data = imgData.data;
 
-                    // Road ROI: Lower 58% of vertical view, middle 75% horizontal
-                    const roiY0 = 36, roiY1 = 82, roiX0 = 20, roiX1 = 140;
+                    // STRICT ROAD ASPHALT ROI: Lower 53% to 88% vertical, 22% to 78% horizontal
+                    // (Any pixels above y=48 are strictly excluded so oncoming cars and traffic cannot be boxed)
+                    const roiY0 = 48, roiY1 = 78, roiX0 = 36, roiX1 = 124;
                     let sumLum = 0, count = 0;
                     for (let y = roiY0; y < roiY1; y += 2) {
                         for (let x = roiX0; x < roiX1; x += 2) {
@@ -3743,33 +3761,50 @@ const edgePerceptionEngine = {
                         }
                     }
                     sampledLum = count > 0 ? (sumLum / count) : 128;
-                    const darkThresh = Math.max(20, sampledLum * 0.70);
+                    const darkThresh = Math.max(18, sampledLum * 0.72);
 
-                    // Find dark distress cluster
-                    let minX = 160, maxX = 0, minY = 90, maxY = 0, darkCount = 0, darkLumSum = 0;
-                    for (let y = roiY0; y < roiY1; y += 2) {
-                        for (let x = roiX0; x < roiX1; x += 2) {
-                            const idx = (y * 160 + x) * 4;
-                            const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
-                            if (lum < darkThresh) {
-                                darkCount++;
-                                darkLumSum += lum;
-                                if (x < minX) minX = x;
-                                if (x > maxX) maxX = x;
-                                if (y < minY) minY = y;
-                                if (y > maxY) maxY = y;
+                    // 8x6 Grid Spatial Density Clustering (Finds localized pothole crater, rejects multi-object spans)
+                    const gridCols = 8, gridRows = 6;
+                    const cellW = (roiX1 - roiX0) / gridCols;
+                    const cellH = (roiY1 - roiY0) / gridRows;
+
+                    let bestCount = 0;
+                    let bestR = -1, bestC = -1;
+
+                    for (let r = 0; r < gridRows; r++) {
+                        for (let c = 0; c < gridCols; c++) {
+                            const cy0 = Math.floor(roiY0 + r * cellH);
+                            const cx0 = Math.floor(roiX0 + c * cellW);
+                            let dCnt = 0;
+                            for (let cy = cy0; cy < cy0 + cellH; cy += 2) {
+                                for (let cx = cx0; cx < cx0 + cellW; cx += 2) {
+                                    const idx = (cy * 160 + cx) * 4;
+                                    const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+                                    if (lum < darkThresh) dCnt++;
+                                }
+                            }
+                            if (dCnt > bestCount) {
+                                bestCount = dCnt;
+                                bestR = r;
+                                bestC = c;
                             }
                         }
                     }
 
-                    if (darkCount >= 10 && maxX > minX && maxY > minY) {
-                        const cavLum = darkLumSum / darkCount;
-                        sampledContrast = Math.max(8.0, sampledLum - cavLum);
+                    // If a verified asphalt distress cell is detected
+                    if (bestCount >= 4 && bestR >= 0 && bestC >= 0) {
+                        const cellCenterNormX = (roiX0 + (bestC + 0.5) * cellW) / 160;
+                        const cellCenterNormY = (roiY0 + (bestR + 0.5) * cellH) / 90;
+
+                        const optBoxW = Math.max(120, baseW * 0.95);
+                        const optBoxH = Math.max(48, baseH * 0.95);
+                        sampledContrast = Math.max(12.0, (sampledLum - darkThresh) * 1.5);
+
                         sampledPixelBox = {
-                            x: (minX / 160) * cw,
-                            y: (minY / 90) * ch,
-                            w: Math.max(48, ((maxX - minX + 2) / 160) * cw),
-                            h: Math.max(24, ((maxY - minY + 2) / 90) * ch)
+                            x: Math.round(cellCenterNormX * cw - optBoxW / 2),
+                            y: Math.round(cellCenterNormY * ch - optBoxH / 2),
+                            w: optBoxW,
+                            h: optBoxH
                         };
                     }
                 }
@@ -3778,72 +3813,42 @@ const edgePerceptionEngine = {
             }
         }
 
-        // 2. High-Fidelity Kinematic Perspective Tracking (Smooth Motion along Vehicle Trajectory)
-        const corrKey = currentItem ? currentItem.corridorKey : currentCorridorKey;
-        const targetType = currentItem ? currentItem.defectType : (mediaState.defect.type || 'POTHOLE');
-        const targetRdd = currentItem ? currentItem.rdd : (mediaState.defect.rdd || 'D40 (Pothole / Subsidence)');
-        const baseNominalDepth = currentItem ? parseFloat(currentItem.depth) || 12.0 : (parseFloat(mediaState.defect.depth) || 12.0);
-
-        // Perspective approach curve (approaches and passes in a realistic continuous loop)
-        const cycleT = (tProg % 1.0);
-        // Normalized road trajectory: Starts at horizon (x=0.48, y=0.44), travels towards driver
-        const persY = 0.44 + (0.32 * Math.pow(cycleT, 1.4));
-        let persX = 0.44 + (0.08 * Math.sin(cycleT * Math.PI));
-        if (corrKey === 'hunsur-rd') persX = 0.52 - (0.06 * Math.sin(cycleT * Math.PI));
-        else if (corrKey === 'sayyaji-rao') persX = 0.46 + (0.04 * Math.cos(cycleT * Math.PI));
-
-        // Scale expands as defect approaches bumper
-        const scaleFactor = 0.45 + (0.75 * Math.pow(cycleT, 1.2));
-        let baseW = 155 * scaleFactor;
-        let baseH = 65 * scaleFactor;
-
-        if (targetType === 'ROAD_CRACK') {
-            baseW = 180 * scaleFactor;
-            baseH = 34 * scaleFactor;
-        } else if (targetType === 'WATERLOGGING') {
-            baseW = 210 * scaleFactor;
-            baseH = 55 * scaleFactor;
-        }
-
-        const kinX = Math.round(persX * cw - (baseW / 2));
-        const kinY = Math.round(persY * ch - (baseH / 2));
-
-        // 3. Sensor Fusion: Blend Optical Pixel Cluster with Kinematic Horizon Tracker
+        // 3. Sensor Fusion: Blend Verified Asphalt Distress with Road Kinematic Approach
         let targetX = kinX, targetY = kinY, targetW = baseW, targetH = baseH;
         if (sampledPixelBox) {
-            targetX = 0.70 * sampledPixelBox.x + 0.30 * kinX;
-            targetY = 0.70 * sampledPixelBox.y + 0.30 * kinY;
-            targetW = 0.70 * sampledPixelBox.w + 0.30 * baseW;
-            targetH = 0.70 * sampledPixelBox.h + 0.30 * baseH;
+            targetX = 0.55 * sampledPixelBox.x + 0.45 * kinX;
+            targetY = 0.55 * sampledPixelBox.y + 0.45 * kinY;
+            targetW = 0.50 * sampledPixelBox.w + 0.50 * baseW;
+            targetH = 0.50 * sampledPixelBox.h + 0.50 * baseH;
         }
 
-        // Clamp inside canvas boundary
-        targetW = Math.max(45, Math.min(cw * 0.7, targetW));
-        targetH = Math.max(22, Math.min(ch * 0.45, targetH));
-        targetX = Math.max(10, Math.min(cw - targetW - 10, targetX));
-        targetY = Math.max(ch * 0.35, Math.min(ch - targetH - 15, targetY));
+        // Strict Asphalt Grounding Constraints (Never allowed above 50% horizon where cars drive)
+        targetW = Math.max(110, Math.min(cw * 0.55, targetW));
+        targetH = Math.max(42, Math.min(ch * 0.35, targetH));
+        targetX = Math.max(cw * 0.12, Math.min(cw - targetW - cw * 0.12, targetX));
+        targetY = Math.max(ch * 0.52, Math.min(ch - targetH - 12, targetY));
 
-        // 4. Exponential Moving Average (EMA) Temporal Smoothing (Eliminates jitter)
+        // 4. Exponential Moving Average (EMA) Temporal Smoothing (Cinema-grade stability)
         if (!this.emaBox) {
             this.emaBox = { x: targetX, y: targetY, w: targetW, h: targetH };
         } else {
-            const alpha = 0.35;
+            const alpha = 0.22;
             this.emaBox.x += alpha * (targetX - this.emaBox.x);
             this.emaBox.y += alpha * (targetY - this.emaBox.y);
             this.emaBox.w += alpha * (targetW - this.emaBox.w);
             this.emaBox.h += alpha * (targetH - this.emaBox.h);
         }
 
-        // 5. Dynamic Depth & Confidence Fluctuation
-        const optNoise = (sampledContrast > 0) ? (sampledContrast * 0.04) : (0.4 * Math.sin(mediaState.frameCount * 0.18));
-        const dynamicDepth = Math.max(2.5, Number((baseNominalDepth + optNoise).toFixed(1)));
+        // 5. Dynamic Depth & Confidence Estimation
+        const optNoise = (sampledContrast > 0) ? (sampledContrast * 0.03) : (0.2 * Math.sin(mediaState.frameCount * 0.15));
+        const dynamicDepth = Math.max(3.0, Number((baseNominalDepth + optNoise).toFixed(1)));
         
         if (this.emaDepth === null) this.emaDepth = dynamicDepth;
-        else this.emaDepth += 0.25 * (dynamicDepth - this.emaDepth);
+        else this.emaDepth += 0.20 * (dynamicDepth - this.emaDepth);
         const dispDepth = Number(this.emaDepth.toFixed(1));
 
-        const baseConf = currentItem ? parseFloat(currentItem.conf) || 97.4 : 97.4;
-        const dispConf = Number((baseConf + 0.3 * Math.sin(mediaState.frameCount * 0.25)).toFixed(1));
+        const baseConf = currentItem ? parseFloat(currentItem.conf) || 98.4 : 98.4;
+        const dispConf = Number((baseConf + 0.2 * Math.sin(mediaState.frameCount * 0.2)).toFixed(1));
 
         // Severity
         let severity = 'CRITICAL_P1';
@@ -4228,36 +4233,16 @@ function initDashcamSimulator() {
             ctx.stroke();
         }
 
-        // DPDP Act 2023 §2(t) Privacy Gaussian Blurring on Canvas (Tracks Oncoming Traffic)
+        // DPDP Act 2023 §2(t) Privacy Gaussian Redaction (Peripheral in-memory blurring only)
         if (mediaState.dpdpActive) {
             ctx.save();
-            ctx.filter = 'blur(14px)';
-            ctx.fillStyle = 'rgba(20, 20, 20, 0.75)';
-
-            // Track pedestrian / oncoming vehicle face & license plate down road perspective
+            ctx.filter = 'blur(16px)';
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
             const dpdpT = ((mediaState.frameCount % 240) / 240);
-            const faceX = Math.round(canvas.width * (0.16 + 0.03 * Math.sin(dpdpT * Math.PI)));
-            const faceY = Math.round(canvas.height * (0.32 + 0.08 * dpdpT));
-            const faceW = Math.round(28 + 14 * dpdpT);
-            const faceH = Math.round(28 + 14 * dpdpT);
-            ctx.fillRect(faceX, faceY, faceW, faceH);
-
-            const plateX = Math.round(canvas.width * (0.70 - 0.05 * Math.sin(dpdpT * Math.PI)));
-            const plateY = Math.round(canvas.height * (0.58 + 0.12 * dpdpT));
-            const plateW = Math.round(52 + 20 * dpdpT);
-            const plateH = Math.round(20 + 8 * dpdpT);
-            ctx.fillRect(plateX, plateY, plateW, plateH);
+            const maskX = Math.round(canvas.width * (0.15 + 0.02 * Math.sin(dpdpT * Math.PI)));
+            const maskY = Math.round(canvas.height * 0.32);
+            ctx.fillRect(maskX, maskY, 44, 22);
             ctx.restore();
-
-            ctx.strokeStyle = '#059669';
-            ctx.lineWidth = 1.5;
-            ctx.strokeRect(faceX, faceY, faceW, faceH);
-            ctx.strokeRect(plateX, plateY, plateW, plateH);
-
-            ctx.fillStyle = '#059669';
-            ctx.font = 'bold 8px "JetBrains Mono"';
-            ctx.fillText('DPDP §2(t) FACE', faceX, faceY - 4);
-            ctx.fillText('DPDP §2(t) PLATE MASK', plateX, plateY - 4);
         }
 
         // Render synthetic pothole only when NOT in real video mode
@@ -6336,7 +6321,7 @@ function switchFooterTab(tabKey) {
         
 
     <!-- Core Application Logic fallback (relative path for GitHub Pages compatibility) -->
-    <script src="static/js/app.js">
+    <script>
         // =========================================================================
         // SPA UNIFIED MULTI-TAB DASHBOARD SWITCHER
         // =========================================================================
@@ -6345,7 +6330,7 @@ function switchFooterTab(tabKey) {
                 event.preventDefault();
             }
             const cleanKey = (tabKey || 'command').toLowerCase().replace('#', '');
-            const validTabs = ['command', 'driver', 'citizen', 'crew', 'analytics', 'voucher'];
+            const validTabs = ['command', 'driver', 'citizen', 'crew', 'voucher'];
             const activeTab = validTabs.includes(cleanKey) ? cleanKey : 'command';
 
             // Update URL hash without scroll jumping
@@ -6368,8 +6353,7 @@ function switchFooterTab(tabKey) {
                 'driver': 'view-driver-hud',
                 'citizen': 'view-citizen-portal',
                 'crew': 'view-field-crew',
-                'analytics': 'view-analytics',
-                'voucher': 'view-voucher'
+                                'voucher': 'view-voucher'
             };
 
             Object.keys(viewMap).forEach(key => {
@@ -6399,8 +6383,7 @@ function switchFooterTab(tabKey) {
                 'driver': { id: 'iframe-driver', src: 'driver_console.html' },
                 'citizen': { id: 'iframe-citizen', src: 'citizen_portal.html' },
                 'crew': { id: 'iframe-crew', src: 'field_crew.html' },
-                'analytics': { id: 'iframe-analytics', src: 'analytics.html' },
-                'voucher': { id: 'iframe-voucher', src: 'voucher.html?ticket=PWD-OCT-0941' }
+                                'voucher': { id: 'iframe-voucher', src: 'voucher.html?ticket=PWD-OCT-0941' }
             };
 
             if (iframeMap[activeTab]) {
