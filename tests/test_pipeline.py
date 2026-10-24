@@ -596,5 +596,32 @@ class TestWardAnalytics(unittest.TestCase):
         self.assertGreaterEqual(w0["sla_compliance"], 90.0)
 
 
+class TestMediaAnalysisPipeline(unittest.TestCase):
+    """Verifies transit video and photo media analysis and end-to-end consensus trigger."""
+
+    def test_media_analysis_json(self):
+        from backend.main import analyze_media_json, MediaAnalysisRequest
+        req = MediaAnalysisRequest(
+            bus_id="KSRTC-KA09-E102",
+            location_name="VVCE Ring Road Junction, Gokulam, Mysuru",
+            lat=12.3360,
+            lng=76.6210,
+            hazard_type="POTHOLE",
+            damage_depth_cm=8.9,
+            media_name="dashcam_mysuru_orr.mp4"
+        )
+        res = analyze_media_json(req)
+        self.assertEqual(res["status"], "SUCCESS")
+        self.assertEqual(res["media_type"], "VIDEO")
+        self.assertTrue(res["hazard_detected"])
+        self.assertIn("dpdp_privacy", res)
+        self.assertTrue(res["dpdp_privacy"]["dpdp_compliant"])
+        self.assertIn("work_order", res)
+        self.assertTrue(res["work_order"]["ticket_id"].startswith("PWD-"))
+        self.assertIn("bbox", res)
+        self.assertEqual(res["defect"]["type"], "POTHOLE")
+        self.assertAlmostEqual(res["defect"]["damage_depth_cm"], 8.9)
+
+
 if __name__ == '__main__':
     unittest.main()

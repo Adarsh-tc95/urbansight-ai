@@ -262,27 +262,64 @@
             </div>
             </div>
 
-            <!-- Panel 2: Live On-Bus Dashcam Vision Simulator -->
+                        <!-- Panel 2: Live On-Bus Dashcam & Media AI Inspection Studio -->
             <div class="panel-container">
                 <div class="panel-header">
                     <div class="panel-header-title">
                         <i class="fa-solid fa-video" style="color: var(--caution);"></i>
-                        Edge Camera Perception HUD (BMTC-KA01-E542 Windshield Feed)
+                        Edge Camera Perception & Media AI Analyzer (Video & Photo Ingest)
                     </div>
                     <span class="badge-pill badge-cyan">TensorRT INT8 · 28.2ms · 15W</span>
                 </div>
 
+                <!-- Media Source & Action Toolbar -->
+                <div class="media-analyzer-ribbon">
+                    <div class="media-source-pills">
+                        <button class="btn-media-pill active" id="btn-media-sample-mysuru" onclick="loadSampleMedia('mysuru-video')">
+                            <i class="fa-solid fa-video"></i> Mysuru ORR Video
+                        </button>
+                        <button class="btn-media-pill" id="btn-media-sample-blr" onclick="loadSampleMedia('bengaluru-video')">
+                            <i class="fa-solid fa-video"></i> Bengaluru 500D Feed
+                        </button>
+                        <button class="btn-media-pill" id="btn-media-sample-pothole" onclick="loadSampleMedia('mysuru-pothole')">
+                            <i class="fa-solid fa-camera"></i> Mysuru Road Photo
+                        </button>
+                        <button class="btn-media-pill" id="btn-media-sample-water" onclick="loadSampleMedia('silk-water')">
+                            <i class="fa-solid fa-camera"></i> Monsoon Flood Photo
+                        </button>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <input type="file" id="media-upload-input" accept="video/*,image/*" style="display:none;" onchange="handleMediaUpload(event)">
+                        <button class="btn-media-upload" onclick="document.getElementById('media-upload-input').click()" title="Upload any custom MP4, WEBM video or JPG, PNG photo">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload Video / Photo
+                        </button>
+                    </div>
+                </div>
+
                 <div class="dashcam-split-panel">
-                    <div class="video-simulation-canvas-box">
+                    <div class="video-simulation-canvas-box" style="position:relative;">
                         <canvas id="dashcam-canvas" width="480" height="250"></canvas>
                         
-                        <div class="hud-corner-telemetry">
-                            <div>REC ● 30.0 FPS</div>
-                            <div>INFERENCE: 28.2ms</div>
-                            <div>GPS: 12.9238°N, 77.6745°E</div>
+                        <div class="hud-corner-telemetry" id="media-hud-telemetry">
+                            <div id="media-hud-feed-name">FEED: KSRTC-KA09-E102 (MYSURU)</div>
+                            <div>INFERENCE: 28.2ms · 30 FPS</div>
+                            <div id="media-hud-coords">GPS: 12.3360°N, 76.6210°E</div>
                         </div>
 
-                        <div class="hud-privacy-badge">
+                        <!-- Video Playback & DPDP Privacy Overlay Controls -->
+                        <div class="media-playback-bar">
+                            <button class="btn-playback-ctrl" id="btn-media-playpause" onclick="toggleMediaPlayPause()" title="Play / Pause Feed">
+                                <i class="fa-solid fa-pause" id="playpause-icon"></i>
+                                <span id="playpause-text">PAUSE</span>
+                            </button>
+                            <button class="btn-playback-ctrl" id="btn-dpdp-toggle" onclick="toggleDPDPMask()" title="Toggle DPDP Act 2023 §2(t) Privacy Mask">
+                                <i class="fa-solid fa-shield-halved" style="color:var(--success);"></i>
+                                <span id="dpdp-status-text">DPDP: ON</span>
+                            </button>
+                        </div>
+
+                        <div class="hud-privacy-badge" id="hud-dpdp-badge">
                             <i class="fa-solid fa-shield-halved"></i> DPDP ACT 2023 §2(t) MASK: ACTIVE
                         </div>
                     </div>
@@ -290,22 +327,28 @@
                     <div class="hud-controls-sidebar">
                         <div class="hud-stats-group">
                             <div class="hud-stat-item">
-                                <label><i class="fa-solid fa-brain" style="color:#0284C7;"></i> Vision Neural Net</label>
-                                <span><i class="fa-brands fa-python" style="color:#0284C7;"></i> YOLOv8n (RDD2022 INT8)</span>
+                                <label><i class="fa-solid fa-magnifying-glass-chart" style="color:#0284C7;"></i> Detected Road Distress</label>
+                                <span id="detection-defect-label" style="font-weight:800; color:var(--caution);">POTHOLE D40 · 97.4%</span>
                             </div>
                             <div class="hud-stat-item">
-                                <label><i class="fa-solid fa-satellite-dish" style="color:#EA580C;"></i> Telemetry Uplink (OGC)</label>
-                                <span style="color: var(--success);">&lt; 14.8 KB GeoJSON (Zero Raw Video)</span>
+                                <label><i class="fa-solid fa-ruler-combined" style="color:#EA580C;"></i> Physical Distress Estimate</label>
+                                <span id="detection-depth-label" style="color:var(--text-primary); font-family:var(--font-mono);">Depth: 8.9cm · Severity: P1</span>
                             </div>
                             <div class="hud-stat-item">
-                                <label><i class="fa-brands fa-nvidia" style="color:#76B900;"></i> Edge Compute Unit</label>
-                                <span>NVIDIA Jetson Orin Nano (15W)</span>
+                                <label><i class="fa-solid fa-map-pin" style="color:#059669;"></i> Location & Corridor</label>
+                                <span id="detection-location-label" style="font-size:0.75rem; color:var(--text-secondary);">VVCE Ring Road, Gokulam, Mysuru</span>
                             </div>
                         </div>
 
-                        <div class="hud-security-callout">
-                            <i class="fa-solid fa-lock"></i>
-                            <div>Zero raw camera footage stored on disk. Only cryptographic distress telemetry leaves the transit bus.</div>
+                        <!-- Connect Complete Project Action Button -->
+                        <div style="display:flex; flex-direction:column; gap:6px;">
+                            <button class="btn-dispatch-grid" id="btn-run-analysis-dispatch" onclick="runAIAnalysisAndDispatch()">
+                                <i class="fa-solid fa-bolt"></i> Run AI Analysis & Auto-Dispatch to PWD Grid
+                            </button>
+                            <div class="hud-security-callout" style="margin-top:0;">
+                                <i class="fa-solid fa-lock"></i>
+                                <div>Zero raw media stored on disk. Edge AI produces only cryptographic distress telemetry.</div>
+                            </div>
                         </div>
                     </div>
                 </div>
