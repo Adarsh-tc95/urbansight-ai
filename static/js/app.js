@@ -4,6 +4,11 @@
  * ASTM D6433 PCI Degradation Forecasting, and In-Cab Transit Fleet Advisory
  */
 
+if (typeof window !== 'undefined' && window.__URBANSIGHT_APP_INITIALIZED__) {
+    // Core application already initialized via embedded script
+} else {
+    if (typeof window !== 'undefined') window.__URBANSIGHT_APP_INITIALIZED__ = true;
+
 document.addEventListener('DOMContentLoaded', () => {
     initClock();
     initLeafletMap();
@@ -2305,3 +2310,5 @@ function speakMapDirectionPrompt() {
         alert(prompt);
     }
 }
+}
+

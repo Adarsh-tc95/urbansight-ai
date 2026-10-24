@@ -727,8 +727,39 @@
         };
 
         function switchTicket(ticketId) {
-            const data = VOUCHER_DATA[ticketId];
-            if (!data) return;
+            let data = VOUCHER_DATA[ticketId];
+            if (!data) {
+                // Dynamically construct CPWD voucher for live detected defect
+                data = {
+                    ticket_id: ticketId,
+                    agency: "MYSURU CITY CORPORATION (MCC) / MUDA",
+                    hazard_type: "POTHOLE / ROAD CRATER (RDD Code D40)",
+                    severity: "CRITICAL P1 (High Impact)",
+                    location: "Mysuru Transit Corridor (Live Edge Ingestion)",
+                    ward: "Ward 9 (Gokulam / Vijayanagar Division)",
+                    coords: "12.3360° N, 76.6210° E",
+                    fleet: "KSRTC-KA09-E102 (Live Video Inspection)",
+                    imu: "Vertical Acceleration Spike: 2.65g | Shock: -0.38",
+                    depth: "11.4 cm (Distress Category: Severe Cavity)",
+                    date: new Date().toLocaleDateString('en-GB') + " " + new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}) + " IST",
+                    status: "DISPATCHED / ACTIVE TENDER",
+                    image: "image1.jpg",
+                    subtotal: "12,245.00",
+                    gst: "2,204.10",
+                    total: "14,449.10",
+                    sla_text: "CRITICAL P1 with an enforceable resolution SLA of 48 Hours"
+                };
+                VOUCHER_DATA[ticketId] = data;
+
+                const sel = document.getElementById('ticket-select');
+                if (sel && !Array.from(sel.options).some(o => o.value === ticketId)) {
+                    const opt = document.createElement('option');
+                    opt.value = ticketId;
+                    opt.textContent = `${ticketId} (Live Detected Pothole)`;
+                    sel.insertBefore(opt, sel.firstChild);
+                    sel.value = ticketId;
+                }
+            }
 
             document.getElementById('doc-ticket-id').textContent = data.ticket_id;
             document.getElementById('doc-agency').textContent = data.agency;
