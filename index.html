@@ -123,16 +123,16 @@ h1, h2, h3 {
    1. GOVERNMENT TOP BAR (2-tier: NIC/DigiLocker style)
    ============================================================================= */
 .gov-topbar-tier1 {
-    background: var(--gov-blue);
-    color: var(--text-inverse);
-    padding: 6px 20px;
+    background: var(--bg-topbar-1);
+    color: #fff;
+    padding: 4px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 0.78rem;
-    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    position: relative;
+    z-index: 1001;
 }
 
 .gov-topbar-tier1 .brand-group {
@@ -193,13 +193,13 @@ h1, h2, h3 {
 .gov-topbar-tier2 {
     background: var(--bg-topbar-2);
     border-bottom: 1px solid var(--border-light);
-    padding: 5px 20px;
+    padding: 3px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 8px;
-    font-size: 0.75rem;
+    gap: 6px;
+    font-size: 0.73rem;
     color: var(--text-secondary);
 }
 
@@ -258,9 +258,9 @@ h1, h2, h3 {
 .brand-identity {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 0;
-    min-width: 220px;
+    gap: 8px;
+    padding: 5px 0;
+    min-width: 200px;
 }
 
 .brand-emblem {
@@ -576,8 +576,8 @@ h1, h2, h3 {
 .command-grid-layout {
     display: grid;
     grid-template-columns: 1.85fr 1.15fr;
-    gap: 16px;
-    padding: 12px 20px 24px;
+    gap: 10px;
+    padding: 8px 14px 14px;
     max-width: 1720px;
     margin: 0 auto;
 }
@@ -586,7 +586,7 @@ h1, h2, h3 {
 .right-column {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
 }
 
 
@@ -603,7 +603,7 @@ h1, h2, h3 {
 .panel-header {
     background: var(--gov-blue);
     color: #FFFFFF;
-    padding: 10px 16px;
+    padding: 7px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -780,8 +780,8 @@ h1, h2, h3 {
 .dashcam-split-panel {
     display: grid;
     grid-template-columns: 1.55fr 1fr;
-    gap: 16px;
-    padding: 16px;
+    gap: 10px;
+    padding: 10px;
 }
 
 .video-simulation-canvas-box {
@@ -894,17 +894,17 @@ h1, h2, h3 {
    9. AGENT PIPELINE STEPPER
    ============================================================================= */
 .agent-pipeline-box {
-    padding: 14px;
+    padding: 8px 10px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .agent-step-item {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 10px 14px;
+    gap: 8px;
+    padding: 6px 10px;
     background: var(--bg-page);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-sm);
@@ -965,7 +965,7 @@ h1, h2, h3 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 14px;
+    padding: 6px 10px;
     background: var(--gov-blue-light);
     border-bottom: 1px solid #C7D7F5;
 }
@@ -982,14 +982,15 @@ h1, h2, h3 {
 }
 
 .activity-log-feed {
-    height: 180px;
+    padding: 6px 10px;
+    max-height: 190px;
     overflow-y: auto;
-    padding: 8px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.35;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    background: var(--bg-page);
-    font-family: var(--font-mono);
+    gap: 3px;
 }
 
 .log-entry {
@@ -1703,7 +1704,14 @@ h1, h2, h3 {
    ============================================================================= */
 @media (max-width: 1200px) {
     .metrics-strip { grid-template-columns: repeat(2, 1fr); }
-    .command-grid-layout { grid-template-columns: 1fr; }
+    .command-grid-layout {
+    display: grid;
+    grid-template-columns: 1.85fr 1.15fr;
+    gap: 10px;
+    padding: 8px 14px 14px;
+    max-width: 1720px;
+    margin: 0 auto;
+}
 }
 
 @media (max-width: 860px) {
@@ -1711,7 +1719,12 @@ h1, h2, h3 {
     .header-nav-center { overflow-x: auto; width: 100%; }
     .portal-nav-pills { width: 100%; }
     .header-actions { flex-wrap: wrap; }
-    .dashcam-split-panel { grid-template-columns: 1fr; }
+    .dashcam-split-panel {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 10px;
+    padding: 10px;
+}
     .gov-topbar-tier1 .gov-utils { display: none; }
     .voucher-page { padding: 24px 20px; }
     .voucher-signatures { grid-template-columns: 1fr; gap: 16px; }
@@ -1723,31 +1736,6 @@ h1, h2, h3 {
     .ticket-stepper::before { display: none; }
     .filter-bar { flex-direction: column; align-items: stretch; }
 }
-
-
-/* Page specific modal additions */
-.waypoint-badge {
-    background: #FFFFFF;
-    border: 2px solid #0284C7;
-    border-radius: 999px;
-    padding: 2px 7px;
-    font-size: 0.62rem;
-    font-weight: 800;
-    font-family: var(--font-mono);
-    color: #0284C7;
-    white-space: nowrap;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.waypoint-badge.start { border-color: #15803d; color: #15803d; background: #f0fdf4; }
-.waypoint-badge.hazard { border-color: #dc2626; color: #dc2626; background: #fff1f2; }
-.waypoint-badge.detour { border-color: #ea580c; color: #ea580c; background: #fff7ed; }
-.waypoint-badge.end { border-color: #2563eb; color: #2563eb; background: #eff6ff; }
-
-
 
 /* Video Route & Corridor Georeference Alignment Bar */
 .video-corridor-bar {
@@ -1788,6 +1776,79 @@ h1, h2, h3 {
     border: 1px solid rgba(2, 132, 199, 0.25);
     padding: 2px 7px;
     border-radius: 4px;
+}
+
+/* Media Analyzer Ribbon & Action Pills */
+.media-analyzer-ribbon {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 6px 10px;
+    background: #F8FAFC;
+    border-bottom: 1px solid var(--border-light);
+    flex-wrap: wrap;
+}
+
+.media-source-pills {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.btn-media-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 4px;
+    border: 1px solid var(--border-medium);
+    background: #FFFFFF;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.btn-media-pill:hover {
+    background: #F1F5F9;
+    border-color: #CBD5E1;
+}
+
+.btn-media-pill.active {
+    background: var(--gov-blue);
+    color: #FFFFFF;
+    border-color: var(--gov-blue);
+    box-shadow: 0 1px 3px rgba(0, 53, 128, 0.25);
+}
+
+.btn-media-upload {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 4px;
+    border: 1px solid var(--border-medium);
+    background: #FFFFFF;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.video-corridor-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 4px 10px;
+    background: #EDE7DA;
+    border-bottom: 1px solid var(--border-medium);
+    font-size: 0.72rem;
+    flex-wrap: wrap;
 }
 
 </style>
@@ -2134,33 +2195,39 @@ h1, h2, h3 {
                     <span class="badge-pill badge-cyan">TensorRT INT8 · 28.2ms · 15W</span>
                 </div>
 
-                <!-- Media Source & Action Toolbar -->
+                                <!-- Media Source & Action Toolbar -->
                 <div class="media-analyzer-ribbon">
                     <div class="media-source-pills">
-                        <button class="btn-media-pill active" id="btn-media-sample-mysuru" onclick="loadSampleMedia('mysuru-video')">
+                        <button class="btn-media-pill active" id="btn-media-real-1" onclick="loadSampleMedia('mysuru-real-1')" title="Play Real-Life Road Video Clip 1 (Pothole 20.2cm)">
+                            <i class="fa-solid fa-play-circle" style="color:var(--gov-saffron);"></i> Live Clip 1 (Pothole 20cm)
+                        </button>
+                        <button class="btn-media-pill" id="btn-media-real-2" onclick="loadSampleMedia('mysuru-real-2')" title="Play Real-Life Road Video Clip 2 (Hunsur Road)">
+                            <i class="fa-solid fa-play-circle" style="color:var(--gov-saffron);"></i> Live Clip 2
+                        </button>
+                        <button class="btn-media-pill" id="btn-media-real-3" onclick="loadSampleMedia('mysuru-real-3')" title="Play Real-Life Road Video Clip 3 (Sayyaji Rao Road)">
+                            <i class="fa-solid fa-play-circle" style="color:var(--gov-saffron);"></i> Live Clip 3
+                        </button>
+                        <button class="btn-media-pill" id="btn-media-sample-mysuru" onclick="loadSampleMedia('mysuru-video')">
                             <i class="fa-solid fa-video"></i> Mysuru ORR Video
                         </button>
                         <button class="btn-media-pill" id="btn-media-sample-blr" onclick="loadSampleMedia('bengaluru-video')">
-                            <i class="fa-solid fa-video"></i> Bengaluru 500D Feed
+                            <i class="fa-solid fa-video"></i> Bengaluru 500D
                         </button>
                         <button class="btn-media-pill" id="btn-media-sample-pothole" onclick="loadSampleMedia('mysuru-pothole')">
-                            <i class="fa-solid fa-camera"></i> Mysuru Road Photo
+                            <i class="fa-solid fa-camera"></i> Road Photo
                         </button>
-                                                <button class="btn-media-pill" id="btn-media-live-camera" onclick="toggleLiveCameraFeed()" style="background:rgba(220,38,38,0.12); color:#DC2626; border:1px solid rgba(220,38,38,0.35);" title="Start Real-time Live Camera (Webcam or Mobile Phone Camera)">
-                            <i class="fa-solid fa-circle-dot" style="color:#DC2626; animation:pulse 1.5s infinite;"></i> <span id="btn-live-cam-label">Live Camera Video</span>
+                        <button class="btn-media-pill" id="btn-media-live-camera" onclick="toggleLiveCameraFeed()" style="background:rgba(220,38,38,0.12); color:#DC2626; border:1px solid rgba(220,38,38,0.35);" title="Start Real-time Live Camera (Webcam or Mobile Phone Camera)">
+                            <i class="fa-solid fa-circle-dot" style="color:#DC2626; animation:pulse 1.5s infinite;"></i> <span id="btn-live-cam-label">Live Camera</span>
                         </button>
                         <button class="btn-media-pill" id="btn-media-flip-camera" onclick="flipLiveCamera()" style="display:none;" title="Flip Front / Rear Camera">
-                            <i class="fa-solid fa-camera-rotate"></i> Flip Camera
-                        </button>
-                        <button class="btn-media-pill" id="btn-media-sample-water" onclick="loadSampleMedia('silk-water')">
-                            <i class="fa-solid fa-camera"></i> Monsoon Flood Photo
+                            <i class="fa-solid fa-camera-rotate"></i> Flip
                         </button>
                     </div>
 
                     <div style="display:flex; align-items:center; gap:6px;">
                         <input type="file" id="media-upload-input" accept="video/*,image/*" style="display:none;" onchange="handleMediaUpload(event)">
-                        <button class="btn-media-upload" onclick="document.getElementById('media-upload-input').click()" title="Upload any custom MP4, WEBM video or JPG, PNG photo">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload Video / Photo
+                        <button class="btn-media-upload" onclick="document.getElementById('media-upload-input').click()" title="Upload custom video (.mp4, .mov, .webm) or road photo">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload Media
                         </button>
                     </div>
                 </div>
@@ -2440,6 +2507,7 @@ h1, h2, h3 {
             initClock();
             initLeafletMap();
             initDashcamSimulator();
+            loadSampleMedia('mysuru-real-1');
             initEventLogFeed();
             initActionListeners();
             renderWorkOrdersTable();
@@ -3565,7 +3633,124 @@ function loadSampleMedia(type) {
     mediaState.isDefectLocked = false;
     mediaState.hasDispatchedOnce = false;
 
-    if (type === 'mysuru-video') {
+    if (type === 'mysuru-real-1') {
+        const btn = document.getElementById('btn-media-real-1');
+        if (btn) btn.classList.add('active');
+        mediaState.mode = 'video';
+        mediaState.sourceName = 'Mysuru Road Video 1 (Real Dashcam - 20.2cm Pothole)';
+        mediaState.userImage = null;
+        currentCorridorKey = 'mysuru-orr';
+        const sel = document.getElementById('video-corridor-select');
+        if (sel) sel.value = 'mysuru-orr';
+
+        let videoEl = document.getElementById('uploaded-media-video');
+        if (!videoEl) {
+            videoEl = document.createElement('video');
+            videoEl.id = 'uploaded-media-video';
+            videoEl.autoplay = true;
+            videoEl.loop = true;
+            videoEl.muted = true;
+            videoEl.playsInline = true;
+            videoEl.style.display = 'none';
+            document.body.appendChild(videoEl);
+        }
+        videoEl.src = 'static/videos/mysuru_road_inspection_1.mp4';
+        videoEl.load();
+        videoEl.play().catch(e => console.log('Autoplay handled:', e));
+        mediaState.userVideo = videoEl;
+        mediaState.defect = {
+            type: 'POTHOLE',
+            rdd: 'D40 (Pothole / Subsidence)',
+            conf: '97.6%',
+            depth: '20.2cm',
+            sev: 'CRITICAL_P1',
+            busId: 'KSRTC-KA09-E102',
+            loc: 'VVCE Ring Road Junction, Gokulam, Mysuru',
+            lat: 12.3360,
+            lng: 76.6210,
+            sorCode: 'CPWD 16.14.2 (Dense Bituminous Macadam)',
+            ticketId: 'PWD-OCT-0941'
+        };
+        updateLiveNavigationDirections('POTHOLE', 12.3360, 76.6210, 'VVCE Ring Road Junction, Gokulam');
+    } else if (type === 'mysuru-real-2') {
+        const btn = document.getElementById('btn-media-real-2');
+        if (btn) btn.classList.add('active');
+        mediaState.mode = 'video';
+        mediaState.sourceName = 'Mysuru Road Video 2 (Real Dashcam)';
+        mediaState.userImage = null;
+        currentCorridorKey = 'hunsur-rd';
+        const sel = document.getElementById('video-corridor-select');
+        if (sel) sel.value = 'hunsur-rd';
+
+        let videoEl = document.getElementById('uploaded-media-video');
+        if (!videoEl) {
+            videoEl = document.createElement('video');
+            videoEl.id = 'uploaded-media-video';
+            videoEl.autoplay = true;
+            videoEl.loop = true;
+            videoEl.muted = true;
+            videoEl.playsInline = true;
+            videoEl.style.display = 'none';
+            document.body.appendChild(videoEl);
+        }
+        videoEl.src = 'static/videos/mysuru_road_inspection_2.mp4';
+        videoEl.load();
+        videoEl.play().catch(e => console.log('Autoplay handled:', e));
+        mediaState.userVideo = videoEl;
+        mediaState.defect = {
+            type: 'POTHOLE',
+            rdd: 'D40 (Pothole / Subsidence)',
+            conf: '96.4%',
+            depth: '14.8cm',
+            sev: 'CRITICAL_P1',
+            busId: 'KSRTC-MY09-C330',
+            loc: 'Hunsur Road Kalamandira Signal, Mysuru',
+            lat: 12.3140,
+            lng: 76.6320,
+            sorCode: 'CPWD 16.14.2 (DBM Patch)',
+            ticketId: 'PWD-OCT-0942'
+        };
+        updateLiveNavigationDirections('POTHOLE', 12.3140, 76.6320, 'Hunsur Road Kalamandira Signal');
+    } else if (type === 'mysuru-real-3') {
+        const btn = document.getElementById('btn-media-real-3');
+        if (btn) btn.classList.add('active');
+        mediaState.mode = 'video';
+        mediaState.sourceName = 'Mysuru Road Video 3 (Real Dashcam)';
+        mediaState.userImage = null;
+        currentCorridorKey = 'sayyaji-rao';
+        const sel = document.getElementById('video-corridor-select');
+        if (sel) sel.value = 'sayyaji-rao';
+
+        let videoEl = document.getElementById('uploaded-media-video');
+        if (!videoEl) {
+            videoEl = document.createElement('video');
+            videoEl.id = 'uploaded-media-video';
+            videoEl.autoplay = true;
+            videoEl.loop = true;
+            videoEl.muted = true;
+            videoEl.playsInline = true;
+            videoEl.style.display = 'none';
+            document.body.appendChild(videoEl);
+        }
+        videoEl.src = 'static/videos/mysuru_road_inspection_3.mp4';
+        videoEl.load();
+        videoEl.play().catch(e => console.log('Autoplay handled:', e));
+        mediaState.userVideo = videoEl;
+        mediaState.defect = {
+            type: 'ROAD_CRACK',
+            rdd: 'D00 (Longitudinal Surface Crack)',
+            conf: '95.1%',
+            depth: '4.5cm',
+            sev: 'HIGH_P2',
+            busId: 'KSRTC-KA09-E102',
+            loc: 'Sayyaji Rao Road Heritage Corridor, Mysuru',
+            lat: 12.3130,
+            lng: 76.6538,
+            sorCode: 'CPWD 16.12.1 (Crack Sealing)',
+            ticketId: 'PWD-OCT-0943'
+        };
+        updateLiveNavigationDirections('ROAD_CRACK', 12.3130, 76.6538, 'Sayyaji Rao Road Corridor');
+    } else if (type === 'mysuru-video') {
         const btn = document.getElementById('btn-media-sample-mysuru');
         if (btn) btn.classList.add('active');
         mediaState.mode = 'video';

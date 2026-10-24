@@ -1133,7 +1133,124 @@ function loadSampleMedia(type) {
     mediaState.isDefectLocked = false;
     mediaState.hasDispatchedOnce = false;
 
-    if (type === 'mysuru-video') {
+    if (type === 'mysuru-real-1') {
+        const btn = document.getElementById('btn-media-real-1');
+        if (btn) btn.classList.add('active');
+        mediaState.mode = 'video';
+        mediaState.sourceName = 'Mysuru Road Video 1 (Real Dashcam - 20.2cm Pothole)';
+        mediaState.userImage = null;
+        currentCorridorKey = 'mysuru-orr';
+        const sel = document.getElementById('video-corridor-select');
+        if (sel) sel.value = 'mysuru-orr';
+
+        let videoEl = document.getElementById('uploaded-media-video');
+        if (!videoEl) {
+            videoEl = document.createElement('video');
+            videoEl.id = 'uploaded-media-video';
+            videoEl.autoplay = true;
+            videoEl.loop = true;
+            videoEl.muted = true;
+            videoEl.playsInline = true;
+            videoEl.style.display = 'none';
+            document.body.appendChild(videoEl);
+        }
+        videoEl.src = 'static/videos/mysuru_road_inspection_1.mp4';
+        videoEl.load();
+        videoEl.play().catch(e => console.log('Autoplay handled:', e));
+        mediaState.userVideo = videoEl;
+        mediaState.defect = {
+            type: 'POTHOLE',
+            rdd: 'D40 (Pothole / Subsidence)',
+            conf: '97.6%',
+            depth: '20.2cm',
+            sev: 'CRITICAL_P1',
+            busId: 'KSRTC-KA09-E102',
+            loc: 'VVCE Ring Road Junction, Gokulam, Mysuru',
+            lat: 12.3360,
+            lng: 76.6210,
+            sorCode: 'CPWD 16.14.2 (Dense Bituminous Macadam)',
+            ticketId: 'PWD-OCT-0941'
+        };
+        updateLiveNavigationDirections('POTHOLE', 12.3360, 76.6210, 'VVCE Ring Road Junction, Gokulam');
+    } else if (type === 'mysuru-real-2') {
+        const btn = document.getElementById('btn-media-real-2');
+        if (btn) btn.classList.add('active');
+        mediaState.mode = 'video';
+        mediaState.sourceName = 'Mysuru Road Video 2 (Real Dashcam)';
+        mediaState.userImage = null;
+        currentCorridorKey = 'hunsur-rd';
+        const sel = document.getElementById('video-corridor-select');
+        if (sel) sel.value = 'hunsur-rd';
+
+        let videoEl = document.getElementById('uploaded-media-video');
+        if (!videoEl) {
+            videoEl = document.createElement('video');
+            videoEl.id = 'uploaded-media-video';
+            videoEl.autoplay = true;
+            videoEl.loop = true;
+            videoEl.muted = true;
+            videoEl.playsInline = true;
+            videoEl.style.display = 'none';
+            document.body.appendChild(videoEl);
+        }
+        videoEl.src = 'static/videos/mysuru_road_inspection_2.mp4';
+        videoEl.load();
+        videoEl.play().catch(e => console.log('Autoplay handled:', e));
+        mediaState.userVideo = videoEl;
+        mediaState.defect = {
+            type: 'POTHOLE',
+            rdd: 'D40 (Pothole / Subsidence)',
+            conf: '96.4%',
+            depth: '14.8cm',
+            sev: 'CRITICAL_P1',
+            busId: 'KSRTC-MY09-C330',
+            loc: 'Hunsur Road Kalamandira Signal, Mysuru',
+            lat: 12.3140,
+            lng: 76.6320,
+            sorCode: 'CPWD 16.14.2 (DBM Patch)',
+            ticketId: 'PWD-OCT-0942'
+        };
+        updateLiveNavigationDirections('POTHOLE', 12.3140, 76.6320, 'Hunsur Road Kalamandira Signal');
+    } else if (type === 'mysuru-real-3') {
+        const btn = document.getElementById('btn-media-real-3');
+        if (btn) btn.classList.add('active');
+        mediaState.mode = 'video';
+        mediaState.sourceName = 'Mysuru Road Video 3 (Real Dashcam)';
+        mediaState.userImage = null;
+        currentCorridorKey = 'sayyaji-rao';
+        const sel = document.getElementById('video-corridor-select');
+        if (sel) sel.value = 'sayyaji-rao';
+
+        let videoEl = document.getElementById('uploaded-media-video');
+        if (!videoEl) {
+            videoEl = document.createElement('video');
+            videoEl.id = 'uploaded-media-video';
+            videoEl.autoplay = true;
+            videoEl.loop = true;
+            videoEl.muted = true;
+            videoEl.playsInline = true;
+            videoEl.style.display = 'none';
+            document.body.appendChild(videoEl);
+        }
+        videoEl.src = 'static/videos/mysuru_road_inspection_3.mp4';
+        videoEl.load();
+        videoEl.play().catch(e => console.log('Autoplay handled:', e));
+        mediaState.userVideo = videoEl;
+        mediaState.defect = {
+            type: 'ROAD_CRACK',
+            rdd: 'D00 (Longitudinal Surface Crack)',
+            conf: '95.1%',
+            depth: '4.5cm',
+            sev: 'HIGH_P2',
+            busId: 'KSRTC-KA09-E102',
+            loc: 'Sayyaji Rao Road Heritage Corridor, Mysuru',
+            lat: 12.3130,
+            lng: 76.6538,
+            sorCode: 'CPWD 16.12.1 (Crack Sealing)',
+            ticketId: 'PWD-OCT-0943'
+        };
+        updateLiveNavigationDirections('ROAD_CRACK', 12.3130, 76.6538, 'Sayyaji Rao Road Corridor');
+    } else if (type === 'mysuru-video') {
         const btn = document.getElementById('btn-media-sample-mysuru');
         if (btn) btn.classList.add('active');
         mediaState.mode = 'video';
