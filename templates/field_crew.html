@@ -647,11 +647,11 @@
         </div>
 
         <div style="display:flex; align-items:center; gap:8px;">
-            <a href="citizen_portal.html" class="btn-header-nav" title="Open Citizen Portal">
+            <a href="index.html#citizen" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('citizen', event); return false; }" class="btn-header-nav" title="Open Citizen Portal">
                 <i class="fa-solid fa-users"></i> Citizen
             </a>
             <a href="https://github.com/gaganks2006-ind/urbansight-ai" target="_blank" class="btn-header-nav" title="GitHub"><i class="fa-brands fa-github"></i></a>
-            <a href="index.html" class="btn-header-nav" title="Open ICCC Dashboard">
+            <a href="index.html#command" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('command', event); return false; }" class="btn-header-nav" title="Open ICCC Dashboard">
                 <i class="fa-solid fa-gauge"></i> ICCC
             </a>
         </div>
@@ -696,23 +696,23 @@
 
     <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
-        <a href="field_crew.html" class="nav-item active">
+        <a href="index.html#crew" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('crew', event); return false; }" class="nav-item active">
             <i class="fa-solid fa-list-check"></i>
             <span>Work Orders</span>
         </a>
-        <a href="voucher.html?ticket=PWD-2026-OCT-0941" class="nav-item">
+        <a href="index.html#voucher" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('voucher', event); return false; }" class="nav-item">
             <i class="fa-solid fa-file-invoice"></i>
             <span>CPWD Voucher</span>
         </a>
-        <a href="citizen_portal.html" class="nav-item">
+        <a href="index.html#citizen" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('citizen', event); return false; }" class="nav-item">
             <i class="fa-solid fa-road-circle-check"></i>
             <span>Citizen Portal</span>
         </a>
-        <a href="driver_console.html" class="nav-item">
+        <a href="index.html#driver" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('driver', event); return false; }" class="nav-item">
             <i class="fa-solid fa-tablet-screen-button"></i>
             <span>Driver HUD</span>
         </a>
-        <a href="index.html" class="nav-item">
+        <a href="index.html#command" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('command', event); return false; }" class="nav-item">
             <i class="fa-solid fa-satellite-dish"></i>
             <span>ICCC Central</span>
         </a>
@@ -893,7 +893,7 @@
                             </button>
                         ` : ''}
 
-                        <a href="voucher.html?ticket=${order.ticket_id}" class="btn-act btn-voucher" onclick="event.stopPropagation();">
+                        <a href="index.html#voucher" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('voucher', event); return false; }" class="btn-act btn-voucher" onclick="event.stopPropagation();">
                             <i class="fa-solid fa-file-invoice"></i> Tender Voucher
                         </a>
 
