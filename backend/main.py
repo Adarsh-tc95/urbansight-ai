@@ -1689,7 +1689,7 @@ def get_hazard_proximity_advisory(lat: float = 12.3360, lng: float = 76.6210, sp
     Computes proximity from driver's GPS location to known road hazards.
     Returns dynamic distance countdown, lane recommendations, and Kannada/Hindi/English speech text.
     """
-    active_hazards = orchestrator.get_active_hazards()
+    active_hazards = getattr(orchestrator, 'hazards', [])
     if not active_hazards:
         return {
             "status": "ALL_CLEAR",

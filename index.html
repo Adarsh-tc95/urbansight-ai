@@ -3412,6 +3412,49 @@ function injectFakePothole(customParams) {
     }
 }
 
+
+// Continuous Non-Freezing Defect Dispatcher for Smooth Video Scanning
+function dispatchContinuousDefect(p) {
+    if (!p) return;
+    mediaState.defect.depth = `${p.depthCm}cm`;
+    mediaState.defect.sev = p.depthCm >= 8.0 ? 'CRITICAL_P1' : 'HIGH_P2';
+    mediaState.defect.type = 'POTHOLE';
+    mediaState.defect.rdd = 'D40 (Pothole / Subsidence)';
+    mediaState.defect.conf = '98.4%';
+    mediaState.defect.ticketId = p.ticketId || `PWD-OCT-${Math.floor(1000 + Math.random()*9000)}`;
+    mediaState.defect.lat = p.lat;
+    mediaState.defect.lng = p.lng;
+    mediaState.defect.loc = p.name;
+    updateMediaSidebar();
+
+    // Visual HUD flash
+    mediaState.recentDetectionFlash = true;
+    setTimeout(() => { mediaState.recentDetectionFlash = false; }, 3000);
+
+    // Audio chime
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+            const actx = new AudioCtx();
+            const now = actx.currentTime;
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.frequency.setValueAtTime(880, now);
+            osc.frequency.exponentialRampToValueAtTime(1320, now + 0.15);
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.18, now + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+            osc.connect(gain);
+            gain.connect(actx.destination);
+            osc.start(now);
+            osc.stop(now + 0.35);
+        }
+    } catch(e) {}
+
+    // Dispatch into GIS Map, Work Orders, and Multi-Agent Logs
+    runAIAnalysisAndDispatch(p);
+}
+
 function lockDetectedDefect(targetPothole) {
     if (mediaState.isDefectLocked) return;
     mediaState.isDefectLocked = true;
@@ -3797,12 +3840,19 @@ function initDashcamSimulator() {
     baseImage.src = 'image1.jpg';
     mediaState.baseImage = baseImage;
 
+    // Auto-start real Mysuru road inspection video on page load
+    setTimeout(() => {
+        if (typeof loadSampleMedia === 'function') {
+            loadSampleMedia('mysuru-real-1');
+        }
+    }, 300);
+
     function drawLoop() {
         if (mediaState.isPlaying) {
             mediaState.frameCount++;
             calculateCorridorCoordinates();
             
-            // Multi-point fake pothole detection along transit route
+            // Multi-point continuous pothole detection along transit route
             const corr = CORRIDORS[currentCorridorKey] || CORRIDORS['mysuru-orr'];
             let currentProg = 0.35;
             if (mediaState.userVideo && mediaState.userVideo.duration > 0) {
@@ -3811,20 +3861,27 @@ function initDashcamSimulator() {
                 currentProg = ((mediaState.frameCount % 300) / 300);
             }
 
+            // Reset detected ids if video loops back to start
+            if (currentProg < 0.06 && mediaState.detectedPotholeIds.size > 0 && mediaState.frameCount > 150) {
+                mediaState.detectedPotholeIds.clear();
+            }
+
             // Find matching upcoming/active pothole along the corridor or injected pool
             const activePool = (corr.potholes || []).concat(mediaState.injectedPotholes || []);
-            const matchedPothole = activePool.find(ph => !mediaState.detectedPotholeIds.has(ph.id) && Math.abs(ph.progress - currentProg) <= 0.05);
+            const matchedPothole = activePool.find(ph => !mediaState.detectedPotholeIds.has(ph.id) && Math.abs(ph.progress - currentProg) <= 0.06);
 
-            if (matchedPothole && !mediaState.isDefectLocked) {
+            if (matchedPothole) {
+                mediaState.detectedPotholeIds.add(matchedPothole.id);
                 mediaState.activePothole = matchedPothole;
-                lockDetectedDefect(matchedPothole);
-            } else if (!mediaState.isDefectLocked && !mediaState.hasDispatchedOnce && (mediaState.frameCount >= 45 || (mediaState.userVideo && mediaState.userVideo.currentTime >= 1.2))) {
+                dispatchContinuousDefect(matchedPothole);
+            } else if (!mediaState.hasDispatchedOnce && (mediaState.frameCount >= 45 || (mediaState.userVideo && mediaState.userVideo.currentTime >= 1.2))) {
                 mediaState.hasDispatchedOnce = true;
                 const defP = (corr.potholes && corr.potholes[0]) || {
                     id: 'FP-MYS-1', progress: 0.12, xRatio: 0.42, yRatio: 0.62, width: 148, height: 62, depthCm: 11.4, name: `${corr.short} (Ch: 1.05 km), Mysuru`, ticketId: 'PWD-MYS-7141'
                 };
+                mediaState.detectedPotholeIds.add(defP.id);
                 mediaState.activePothole = defP;
-                lockDetectedDefect(defP);
+                dispatchContinuousDefect(defP);
             }
         }
 

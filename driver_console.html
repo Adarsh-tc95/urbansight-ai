@@ -1092,7 +1092,7 @@
                         <div class="dist-meter-left">
                             <span class="dist-meter-label">Distance to Hazard</span>
                             <div class="dist-number-wrap">
-                                <span class="dist-number" id="countdown-dist">220</span>
+                                <span class="dist-number" id="countdown-dist">500</span>
                                 <span class="dist-unit">METERS</span>
                             </div>
                         </div>
@@ -1117,6 +1117,31 @@
                             <div class="action-sub" id="action-sub">
                                 Autonomous Municipal Dispatch: PWD Ticket #W85-802 filed (SLA &lt;24h)
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Google Maps Turn-by-Turn GPS Navigation Action Bar -->
+                    <div style="margin-top:12px; display:flex; align-items:center; justify-content:space-between; gap:10px; background:rgba(26,115,232,0.12); border:1.5px solid #1A73E8; border-radius:10px; padding:10px 14px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:30px; height:30px; border-radius:50%; background:#1A73E8; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-size:14px;">
+                                <i class="fa-solid fa-diamond-turn-right"></i>
+                            </div>
+                            <div>
+                                <div style="font-size:0.68rem; font-family:var(--font-mono); color:#93C5FD; font-weight:700; text-transform:uppercase;">
+                                    Google Maps Navigation API Integration
+                                </div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#FFFFFF; margin-top:2px;" id="gmaps-dest-label">
+                                    Turn-by-Turn GPS: VVCE Ring Road Junction, Gokulam
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button type="button" class="btn-hud" onclick="simulateApproach500m()" style="padding:6px 12px; font-size:0.75rem; background:rgba(255,255,255,0.1);" title="Simulate 500m approach countdown">
+                                <i class="fa-solid fa-play"></i> 500m Approach
+                            </button>
+                            <a id="btn-google-maps" href="https://www.google.com/maps/dir/?api=1&destination=12.3360,76.6210&travelmode=driving" target="_blank" class="btn-hud" style="background:#1A73E8; color:#FFFFFF; border:none; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:800; font-size:0.8rem; padding:8px 14px; border-radius:6px; box-shadow:0 3px 10px rgba(26,115,232,0.4);">
+                                <i class="fa-solid fa-map-location-dot"></i> Open in Google Maps
+                            </a>
                         </div>
                     </div>
 
@@ -1326,7 +1351,7 @@
         // State variables
         let audioEnabled = true;
         let audioCtx = null;
-        let currentDistance = 220;
+        let currentDistance = 500;
         let busSpeed = 42;
         let countdownTimer = null;
         let isAlertActive = true;
@@ -1590,6 +1615,22 @@
         updateClock();
 
         // Distance countdown simulator
+        
+        function simulateApproach500m() {
+            initAudio();
+            isAlertActive = true;
+            currentDistance = 500;
+            busSpeed = 45;
+            updateDistanceDisplay();
+            setSpeedometer(45);
+            document.getElementById('alert-content').style.display = 'block';
+            document.getElementById('clear-content').style.display = 'none';
+            document.getElementById('hazard-card').className = 'hazard-advisory-card active-alert';
+            document.getElementById('countdown-dist').textContent = '500';
+            triggerVoiceSpeech(true);
+            startCountdown();
+        }
+    
         function startCountdown() {
             if (countdownTimer) clearInterval(countdownTimer);
             countdownTimer = setInterval(() => {
@@ -1600,8 +1641,15 @@
                 currentDistance -= Math.round(metersPerSec * 0.4);
 
                 if (currentDistance <= 15) {
-                    // Hazard cleared!
+                    currentDistance = 0;
+                    updateDistanceDisplay();
                     setHazardAllClear();
+                    if ('speechSynthesis' in window) {
+                        const arrivalMsg = currentVoiceLang === 'kn-IN' ? 'ನೀವು ಗುಂಡಿಯ ಸ್ಥಳವನ್ನು ತಲುಪಿದ್ದೀರಿ. ಎಚ್ಚರಿಕೆಯಿಂದ ಚಲಿಸಿ.' : (currentVoiceLang === 'hi-IN' ? 'आप खतरे के स्थान पर पहुँच चुके हैं।' : 'You have arrived at the hazard location. Resume cruise speed.');
+                        const u = new SpeechSynthesisUtterance(arrivalMsg);
+                        u.lang = currentVoiceLang;
+                        window.speechSynthesis.speak(u);
+                    }
                     return;
                 }
 
