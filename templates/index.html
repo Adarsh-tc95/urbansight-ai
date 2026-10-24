@@ -4037,6 +4037,19 @@ window.toggleDriverLiveCamera = async function() {
     }
 };
 
+function renderEventLogs() {
+    const feed = document.getElementById('activity-feed');
+    if (!feed || typeof state === 'undefined' || !state.logs) return;
+    feed.innerHTML = state.logs.map(log => `
+        <div class="log-entry ${log.tagClass || ''}">
+            <span class="log-time">${log.time}</span>
+            <span class="log-agent">${log.agent}:</span>
+            <span>${log.text}</span>
+        </div>
+    `).join('');
+}
+window.renderEventLogs = renderEventLogs;
+
 function initDashcamSimulator() {
     const canvas = document.getElementById('dashcam-canvas');
     if (!canvas) return;
@@ -5365,9 +5378,7 @@ function runAIAnalysisAndDispatch(targetPothole) {
                             <a href="voucher.html?ticket=${w.ticket}" target="_blank" class="btn-table-action" title="View CPWD Tender Voucher">
                                 <i class="fa-solid fa-file-invoice"></i> Voucher
                             </a>
-                            <button onclick="openDispatchMessageModal('${w.ticket}')" class="btn-table-action" style="background:rgba(37,211,102,0.12); color:#15803d; border-color:#25D366; cursor:pointer;" title="Send WhatsApp or SMS Alert">
-                                <i class="fa-brands fa-whatsapp"></i> <i class="fa-solid fa-comment-sms" style="font-size:9px;"></i>
-                            </button>
+                            
                         </div>
                     </td>
                 </tr>
@@ -5796,74 +5807,7 @@ function switchFooterTab(tabKey) {
 }
 
 </script>
-    <!-- WhatsApp & SMS Municipal Dispatch Modal -->
-    <div class="modal-backdrop" id="msg-dispatch-modal" style="display:none;">
-        <div class="modal-card" style="max-width:540px;">
-            <div class="modal-header">
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <div style="width:32px; height:32px; border-radius:50%; background:rgba(37,211,102,0.15); color:#25D366; display:flex; align-items:center; justify-content:center; font-size:16px;">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </div>
-                    <div>
-                        <h3 style="margin:0; font-size:1rem; font-weight:800; color:var(--text-primary);">Municipal Dispatch Gateway</h3>
-                        <p style="margin:0; font-size:0.72rem; color:var(--text-tertiary);">Send live road repair alerts via WhatsApp Business API or National Telecom SMS</p>
-                    </div>
-                </div>
-                <button class="btn-modal-close" onclick="closeDispatchMessageModal()">&times;</button>
-            </div>
-
-            <div class="modal-body" style="padding:16px 20px; display:flex; flex-direction:column; gap:14px;">
-                <div>
-                    <label style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:4px; display:block;">Select PWD Work Order</label>
-                    <select id="msg-ticket-select" onchange="updateDispatchMessagePreview()" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid var(--border-medium); background:#FFFFFF; color:var(--text-primary); font-family:var(--font-mono); font-size:0.78rem;">
-                    </select>
-                </div>
-
-                <div>
-                    <label style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:4px; display:block;">Recipient Role</label>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        <button class="btn-recipient-pill active" data-role="CONTRACTOR" data-phone="+91 98450 12345" onclick="setRecipientRole(this)">
-                            👷 PWD Contractor
-                        </button>
-                        <button class="btn-recipient-pill" data-role="CHIEF_ENGINEER" data-phone="+91 94480 54321" onclick="setRecipientRole(this)">
-                            🏛️ Ward Engineer
-                        </button>
-                        <button class="btn-recipient-pill" data-role="CITIZEN" data-phone="+91 98765 43210" onclick="setRecipientRole(this)">
-                            👤 Citizen Informant
-                        </button>
-                        <button class="btn-recipient-pill" data-role="DRIVER" data-phone="+91 99800 11223" onclick="setRecipientRole(this)">
-                            🚌 Transit Bus Fleet
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <label style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:4px; display:block;">Recipient Mobile Number</label>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <input type="tel" id="msg-recipient-phone" value="+91 98450 12345" style="flex:1; padding:8px 12px; border-radius:6px; border:1px solid var(--border-medium); background:#FFFFFF; color:var(--text-primary); font-family:var(--font-mono); font-size:0.85rem; font-weight:700;">
-                        <span style="font-size:0.7rem; color:var(--success); font-weight:700; display:flex; align-items:center; gap:3px;"><i class="fa-solid fa-circle-check"></i> Verified</span>
-                    </div>
-                </div>
-
-                <div>
-                    <label style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:4px; display:block;">Live Dispatch Payload Preview</label>
-                    <textarea id="msg-preview-text" rows="5" readonly style="width:100%; padding:10px 12px; border-radius:6px; border:1px solid var(--border-medium); background:#FAF8F5; color:var(--text-primary); font-family:var(--font-mono); font-size:0.72rem; line-height:1.45; resize:none;"></textarea>
-                </div>
-
-                <div id="msg-delivery-status" style="display:none; padding:8px 12px; border-radius:6px; font-size:0.72rem; font-family:var(--font-mono); align-items:center; gap:6px;"></div>
-            </div>
-
-            <div class="modal-footer" style="padding:12px 20px; background:#EDE7DA; border-top:1px solid var(--border-medium); display:flex; justify-content:flex-end; gap:8px;">
-                <button class="btn-modal-cancel" onclick="closeDispatchMessageModal()">Cancel</button>
-                <button class="btn-sms-send" onclick="sendModalDispatch('SMS')">
-                    <i class="fa-solid fa-comment-sms"></i> Send Normal SMS
-                </button>
-                <button class="btn-wa-send" onclick="sendModalDispatch('WHATSAPP')">
-                    <i class="fa-brands fa-whatsapp"></i> Send via WhatsApp
-                </button>
-            </div>
-        </div>
-    </div>
+    
     <!-- Modal: PWD Field Crew Turn-by-Turn Routing -->
     <div class="modal-backdrop" id="crew-route-modal" style="display:none;">
         <div class="modal-card" style="max-width:500px;">
@@ -6221,7 +6165,7 @@ function switchFooterTab(tabKey) {
                     </div>
                     <div style="display:flex; align-items:center; gap:10px; background:#FAF8F5; padding:8px 12px; border-radius:6px; border:1px solid var(--border-subtle); font-size:0.73rem; opacity:0.6;">
                         <i class="fa-regular fa-circle" style="color:var(--text-tertiary); font-size:14px;"></i>
-                        <div style="flex:1;"><b>6. Quality Audit & WhatsApp/SMS Dispatch:</b> Pending repair completion</div>
+                        <div style="flex:1;"><b>6. Civil Quality Audit & Digital Sign-off:</b> Complete & verified by MCC Assistant Executive Engineer</div>
                         <span style="font-size:0.65rem; color:var(--text-tertiary);">Scheduled</span>
                     </div>
                 </div>
@@ -6468,18 +6412,7 @@ function switchFooterTab(tabKey) {
         };
 
         
-function renderEventLogs() {
-    const feed = document.getElementById('activity-feed');
-    if (!feed || typeof state === 'undefined' || !state.logs) return;
-    feed.innerHTML = state.logs.map(log => `
-        <div class="log-entry ${log.tagClass || ''}">
-            <span class="log-time">${log.time}</span>
-            <span class="log-agent">${log.agent}:</span>
-            <span>${log.text}</span>
-        </div>
-    `).join('');
-}
-window.renderEventLogs = renderEventLogs;
+
 
 window.addEventListener('DOMContentLoaded', () => {
             const hash = (window.location.hash || '').replace('#', '');

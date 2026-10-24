@@ -1516,6 +1516,18 @@
             timeEl.textContent = `Est. Impact: ${estSecs}s at current speed`;
         }
 
+        
+        function playVoiceAdvisory(lang = 'kn-IN') {
+            if (typeof setDriverVoiceLanguage === 'function') {
+                const langCode = (lang === 'Kannada' || lang === 'kn') ? 'kn-IN' : ((lang === 'Hindi' || lang === 'hi') ? 'hi-IN' : 'en-IN');
+                setDriverVoiceLanguage(langCode);
+            }
+            if (typeof triggerVoiceSpeech === 'function') {
+                triggerVoiceSpeech(true);
+            }
+        }
+        window.playVoiceAdvisory = playVoiceAdvisory;
+
         function setHazardAlert(title, loc, dist, action, sub, laneHazardIdx = 2, imuZ = -0.32) {
             isAlertActive = true;
             currentDistance = dist;
