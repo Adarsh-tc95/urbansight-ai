@@ -659,6 +659,51 @@ class TestAlertMessagingEngine(unittest.TestCase):
         self.assertTrue(res["message_id"].startswith("MSG-SM-"))
         self.assertEqual(res["delivery_status"], "SENT_AND_DELIVERED")
 
+    def test_citizen_subscription_and_milestone_dispatch(self):
+        from backend.main import (
+            subscribe_alerts, SubscribeAlertRequest,
+            update_work_order_status, WorkOrderStatusUpdate,
+            orchestrator
+        )
+        # Ensure a work order exists
+        tkt = orchestrator.work_orders[0].ticket_id
+        
+        # 1. Citizen subscribes
+        sub_req = SubscribeAlertRequest(
+            ticket_id=tkt,
+            phone_number="+91 98450 99887",
+            channel="WHATSAPP"
+        )
+        sub_res = subscribe_alerts(sub_req)
+        self.assertEqual(sub_res["status"], "SUBSCRIBED")
+        self.assertEqual(sub_res["phone_number"], "+91 98450 99887")
+
+        # 2. Field crew arrives on-site (IN_PROGRESS)
+        up_req_progress = WorkOrderStatusUpdate(
+            status="IN_PROGRESS",
+            remarks="Rapid response crew VAN-04 on-site. DBM hot asphalt cut commenced.",
+            crew_id="VAN-04"
+        )
+        res_progress = update_work_order_status(tkt, up_req_progress)
+        self.assertEqual(res_progress["status"], "SUCCESS")
+        self.assertEqual(res_progress["new_status"], "IN_PROGRESS")
+        self.assertTrue(len(res_progress["notifications_dispatched"]) >= 1)
+        self.assertEqual(res_progress["notifications_dispatched"][0]["milestone"], "CREW_ARRIVED_ON_SITE")
+        self.assertIn("ON-SITE", res_progress["notifications_dispatched"][0]["whatsapp_message"])
+
+        # 3. Field crew closes ticket (RESOLVED)
+        up_req_resolved = WorkOrderStatusUpdate(
+            status="RESOLVED",
+            remarks="Asphalt patch completed with 98.4% compaction.",
+            crew_id="VAN-04"
+        )
+        res_resolved = update_work_order_status(tkt, up_req_resolved)
+        self.assertEqual(res_resolved["status"], "SUCCESS")
+        self.assertEqual(res_resolved["new_status"], "RESOLVED")
+        self.assertTrue(len(res_resolved["notifications_dispatched"]) >= 1)
+        self.assertEqual(res_resolved["notifications_dispatched"][0]["milestone"], "CREW_RESOLVED_AND_CLOSED")
+        self.assertIn("COMPLETED", res_resolved["notifications_dispatched"][0]["whatsapp_message"])
+
 
 if __name__ == '__main__':
     unittest.main()

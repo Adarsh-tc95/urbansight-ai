@@ -188,10 +188,11 @@
 - **Key Deliverables**:
   1. **Backend REST Endpoint (POST /api/send-alert)**: Validates phone numbers and delivery channels (WHATSAPP, SMS), routes through simulated Meta Cloud API / National DLT Gateways, and injects audit logs into the multi-agent telemetry stream.
   2. **Command Center Municipal Dispatch Modal**: Integrated into PWD Work Orders table with recipient role toggles (Contractor, Engineer, Citizen, Driver), live phone validator, auto-generated Markdown payload preview, and single-click WhatsApp/SMS triggers.
-  3. **Citizen Portal Interactive Subscription**: Interactive phone subscription form with live simulated message bubble preview (WhatsApp Cloud API / Telecom DLT Gateway) and deep action links to WhatsApp Web and native mobile SMS.
-  4. **CPWD Tender Voucher Sharing**: Quick-action ribbon buttons (WhatsApp Voucher, SMS Voucher) to deliver formal procurement estimates with CPWD SOR codes directly to contractors.
-  5. **Mobile Field Crew PWA Dispatch**: Quick status reporting buttons (WhatsApp Engr, SMS Update) with automated alerts triggered upon starting and resolving repairs.
-  6. **100% Unit Test Pass Rate**: 31/31 unit tests passing, synced across main and gh-pages.
+  3. **Citizen Portal Interactive Subscription & Mobile Input Normalization**: High-contrast input with `🇮🇳 +91` country code badge, auto-formatting, E.164 validation, live simulated message bubble preview (`✓ WhatsApp Cloud API` / `✓ Telecom DLT Gateway`), and deep action links to WhatsApp Web and native mobile SMS.
+  4. **Instant Municipal Milestone Alerts**: Subscribed citizens receive automated instant WhatsApp & SMS notifications when the rapid response field crew arrives on-site (`IN_PROGRESS`) and when the repair is completed & verified (`RESOLVED`), synced via Web Audio API, `BroadcastChannel`, and background polling.
+  5. **CPWD Tender Voucher Sharing**: Quick-action ribbon buttons ("WhatsApp Voucher", "SMS Voucher") to deliver formal procurement estimates with CPWD SOR codes directly to contractors.
+  6. **Mobile Field Crew PWA Dispatch**: Quick status reporting buttons ("WhatsApp Engr", "SMS Update") with automated alerts triggered upon starting and resolving repairs.
+  7. **100% Unit Test Pass Rate**: 32/32 unit tests passing, synced across main and gh-pages.
 
 ## 🔄 Status Tracker
 - [x] Backend 4-Agent Modular Architecture (`tests/test_pipeline.py` 24/24 passing) — Node A & B

@@ -886,6 +886,7 @@
         }
 
         // Update Ticket Status
+                // Update Ticket Status & Dispatch Instant WhatsApp / SMS Alerts
         async function updateOrderStatus(ticketId, newStatus) {
             const order = workOrders.find(o => o.ticket_id === ticketId);
             if (!order) return;
@@ -893,25 +894,77 @@
             order.status = newStatus;
             renderOrders();
 
-            // Notify User
-            showToast(
-                newStatus === 'RESOLVED' ? 
-                `🎉 Ticket ${ticketId} Closed & Verified! WhatsApp & SMS sent to Citizen.` : 
-                `🛠️ Work started on ${ticketId}. WhatsApp & SMS dispatched.`
-            );
+            const citizenPhone = localStorage.getItem('urbansight_subscribed_phone') || '+91 98765 43210';
+            const cleanDigits = (localStorage.getItem('urbansight_subscribed_digits') || citizenPhone.replace(/[^0-9]/g, ''));
+            const finalDigits = cleanDigits.length === 10 ? '91' + cleanDigits : cleanDigits;
+            const locName = order.location_name || order.loc || 'VVCE Mysuru Ring Road';
 
-            // Dispatch automated alert to citizen
+            let waMsg = '', smsMsg = '';
+
+            if (newStatus === 'IN_PROGRESS') {
+                waMsg = `🚨 *URBANSIGHT AI · MUNICIPAL CREW ON-SITE* 🚨\n\n` +
+                    `Hello Citizen! Municipal Rapid Response Van #KA-09-EA-4122 has ARRIVED ON-SITE at ${locName} for Work Order #${ticketId}.\n` +
+                    `⚡ *Status:* IN PROGRESS (Repair commenced under CPWD SOR)\n` +
+                    `⏱️ *SLA Target:* Under 90 minutes\n` +
+                    `🔗 *Track live:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${ticketId}`;
+                smsMsg = `URBANSIGHT AI: Field Crew [VAN-04] has ARRIVED ON-SITE at ${locName} for repair #${ticketId}. Status: IN_PROGRESS. Track: https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${ticketId}`;
+
+                showToast(`🚜 Crew Arrived On-Site on #${ticketId}! Instant WhatsApp & SMS sent to Citizen (${citizenPhone}).`);
+            } else {
+                waMsg = `🎉 *URBANSIGHT AI · ROAD REPAIR COMPLETED* 🎉\n\n` +
+                    `Hello Citizen! Work Order #${ticketId} at ${locName} has been successfully REPAIRED, AUDITED & CLOSED.\n` +
+                    `✅ *Quality:* 98.4% asphalt compaction passed\n` +
+                    `🚜 *Field Unit:* Van #KA-09-EA-4122\n` +
+                    `📄 *Closing Voucher:* https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=${ticketId}\n\n` +
+                    `Thank you for keeping Mysuru roads safe!`;
+                smsMsg = `URBANSIGHT AI: Repair #${ticketId} at ${locName} is CLOSED & VERIFIED by Municipal Crew. Voucher: https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=${ticketId}`;
+
+                showToast(`🎉 Ticket #${ticketId} Closed! Instant WhatsApp & SMS delivered to Citizen (${citizenPhone}).`);
+            }
+
+            // Dispatch WhatsApp Alert via Backend
             fetch('/api/send-alert', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     channel: 'WHATSAPP',
-                    phone_number: '+91 98765 43210',
+                    phone_number: citizenPhone,
                     ticket_id: ticketId,
                     recipient_type: 'CITIZEN',
-                    message: `🚨 *URBANSIGHT AI · REPAIR STATUS UPDATE* 🚨\nWork Order #${ticketId} has been updated to: ${newStatus}.\nField Crew: Van #KA-09-EA-4122\nTracker: https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${ticketId}`
+                    message: waMsg
                 })
             }).catch(() => {});
+
+            // Dispatch SMS Alert via Backend
+            fetch('/api/send-alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    channel: 'SMS',
+                    phone_number: citizenPhone,
+                    ticket_id: ticketId,
+                    recipient_type: 'CITIZEN',
+                    message: smsMsg
+                })
+            }).catch(() => {});
+
+            // Cross-tab broadcast to Citizen Portal
+            const eventPayload = {
+                ticket_id: ticketId,
+                status: newStatus,
+                location_name: locName,
+                phone: citizenPhone,
+                digits: finalDigits,
+                whatsapp_message: waMsg,
+                sms_message: smsMsg,
+                timestamp: Date.now()
+            };
+
+            try {
+                localStorage.setItem('urbansight_crew_event', JSON.stringify(eventPayload));
+                const bc = new BroadcastChannel('urbansight_crew_events');
+                bc.postMessage(eventPayload);
+            } catch (err) {}
 
             // Attempt live sync with Node A backend
             try {
@@ -924,9 +977,7 @@
                         crew_id: "VAN-04"
                     })
                 });
-            } catch (e) {
-                // Offline fallback mode active
-            }
+            } catch (e) {}
         }
 
         function openDirections(lat, lng) {

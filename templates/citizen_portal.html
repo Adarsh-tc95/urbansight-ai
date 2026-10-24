@@ -699,8 +699,8 @@
 
         .phone-input {
             background: #FFFFFF;
-            border: 1px solid var(--border-medium);
-            color: #FFFFFF;
+            border: 1.5px solid var(--border-medium);
+            color: #1C1917 !important;
             padding: 10px 14px;
             border-radius: 8px;
             font-size: 0.9rem;
@@ -1064,22 +1064,49 @@
 
         </article>
 
-        <!-- Citizen SMS / WhatsApp Notification Subscription Card -->
+                <!-- Citizen SMS / WhatsApp Notification Subscription Card -->
         <section class="notification-card">
             <div class="notif-text">
                 <h3><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> Stay Updated on this Road Repair</h3>
                 <p>Receive instant SMS & WhatsApp notifications when the municipal crew arrives on-site and closes the ticket.</p>
             </div>
 
-            <form class="notif-form" id="notif-form" onsubmit="event.preventDefault(); subscribeNotification();">
-                <input type="tel" class="phone-input" id="subscriber-phone" placeholder="+91 98765 43210" required />
-                <button type="submit" class="btn-wa">
+            <form class="notif-form" id="notif-form" onsubmit="event.preventDefault(); subscribeNotification('WHATSAPP');">
+                <div style="display:flex; align-items:center; background:#FFFFFF; border:1.5px solid var(--border-medium); border-radius:8px; padding:0 8px; box-shadow:0 1px 3px rgba(0,0,0,0.06); transition:border-color 0.2s;" id="phone-input-box">
+                    <span style="font-weight:800; font-family:var(--font-mono); font-size:0.9rem; color:#57534E; padding-right:8px; border-right:1px solid var(--border-medium); display:flex; align-items:center; gap:4px;">
+                        🇮🇳 +91
+                    </span>
+                    <input type="tel" class="phone-input" id="subscriber-phone" placeholder="98765 43210" maxlength="15" autocomplete="tel" required style="border:none; background:transparent; color:#1C1917 !important; font-size:1rem; font-weight:700; font-family:var(--font-mono); padding:10px 10px; width:170px; outline:none;" oninput="formatCitizenPhoneInput(this)" />
+                </div>
+                <button type="submit" class="btn-wa" title="Subscribe to WhatsApp Alerts">
                     <i class="fa-brands fa-whatsapp"></i> WhatsApp Alerts
                 </button>
-                <button type="button" class="btn-sms" onclick="subscribeNotification('SMS')">
+                <button type="button" class="btn-sms" onclick="subscribeNotification('SMS')" title="Subscribe to Normal SMS Updates">
                     <i class="fa-solid fa-comment-sms"></i> SMS
                 </button>
             </form>
+
+            <!-- Active Subscription & Milestone Simulator Strip -->
+            <div id="subscriber-status-strip" style="display:none; margin-top:14px; padding:10px 14px; background:#FAF8F5; border:1.5px solid #25D366; border-radius:10px; font-size:0.78rem; font-family:var(--font-mono); color:var(--text-primary); align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px; border-radius:50%; background:rgba(37,211,102,0.15); color:#25D366; display:flex; align-items:center; justify-content:center; font-size:12px;">
+                        <i class="fa-solid fa-bell"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:800; color:var(--text-primary);">Subscribed Phone: <span id="active-subscriber-number" style="color:#15803d; font-weight:900;">+91 98765 43210</span></div>
+                        <div style="font-size:0.7rem; color:var(--text-tertiary);">Live alerts active for: <b>Crew Arrival On-Site</b> &amp; <b>Ticket Resolution</b></div>
+                    </div>
+                </div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button type="button" onclick="simulateMilestoneTrigger('IN_PROGRESS')" style="background:#FFFBEB; border:1px solid #F59E0B; color:#B45309; border-radius:6px; padding:5px 10px; font-size:0.72rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Test alert when municipal rapid response van reaches the defect location">
+                        🚜 Test Crew On-Site
+                    </button>
+                    <button type="button" onclick="simulateMilestoneTrigger('RESOLVED')" style="background:#F0FDF4; border:1px solid #10B981; color:#047857; border-radius:6px; padding:5px 10px; font-size:0.72rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Test alert when road defect is repaired and closed">
+                        ✅ Test Crew Closed
+                    </button>
+                </div>
+            </div>
+
             <!-- Interactive Live Chat/SMS Message Bubble Preview -->
             <div id="citizen-msg-bubble-wrap" style="display:none; margin-top:16px; padding:14px 16px; background:#EDE7DA; border-radius:10px; border:1px solid var(--border-medium); text-align:left; animation:fadeIn 0.3s ease;">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
@@ -1240,6 +1267,7 @@
 
         // Render Ticket
         function renderTicket(ticket) {
+            currentTicket = ticket;
             document.getElementById('ticket-number-display').textContent = ticket.ticket_id;
             document.getElementById('ticket-hazard-title').innerHTML = `
                 <i class="fa-solid fa-triangle-exclamation"></i>
@@ -1406,62 +1434,146 @@
             }, 3800);
         }
 
+                // =========================================================================
+        // Citizen Mobile Number & Real-Time WhatsApp / SMS Alerts
+        // =========================================================================
+        let currentTicket = null;
         let lastCitizenMessagePayload = { text: '', phone: '', cleanPhone: '', channel: 'WHATSAPP' };
 
+        function formatCitizenPhoneInput(input) {
+            let val = input.value.replace(/[^0-9]/g, '');
+            if (val.startsWith('91') && val.length > 10) {
+                val = val.slice(2);
+            }
+            if (val.length > 5) {
+                input.value = val.slice(0, 5) + ' ' + val.slice(5, 10);
+            } else {
+                input.value = val;
+            }
+        }
+
+        function getNormalizedCitizenPhone() {
+            const input = document.getElementById('subscriber-phone');
+            let raw = (input && input.value.trim()) ? input.value.trim() : '';
+            let digits = raw.replace(/[^0-9]/g, '');
+            if (digits.startsWith('91') && digits.length === 12) {
+                digits = digits.slice(2);
+            }
+            if (digits.length !== 10) {
+                // Check localStorage or default
+                const saved = localStorage.getItem('urbansight_subscribed_digits');
+                if (saved && saved.length >= 10) {
+                    digits = saved.slice(-10);
+                } else {
+                    digits = '9876543210';
+                }
+            }
+            const cleanDigits = '91' + digits;
+            const displayPhone = `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
+            return { displayPhone, cleanDigits };
+        }
+
+        function playAlertChime(type = 'arrival') {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                if (type === 'arrival') {
+                    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
+                } else {
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.12);
+                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.24);
+                    osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.36);
+                }
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (type === 'arrival' ? 0.4 : 0.6));
+                osc.start();
+                osc.stop(ctx.currentTime + (type === 'arrival' ? 0.4 : 0.6));
+            } catch (e) {}
+        }
+
         function subscribeNotification(channel = 'WHATSAPP') {
+            const { displayPhone, cleanDigits } = getNormalizedCitizenPhone();
             const phoneInput = document.getElementById('subscriber-phone');
-            const phone = (phoneInput && phoneInput.value.trim()) ? phoneInput.value.trim() : '+91 98765 43210';
-            const cleanPhone = phone.replace(/[^0-9]/g, '');
-            const currentTkt = (typeof currentTicket !== 'undefined' && currentTicket) ? currentTicket : {
-                ticket_id: 'PWD-OCT-0715',
-                hazard_name: 'Pothole (High)',
-                location_name: 'VVCE Ring Road Junction, Gokulam, Mysuru',
-                status: 'IN_PROGRESS',
-                sla_hours: 48
+            if (phoneInput) phoneInput.value = displayPhone.replace('+91 ', '');
+
+            // Persist locally for field crew and future sessions
+            localStorage.setItem('urbansight_subscribed_phone', displayPhone);
+            localStorage.setItem('urbansight_subscribed_digits', cleanDigits);
+            localStorage.setItem('urbansight_subscribed_channel', channel);
+
+            const tkt = currentTicket || {
+                ticket_id: 'PWD-2026-OCT-0941',
+                hazard_name: 'Pothole (Critical P1)',
+                location_name: 'Outer Ring Road near Bellandur Flyover Pillar 34',
+                status: 'IN_PROGRESS'
             };
 
-            const tktId = currentTkt.ticket_id || 'PWD-OCT-0715';
-            const locName = currentTkt.location_name || 'VVCE Mysuru Ring Road';
-            const hazName = currentTkt.hazard_name || 'Pothole';
-            const statusTxt = currentTkt.status || 'IN_PROGRESS';
+            const tktId = tkt.ticket_id || 'PWD-2026-OCT-0941';
+            const locName = tkt.location_name || 'Mysuru Ring Road';
+            const hazName = tkt.hazard_name || 'Pothole';
 
             const msgText = `🚨 *URBANSIGHT AI · MUNICIPAL ROAD REPAIR ALERT* 🚨\n\n` +
                 `Hello Citizen! You are subscribed to live updates for repair #${tktId}.\n` +
                 `📍 *Defect:* ${hazName}\n` +
                 `📌 *Location:* ${locName}\n` +
-                `⚡ *Status:* ${statusTxt} (Rapid Response Van #KA-09-EA-4122)\n` +
-                `⏱️ *SLA Target:* Under 48 hours\n` +
-                `🔗 *Live Tracker:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${tktId}\n\n` +
+                `⚡ *Live Milestones Active:*\n` +
+                `  1. Instant notification when Municipal Van arrives on-site\n` +
+                `  2. Instant notification when repair is completed & verified\n` +
+                `🔗 *Tracker:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${tktId}\n\n` +
                 `— Mysuru City Corporation (MCC) & Smart City Mission`;
 
-            lastCitizenMessagePayload = { text: msgText, phone: phone, cleanPhone: cleanPhone, channel: channel };
+            lastCitizenMessagePayload = { text: msgText, phone: displayPhone, cleanPhone: cleanDigits, channel: channel };
 
             // Call backend API
+            fetch('/api/subscribe-alerts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    channel: channel.toUpperCase(),
+                    phone_number: displayPhone,
+                    ticket_id: tktId
+                })
+            }).catch(() => {});
+
             fetch('/api/send-alert', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     channel: channel.toUpperCase(),
-                    phone_number: phone,
+                    phone_number: displayPhone,
                     ticket_id: tktId,
                     recipient_type: 'CITIZEN',
                     message: msgText
                 })
             }).catch(() => {});
 
-            // Show Toast
             showToast(
                 `✓ Subscribed via ${channel}!`,
-                `Live repair updates for ${tktId} will be delivered to ${phone}.`
+                `Instant alerts for ${tktId} will be delivered to ${displayPhone}.`
             );
 
+            // Display active strip
+            const strip = document.getElementById('subscriber-status-strip');
+            const numEl = document.getElementById('active-subscriber-number');
+            if (strip && numEl) {
+                numEl.textContent = displayPhone;
+                strip.style.display = 'flex';
+            }
+
             // Display simulated chat bubble preview
+            renderChatBubblePreview(msgText, channel, 'Subscribed Confirmation');
+        }
+
+        function renderChatBubblePreview(msgText, channel, badgeText = '✓ Verified Municipal Gateway') {
             const bubbleWrap = document.getElementById('citizen-msg-bubble-wrap');
             const bubbleText = document.getElementById('citizen-msg-text-bubble');
             const channelIcon = document.getElementById('citizen-msg-channel-icon');
             const channelBadge = document.getElementById('citizen-msg-badge');
-            const btnWa = document.getElementById('btn-open-wa-chat');
-            const btnSms = document.getElementById('btn-open-sms-chat');
 
             if (bubbleWrap && bubbleText) {
                 bubbleWrap.style.display = 'block';
@@ -1469,32 +1581,151 @@
                 if (channel.toUpperCase() === 'WHATSAPP') {
                     channelIcon.innerHTML = '<i class="fa-brands fa-whatsapp"></i>';
                     channelIcon.style.color = '#25D366';
-                    channelBadge.textContent = '✓ WhatsApp Cloud API';
+                    channelBadge.textContent = '✓ ' + (badgeText || 'WhatsApp Cloud API');
                     channelBadge.style.background = 'rgba(37,211,102,0.15)';
                     channelBadge.style.color = '#15803d';
                 } else {
                     channelIcon.innerHTML = '<i class="fa-solid fa-comment-sms"></i>';
                     channelIcon.style.color = '#0284C7';
-                    channelBadge.textContent = '✓ Telecom DLT Gateway';
+                    channelBadge.textContent = '✓ ' + (badgeText || 'Telecom DLT Gateway');
                     channelBadge.style.background = 'rgba(2,132,199,0.15)';
                     channelBadge.style.color = '#0369a1';
                 }
             }
         }
 
+        function receiveMilestoneAlert(milestone, details = {}) {
+            const { displayPhone, cleanDigits } = getNormalizedCitizenPhone();
+            const tkt = currentTicket || {
+                ticket_id: details.ticket_id || 'PWD-2026-OCT-0941',
+                location_name: details.location_name || 'VVCE Mysuru Ring Road'
+            };
+            const tktId = tkt.ticket_id || details.ticket_id || 'PWD-2026-OCT-0941';
+            const locName = details.location_name || tkt.location_name || 'Mysuru Ring Road Corridors';
+
+            let msgText = '', badgeText = '', toastTitle = '';
+
+            if (milestone === 'IN_PROGRESS' || milestone === 'CREW_ARRIVED_ON_SITE') {
+                // Stepper update to Step 4
+                for (let i = 1; i <= 3; i++) {
+                    const n = document.getElementById(`step-${i}`);
+                    if (n) { n.className = 'step-node completed'; }
+                }
+                const s4 = document.getElementById('step-4');
+                if (s4) s4.className = 'step-node active';
+                const s5 = document.getElementById('step-5');
+                if (s5) s5.className = 'step-node';
+                const fill = document.getElementById('stepper-fill');
+                if (fill) fill.style.width = '75%';
+
+                const t4 = document.getElementById('step-4-time');
+                if (t4) t4.innerHTML = `<b>Just now (Crew On-Site)</b>`;
+
+                msgText = `🚜 *URBANSIGHT AI · MUNICIPAL CREW ON-SITE* 🚜\n\n` +
+                    `Hello Citizen! Rapid Response Crew Van #KA-09-EA-4122 has ARRIVED ON-SITE at ${locName} for Work Order #${tktId}.\n` +
+                    `⚡ *Status:* IN PROGRESS (Road excavation & hot DBM asphalt compaction underway)\n` +
+                    `⏱️ *Expected completion:* Under 90 minutes\n` +
+                    `🔗 *Track live:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${tktId}\n\n` +
+                    `— Mysuru City Corporation (MCC) PWD Rapid Response Unit`;
+
+                badgeText = 'Instant Alert · Crew On-Site';
+                toastTitle = '🚜 Municipal Crew Arrived On-Site!';
+                playAlertChime('arrival');
+            } else {
+                // Stepper update to Step 5
+                for (let i = 1; i <= 5; i++) {
+                    const n = document.getElementById(`step-${i}`);
+                    if (n) { n.className = 'step-node completed'; }
+                }
+                const fill = document.getElementById('stepper-fill');
+                if (fill) fill.style.width = '100%';
+
+                const t5 = document.getElementById('step-5-time');
+                if (t5) t5.innerHTML = `<b>Just now (Repaired & Audited)</b>`;
+
+                msgText = `🎉 *URBANSIGHT AI · ROAD REPAIR COMPLETED & CLOSED* 🎉\n\n` +
+                    `Hello Citizen! Work Order #${tktId} at ${locName} has been successfully REPAIRED, AUDITED & CLOSED.\n` +
+                    `✅ *Quality Audit:* 98.4% asphalt compaction passed\n` +
+                    `🚜 *Field Unit:* Rapid Response Van #KA-09-EA-4122\n` +
+                    `📄 *Official Voucher:* https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=${tktId}\n\n` +
+                    `Thank you for helping keep Mysuru roads safe!\n` +
+                    `— Mysuru City Corporation (MCC) & Smart City Mission`;
+
+                badgeText = 'Instant Alert · Ticket Closed';
+                toastTitle = '🎉 Road Defect Repaired & Verified!';
+                playAlertChime('resolved');
+            }
+
+            lastCitizenMessagePayload = { text: msgText, phone: displayPhone, cleanPhone: cleanDigits, channel: 'WHATSAPP' };
+
+            // Show active strip
+            const strip = document.getElementById('subscriber-status-strip');
+            const numEl = document.getElementById('active-subscriber-number');
+            if (strip && numEl) {
+                numEl.textContent = displayPhone;
+                strip.style.display = 'flex';
+            }
+
+            renderChatBubblePreview(msgText, 'WHATSAPP', badgeText);
+
+            showToast(
+                toastTitle,
+                `Instant WhatsApp & SMS notifications delivered to ${displayPhone}.`
+            );
+        }
+
+        function simulateMilestoneTrigger(milestone) {
+            receiveMilestoneAlert(milestone);
+            const { displayPhone } = getNormalizedCitizenPhone();
+            const tktId = currentTicket ? currentTicket.ticket_id : 'PWD-2026-OCT-0941';
+
+            fetch('/api/send-alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    channel: 'WHATSAPP',
+                    phone_number: displayPhone,
+                    ticket_id: tktId,
+                    recipient_type: 'CITIZEN',
+                    message: lastCitizenMessagePayload.text
+                })
+            }).catch(() => {});
+        }
+
         function openCitizenWhatsAppChat() {
-            if (!lastCitizenMessagePayload.text) subscribeNotification('WHATSAPP');
-            const clean = lastCitizenMessagePayload.cleanPhone || '919876543210';
-            const url = `https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(lastCitizenMessagePayload.text)}`;
+            const { cleanDigits } = getNormalizedCitizenPhone();
+            const clean = lastCitizenMessagePayload.cleanPhone || cleanDigits || '919876543210';
+            const url = `https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(lastCitizenMessagePayload.text.replace(/\\n/g, '\n'))}`;
             window.open(url, '_blank');
         }
 
         function openCitizenSMSApp() {
-            if (!lastCitizenMessagePayload.text) subscribeNotification('SMS');
-            const phone = lastCitizenMessagePayload.phone || '+919876543210';
-            const url = `sms:${phone}?body=${encodeURIComponent(lastCitizenMessagePayload.text)}`;
+            const { displayPhone } = getNormalizedCitizenPhone();
+            const phone = lastCitizenMessagePayload.phone || displayPhone || '+919876543210';
+            const url = `sms:${phone}?body=${encodeURIComponent(lastCitizenMessagePayload.text.replace(/\\n/g, '\n'))}`;
             window.location.href = url;
         }
+
+        // Cross-tab synchronization with Mobile Field Crew PWA
+        try {
+            const alertChannel = new BroadcastChannel('urbansight_crew_events');
+            alertChannel.onmessage = (e) => {
+                if (e.data && e.data.status) {
+                    receiveMilestoneAlert(e.data.status, e.data);
+                }
+            };
+        } catch (e) {}
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'urbansight_crew_event' && e.newValue) {
+                try {
+                    const data = JSON.parse(e.newValue);
+                    if (data && data.status) {
+                        receiveMilestoneAlert(data.status, data);
+                    }
+                } catch (err) {}
+            }
+        });
 
         // Hybrid API Fetch: Load live work orders if FastAPI backend is available
         async function loadBackendWorkOrders() {
@@ -1542,6 +1773,21 @@
 
         // Initialize with default ticket
         renderTicket(SAMPLE_TICKETS["PWD-2026-OCT-0941"]);
+        // Check pre-saved subscriber phone
+        try {
+            const savedPhone = localStorage.getItem('urbansight_subscribed_phone');
+            if (savedPhone) {
+                const pInput = document.getElementById('subscriber-phone');
+                if (pInput) pInput.value = savedPhone.replace('+91 ', '');
+                const strip = document.getElementById('subscriber-status-strip');
+                const numEl = document.getElementById('active-subscriber-number');
+                if (strip && numEl) {
+                    numEl.textContent = savedPhone;
+                    strip.style.display = 'flex';
+                }
+            }
+        } catch(e) {}
+
         loadBackendWorkOrders();
     </script>
 </body>
