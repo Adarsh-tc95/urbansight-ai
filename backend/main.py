@@ -587,7 +587,7 @@ async def analyze_media(
             "rdd_code": primary_analysis.get("rdd_code", "D40 (Pothole / Subsidence)"),
             "severity": detection.severity.value,
             "confidence": detection.confidence,
-            "damage_depth_cm": req.damage_depth_cm if req.damage_depth_cm is not None else detection.damage_depth_cm,
+            "damage_depth_cm": detection.damage_depth_cm,
             "affected_length_m": detection.affected_length_m,
             "location_name": detection.location_name,
             "coordinates": [detection.lat, detection.lng],
