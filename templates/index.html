@@ -2421,6 +2421,9 @@ h1, h2, h3 {
                     </div>
                     <div style="display:flex; align-items:center; gap:8px;">
                         <span class="corridor-gps-badge" id="corridor-gps-badge">GPS: 12.3360°N, 76.6210°E</span>
+                        <button class="btn-playback-ctrl" id="btn-inject-fake-pothole" onclick="injectFakePothole()" style="padding:2px 10px; font-size:0.72rem; background:#DC2626; color:#FFFFFF; border:1px solid #EF4444; font-weight:700; cursor:pointer; border-radius:4px; display:inline-flex; align-items:center; gap:5px;" title="Spawn a realistic fake pothole in the video carriageway and dispatch to Municipal Dashboard">
+                            <i class="fa-solid fa-burst"></i> Inject Fake Pothole
+                        </button>
                         <button class="btn-playback-ctrl" id="btn-manual-resume" onclick="resumeVideoScan()" style="padding:2px 8px; font-size:0.7rem; display:none;" title="Resume Scanning Video">
                             <i class="fa-solid fa-play"></i> Resume Scan
                         </button>
@@ -3080,7 +3083,12 @@ const CORRIDORS = {
         startLng: 76.6210,
         endLat: 12.3480,
         endLng: 76.6620,
-        lengthKm: 6.8
+        lengthKm: 6.8,
+        potholes: [
+            { id: 'FP-MYS-1', progress: 0.12, xRatio: 0.42, yRatio: 0.62, width: 148, height: 62, depthCm: 11.4, name: 'Outer Ring Road (Ch: 0.82 km), VVCE Campus East', ticketId: 'PWD-MYS-7141' },
+            { id: 'FP-MYS-2', progress: 0.42, xRatio: 0.50, yRatio: 0.65, width: 162, height: 70, depthCm: 13.8, name: 'Outer Ring Road (Ch: 2.85 km), Royal Inn Underpass', ticketId: 'PWD-MYS-7142' },
+            { id: 'FP-MYS-3', progress: 0.78, xRatio: 0.44, yRatio: 0.59, width: 138, height: 56, depthCm: 9.6, name: 'Outer Ring Road (Ch: 5.30 km), Columbia Asia Flyover', ticketId: 'PWD-MYS-7143' }
+        ]
     },
     'hunsur-rd': {
         name: 'Hunsur Road (Kalamandira Signal ➔ University Gate)',
@@ -3089,7 +3097,11 @@ const CORRIDORS = {
         startLng: 76.6320,
         endLat: 12.3040,
         endLng: 76.6220,
-        lengthKm: 2.1
+        lengthKm: 2.1,
+        potholes: [
+            { id: 'FP-HUN-1', progress: 0.22, xRatio: 0.45, yRatio: 0.63, width: 152, height: 64, depthCm: 10.6, name: 'Hunsur Road (Ch: 0.46 km), Kalamandira Signal', ticketId: 'PWD-MYS-7210' },
+            { id: 'FP-HUN-2', progress: 0.68, xRatio: 0.41, yRatio: 0.58, width: 136, height: 54, depthCm: 8.9, name: 'Hunsur Road (Ch: 1.42 km), University West Gate', ticketId: 'PWD-MYS-7211' }
+        ]
     },
     'sayyaji-rao': {
         name: 'Sayyaji Rao Road (Agrahara ➔ Mysore Palace)',
@@ -3098,7 +3110,11 @@ const CORRIDORS = {
         startLng: 76.6520,
         endLat: 12.3115,
         endLng: 76.6535,
-        lengthKm: 1.4
+        lengthKm: 1.4,
+        potholes: [
+            { id: 'FP-SAY-1', progress: 0.30, xRatio: 0.47, yRatio: 0.64, width: 156, height: 66, depthCm: 12.3, name: 'Sayyaji Rao Road (Ch: 0.42 km), Chamaraja Circle', ticketId: 'PWD-MYS-7301' },
+            { id: 'FP-SAY-2', progress: 0.72, xRatio: 0.43, yRatio: 0.61, width: 140, height: 57, depthCm: 9.4, name: 'Sayyaji Rao Road (Ch: 1.01 km), Mysore Palace North Gate', ticketId: 'PWD-MYS-7302' }
+        ]
     },
     'live-gps': {
         name: 'Live Device Geolocation (GPS Sensor)',
@@ -3107,7 +3123,8 @@ const CORRIDORS = {
         startLng: 76.6210,
         endLat: 12.3360,
         endLng: 76.6210,
-        lengthKm: 0.0
+        lengthKm: 0.0,
+        potholes: []
     }
 };
 
@@ -3129,6 +3146,9 @@ const mediaState = {
     resumeCountdown: 4,
     hasDispatchedOnce: false,
     resumeTimerId: null,
+    injectedPotholes: [],
+    detectedPotholeIds: new Set(),
+    activePothole: null,
     defect: {
         type: 'POTHOLE',
         rdd: 'D40 (Pothole / Subsidence)',
@@ -3186,7 +3206,146 @@ function changeVideoCorridor(key) {
     updateMediaSidebar();
 }
 
-function lockDetectedDefect() {
+// =========================================================================
+// Realistic Synthetic Pothole Visuals & Multi-Point Injection Engine
+// =========================================================================
+
+function drawRealisticPothole(ctx, canvas, p) {
+    if (!ctx || !canvas || !p) return;
+    const x = Math.round(canvas.width * (p.xRatio || 0.42));
+    const y = Math.round(canvas.height * (p.yRatio || 0.62));
+    const w = p.width || 150;
+    const h = p.height || 62;
+    const rx = w / 2;
+    const ry = h / 2;
+
+    ctx.save();
+
+    // 1. Asphalt depression shadow halo
+    const haloGrad = ctx.createRadialGradient(x, y, ry * 0.3, x, y, rx * 1.3);
+    haloGrad.addColorStop(0, 'rgba(15, 23, 42, 0.88)');
+    haloGrad.addColorStop(0.65, 'rgba(30, 41, 59, 0.48)');
+    haloGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = haloGrad;
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx * 1.3, ry * 1.3, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. Realistic jagged crater perimeter (sinusoidal asphalt shear)
+    ctx.beginPath();
+    const points = 16;
+    for (let i = 0; i <= points; i++) {
+        const angle = (i / points) * Math.PI * 2;
+        const jitter = Math.sin(angle * 7 + (p.depthCm || 10)) * 0.11 + Math.cos(angle * 4) * 0.07;
+        const curRx = rx * (1.0 + jitter);
+        const curRy = ry * (1.0 + jitter * 0.8);
+        const px = x + Math.cos(angle) * curRx;
+        const py = y + Math.sin(angle) * curRy;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+
+    // Inner cavity depth gradient (3D deep crater depression)
+    const cavityGrad = ctx.createRadialGradient(x - rx * 0.15, y - ry * 0.15, 3, x, y, rx);
+    cavityGrad.addColorStop(0, '#09090b');
+    cavityGrad.addColorStop(0.55, '#18181b');
+    cavityGrad.addColorStop(0.85, '#27272a');
+    cavityGrad.addColorStop(1, '#3f3f46');
+    ctx.fillStyle = cavityGrad;
+    ctx.fill();
+
+    // 3. 3D Beveled rim lighting
+    ctx.lineWidth = 2.2;
+    ctx.strokeStyle = 'rgba(10, 10, 10, 0.9)';
+    ctx.stroke();
+
+    // Light reflection on broken bottom-right asphalt lip
+    ctx.beginPath();
+    ctx.arc(x, y + ry * 0.15, rx * 0.82, 0.15 * Math.PI, 0.85 * Math.PI);
+    ctx.lineWidth = 1.6;
+    ctx.strokeStyle = 'rgba(212, 212, 216, 0.32)';
+    ctx.stroke();
+
+    // 4. Broken aggregate stone flecks inside cavity
+    ctx.fillStyle = 'rgba(161, 161, 170, 0.75)';
+    const stones = [
+        [-0.3, -0.2, 3, 2], [0.22, -0.12, 4, 3], [-0.12, 0.28, 3, 2],
+        [0.32, 0.18, 2, 2], [-0.38, 0.12, 3, 3], [0.06, -0.26, 2, 2]
+    ];
+    stones.forEach(([sx, sy, sw, sh]) => {
+        ctx.fillRect(x + sx * rx, y + sy * ry, sw, sh);
+    });
+
+    // 5. Radiating road fissure cracks stretching outwards
+    ctx.strokeStyle = '#09090b';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x - rx * 0.8, y - ry * 0.6);
+    ctx.lineTo(x - rx * 1.3, y - ry * 1.1);
+    ctx.lineTo(x - rx * 1.6, y - ry * 1.05);
+
+    ctx.moveTo(x + rx * 0.88, y + ry * 0.1);
+    ctx.lineTo(x + rx * 1.38, y + ry * 0.22);
+    ctx.lineTo(x + rx * 1.65, y + ry * 0.14);
+
+    ctx.moveTo(x - rx * 0.5, y + ry * 0.78);
+    ctx.lineTo(x - rx * 0.9, y + ry * 1.35);
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function injectFakePothole(customParams) {
+    const corr = CORRIDORS[currentCorridorKey] || CORRIDORS['mysuru-orr'];
+    let prog = 0.35;
+    if (mediaState.userVideo && mediaState.userVideo.duration > 0) {
+        prog = Math.min(0.98, Math.max(0.02, mediaState.userVideo.currentTime / mediaState.userVideo.duration));
+    } else {
+        prog = ((mediaState.frameCount % 300) / 300);
+    }
+
+    const lat = Number((corr.startLat + prog * (corr.endLat - corr.startLat)).toFixed(4));
+    const lng = Number((corr.startLng + prog * (corr.endLng - corr.startLng)).toFixed(4));
+    const chainageKm = (prog * corr.lengthKm).toFixed(2);
+    const ticketId = (customParams && customParams.ticketId) || `PWD-MYS-${Math.floor(1000 + Math.random() * 9000)}`;
+    const depths = [10.8, 12.4, 13.6, 11.2, 14.5, 9.8];
+    const depthCm = (customParams && customParams.depthCm) || depths[Math.floor(Math.random() * depths.length)];
+
+    const newPothole = {
+        id: `FP-INJECT-${Date.now()}`,
+        progress: prog,
+        xRatio: 0.38 + (Math.random() * 0.14 - 0.07),
+        yRatio: 0.58 + (Math.random() * 0.08 - 0.04),
+        width: 155,
+        height: 65,
+        depthCm: depthCm,
+        name: `${corr.short} (Ch: ${chainageKm} km), Mysuru`,
+        lat: lat,
+        lng: lng,
+        ticketId: ticketId,
+        isManualInjection: true
+    };
+
+    mediaState.activePothole = newPothole;
+    mediaState.injectedPotholes.push(newPothole);
+    mediaState.isDefectLocked = false;
+
+    // Immediately trigger lock, pause, and Municipal Dashboard dispatch
+    lockDetectedDefect(newPothole);
+
+    if (state.logs) {
+        state.logs.unshift({
+            time: new Date().toTimeString().split(' ')[0],
+            agent: 'Agent 1: Vision',
+            tagClass: 'agent-tag-vision',
+            text: `[SYNTHETIC INJECTION] Injected fake pothole (${depthCm}cm depth, Critical P1) into video carriageway along ${corr.short}.`
+        });
+        renderEventLogs();
+    }
+}
+
+function lockDetectedDefect(targetPothole) {
     if (mediaState.isDefectLocked) return;
     mediaState.isDefectLocked = true;
     mediaState.isPlaying = false;
@@ -3197,9 +3356,28 @@ function lockDetectedDefect() {
     
     calculateCorridorCoordinates();
 
-    if (!mediaState.hasDispatchedOnce) {
-        mediaState.hasDispatchedOnce = true;
-        runAIAnalysisAndDispatch();
+    const p = targetPothole || mediaState.activePothole || {
+        id: 'DEFAULT-DEFECT',
+        depthCm: 9.4,
+        lat: mediaState.defect.lat,
+        lng: mediaState.defect.lng,
+        name: mediaState.defect.loc,
+        ticketId: mediaState.defect.ticketId || `PWD-OCT-${Math.floor(1000 + Math.random() * 9000)}`
+    };
+
+    if (!mediaState.detectedPotholeIds.has(p.id)) {
+        mediaState.detectedPotholeIds.add(p.id);
+        mediaState.activePothole = p;
+        mediaState.defect.depth = `${p.depthCm}cm`;
+        mediaState.defect.sev = 'CRITICAL_P1';
+        mediaState.defect.type = 'POTHOLE';
+        mediaState.defect.rdd = 'D40 (Pothole / Subsidence)';
+        mediaState.defect.conf = '98.2%';
+        mediaState.defect.ticketId = p.ticketId;
+        mediaState.defect.lat = p.lat;
+        mediaState.defect.lng = p.lng;
+        mediaState.defect.loc = p.name;
+        runAIAnalysisAndDispatch(p);
     }
 
     const playIcon = document.getElementById('playpause-icon');
@@ -3557,13 +3735,29 @@ function initDashcamSimulator() {
             mediaState.frameCount++;
             calculateCorridorCoordinates();
             
-            // Stable detection trigger: locks once, pauses video, avoids roaming or duplicate logs
-            if (!mediaState.isDefectLocked && !mediaState.hasDispatchedOnce) {
-                const isVideoReady = mediaState.userVideo && (mediaState.userVideo.currentTime >= 1.2 || mediaState.frameCount >= 40);
-                const isSimReady = !mediaState.userVideo && mediaState.frameCount >= 45;
-                if (isVideoReady || isSimReady) {
-                    lockDetectedDefect();
-                }
+            // Multi-point fake pothole detection along transit route
+            const corr = CORRIDORS[currentCorridorKey] || CORRIDORS['mysuru-orr'];
+            let currentProg = 0.35;
+            if (mediaState.userVideo && mediaState.userVideo.duration > 0) {
+                currentProg = mediaState.userVideo.currentTime / mediaState.userVideo.duration;
+            } else {
+                currentProg = ((mediaState.frameCount % 300) / 300);
+            }
+
+            // Find matching upcoming/active pothole along the corridor or injected pool
+            const activePool = (corr.potholes || []).concat(mediaState.injectedPotholes || []);
+            const matchedPothole = activePool.find(ph => !mediaState.detectedPotholeIds.has(ph.id) && Math.abs(ph.progress - currentProg) <= 0.05);
+
+            if (matchedPothole && !mediaState.isDefectLocked) {
+                mediaState.activePothole = matchedPothole;
+                lockDetectedDefect(matchedPothole);
+            } else if (!mediaState.isDefectLocked && !mediaState.hasDispatchedOnce && (mediaState.frameCount >= 45 || (mediaState.userVideo && mediaState.userVideo.currentTime >= 1.2))) {
+                mediaState.hasDispatchedOnce = true;
+                const defP = (corr.potholes && corr.potholes[0]) || {
+                    id: 'FP-MYS-1', progress: 0.12, xRatio: 0.42, yRatio: 0.62, width: 148, height: 62, depthCm: 11.4, name: `${corr.short} (Ch: 1.05 km), Mysuru`, ticketId: 'PWD-MYS-7141'
+                };
+                mediaState.activePothole = defP;
+                lockDetectedDefect(defP);
             }
         }
 
@@ -3670,6 +3864,21 @@ function initDashcamSimulator() {
             ctx.fillStyle = '#059669';
             ctx.font = 'bold 8px "JetBrains Mono"';
             ctx.fillText('DPDP §2(t) MASK', plateX, plateY - 3);
+        }
+
+        // Render realistic fake pothole onto video carriageway
+        if (mediaState.activePothole) {
+            drawRealisticPothole(ctx, canvas, mediaState.activePothole);
+        } else {
+            const corr = CORRIDORS[currentCorridorKey] || CORRIDORS['mysuru-orr'];
+            const curProg = (mediaState.userVideo && mediaState.userVideo.duration > 0) 
+                ? (mediaState.userVideo.currentTime / mediaState.userVideo.duration) 
+                : ((mediaState.frameCount % 300) / 300);
+            const activePool = (corr.potholes || []).concat(mediaState.injectedPotholes || []);
+            const nearby = activePool.find(ph => Math.abs(ph.progress - curProg) <= 0.08);
+            if (nearby) {
+                drawRealisticPothole(ctx, canvas, nearby);
+            }
         }
 
         // =====================================================================
@@ -4186,8 +4395,15 @@ function updateLiveNavigationDirections(hazard, lat, lng, loc) {
 }
 
 
-function runAIAnalysisAndDispatch() {
+function runAIAnalysisAndDispatch(targetPothole) {
             const d = mediaState.defect;
+            if (targetPothole) {
+                d.lat = targetPothole.lat || d.lat;
+                d.lng = targetPothole.lng || d.lng;
+                d.loc = targetPothole.name || d.loc;
+                d.depth = `${targetPothole.depthCm}cm`;
+                d.ticketId = targetPothole.ticketId || d.ticketId;
+            }
 
             // 1. Add / Update in state.hazards
             const existingH = state.hazards.find(h => h.id === `HAZ-${d.ticketId.slice(-3)}` || (Math.abs(h.lat - d.lat) < 0.001 && Math.abs(h.lng - d.lng) < 0.001));
@@ -4265,6 +4481,28 @@ function runAIAnalysisAndDispatch() {
 
             // 6. Show interactive confirmation toast with voucher link
             showDispatchToast(d);
+
+            // 7. Dispatch to FastAPI Backend for Municipal Sync & Persistence
+            try {
+                fetch('/api/simulate-detection', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        bus_id: mediaState.defect.busId || 'KSRTC-KA09-E102',
+                        hazard_type: d.type || 'POTHOLE',
+                        lat: d.lat,
+                        lng: d.lng,
+                        location_name: d.loc,
+                        confidence: 0.98,
+                        damage_depth_cm: parseFloat(d.depth) || 11.4,
+                        z_shock: -0.42
+                    })
+                }).then(r => r.json()).then(res => {
+                    console.log('[Municipal Backend API Synced]:', res);
+                }).catch(e => console.log('[Backend Offline Fallback]:', e));
+            } catch(e) {
+                console.log('[Backend Sync Handled]:', e);
+            }
         }
 
         function showDispatchToast(d) {
