@@ -2506,38 +2506,30 @@ h1, h2, h3 {
                 </div>
 
                                 <!-- Media Source & Action Toolbar -->
-                <div class="media-analyzer-ribbon">
-                    <div class="media-source-pills">
-                        <button class="btn-media-pill active" id="btn-media-real-1" onclick="loadSampleMedia('mysuru-real-1')" title="Play Real-Life Road Video Clip 1 (Pothole 20.2cm)">
-                            <i class="fa-solid fa-play-circle" style="color:var(--gov-saffron);"></i> Live Clip 1 (Pothole 20cm)
+                <!-- Single Master Simulation Button Toolbar -->
+                <div class="media-analyzer-ribbon" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; padding:6px 10px; background:#EDE7DA; border-bottom:1px solid var(--border-medium);">
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        <!-- THE SINGLE MASTER BUTTON -->
+                        <button class="btn-master-simulate" id="btn-master-simulate" onclick="toggleAutoSimulateAllVideos()" style="background:linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color:#FFFFFF; border:1px solid #0284C7; border-radius:6px; padding:6px 14px; font-size:0.82rem; font-weight:800; display:inline-flex; align-items:center; gap:8px; cursor:pointer; box-shadow:0 2px 8px rgba(2,132,199,0.35); transition:all 0.15s ease;">
+                            <i class="fa-solid fa-play" id="master-sim-icon" style="color:#FDE047;"></i>
+                            <span id="master-sim-label">▶️ Simulate All 4 Transit Inspection Videos</span>
+                            <span id="master-sim-badge" style="background:rgba(255,255,255,0.25); font-size:0.68rem; font-family:'JetBrains Mono',monospace; padding:2px 7px; border-radius:4px; font-weight:700;">CORRIDOR 1 / 4</span>
                         </button>
-                        <button class="btn-media-pill" id="btn-media-real-2" onclick="loadSampleMedia('mysuru-real-2')" title="Play Real-Life Road Video Clip 2 (Hunsur Road)">
-                            <i class="fa-solid fa-play-circle" style="color:var(--gov-saffron);"></i> Live Clip 2
-                        </button>
-                        <button class="btn-media-pill" id="btn-media-real-3" onclick="loadSampleMedia('mysuru-real-3')" title="Play Real-Life Road Video Clip 3 (Sayyaji Rao Road)">
-                            <i class="fa-solid fa-play-circle" style="color:var(--gov-saffron);"></i> Live Clip 3
-                        </button>
-                        <button class="btn-media-pill" id="btn-media-sample-mysuru" onclick="loadSampleMedia('mysuru-video')">
-                            <i class="fa-solid fa-video"></i> Mysuru ORR Video
-                        </button>
-                        <button class="btn-media-pill" id="btn-media-sample-blr" onclick="loadSampleMedia('bengaluru-video')">
-                            <i class="fa-solid fa-video"></i> Bengaluru 500D
-                        </button>
-                        <button class="btn-media-pill" id="btn-media-sample-pothole" onclick="loadSampleMedia('mysuru-pothole')">
-                            <i class="fa-solid fa-camera"></i> Road Photo
-                        </button>
-                        <button class="btn-media-pill" id="btn-media-live-camera" onclick="toggleLiveCameraFeed()" style="background:rgba(220,38,38,0.12); color:#DC2626; border:1px solid rgba(220,38,38,0.35);" title="Start Real-time Live Camera (Webcam or Mobile Phone Camera)">
-                            <i class="fa-solid fa-circle-dot" style="color:#DC2626; animation:pulse 1.5s infinite;"></i> <span id="btn-live-cam-label">Live Camera</span>
-                        </button>
-                        <button class="btn-media-pill" id="btn-media-flip-camera" onclick="flipLiveCamera()" style="display:none;" title="Flip Front / Rear Camera">
-                            <i class="fa-solid fa-camera-rotate"></i> Flip
+
+                        <!-- Quick Skip Next Button -->
+                        <button type="button" onclick="skipToNextSimVideo()" style="background:#FFFFFF; border:1px solid var(--border-medium); color:var(--text-primary); border-radius:6px; padding:6px 10px; font-size:0.75rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Skip to next inspection video">
+                            Next Video <i class="fa-solid fa-forward-step"></i>
                         </button>
                     </div>
 
+                    <!-- Active Corridor Indicator Strip -->
                     <div style="display:flex; align-items:center; gap:6px;">
+                        <span id="active-video-corridor-title" style="font-size:0.75rem; font-weight:700; color:#0369A1; font-family:var(--font-mono); background:#FFFFFF; padding:4px 8px; border-radius:4px; border:1px solid var(--border-medium);">
+                            📍 1. Mysuru Outer Ring Road (Pothole 20.2cm)
+                        </span>
                         <input type="file" id="media-upload-input" accept="video/*,image/*" style="display:none;" onchange="handleMediaUpload(event)">
-                        <button class="btn-media-upload" onclick="document.getElementById('media-upload-input').click()" title="Upload custom video (.mp4, .mov, .webm) or road photo">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload Media
+                        <button type="button" onclick="document.getElementById('media-upload-input').click()" style="background:transparent; border:none; color:var(--text-tertiary); font-size:0.72rem; cursor:pointer; padding:4px;" title="Optional: Custom file upload">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
                         </button>
                     </div>
                 </div>
@@ -4022,12 +4014,14 @@ function initDashcamSimulator() {
     baseImage.src = 'image1.jpg';
     mediaState.baseImage = baseImage;
 
-    // Auto-start real Mysuru road inspection video on page load
+    // Auto-start 4-Video Transit Inspection Tour on page load
     setTimeout(() => {
-        if (typeof loadSampleMedia === 'function') {
+        if (typeof runTourStep === 'function') {
+            runTourStep(0);
+        } else if (typeof loadSampleMedia === 'function') {
             loadSampleMedia('mysuru-real-1');
         }
-    }, 300);
+    }, 350);
 
     function drawLoop() {
         if (mediaState.isPlaying) {
@@ -4316,6 +4310,212 @@ function initDashcamSimulator() {
     }
 
     requestAnimationFrame(drawLoop);
+}
+
+
+// =========================================================================
+// Automated 4-Video Transit Inspection Simulation Engine (Single Button Tour)
+// =========================================================================
+const TRANSIT_SIMULATION_CORRIDORS = [
+    {
+        index: 1,
+        title: "1. Mysuru Outer Ring Road (Pothole 20.2cm · Critical P1)",
+        shortTitle: "📍 1. Mysuru ORR (Pothole 20.2cm)",
+        badgeText: "CORRIDOR 1 / 4",
+        videoSrc: "static/videos/mysuru_road_inspection_1.mp4",
+        corridorKey: "mysuru-orr",
+        busId: "KSRTC-KA09-E102",
+        sourceName: "Mysuru ORR Dashcam (KSRTC-KA09-E102)",
+        defectType: "POTHOLE",
+        rdd: "D40 (Pothole / Subsidence)",
+        depth: "20.2cm",
+        sev: "CRITICAL_P1",
+        conf: "98.6%",
+        ticketId: "PWD-OCT-0941",
+        sorCode: "CPWD 16.14.2 (Dense Bituminous Macadam)",
+        lat: 12.3360,
+        lng: 76.6210,
+        loc: "VVCE Ring Road Junction, Gokulam, Mysuru",
+        zoom: 15,
+        playDurationMs: 8000
+    },
+    {
+        index: 2,
+        title: "2. Hunsur Road Corridor (Depression 14.8cm · Critical P1)",
+        shortTitle: "📍 2. Hunsur Road (Pothole 14.8cm)",
+        badgeText: "CORRIDOR 2 / 4",
+        videoSrc: "static/videos/mysuru_road_inspection_2.mp4",
+        corridorKey: "hunsur-rd",
+        busId: "KSRTC-MY09-C330",
+        sourceName: "Hunsur Road Dashcam (KSRTC-MY09-C330)",
+        defectType: "POTHOLE",
+        rdd: "D40 (Pothole / Subsidence)",
+        depth: "14.8cm",
+        sev: "CRITICAL_P1",
+        conf: "97.4%",
+        ticketId: "PWD-OCT-0942",
+        sorCode: "CPWD 16.14.2 (DBM Patch)",
+        lat: 12.3140,
+        lng: 76.6320,
+        loc: "Hunsur Road Kalamandira Signal, Mysuru",
+        zoom: 15,
+        playDurationMs: 8000
+    },
+    {
+        index: 3,
+        title: "3. Sayyaji Rao Heritage Corridor (Crack 4.5cm · High P2)",
+        shortTitle: "📍 3. Sayyaji Rao (Crack 4.5cm)",
+        badgeText: "CORRIDOR 3 / 4",
+        videoSrc: "static/videos/mysuru_road_inspection_3.mp4",
+        corridorKey: "sayyaji-rao",
+        busId: "KSRTC-KA09-E102",
+        sourceName: "Sayyaji Rao Heritage Dashcam (KSRTC-KA09-E102)",
+        defectType: "ROAD_CRACK",
+        rdd: "D00 (Longitudinal Surface Crack)",
+        depth: "4.5cm",
+        sev: "HIGH_P2",
+        conf: "95.8%",
+        ticketId: "PWD-OCT-0943",
+        sorCode: "CPWD 16.12.1 (Crack Sealing)",
+        lat: 12.3130,
+        lng: 76.6538,
+        loc: "Sayyaji Rao Road Heritage Corridor, Mysuru",
+        zoom: 15,
+        playDurationMs: 8000
+    },
+    {
+        index: 4,
+        title: "4. Bengaluru 500D Silk Board Underpass (Waterlogging 35m · High P2)",
+        shortTitle: "📍 4. Bengaluru 500D (Waterlogging)",
+        badgeText: "CORRIDOR 4 / 4",
+        videoSrc: "static/videos/mysuru_road_inspection_1.mp4",
+        corridorKey: "bmtc-orr",
+        busId: "BMTC-KA57-E912",
+        sourceName: "Bengaluru ORR Flyover Dashcam (BMTC-KA57-E912)",
+        defectType: "WATERLOGGING",
+        rdd: "W01 (Monsoon Waterlogging & Hydroplaning Risk)",
+        depth: "35m Length",
+        sev: "HIGH_P2",
+        conf: "96.4%",
+        ticketId: "PWD-OCT-0882",
+        sorCode: "CPWD 11.4.2 (Drain De-silt & Sump Clearing)",
+        lat: 12.9125,
+        lng: 77.6395,
+        loc: "Silk Board Underpass South Lane, Bengaluru",
+        zoom: 14,
+        playDurationMs: 8000
+    }
+];
+
+let autoTourActive = true;
+let currentTourIndex = 0;
+let tourTimer = null;
+
+function runTourStep(index) {
+    currentTourIndex = index % TRANSIT_SIMULATION_CORRIDORS.length;
+    const item = TRANSIT_SIMULATION_CORRIDORS[currentTourIndex];
+
+    // Update UI Badges & Buttons
+    const badge = document.getElementById('master-sim-badge');
+    const label = document.getElementById('master-sim-label');
+    const icon = document.getElementById('master-sim-icon');
+    const title = document.getElementById('active-video-corridor-title');
+    if (badge) badge.textContent = item.badgeText;
+    if (label) label.textContent = autoTourActive ? "⏸️ Pause 4-Video Tour" : "▶️ Resume 4-Video Tour";
+    if (icon) icon.className = autoTourActive ? "fa-solid fa-pause" : "fa-solid fa-play";
+    if (title) title.textContent = item.shortTitle;
+
+    // Load Video into videoEl
+    let videoEl = document.getElementById('uploaded-media-video');
+    if (!videoEl) {
+        videoEl = document.createElement('video');
+        videoEl.id = 'uploaded-media-video';
+        videoEl.autoplay = true;
+        videoEl.loop = true;
+        videoEl.muted = true;
+        videoEl.playsInline = true;
+        videoEl.style.display = 'none';
+        document.body.appendChild(videoEl);
+    }
+    videoEl.crossOrigin = "anonymous";
+    videoEl.src = item.videoSrc;
+    videoEl.currentTime = 0;
+    videoEl.load();
+    videoEl.play().catch(e => console.log('Tour playback deferred:', e));
+    mediaState.userVideo = videoEl;
+    mediaState.mode = 'video';
+    mediaState.sourceName = item.sourceName;
+    mediaState.isPlaying = true;
+    mediaState.isDefectLocked = false;
+    mediaState.hasDispatchedOnce = false;
+    mediaState.detectedPotholeIds.clear();
+
+    // Set Corridor & Georeference
+    currentCorridorKey = item.corridorKey;
+    const sel = document.getElementById('video-corridor-select');
+    if (sel) sel.value = item.corridorKey;
+
+    // Synchronize defect parameters
+    mediaState.defect = {
+        type: item.defectType,
+        rdd: item.rdd,
+        conf: item.conf,
+        depth: item.depth,
+        sev: item.sev,
+        busId: item.busId,
+        loc: item.loc,
+        lat: item.lat,
+        lng: item.lng,
+        sorCode: item.sorCode,
+        ticketId: item.ticketId
+    };
+    updateMediaSidebar();
+
+    // Fly map to active corridor
+    if (state.map) {
+        state.map.flyTo([item.lat, item.lng], item.zoom, { duration: 1.2 });
+    }
+
+    // Trigger Multi-Agent Dispatch & Drop Marker
+    setTimeout(() => {
+        dispatchContinuousDefect({
+            id: `TOUR-DEFECT-${item.index}`,
+            depthCm: parseFloat(item.depth) || 12.0,
+            lat: item.lat,
+            lng: item.lng,
+            name: item.loc,
+            ticketId: item.ticketId
+        });
+    }, 1500);
+
+    // Schedule next video transition
+    if (tourTimer) clearTimeout(tourTimer);
+    if (autoTourActive) {
+        tourTimer = setTimeout(() => {
+            runTourStep(currentTourIndex + 1);
+        }, item.playDurationMs);
+    }
+}
+
+function toggleAutoSimulateAllVideos() {
+    autoTourActive = !autoTourActive;
+    const label = document.getElementById('master-sim-label');
+    const icon = document.getElementById('master-sim-icon');
+
+    if (autoTourActive) {
+        if (label) label.textContent = "⏸️ Pause 4-Video Tour";
+        if (icon) icon.className = "fa-solid fa-pause";
+        runTourStep(currentTourIndex);
+    } else {
+        if (tourTimer) clearTimeout(tourTimer);
+        if (label) label.textContent = "▶️ Resume 4-Video Tour";
+        if (icon) icon.className = "fa-solid fa-play";
+    }
+}
+
+function skipToNextSimVideo() {
+    if (tourTimer) clearTimeout(tourTimer);
+    runTourStep(currentTourIndex + 1);
 }
 
 function loadSampleMedia(type) {
