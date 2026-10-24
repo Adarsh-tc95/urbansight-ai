@@ -16,69 +16,82 @@
 
     <style>
         :root {
-    /* Background Hierarchy (Warm Linen & Sandstone Depths) */
-    --bg-base: #0F172A;               /* Warm soft linen beige page background */
-    --bg-subtle: #EDE7DA;             /* Warm sandstone background */
-    --bg-surface: #FAF8F5;            /* Creamy ivory surface */
-    --bg-card: rgba(255, 255, 255, 0.94); /* Crisp warm white card */
-    --bg-card-hover: #ECE6D8;         /* Warm sand card hover */
-    --bg-card-solid: #FFFFFF;         /* Solid card white */
-    --bg-glass-panel: rgba(245, 242, 235, 0.92); /* Glassmorphism beige panel */
-    --bg-pill: rgba(0, 0, 0, 0.04);   /* Soft subtle pill background */
-    --bg-pill-hover: rgba(0, 0, 0, 0.08);
+    /* Government of India Official Color Palette (Same as Command Center) */
+    --gov-blue:        #003580;   /* NIC India primary blue */
+    --gov-blue-dark:   #002660;   /* Darker hover blue */
+    --gov-blue-light:  #EBF1FB;   /* Light blue tint */
+    --gov-saffron:     #FF9933;   /* Indian tricolor saffron */
+    --gov-green:       #138808;   /* Indian tricolor green */
+    --gov-red:         #CC0000;   /* Critical alert red */
 
-    /* Borders & Hairlines */
-    --border-subtle: #E2DCCB;          /* Soft warm tan border */
-    --border-medium: #DDD6C6;          /* Sandstone border */
-    --border-hover: rgba(2, 132, 199, 0.4);
-    --border-glow: rgba(2, 132, 199, 0.2);
+    /* Backgrounds & Surfaces */
+    --bg-base:         #F5F5F5;   /* Standard government portal page background */
+    --bg-page:         #F5F5F5;
+    --bg-surface:      #FFFFFF;   /* Clean white card surface */
+    --bg-card:         #FFFFFF;
+    --bg-card-hover:   #F9FAFB;
+    --bg-card-solid:   #FFFFFF;
+    --bg-glass-panel:  #FFFFFF;
+    --bg-subtle:       #EBF1FB;
+
+    /* Borders */
+    --border-subtle:   #E5E7EB;
+    --border-medium:   #D1D5DB;
+    --border-color:    #D1D5DB;
+    --border-hover:    #003580;
 
     /* Brand Accents */
-    --primary: #0284C7;               /* High-contrast civic ocean sapphire */
-    --primary-gradient: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-    --primary-glow: rgba(2, 132, 199, 0.25);
-    --primary-muted: rgba(2, 132, 199, 0.1);
+    --primary:         #003580;
+    --primary-gradient: linear-gradient(135deg, #003580 0%, #002660 100%);
+    --primary-glow:    rgba(0, 53, 128, 0.2);
+    --primary-muted:   #EBF1FB;
 
-    /* Functional Telemetry Accents */
-    --caution: #EA580C;               /* Civic safety orange / terracotta */
-    --caution-glow: rgba(234, 88, 12, 0.25);
-    --caution-muted: rgba(234, 88, 12, 0.1);
-
-    --critical: #DC2626;              /* Alert crimson */
-    --critical-glow: rgba(220, 38, 38, 0.25);
-    --critical-muted: rgba(220, 38, 38, 0.1);
-
-    --success: #059669;               /* Deep emerald green */
-    --success-glow: rgba(5, 150, 105, 0.25);
-    --success-muted: rgba(5, 150, 105, 0.1);
-
-    --indigo: #4F46E5;                /* Slate indigo */
-    --purple: #7C3AED;                /* Royal amethyst */
-    --purple-muted: rgba(124, 58, 237, 0.1);
+    /* Telemetry Accents */
+    --caution:         #FF9933;
+    --danger:          #CC0000;
+    --danger-glow:     rgba(204, 0, 0, 0.25);
+    --critical:        #CC0000;
+    --success:         #138808;
+    --success-glow:    rgba(19, 136, 8, 0.25);
 
     /* Typography */
-    --text-primary: #1C1917;          /* Stone 900 charcoal - deep contrast */
-    --text-secondary: #57534E;        /* Stone 600 warm slate */
-    --text-tertiary: #78716C;         /* Stone 500 subtle */
-    --text-inverse: #FFFFFF;
+    --text-primary:    #1A1A1A;
+    --text-secondary:  #4A4A4A;
+    --text-muted:      #6B7280;
+    --text-inverse:    #FFFFFF;
 
-    --font-heading: 'Noto Sans', sans-serif;
-    --font-ui: 'Noto Sans', sans-serif;
-    --font-mono: 'IBM Plex Mono', monospace;
-
-    /* Transitions & Curves */
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --transition-fast: 0.15s var(--ease-out);
-    --transition-medium: 0.25s var(--ease-out);
+    /* Fonts (Identical to First Tab) */
+    --font-heading:    'Noto Serif', Georgia, 'Times New Roman', serif;
+    --font-ui:         'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono:       'IBM Plex Mono', 'Courier New', monospace;
 }
 
-        * {
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: var(--font-heading);
             -webkit-user-select: none;
             user-select: none;
+        }
+
+        html, body, button, input, select, textarea {
+            font-family: var(--font-ui);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+        }
+
+        .telemetry-val, .telemetry-label, .hud-clock, .dist-number, .speed-val, .font-mono, [class*="mono"], code {
+            font-family: var(--font-mono) !important;
+        }
+
+        body.is-embedded > div:first-of-type {
+            display: none !important;
+        }
+
+        body.is-embedded {
+            min-height: 100vh;
         }
 
         body {
@@ -93,7 +106,7 @@
 
         /* Top HUD Bar */
         .hud-topbar {
-            background: rgba(245, 242, 235, 0.95);
+            background: #FFFFFF;
             border-bottom: 2px solid var(--border-color);
             padding: 12px 24px;
             display: flex;
@@ -242,7 +255,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
             position: relative;
             overflow: hidden;
         }
@@ -262,7 +275,7 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-subtle);
             padding-bottom: 10px;
         }
 
@@ -298,7 +311,7 @@
 
         .speedo-arc-bg {
             fill: none;
-            stroke: #1E293B;
+            stroke: #E5E7EB;
             stroke-width: 14;
             stroke-linecap: round;
         }
@@ -327,8 +340,7 @@
             font-weight: 800;
             font-family: var(--font-mono);
             line-height: 1;
-            color: #FFFFFF;
-            text-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+            color: #003580;
         }
 
         .speed-unit {
@@ -414,10 +426,9 @@
 
         /* State: Active Critical Alert */
         .hazard-advisory-card.active-alert {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%);
+            background: #FFF5F5;
             border: 2px solid var(--danger);
-            box-shadow: 0 0 35px var(--danger-glow), inset 0 0 25px rgba(239, 68, 68, 0.15);
-            animation: alertGlow 1.2s infinite alternate ease-in-out;
+            box-shadow: 0 4px 16px rgba(204, 0, 0, 0.15);
         }
 
         @keyframes alertGlow {
@@ -427,9 +438,9 @@
 
         /* State: Roadway All Clear */
         .hazard-advisory-card.all-clear {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(15, 23, 42, 0.95) 100%);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            box-shadow: 0 0 20px var(--success-glow);
+            background: #F0FDF4;
+            border: 2px solid var(--success);
+            box-shadow: 0 4px 16px rgba(19, 136, 8, 0.12);
         }
 
         .alert-header-badge {
@@ -466,12 +477,13 @@
         }
 
         .hazard-main-title {
-            font-size: 2rem;
+            font-size: 1.85rem;
             font-weight: 800;
             line-height: 1.2;
-            color: #FFFFFF;
+            color: var(--text-primary);
             margin-bottom: 8px;
             letter-spacing: -0.5px;
+            font-family: var(--font-heading);
         }
 
         .hazard-subtitle {
@@ -486,14 +498,15 @@
 
         /* Distance Countdown Meter */
         .distance-countdown-box {
-            background: rgba(0, 0, 0, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
             padding: 16px 20px;
             margin-bottom: 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
         }
 
         .dist-meter-left {
@@ -520,7 +533,7 @@
             font-size: 3rem;
             font-weight: 800;
             font-family: var(--font-mono);
-            color: #FFFFFF;
+            color: #003580;
             line-height: 1;
         }
 
@@ -625,8 +638,8 @@
         }
 
         .lane-col {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px dashed rgba(255, 255, 255, 0.15);
+            background: #F8FAFC;
+            border: 1px dashed #CBD5E1; color: var(--text-primary);
             border-radius: 8px;
             padding: 10px;
             text-align: center;
@@ -910,6 +923,14 @@
 }
 
 </style>
+<script>
+    if (window.top !== window) {
+        document.documentElement.classList.add('is-embedded');
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.body) document.body.classList.add('is-embedded');
+        });
+    }
+</script>
 </head>
 <body>
 
@@ -980,8 +1001,8 @@
                 <i class="fa-solid fa-bell"></i> TEST
             </button>
                                     <!-- Multilingual Voice Advisory Selector (Kannada / Hindi / English) -->
-            <div class="voice-picker-group" style="display:inline-flex; align-items:center; background:rgba(15,23,42,0.85); border:1px solid var(--border-color); border-radius:8px; padding:2px 6px; gap:4px;">
-                <span style="font-size:0.7rem; font-weight:700; color:var(--text-muted); display:inline-flex; align-items:center; gap:4px;">
+            <div class="voice-picker-group" style="display:inline-flex; align-items:center; background:#FFFFFF; border:1px solid var(--border-color); border-radius:8px; padding:2px 6px; gap:4px;">
+                <span style="font-size:0.7rem; font-weight:700; color:var(--text-secondary); display:inline-flex; align-items:center; gap:4px;">
                     <i class="fa-solid fa-language" style="color:var(--primary);"></i> Voice:
                 </span>
                 <button class="btn-lang-pill active" id="lang-kn" onclick="setDriverVoiceLanguage('kn-IN')" title="ಕನ್ನಡ ಧ್ವನಿ ಎಚ್ಚರಿಕೆ">ಕನ್ನಡ</button>
@@ -1155,7 +1176,7 @@
                                 <div style="font-size:0.68rem; font-family:var(--font-mono); color:var(--primary); font-weight:700; text-transform:uppercase;" id="voice-lang-tag">
                                     🎙️ ಕನ್ನಡ ಧ್ವನಿ ಎಚ್ಚರಿಕೆ (Kannada In-Cab Audio)
                                 </div>
-                                <div style="font-size:0.95rem; font-weight:800; color:#FFFFFF; margin-top:2px;" id="voice-spoken-display">
+                                <div style="font-size:0.95rem; font-weight:800; color:#1A1A1A; margin-top:2px;" id="voice-spoken-display">
                                     "ಮುಂದೆ 220 ಮೀಟರ್‌ನಲ್ಲಿ ಗುಂಡಿ ಇದೆ. ಎಚ್ಚರ! ಎಡ ಪಥಕ್ಕೆ ಚಲಿಸಿ."
                                 </div>
                             </div>
@@ -1181,7 +1202,7 @@
                         </div>
                         <div class="lane-col" id="lane-3">
                             <span class="lane-name">Lane 3 (Right)</span>
-                            <span class="lane-status" style="color:var(--text-muted);">
+                            <span class="lane-status" style="color:var(--text-secondary);">
                                 <i class="fa-solid fa-ban"></i> HEAVY TRAFFIC
                             </span>
                         </div>
@@ -1206,7 +1227,7 @@
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
-                <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">
+                <span style="font-size:0.75rem; color:var(--text-secondary); font-family:var(--font-mono);">
                     <i class="fa-solid fa-wifi"></i> Edge V2X Broadcast Radius: 300 meters
                 </span>
                 <button class="btn-hud" id="btn-ack-hazard">
@@ -1260,7 +1281,7 @@
                     <span>0.0g</span>
                     <span>+1.0g (Speed Bump)</span>
                 </div>
-                <div style="font-size:0.72rem; color:var(--text-muted); margin-top:6px; font-family:var(--font-mono);" id="imu-filter-status">
+                <div style="font-size:0.72rem; color:var(--text-secondary); margin-top:6px; font-family:var(--font-mono);" id="imu-filter-status">
                     Filter: Rejects speed bump false alarms (+az &gt; +0.40g)
                 </div>
             </div>
@@ -1294,30 +1315,30 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <i class="fa-solid fa-gauge-simple-high" style="color:var(--primary); font-size:16px;"></i>
-                    <span style="font-size:0.8rem; font-weight:800; color:#FFFFFF; text-transform:uppercase; letter-spacing:0.5px;">Route Ride-Quality &amp; Suspension Stress (Phone Accelerometer)</span>
+                    <span style="font-size:0.8rem; font-weight:800; color:#1A1A1A; text-transform:uppercase; letter-spacing:0.5px;">Route Ride-Quality &amp; Suspension Stress (Phone Accelerometer)</span>
                 </div>
                 <span class="tag-pill pill-green" id="rq-live-grade">SMOOTH · GRADE A (88/100)</span>
             </div>
             <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; text-align:center;">
-                <div style="background:#1E293B; padding:8px 6px; border-radius:8px;">
-                    <div style="font-size:0.65rem; color:var(--text-muted); font-family:var(--font-mono);">RIDE SCORE</div>
+                <div style="background:#FFFFFF; border:1px solid #D1D5DB; padding:8px 6px; border-radius:8px; box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div style="font-size:0.65rem; color:var(--text-secondary); font-family:var(--font-mono);">RIDE SCORE</div>
                     <div style="font-size:1.15rem; font-weight:900; color:#10B981;" id="rq-live-score">88 / 100</div>
                     <div style="font-size:0.65rem; color:#10B981;" id="rq-live-status">Smooth Road</div>
                 </div>
-                <div style="background:#1E293B; padding:8px 6px; border-radius:8px;">
-                    <div style="font-size:0.65rem; color:var(--text-muted); font-family:var(--font-mono);">Z-AXIS SHOCK</div>
+                <div style="background:#FFFFFF; border:1px solid #D1D5DB; padding:8px 6px; border-radius:8px; box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div style="font-size:0.65rem; color:var(--text-secondary); font-family:var(--font-mono);">Z-AXIS SHOCK</div>
                     <div style="font-size:1.15rem; font-weight:900; color:#F59E0B;" id="rq-live-shock">-0.14 g</div>
-                    <div style="font-size:0.65rem; color:var(--text-muted);">Phone IMU</div>
+                    <div style="font-size:0.65rem; color:var(--text-secondary);">Phone IMU</div>
                 </div>
-                <div style="background:#1E293B; padding:8px 6px; border-radius:8px;">
-                    <div style="font-size:0.65rem; color:var(--text-muted); font-family:var(--font-mono);">RMS VIBRATION</div>
+                <div style="background:#FFFFFF; border:1px solid #D1D5DB; padding:8px 6px; border-radius:8px; box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div style="font-size:0.65rem; color:var(--text-secondary); font-family:var(--font-mono);">RMS VIBRATION</div>
                     <div style="font-size:1.15rem; font-weight:900; color:#00E5FF;" id="rq-live-rms">0.078 g</div>
-                    <div style="font-size:0.65rem; color:var(--text-muted);">50Hz Sensor</div>
+                    <div style="font-size:0.65rem; color:var(--text-secondary);">50Hz Sensor</div>
                 </div>
-                <div style="background:#1E293B; padding:8px 6px; border-radius:8px;">
-                    <div style="font-size:0.65rem; color:var(--text-muted); font-family:var(--font-mono);">SUSPENSION WEAR</div>
+                <div style="background:#FFFFFF; border:1px solid #D1D5DB; padding:8px 6px; border-radius:8px; box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                    <div style="font-size:0.65rem; color:var(--text-secondary); font-family:var(--font-mono);">SUSPENSION WEAR</div>
                     <div style="font-size:1.15rem; font-weight:900; color:#38BDF8;" id="rq-live-wear">+6% (Normal)</div>
-                    <div style="font-size:0.65rem; color:var(--text-muted);" id="rq-live-next">Maint: 75d</div>
+                    <div style="font-size:0.65rem; color:var(--text-secondary);" id="rq-live-next">Maint: 75d</div>
                 </div>
             </div>
         </div>

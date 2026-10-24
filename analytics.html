@@ -552,7 +552,26 @@
         @media (max-width: 1024px) {
             .dashboard-grid { grid-template-columns: 1fr; }
         }
-    </style>
+    
+        body.is-embedded .gov-topbar-row1,
+        body.is-embedded .gov-topbar-row2,
+        body.is-embedded .gov-navbar {
+            display: none !important;
+        }
+        body.is-embedded {
+            min-height: 100vh;
+            background: #F5F5F5;
+        }
+    
+</style>
+<script>
+    if (window.top !== window) {
+        document.documentElement.classList.add('is-embedded');
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.body) document.body.classList.add('is-embedded');
+        });
+    }
+</script>
 </head>
 <body>
 

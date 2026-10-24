@@ -248,7 +248,6 @@ function initClock() {
             }).addTo(state.map);
 
             renderHazardsOnMap();
-    if (typeof updateLiveNavigationDirections === "function") { updateLiveNavigationDirections(d.type, d.lat, d.lng, d.loc); }
             renderBusesOnMap();
             renderPCIHeatmap(0);
             initMapDirectionsRoute();
@@ -1978,7 +1977,7 @@ function highlightAgent(stepNumber) {
 }
 
 function addNewWorkOrder(ticket, type, sev, loc, passes, sorCode) {
-    updateLiveNavigationDirections(d.type, d.lat, d.lng, d.loc);
+    if (typeof updateLiveNavigationDirections === "function") { updateLiveNavigationDirections(type, 12.3360, 76.6210, loc); }
     state.workOrders.unshift({
         ticket, type, sev, loc, passes, sla: "47h 58m remaining", status: "DISPATCHED", sorCode: sorCode || "CPWD 16.14.2 (DBM Patch)"
     });
@@ -2559,3 +2558,85 @@ function switchFooterTab(tabKey) {
     if (activeBtn) activeBtn.classList.add('active');
     if (activePanel) activePanel.style.display = 'flex';
 }
+
+// =========================================================================
+// SPA UNIFIED MULTI-TAB DASHBOARD SWITCHER
+// =========================================================================
+window.switchDashboardTab = function(tabKey, event) {
+    if (event && event.preventDefault) {
+        event.preventDefault();
+    }
+    const cleanKey = (tabKey || 'command').toLowerCase().replace('#', '');
+    const validTabs = ['command', 'driver', 'citizen', 'crew', 'analytics', 'voucher'];
+    const activeTab = validTabs.includes(cleanKey) ? cleanKey : 'command';
+
+    if (window.location.hash !== '#' + activeTab) {
+        history.replaceState(null, '', '#' + activeTab);
+    }
+
+    document.querySelectorAll('.portal-nav-pills .portal-pill').forEach(pill => {
+        pill.classList.remove('active');
+    });
+    const activePill = document.getElementById('tab-pill-' + activeTab);
+    if (activePill) {
+        activePill.classList.add('active');
+    }
+
+    const viewMap = {
+        'command': 'view-command-center',
+        'driver': 'view-driver-hud',
+        'citizen': 'view-citizen-portal',
+        'crew': 'view-field-crew',
+        'analytics': 'view-analytics',
+        'voucher': 'view-voucher'
+    };
+
+    Object.keys(viewMap).forEach(key => {
+        const viewEl = document.getElementById(viewMap[key]);
+        if (viewEl) {
+            if (key === activeTab) {
+                viewEl.classList.add('active');
+                viewEl.style.display = 'block';
+            } else {
+                viewEl.classList.remove('active');
+                viewEl.style.display = 'none';
+            }
+        }
+    });
+
+    if (activeTab === 'command') {
+        setTimeout(() => {
+            if (window.state && window.state.map && typeof window.state.map.invalidateSize === 'function') {
+                window.state.map.invalidateSize();
+            }
+        }, 150);
+    }
+
+    const iframeMap = {
+        'driver': { id: 'iframe-driver', src: 'driver_console.html' },
+        'citizen': { id: 'iframe-citizen', src: 'citizen_portal.html' },
+        'crew': { id: 'iframe-crew', src: 'field_crew.html' },
+        'analytics': { id: 'iframe-analytics', src: 'analytics.html' },
+        'voucher': { id: 'iframe-voucher', src: 'voucher.html?ticket=PWD-OCT-0941' }
+    };
+
+    if (iframeMap[activeTab]) {
+        const frame = document.getElementById(iframeMap[activeTab].id);
+        if (frame && (!frame.src || frame.src === 'about:blank' || !frame.getAttribute('src'))) {
+            frame.src = iframeMap[activeTab].src;
+        }
+    }
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+    const hash = (window.location.hash || '').replace('#', '');
+    if (hash) {
+        window.switchDashboardTab(hash);
+    }
+});
+window.addEventListener('hashchange', () => {
+    const hash = (window.location.hash || '').replace('#', '');
+    if (hash) {
+        window.switchDashboardTab(hash);
+    }
+});

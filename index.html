@@ -2079,6 +2079,28 @@ h1, h2, h3 {
     gap: 8px;
 }
 
+
+/* =============================================================================
+   SPA UNIFIED SINGLE-PAGE APPLICATION MULTI-TAB PORTAL STYLES
+   ============================================================================= */
+.spa-view {
+    width: 100%;
+}
+.spa-view:not(.active) {
+    display: none !important;
+}
+.spa-view.active {
+    display: block !important;
+}
+.spa-portal-frame {
+    width: 100%;
+    height: calc(100vh - 105px);
+    min-height: 720px;
+    border: none;
+    display: block;
+    background: #F5F5F5;
+}
+
 </style>
 </head>
 <body>
@@ -2177,37 +2199,37 @@ h1, h2, h3 {
         <div class="header-nav-center">
             <nav class="portal-nav-pills" aria-label="Smart City Stakeholder Dashboards">
                 <!-- 1. Command Center: City Commissioners -->
-                <a href="index.html" class="portal-pill active" title="Integrated Command & Control Center (For City Commissioners & Traffic Police)">
+                <a href="#command" class="portal-pill active" id="tab-pill-command" onclick="switchDashboardTab('command', event)" title="Integrated Command & Control Center (For City Commissioners & Traffic Police)">
                     <i class="fa-solid fa-gauge-high"></i>
                     <span>Command Center</span>
                 </a>
 
                 <!-- 2. Driver HUD: Transit Pilots -->
-                <a href="driver_console.html" target="_blank" class="portal-pill" title="In-Cab Bus Driver HUD Console (For BMTC & KSRTC Drivers)">
+                <a href="#driver" class="portal-pill" id="tab-pill-driver" onclick="switchDashboardTab('driver', event)" title="In-Cab Bus Driver HUD Console (For BMTC & KSRTC Drivers)">
                     <i class="fa-solid fa-tablet-screen-button"></i>
                     <span>Driver HUD</span>
                 </a>
 
                 <!-- 3. Citizen Portal: Public Commuters -->
-                <a href="citizen_portal.html" target="_blank" class="portal-pill" title="Public Citizen Road Repair Tracker (For Public & Commuters)">
+                <a href="#citizen" class="portal-pill" id="tab-pill-citizen" onclick="switchDashboardTab('citizen', event)" title="Public Citizen Road Repair Tracker (For Public & Commuters)">
                     <i class="fa-solid fa-users"></i>
                     <span>Citizen Portal</span>
                 </a>
 
                 <!-- 4. Field Crew PWA: Road Repair Vans -->
-                <a href="field_crew.html" target="_blank" class="portal-pill" title="Mobile Field Crew Repair PWA (For PWD Repair Vans)">
+                <a href="#crew" class="portal-pill" id="tab-pill-crew" onclick="switchDashboardTab('crew', event)" title="Mobile Field Crew Repair PWA (For PWD Repair Vans)">
                     <i class="fa-solid fa-truck-pickup"></i>
                     <span>Field Crew</span>
                 </a>
 
                 <!-- 5. Ward Analytics: Corporators & Finance -->
-                <a href="analytics.html" target="_blank" class="portal-pill" title="Municipal Ward Analytics & SLA Leaderboard (For Corporators & Finance)">
+                <a href="#analytics" class="portal-pill" id="tab-pill-analytics" onclick="switchDashboardTab('analytics', event)" title="Municipal Ward Analytics & SLA Leaderboard (For Corporators & Finance)">
                     <i class="fa-solid fa-chart-pie"></i>
                     <span>Ward Analytics</span>
                 </a>
 
                 <!-- 6. CPWD Voucher: Auditors & Contractors -->
-                <a href="voucher.html?ticket=PWD-OCT-0941" target="_blank" class="portal-pill" title="Official CPWD Statutory Tender Voucher (For Auditors & Contractors)">
+                <a href="#voucher" class="portal-pill" id="tab-pill-voucher" onclick="switchDashboardTab('voucher', event)" title="Official CPWD Statutory Tender Voucher (For Auditors & Contractors)">
                     <i class="fa-solid fa-file-invoice"></i>
                     <span>CPWD Voucher</span>
                 </a>
@@ -2222,25 +2244,27 @@ h1, h2, h3 {
 
         <!-- Header Action Controls -->
         <div class="header-actions">
-            <button class="btn btn-primary" id="btn-simulate-detect" title="Trigger Multi-Agent Transit Bus Detection Pipeline">
+            <button class="btn btn-primary" id="btn-simulate-detect" onclick="simulateBusPassAction()" title="Trigger Multi-Agent Transit Bus Detection Pipeline">
                 <i class="fa-solid fa-bolt"></i> Simulate Bus Pass
             </button>
-            <button class="btn btn-glass" id="btn-export-csv" title="Export CPWD Tabular Work Orders CSV">
+            <button class="btn btn-glass" id="btn-export-csv" onclick="exportCSVAction(event)" title="Export CPWD Tabular Work Orders CSV">
                 <i class="fa-solid fa-file-csv"></i> Export CSV
             </button>
-            <button class="btn btn-glass" id="btn-export-geojson" title="Export OGC Standard GeoJSON Telemetry">
+            <button class="btn btn-glass" id="btn-export-geojson" onclick="exportGeoJSONAction(event)" title="Export OGC Standard GeoJSON Telemetry">
                 <i class="fa-solid fa-file-export"></i> Export GeoJSON
             </button>
-            <button class="btn btn-glass active-toggle" id="btn-toggle-privacy" title="Toggle On-Device DPDP Act 2023 Gaussian Privacy Redaction">
+            <button class="btn btn-glass active-toggle" id="btn-toggle-privacy" onclick="togglePrivacyAction()" title="Toggle On-Device DPDP Act 2023 Gaussian Privacy Redaction">
                 <i class="fa-solid fa-shield-halved"></i> Privacy Blur: ON
             </button>
-            <button class="btn btn-glass" id="btn-driver-alert" title="Test Live In-Cab Driver Tablet Alert Modal">
+            <button class="btn btn-glass" id="btn-driver-alert" onclick="openDriverAlertAction()" title="Test Live In-Cab Driver Tablet Alert Modal">
                 <i class="fa-solid fa-bell"></i>
             </button>
             <div class="telemetry-clock-box" id="telemetry-clock">19:54:00 IST</div>
         </div>
     </header>
 
+    <!-- Tab View 1: Command Center (Default Active) -->
+    <div id="view-command-center" class="spa-view active">
     <!-- 2. Top Key Metric Strip (4 Clean KPI Cards) -->
     <section class="metrics-strip">
         <!-- KPI Card 1: Fleets Monitored -->
@@ -2692,6 +2716,33 @@ h1, h2, h3 {
         </div>
 
     </main>
+    </div> <!-- /#view-command-center -->
+
+    <!-- Tab View 2: Driver HUD (Runs on same website, same fonts & manner) -->
+    <div id="view-driver-hud" class="spa-view" style="display:none;">
+        <iframe src="driver_console.html" class="spa-portal-frame" id="iframe-driver" title="In-Cab Bus Driver HUD Console"></iframe>
+    </div>
+
+    <!-- Tab View 3: Citizen Portal (Runs on same website, same fonts & manner) -->
+    <div id="view-citizen-portal" class="spa-view" style="display:none;">
+        <iframe src="citizen_portal.html" class="spa-portal-frame" id="iframe-citizen" title="Public Citizen Road Repair Tracker"></iframe>
+    </div>
+
+    <!-- Tab View 4: Field Crew PWA (Runs on same website, same fonts & manner) -->
+    <div id="view-field-crew" class="spa-view" style="display:none;">
+        <iframe src="field_crew.html" class="spa-portal-frame" id="iframe-crew" title="Mobile Field Crew Repair PWA"></iframe>
+    </div>
+
+    <!-- Tab View 5: Ward Analytics (Runs on same website, same fonts & manner) -->
+    <div id="view-analytics" class="spa-view" style="display:none;">
+        <iframe src="analytics.html" class="spa-portal-frame" id="iframe-analytics" title="Municipal Ward Analytics & SLA Leaderboard"></iframe>
+    </div>
+
+    <!-- Tab View 6: CPWD Voucher (Runs on same website, same fonts & manner) -->
+    <div id="view-voucher" class="spa-view" style="display:none;">
+        <iframe src="voucher.html?ticket=PWD-OCT-0941" class="spa-portal-frame" id="iframe-voucher" title="Official CPWD Statutory Tender Voucher"></iframe>
+    </div>
+
 
     <!-- In-Cab Driver Alert Modal (HUD Tablet) -->
     <div class="modal-overlay" id="driver-alert-modal">
@@ -2733,22 +2784,154 @@ h1, h2, h3 {
     </div>
 
     <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-function switchFooterTab(tabKey) {
-    document.querySelectorAll('.footer-tab-pill').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.footer-tab-panel').forEach(panel => panel.style.display = 'none');
-    
-    const activeBtn = document.getElementById(`ftab-btn-${tabKey}`);
-    const activePanel = document.getElementById(`footer-tab-${tabKey}`);
-    if (activeBtn) activeBtn.classList.add('active');
-    if (activePanel) activePanel.style.display = 'flex';
-}
-
-</script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <!-- Embedded Standalone Application JavaScript -->
     <script>
         window.__URBANSIGHT_APP_INITIALIZED__ = true;
+
+        // ==========================================
+        // Floating Toast Notification System
+        // ==========================================
+        window.showFloatingToast = function(htmlMessage, type = 'info') {
+            let container = document.getElementById('floating-toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'floating-toast-container';
+                container.style.cssText = 'position:fixed; top:24px; right:24px; z-index:999999; display:flex; flex-direction:column; gap:10px; pointer-events:none;';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            const bgGradients = {
+                success: 'linear-gradient(135deg, #059669 0%, #10B981 100%)',
+                info: 'linear-gradient(135deg, #0284C7 0%, #0EA5E9 100%)',
+                warning: 'linear-gradient(135deg, #D97706 0%, #F59E0B 100%)',
+                danger: 'linear-gradient(135deg, #DC2626 0%, #EF4444 100%)'
+            };
+            toast.style.cssText = `
+                background: ${bgGradients[type] || bgGradients.info};
+                color: #FFFFFF;
+                padding: 12px 18px;
+                border-radius: 8px;
+                box-shadow: 0 10px 25px -5px rgba(0,0,0,0.35), 0 8px 10px -6px rgba(0,0,0,0.25);
+                font-family: 'Noto Sans', -apple-system, sans-serif;
+                font-size: 0.88rem;
+                line-height: 1.4;
+                font-weight: 600;
+                pointer-events: auto;
+                opacity: 0;
+                transform: translateY(-16px) scale(0.96);
+                transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                max-width: 440px;
+                border: 1px solid rgba(255,255,255,0.25);
+            `;
+            toast.innerHTML = htmlMessage;
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0) scale(1)';
+            });
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-16px) scale(0.96)';
+                setTimeout(() => toast.remove(), 320);
+            }, 4500);
+        };
+
+        // ==========================================
+        // Header Actions (Simulate, Export CSV, Export GeoJSON, Privacy Blur, Driver Alert)
+        // ==========================================
+        window.simulateBusPassAction = function() {
+            showFloatingToast('<i class="fa-solid fa-bolt" style="font-size:1.2rem;"></i><div><b>Simulating Transit Bus Pass...</b><br>KSRTC-KA09-E102 scanning Gokulam ORR</div>', 'info');
+
+            // 1. Pan / fly map to Mysuru detection location
+            if (state.map) {
+                state.map.flyTo([12.3360, 76.6210], 15, { duration: 1.0 });
+                try {
+                    const ping = L.circleMarker([12.3360, 76.6210], {
+                        radius: 24,
+                        color: '#DC2626',
+                        fillColor: '#EF4444',
+                        fillOpacity: 0.55,
+                        weight: 3
+                    }).addTo(state.map);
+                    setTimeout(() => { if (state.map && ping) state.map.removeLayer(ping); }, 5000);
+                } catch (e) {
+                    console.log('Map ping error:', e);
+                }
+            }
+
+            // 2. Generate new PWD ticket and insert at top of table
+            const randTicket = 'PWD-OCT-' + Math.floor(1000 + Math.random() * 9000);
+            state.workOrders.unshift({
+                ticket: randTicket,
+                type: 'POTHOLE',
+                sev: 'CRITICAL_P1',
+                loc: 'VVCE Ring Road Junction, Gokulam, Mysuru (MCC Ward 9)',
+                passes: Math.floor(14 + Math.random() * 6),
+                sla: '47h 59m remaining',
+                status: 'DISPATCHED',
+                sorCode: 'CPWD 16.14.2 (DBM Patch)'
+            });
+            renderWorkOrdersTable();
+
+            // 3. Increment hazard and scanned count
+            const hazEl = document.getElementById('metric-hazards-count');
+            if (hazEl) {
+                const cur = parseInt(hazEl.innerText.replace(/\D/g, '')) || 7;
+                hazEl.innerText = cur + 1;
+            }
+
+            // 4. Show success toast and trigger In-Cab HUD alert
+            setTimeout(() => {
+                showFloatingToast(`<i class="fa-solid fa-circle-check" style="font-size:1.2rem;"></i><div><b>Pothole Confirmed &amp; Dispatched!</b><br>Ticket <b>#${randTicket}</b> auto-filed to MCC Ward 9 (&lt;180s SLA)</div>`, 'success');
+                triggerDriverAlert('CRITICAL POTHOLE (9.8cm Depth)', 'VVCE Outer Ring Road near Gokulam (150m Ahead)', 'Move to Right Lane. Speed cap: 25 km/h. Detour recommended at next exit.');
+            }, 1000);
+        };
+
+        window.exportCSVAction = function(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            exportCSV();
+            showFloatingToast('<i class="fa-solid fa-file-csv" style="font-size:1.2rem;"></i><div><b>CPWD Work Orders Exported</b><br>Downloaded tabular CSV to your browser.</div>', 'success');
+        };
+
+        window.exportGeoJSONAction = function(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            exportGeoJSON();
+            showFloatingToast('<i class="fa-solid fa-file-export" style="font-size:1.2rem;"></i><div><b>OGC GeoJSON Telemetry Exported</b><br>Downloaded standard RFC 7946 geospatial feature collection.</div>', 'success');
+        };
+
+        window.togglePrivacyAction = function() {
+            state.settings.privacyBlur = !state.settings.privacyBlur;
+            const btn = document.getElementById('btn-toggle-privacy');
+            if (btn) {
+                btn.innerHTML = state.settings.privacyBlur
+                    ? '<i class="fa-solid fa-shield-halved"></i> Privacy Blur: ON'
+                    : '<i class="fa-solid fa-shield-slash"></i> Privacy Blur: OFF';
+                btn.classList.toggle('active-toggle', state.settings.privacyBlur);
+            }
+            const statusLabel = state.settings.privacyBlur ? 'ENABLED (Zero PII Volatile RAM)' : 'DISABLED';
+            showFloatingToast(`<i class="fa-solid fa-shield-halved" style="font-size:1.2rem;"></i><div><b>DPDP Act 2023 §2(t) Privacy Guard</b><br>On-Device Gaussian Mask: <b>${statusLabel}</b></div>`, state.settings.privacyBlur ? 'success' : 'warning');
+        };
+
+        window.openDriverAlertAction = function() {
+            triggerDriverAlert('CRITICAL POTHOLE (9.8cm Depth)', 'VVCE Outer Ring Road near Gokulam (150m Ahead)', 'Move to Right Lane. Speed cap: 25 km/h.');
+            showFloatingToast('<i class="fa-solid fa-bell" style="font-size:1.2rem;"></i><div><b>In-Cab Driver HUD Alert Opened</b><br>V2X Collision Avoidance warning active.</div>', 'warning');
+        };
+
+        window.switchFooterTab = function(tabKey) {
+            document.querySelectorAll('.footer-tab-pill').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.footer-tab-panel').forEach(panel => panel.style.display = 'none');
+            
+            const activeBtn = document.getElementById(`ftab-btn-${tabKey}`);
+            const activePanel = document.getElementById(`footer-tab-${tabKey}`);
+            if (activeBtn) activeBtn.classList.add('active');
+            if (activePanel) activePanel.style.display = 'flex';
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
             initClock();
             initLeafletMap();
@@ -2989,7 +3172,6 @@ function switchFooterTab(tabKey) {
             }).addTo(state.map);
 
             renderHazardsOnMap();
-    if (typeof updateLiveNavigationDirections === "function") { updateLiveNavigationDirections(d.type, d.lat, d.lng, d.loc); }
             renderBusesOnMap();
             renderPCIHeatmap(0);
             initMapDirectionsRoute();
@@ -5960,32 +6142,96 @@ function switchFooterTab(tabKey) {
         </div>
     </footer>
 
-    <!-- Leaflet GIS Map JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-function switchFooterTab(tabKey) {
-    document.querySelectorAll('.footer-tab-pill').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.footer-tab-panel').forEach(panel => panel.style.display = 'none');
-    
-    const activeBtn = document.getElementById(`ftab-btn-${tabKey}`);
-    const activePanel = document.getElementById(`footer-tab-${tabKey}`);
-    if (activeBtn) activeBtn.classList.add('active');
-    if (activePanel) activePanel.style.display = 'flex';
-}
+    <!-- Core Application Logic fallback (relative path for GitHub Pages compatibility) -->
+    <script src="static/js/app.js">
+        // =========================================================================
+        // SPA UNIFIED MULTI-TAB DASHBOARD SWITCHER
+        // =========================================================================
+        window.switchDashboardTab = function(tabKey, event) {
+            if (event && event.preventDefault) {
+                event.preventDefault();
+            }
+            const cleanKey = (tabKey || 'command').toLowerCase().replace('#', '');
+            const validTabs = ['command', 'driver', 'citizen', 'crew', 'analytics', 'voucher'];
+            const activeTab = validTabs.includes(cleanKey) ? cleanKey : 'command';
 
-</script>
-    <!-- Core Application Logic -->
-    <script src="/static/js/app.js">
-function switchFooterTab(tabKey) {
-    document.querySelectorAll('.footer-tab-pill').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.footer-tab-panel').forEach(panel => panel.style.display = 'none');
-    
-    const activeBtn = document.getElementById(`ftab-btn-${tabKey}`);
-    const activePanel = document.getElementById(`footer-tab-${tabKey}`);
-    if (activeBtn) activeBtn.classList.add('active');
-    if (activePanel) activePanel.style.display = 'flex';
-}
+            // Update URL hash without scroll jumping
+            if (window.location.hash !== '#' + activeTab) {
+                history.replaceState(null, '', '#' + activeTab);
+            }
 
-</script>
+            // Toggle active class on navigation pills
+            document.querySelectorAll('.portal-nav-pills .portal-pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
+            const activePill = document.getElementById('tab-pill-' + activeTab);
+            if (activePill) {
+                activePill.classList.add('active');
+            }
+
+            // Toggle visibility of views
+            const viewMap = {
+                'command': 'view-command-center',
+                'driver': 'view-driver-hud',
+                'citizen': 'view-citizen-portal',
+                'crew': 'view-field-crew',
+                'analytics': 'view-analytics',
+                'voucher': 'view-voucher'
+            };
+
+            Object.keys(viewMap).forEach(key => {
+                const viewEl = document.getElementById(viewMap[key]);
+                if (viewEl) {
+                    if (key === activeTab) {
+                        viewEl.classList.add('active');
+                        viewEl.style.display = 'block';
+                    } else {
+                        viewEl.classList.remove('active');
+                        viewEl.style.display = 'none';
+                    }
+                }
+            });
+
+            // Invalidate Leaflet GIS map size if returning to command center
+            if (activeTab === 'command') {
+                setTimeout(() => {
+                    if (window.state && window.state.map && typeof window.state.map.invalidateSize === 'function') {
+                        window.state.map.invalidateSize();
+                    }
+                }, 150);
+            }
+
+            // Lazy load iframe src if needed
+            const iframeMap = {
+                'driver': { id: 'iframe-driver', src: 'driver_console.html' },
+                'citizen': { id: 'iframe-citizen', src: 'citizen_portal.html' },
+                'crew': { id: 'iframe-crew', src: 'field_crew.html' },
+                'analytics': { id: 'iframe-analytics', src: 'analytics.html' },
+                'voucher': { id: 'iframe-voucher', src: 'voucher.html?ticket=PWD-OCT-0941' }
+            };
+
+            if (iframeMap[activeTab]) {
+                const frame = document.getElementById(iframeMap[activeTab].id);
+                if (frame && (!frame.src || frame.src === 'about:blank' || !frame.getAttribute('src'))) {
+                    frame.src = iframeMap[activeTab].src;
+                }
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = (window.location.hash || '').replace('#', '');
+            if (hash) {
+                window.switchDashboardTab(hash);
+            }
+        });
+        window.addEventListener('hashchange', () => {
+            const hash = (window.location.hash || '').replace('#', '');
+            if (hash) {
+                window.switchDashboardTab(hash);
+            }
+        });
+
+    </script>
 </body>
 </html>
 

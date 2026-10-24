@@ -72,11 +72,32 @@
     --transition-medium: 0.25s var(--ease-out);
 }
 
-        * {
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html, body, button, input, select, textarea {
+            font-family: var(--font-ui);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
             font-family: var(--font-heading);
+        }
+
+        code, .font-mono, [class*="mono"], .doc-no, .item-code, .amount-val {
+            font-family: var(--font-mono) !important;
+        }
+
+        body.is-embedded .voucher-nav-ribbon {
+            display: none !important;
+        }
+
+        body.is-embedded {
+            min-height: 100vh;
+            background-color: var(--bg-page, #F5F5F5);
+            padding-top: 10px;
         }
 
         body {
@@ -429,6 +450,14 @@
             }
         }
     </style>
+<script>
+    if (window.top !== window) {
+        document.documentElement.classList.add('is-embedded');
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.body) document.body.classList.add('is-embedded');
+        });
+    }
+</script>
 </head>
 <body>
 

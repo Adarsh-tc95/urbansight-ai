@@ -72,12 +72,35 @@
     --transition-medium: 0.25s var(--ease-out);
 }
 
-        * {
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: var(--font-heading);
             -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body, button, input, select, textarea {
+            font-family: var(--font-ui);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+        }
+
+        .order-id, code, .font-mono, [class*="mono"] {
+            font-family: var(--font-mono) !important;
+        }
+
+        body.is-embedded .gov-authority-topbar,
+        body.is-embedded .gov-topbar-tier1,
+        body.is-embedded .header-nav-links,
+        body.is-embedded > div:first-of-type {
+            display: none !important;
+        }
+
+        body.is-embedded {
+            min-height: 100vh;
+            background-color: var(--bg-base);
         }
 
         body {
@@ -555,6 +578,14 @@
             font-size: 1.15rem;
         }
     </style>
+<script>
+    if (window.top !== window) {
+        document.documentElement.classList.add('is-embedded');
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.body) document.body.classList.add('is-embedded');
+        });
+    }
+</script>
 </head>
 <body>
     <!-- Tier-1 Government Authority Topbar -->
