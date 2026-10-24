@@ -299,8 +299,8 @@ class TestAdversarialMemoryStabilityAndHandles(unittest.TestCase):
 
         snapshot_end = tracemalloc.take_snapshot()
         final_rss, _ = get_current_process_memory_mb()
-        final_handles = get_current_process_handles()
         cap.release()
+        final_handles = get_current_process_handles()
 
         # Compute Python heap differences
         stats = snapshot_end.compare_to(snapshot_start, 'lineno')
@@ -314,8 +314,8 @@ class TestAdversarialMemoryStabilityAndHandles(unittest.TestCase):
 
         # Working set should not grow by more than 10MB across 125 steady-state frames
         self.assertLess(rss_growth_mb, 10.0, f"Excessive memory growth of {rss_growth_mb} MB indicates potential leak")
-        # Handle delta should be virtually zero
-        self.assertLessEqual(abs(final_handles - initial_handles), 5, "Unreleased OS handles detected")
+        # Handle growth should be <= 5 (no handle leak; handles may also be cleaned up / freed)
+        self.assertLessEqual(final_handles - initial_handles, 5, "Unreleased OS handles detected")
 
     def test_videocapture_descriptor_release_loop(self):
         """Stress-test 30 consecutive VideoCapture open/read/release cycles to ensure descriptor release."""
@@ -352,7 +352,9 @@ class TestAdversarialMemoryStabilityAndHandles(unittest.TestCase):
             )
             self.assertEqual(response.status_code, 200)
             data = response.json()
-            self.assertIn("hazard_detection", data)
+            self.assertTrue(data.get("hazard_detected"))
+            self.assertIn("defect", data)
+            self.assertIn("bbox", data)
 
         final_handles = get_current_process_handles()
         final_rss, _ = get_current_process_memory_mb()
@@ -445,53 +447,71 @@ class TestAdversarialDPDPPrivacyBlurPerformance(unittest.TestCase):
 
     def test_canvas_cv_algorithm_execution_budget(self):
         """
-        Simulate the canvas 2D pixel processing loop from static/js/app.js (analyzeCanvasFrame)
-        to verify that client-side pixel scanning stays well within 16.6ms (60 FPS budget).
+        Benchmark the actual JavaScript canvas 2D pixel processing loop from static/js/app.js (analyzeCanvasFrame)
+        using Node.js V8 engine to verify that client-side pixel scanning stays well within 16.6ms (60 FPS budget).
         """
-        # Canvas dimensions 800x450, lower 62% ROI, step=3
-        roi_w = 672
-        roi_h = 269
-        # Create simulated RGBA pixel buffer
-        pixel_data = np.random.randint(90, 140, size=(roi_h, roi_w, 4), dtype=np.uint8)
-        # Inject dark cavity
-        pixel_data[100:140, 300:360, 0:3] = 40
+        import subprocess
+        import json
 
-        flat_data = pixel_data.flatten()
-        step = 3
-        latencies = []
+        js_code = """
+        function analyzeCanvasFrameSim(width, height) {
+            const roiY = Math.floor(height * 0.38);
+            const roiH = height - roiY - 10;
+            const roiX = Math.floor(width * 0.08);
+            const roiW = width - 2 * roiX;
+            const data = new Uint8ClampedArray(roiW * roiH * 4);
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = 110; data[i+1] = 110; data[i+2] = 110; data[i+3] = 255;
+            }
+            for (let y = 50; y < 90; y++) {
+                for (let x = 100; x < 150; x++) {
+                    const idx = (y * roiW + x) * 4;
+                    data[idx] = 30; data[idx+1] = 30; data[idx+2] = 30;
+                }
+            }
+            const step = 3;
+            let sumLum = 0, sampleCount = 0;
+            for (let y = 0; y < roiH; y += step) {
+                for (let x = 0; x < roiW; x += step) {
+                    const idx = (y * roiW + x) * 4;
+                    const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+                    sumLum += lum; sampleCount++;
+                }
+            }
+            const meanRoadLum = sampleCount > 0 ? (sumLum / sampleCount) : 128;
+            const darkThresh = Math.max(25, meanRoadLum * 0.72);
+            let minX = roiW, maxX = 0, minY = roiH, maxY = 0, darkCount = 0;
+            for (let y = 0; y < roiH; y += step) {
+                for (let x = 0; x < roiW; x += step) {
+                    const idx = (y * roiW + x) * 4;
+                    const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+                    if (lum < darkThresh) {
+                        darkCount++;
+                        if (x < minX) minX = x; if (x > maxX) maxX = x;
+                        if (y < minY) minY = y; if (y > maxY) maxY = y;
+                    }
+                }
+            }
+            return { darkCount, minX, maxX };
+        }
+        for (let i = 0; i < 10; i++) analyzeCanvasFrameSim(800, 450);
+        const times = [];
+        for (let i = 0; i < 100; i++) {
+            const t0 = performance.now();
+            analyzeCanvasFrameSim(800, 450);
+            times.push(performance.now() - t0);
+        }
+        const mean = times.reduce((a, b) => a + b, 0) / times.length;
+        const sorted = times.slice().sort((a, b) => a - b);
+        const p95 = sorted[Math.floor(sorted.length * 0.95)];
+        console.log(JSON.stringify({ mean_ms: mean, p95_ms: p95, min_ms: sorted[0], max_ms: sorted[sorted.length-1] }));
+        """
 
-        for _ in range(50):
-            t0 = time.perf_counter()
-            # Equivalent logic to app.js analyzeCanvasFrame
-            sum_lum = 0
-            sample_count = 0
-            # Phase 1: Mean luminance
-            for y in range(0, roi_h, step):
-                for x in range(0, roi_w, step):
-                    idx = (y * roi_w + x) * 4
-                    lum = 0.299 * flat_data[idx] + 0.587 * flat_data[idx + 1] + 0.114 * flat_data[idx + 2]
-                    sum_lum += lum
-                    sample_count += 1
-            mean_lum = sum_lum / max(1, sample_count)
-            dark_thresh = max(25.0, mean_lum * 0.72)
-
-            # Phase 2: Cavity search
-            dark_count = 0
-            for y in range(0, roi_h, step):
-                for x in range(0, roi_w, step):
-                    idx = (y * roi_w + x) * 4
-                    lum = 0.299 * flat_data[idx] + 0.587 * flat_data[idx + 1] + 0.114 * flat_data[idx + 2]
-                    if lum < dark_thresh:
-                        dark_count += 1
-
-            elapsed_ms = (time.perf_counter() - t0) * 1000.0
-            latencies.append(elapsed_ms)
-
-        stats = compute_latency_stats(latencies)
-        print(f"\n[CANVAS 2D PIXEL LOOP BENCHMARK]: Mean={stats['mean_ms']}ms, P95={stats['p95_ms']}ms")
-        # In Python uncompiled this loop takes a few ms; in V8 JIT it takes < 1ms.
-        # Python loop should take < 50ms, meaning in V8 it runs in < 2ms.
-        self.assertLess(stats["mean_ms"], 50.0)
+        res = subprocess.run(["node", "-e", js_code], capture_output=True, text=True, check=True)
+        stats = json.loads(res.stdout.strip())
+        print(f"\n[CANVAS 2D PIXEL LOOP V8 BENCHMARK]: Mean={round(stats['mean_ms'], 2)}ms, P95={round(stats['p95_ms'], 2)}ms, Max={round(stats['max_ms'], 2)}ms")
+        self.assertLess(stats["mean_ms"], 5.0, f"Canvas CV mean latency {stats['mean_ms']}ms exceeds 5ms browser frame budget")
+        self.assertLess(stats["p95_ms"], 10.0, f"Canvas CV P95 latency {stats['p95_ms']}ms exceeds 10ms browser budget")
 
 
 if __name__ == "__main__":

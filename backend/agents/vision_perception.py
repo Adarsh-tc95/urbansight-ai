@@ -63,7 +63,7 @@ class VisionPerceptionAgent:
         import cv2
         import numpy as np
 
-        if frame is None or not isinstance(frame, np.ndarray):
+        if frame is None or not isinstance(frame, np.ndarray) or frame.size == 0 or (len(frame.shape) >= 2 and (frame.shape[0] == 0 or frame.shape[1] == 0)):
             return {
                 "hazard_detected": False,
                 "hazard_type": HazardType.POTHOLE,
@@ -241,11 +241,13 @@ class VisionPerceptionAgent:
         if hazard_type == HazardType.POTHOLE:
             if depth is None:
                 depth = 8.5  # Typical detected pothole depth
+            else:
+                depth = max(0.0, float(depth))
             if area is None:
                 # Area roughly pi * (diameter / 2)^2
-                area = round(0.4 + (depth / 10.0) * 0.8, 2)
+                area = round(max(0.01, 0.4 + (depth / 10.0) * 0.8), 2)
             if length is None:
-                length = round((area ** 0.5) * 1.2, 2)
+                length = round((max(0.0, area) ** 0.5) * 1.2, 2)
 
             if depth >= 8.0 or (area and area >= 1.5):
                 severity = SeverityLevel.CRITICAL_P1

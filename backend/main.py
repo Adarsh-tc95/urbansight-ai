@@ -543,6 +543,24 @@ async def analyze_media(
             "privacy": orchestrator.vision_agent.simulate_dpdp_privacy_redaction()
         }
 
+    if not primary_analysis.get("hazard_detected"):
+        dpdp_audit = primary_analysis.get("privacy") or orchestrator.vision_agent.simulate_dpdp_privacy_redaction()
+        return {
+            "status": "SUCCESS",
+            "media_type": media_type,
+            "filename": filename,
+            "dimensions": [width, height],
+            "fps": fps,
+            "hazard_detected": False,
+            "defect": None,
+            "bbox": None,
+            "dpdp_privacy": dpdp_audit,
+            "work_order": None,
+            "advisory": None,
+            "keyframes_analyzed": len(keyframe_analyses),
+            "system_metrics": orchestrator.get_system_metrics()
+        }
+
     # Respect user-provided hazard hint if specified explicitly
     h_type = primary_analysis["hazard_type"]
     if hazard_hint:

@@ -2695,12 +2695,15 @@ h1, h2, h3 {
         <div class="work-orders-fullwidth-panel">
             <!-- Panel 5: Autonomous PWD Work-Order Queue -->
             <div class="panel-container">
-                <div class="panel-header">
+                <div class="panel-header" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
                     <div class="panel-header-title">
                         <i class="fa-solid fa-list-check" style="color: var(--success);"></i>
                         Autonomous PWD Work-Order Queue
                     </div>
-                    <span class="badge-pill badge-amber">&lt; 48H SLA COMPLIANCE</span>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <input type="text" id="work-orders-search" placeholder="🔍 Search PWD Tickets, Corridors, Defect Types..." onkeyup="filterWorkOrdersTable(this.value)" style="padding:4px 10px; font-size:0.75rem; border:1px solid #CBD5E1; border-radius:4px; width:260px; font-family:'Noto Sans',sans-serif; background:#FFFFFF; color:#0F172A;" />
+                        <span class="badge-pill badge-amber">&lt; 48H SLA COMPLIANCE</span>
+                    </div>
                 </div>
 
                 <div class="pwd-table-container">
@@ -4762,6 +4765,15 @@ function runAIAnalysisAndDispatch(targetPothole) {
                 ticket, type, sev, loc, passes, sla: "47h 58m remaining", status: "DISPATCHED", sorCode: sorCode || "CPWD 16.14.2 (DBM Patch)"
             });
             renderWorkOrdersTable();
+        }
+
+                function filterWorkOrdersTable(query) {
+            const q = (query || '').trim().toUpperCase();
+            const rows = document.querySelectorAll('#work-orders-tbody tr');
+            rows.forEach(r => {
+                const text = r.textContent.toUpperCase();
+                r.style.display = (!q || text.includes(q)) ? '' : 'none';
+            });
         }
 
         function renderWorkOrdersTable() {

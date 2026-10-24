@@ -2103,6 +2103,15 @@ if (channel === 'WHATSAPP') {
     }
 }
 
+function filterWorkOrdersTable(query) {
+    const q = (query || '').trim().toUpperCase();
+    const rows = document.querySelectorAll('#work-orders-tbody tr');
+    rows.forEach(r => {
+        const text = r.textContent.toUpperCase();
+        r.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+}
+
 function renderWorkOrdersTable() {
     const tbody = document.getElementById('work-orders-tbody');
     if (!tbody) return;
