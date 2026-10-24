@@ -1,0 +1,20 @@
+{
+  "route_id": "MYSURU-SAYYAJI-RAO-CORRIDOR",
+  "route_name": "Sayyaji Rao Road Corridor (Agrahara ➔ Mysore Palace)",
+  "jurisdiction": "Mysuru City Corporation (MCC Central Zone)",
+  "total_waypoints": 10,
+  "default_bus_id": "KSRTC-KA09-F402",
+  "speed_limit_kmh": 35,
+  "waypoints": [
+    {"seq": 1, "name": "Agrahara Circle Entry", "lat": 12.3010, "lng": 76.6520, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 25},
+    {"seq": 2, "name": "Vani Vilas Market Road Cross", "lat": 12.3025, "lng": 76.6522, "hazard": "POTHOLE", "depth": 9.1, "z_shock": -0.41, "speed_kmh": 20},
+    {"seq": 3, "name": "Chamaraja Double Road Junction", "lat": 12.3040, "lng": 76.6525, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 28},
+    {"seq": 4, "name": "Sanskrit Pathashala Heritage Corridor", "lat": 12.3055, "lng": 76.6527, "hazard": "ROAD_CRACK", "depth": 3.0, "z_shock": -0.15, "speed_kmh": 25},
+    {"seq": 5, "name": "KR Circle Central Fountain Link", "lat": 12.3070, "lng": 76.6530, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 22},
+    {"seq": 6, "name": "Devaraja Market North Entrance", "lat": 12.3082, "lng": 76.6531, "hazard": "POTHOLE", "depth": 8.4, "z_shock": -0.37, "speed_kmh": 20},
+    {"seq": 7, "name": "Dufferin Clock Tower Plaza", "lat": 12.3092, "lng": 76.6532, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 24},
+    {"seq": 8, "name": "Irwin Road Diversion Sector", "lat": 12.3102, "lng": 76.6533, "hazard": "WATERLOGGING", "depth": null, "z_shock": -0.06, "speed_kmh": 18},
+    {"seq": 9, "name": "Mysore Palace Balarama Gate", "lat": 12.3110, "lng": 76.6534, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 20},
+    {"seq": 10, "name": "Mysore Palace Main North Terminus", "lat": 12.3115, "lng": 76.6535, "hazard": "POTHOLE", "depth": 9.4, "z_shock": -0.43, "speed_kmh": 15}
+  ]
+}

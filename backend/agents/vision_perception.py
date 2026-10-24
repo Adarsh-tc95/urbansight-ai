@@ -48,6 +48,129 @@ class VisionPerceptionAgent:
         """Validates that edge detection meets or exceeds the operational threshold."""
         return confidence >= self.min_confidence
 
+    def analyze_frame(
+        self,
+        frame: Any,
+        apply_privacy_blur: bool = True
+    ) -> Dict[str, Any]:
+        """
+        Analyzes a single video frame / camera image with OpenCV edge perception:
+        1. Validates frame and computes road ROI in lower 65% of frame.
+        2. Detects pavement dark anomalies / contours / pothole craters.
+        3. Estimates physical depth (cm), contrast, bounding box, and confidence.
+        4. Simulates volatile RAM-only DPDP privacy blurring.
+        """
+        import cv2
+        import numpy as np
+
+        if frame is None or not isinstance(frame, np.ndarray):
+            return {
+                "hazard_detected": False,
+                "hazard_type": HazardType.POTHOLE,
+                "rdd_code": RDD_CODE_MAPPING[HazardType.POTHOLE],
+                "severity": SeverityLevel.LOW_P4,
+                "confidence": 0.0,
+                "depth_cm": 0.0,
+                "contour_area": 0.0,
+                "optical_contrast": 0.0,
+                "bbox": [0, 0, 100, 100],
+                "bounding_box": {"x": 0, "y": 0, "width": 100, "height": 100},
+                "normalized_bbox": {"top": "46%", "left": "38%", "width": "30%", "height": "34%"},
+                "privacy": self.simulate_dpdp_privacy_redaction()
+            }
+
+        h, w = frame.shape[:2]
+        frame_area = float(w * h)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if frame.ndim == 3 else frame.copy()
+
+        roi_y_start = int(h * 0.35)
+        roi_gray = gray[roi_y_start:, :]
+        blurred = cv2.GaussianBlur(roi_gray, (5, 5), 0)
+        mean_bg = float(np.mean(blurred))
+
+        if mean_bg < 15.0 or mean_bg > 240.0:
+            return {
+                "hazard_detected": False,
+                "hazard_type": HazardType.POTHOLE,
+                "rdd_code": RDD_CODE_MAPPING[HazardType.POTHOLE],
+                "severity": SeverityLevel.LOW_P4,
+                "confidence": 0.0,
+                "depth_cm": 0.0,
+                "contour_area": 0.0,
+                "optical_contrast": 0.0,
+                "bbox": [0, 0, w, h],
+                "bounding_box": {"x": 0, "y": 0, "width": w, "height": h},
+                "normalized_bbox": {"top": "46%", "left": "38%", "width": "30%", "height": "34%"},
+                "privacy": self.simulate_dpdp_privacy_redaction()
+            }
+
+        _, thresh = cv2.threshold(blurred, 65, 255, cv2.THRESH_BINARY_INV)
+        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        best_contour = None
+        max_area = 0.0
+        for c in contours:
+            area = float(cv2.contourArea(c))
+            if area > max_area and area >= 80:
+                max_area = area
+                best_contour = c
+
+        if best_contour is not None:
+            bx, by, bw, bh = cv2.boundingRect(best_contour)
+            by += roi_y_start
+
+            mask = np.zeros(gray.shape, dtype=np.uint8)
+            cv2.drawContours(mask, [best_contour + [0, roi_y_start]], -1, 255, -1)
+            mean_contour = float(cv2.mean(gray, mask=mask)[0])
+            contrast_diff = max(0.0, mean_bg - mean_contour)
+
+            depth_cm = min(25.0, round(4.0 + (max_area / frame_area) * 85.0 + contrast_diff * 0.15, 1))
+            if depth_cm >= 8.0:
+                sev = SeverityLevel.CRITICAL_P1
+            elif depth_cm >= 5.0:
+                sev = SeverityLevel.HIGH_P2
+            elif depth_cm >= 3.0:
+                sev = SeverityLevel.MEDIUM_P3
+            else:
+                sev = SeverityLevel.LOW_P4
+
+            conf = min(0.99, max(0.72, round(0.75 + (contrast_diff / 100.0) * 0.20 + (max_area / frame_area) * 2.0, 3)))
+
+            top_pct = f"{round((by / h) * 100, 1)}%"
+            left_pct = f"{round((bx / w) * 100, 1)}%"
+            width_pct = f"{round((bw / w) * 100, 1)}%"
+            height_pct = f"{round((bh / h) * 100, 1)}%"
+
+            return {
+                "hazard_detected": True,
+                "hazard_type": HazardType.POTHOLE,
+                "rdd_code": RDD_CODE_MAPPING[HazardType.POTHOLE],
+                "severity": sev,
+                "confidence": conf,
+                "depth_cm": depth_cm,
+                "contour_area": max_area,
+                "optical_contrast": round(contrast_diff, 2),
+                "bbox": [bx, by, bw, bh],
+                "bounding_box": {"x": bx, "y": by, "width": bw, "height": bh},
+                "normalized_bbox": {"top": top_pct, "left": left_pct, "width": width_pct, "height": height_pct},
+                "privacy": self.simulate_dpdp_privacy_redaction()
+            }
+
+        return {
+            "hazard_detected": False,
+            "hazard_type": HazardType.POTHOLE,
+            "rdd_code": RDD_CODE_MAPPING[HazardType.POTHOLE],
+            "severity": SeverityLevel.LOW_P4,
+            "confidence": 0.50,
+            "depth_cm": 2.0,
+            "contour_area": 0.0,
+            "optical_contrast": 0.0,
+            "bbox": [int(w * 0.38), int(h * 0.46), int(w * 0.30), int(h * 0.34)],
+            "bounding_box": {"x": int(w * 0.38), "y": int(h * 0.46), "width": int(w * 0.30), "height": int(h * 0.34)},
+            "normalized_bbox": {"top": "46%", "left": "38%", "width": "30%", "height": "34%"},
+            "privacy": self.simulate_dpdp_privacy_redaction()
+        }
+
     def simulate_dpdp_privacy_redaction(
         self,
         frame_id: Optional[str] = None

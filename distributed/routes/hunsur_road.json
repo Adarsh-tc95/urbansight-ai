@@ -1,0 +1,22 @@
+{
+  "route_id": "MYSURU-HUNSUR-ROAD-CORRIDOR",
+  "route_name": "Hunsur Road Corridor (Kalamandira Signal ➔ University West Gate)",
+  "jurisdiction": "Mysuru City Corporation (MCC Ward 9)",
+  "total_waypoints": 12,
+  "default_bus_id": "KSRTC-KA09-F402",
+  "speed_limit_kmh": 40,
+  "waypoints": [
+    {"seq": 1, "name": "Kalamandira Signal Entry", "lat": 12.3140, "lng": 76.6320, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 32},
+    {"seq": 2, "name": "CFTRI North Gate Approach", "lat": 12.3128, "lng": 76.6305, "hazard": "ROAD_CRACK", "depth": 2.8, "z_shock": -0.14, "speed_kmh": 35},
+    {"seq": 3, "name": "Open Air Theatre Junction", "lat": 12.3115, "lng": 76.6290, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 36},
+    {"seq": 4, "name": "Hunsur Road Speed Table", "lat": 12.3105, "lng": 76.6278, "hazard": "POTHOLE", "depth": 9.2, "z_shock": -0.42, "speed_kmh": 24},
+    {"seq": 5, "name": "Manasagangotri Campus North Gate", "lat": 12.3090, "lng": 76.6265, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 38},
+    {"seq": 6, "name": "Crawford Hall Sector", "lat": 12.3075, "lng": 76.6252, "hazard": null, "depth": null, "z_shock": -0.03, "speed_kmh": 35},
+    {"seq": 7, "name": "Kukkarahalli Lake Link Cross", "lat": 12.3060, "lng": 76.6238, "hazard": "WATERLOGGING", "depth": null, "z_shock": -0.06, "speed_kmh": 26},
+    {"seq": 8, "name": "University Library Intersection", "lat": 12.3050, "lng": 76.6229, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 34},
+    {"seq": 9, "name": "University West Gate Signal", "lat": 12.3040, "lng": 76.6220, "hazard": "POTHOLE", "depth": 8.7, "z_shock": -0.38, "speed_kmh": 28},
+    {"seq": 10, "name": "Paduvaralli Link Road Entrance", "lat": 12.3032, "lng": 76.6212, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 32},
+    {"seq": 11, "name": "Panchavati Circle Approach", "lat": 12.3025, "lng": 76.6205, "hazard": "ROAD_CRACK", "depth": 3.4, "z_shock": -0.16, "speed_kmh": 30},
+    {"seq": 12, "name": "Bhogadi Main Road Merge", "lat": 12.3015, "lng": 76.6195, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 35}
+  ]
+}
