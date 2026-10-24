@@ -1158,8 +1158,8 @@ CITIZEN_REWARDS_DATA = {
     "citizen_id": "MCC-GUARDIAN-849",
     "name": "Gagan K. S.",
     "tier": "Gold Road Custodian 🥇",
-    "points_balance": 850,
-    "total_earned": 1450,
+    "points_balance": 1450,
+    "total_earned": 1950,
     "streak_days": 12,
     "adopted_corridors": [
         {
@@ -1210,6 +1210,14 @@ CITIZEN_REWARDS_DATA = {
         }
     ],
     "available_perks": [
+        {
+            "perk_id": "PERK-BUS-MONTHLY",
+            "title": "KSRTC / BMTC Full Monthly Bus Pass",
+            "discount_val": "100% Free All-Route Monthly Pass",
+            "points_cost": 500,
+            "category": "PUBLIC_TRANSIT",
+            "icon": "fa-solid fa-id-card"
+        },
         {
             "perk_id": "PERK-BUS-250",
             "title": "KSRTC / BMTC Monthly Pass Discount",

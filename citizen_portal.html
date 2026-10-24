@@ -1144,18 +1144,18 @@
                 <p>Receive instant SMS & WhatsApp notifications when the municipal crew arrives on-site and closes the ticket.</p>
             </div>
 
-            <form class="notif-form" id="notif-form" onsubmit="event.preventDefault(); subscribeNotification('WHATSAPP');">
+            <form class="notif-form" id="notif-form" onsubmit="event.preventDefault(); subscribeNotification('SMS');">
                 <div style="display:flex; align-items:center; background:#FFFFFF; border:1.5px solid var(--border-medium); border-radius:8px; padding:0 8px; box-shadow:0 1px 3px rgba(0,0,0,0.06); transition:border-color 0.2s;" id="phone-input-box">
                     <span style="font-weight:800; font-family:var(--font-mono); font-size:0.9rem; color:#57534E; padding-right:8px; border-right:1px solid var(--border-medium); display:flex; align-items:center; gap:4px;">
                         🇮🇳 +91
                     </span>
                     <input type="tel" class="phone-input" id="subscriber-phone" placeholder="98765 43210" maxlength="15" autocomplete="tel" required style="border:none; background:transparent; color:#1C1917 !important; font-size:1rem; font-weight:700; font-family:var(--font-mono); padding:10px 10px; width:170px; outline:none;" oninput="formatCitizenPhoneInput(this)" />
                 </div>
-                <button type="submit" class="btn-wa" title="Subscribe to WhatsApp Alerts">
-                    <i class="fa-brands fa-whatsapp"></i> WhatsApp Alerts
+                <button type="button" class="btn-sms" onclick="subscribeNotification('SMS')" style="background:#003580; color:#FFFFFF; border:none; padding:10px 16px; border-radius:8px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:0.85rem;" title="Subscribe to Official National Telecom DLT SMS Updates">
+                    <i class="fa-solid fa-comment-sms"></i> Subscribe SMS Alerts
                 </button>
-                <button type="button" class="btn-sms" onclick="subscribeNotification('SMS')" title="Subscribe to Normal SMS Updates">
-                    <i class="fa-solid fa-comment-sms"></i> SMS
+                <button type="button" class="btn-wa" onclick="subscribeNotification('WHATSAPP')" style="background:#25D366; color:#FFFFFF; border:none; padding:10px 16px; border-radius:8px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:0.85rem;" title="Subscribe to WhatsApp Cloud Alerts">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp Alerts
                 </button>
             </form>
 
@@ -1228,17 +1228,20 @@
                 </div>
 
                 <!-- Points Balance Pill -->
-                <div style="background: #EDE7DA; border: 1.5px solid var(--border-medium); border-radius: 12px; padding: 10px 18px; display: flex; align-items: center; gap: 12px;">
+                <div style="background: #EDE7DA; border: 1.5px solid var(--border-medium); border-radius: 12px; padding: 10px 18px; display: flex; align-items: center; gap: 12px; flex-wrap:wrap;">
                     <div>
                         <div style="font-size: 0.68rem; color: var(--text-tertiary); font-family: var(--font-mono); font-weight: 700; text-transform: uppercase;">Citizen Balance</div>
                         <div style="font-size: 1.5rem; font-weight: 900; color: #B45309; font-family: var(--font-mono); display:flex; align-items:center; gap:4px;">
-                            <span id="user-points-balance">850</span> <span style="font-size:0.8rem; font-weight:700;">PTS</span>
+                            <span id="user-points-balance">1,450</span> <span style="font-size:0.8rem; font-weight:700;">PTS</span>
                         </div>
                     </div>
                     <div style="border-left: 1px solid var(--border-medium); padding-left: 12px;">
                         <div style="font-size: 0.68rem; color: var(--text-tertiary); font-family: var(--font-mono);">CUSTODIAN TIER</div>
                         <div style="font-size: 0.85rem; font-weight: 800; color: #15803d;" id="user-tier-badge">Gold Custodian 🥇</div>
                     </div>
+                    <button type="button" onclick="earnMoreCitizenPoints(250)" style="background:#138808; color:#FFFFFF; border:none; border-radius:6px; padding:7px 12px; font-size:0.75rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-family:var(--font-ui); box-shadow:0 1px 3px rgba(0,0,0,0.12);" title="Simulate reporting a verified road distress to earn instant civic points">
+                        <i class="fa-solid fa-plus-circle"></i> +250 PTS (Report Hazard)
+                    </button>
                 </div>
             </div>
 
@@ -1331,74 +1334,91 @@
                 <div style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <i class="fa-solid fa-tags" style="color: #D97706;"></i>
-                        Municipal Perks Marketplace (Redeem Your Civic Points)
+                        Municipal Perks &amp; Monthly Passes Marketplace (Redeem Civic Points)
                     </div>
-                    <span style="font-size: 0.72rem; color: var(--text-tertiary);">Instant QR Voucher Issued Upon Claim</span>
+                    <span style="font-size: 0.72rem; color: var(--text-tertiary); font-weight:600;">Instant Digital QR Pass &amp; SMS Issued Upon Claim</span>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
                     
-                    <!-- Perk 1: Transit Pass -->
-                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                    <!-- Perk 1: Full Monthly Transit Pass -->
+                    <div style="background: #FFFFFF; border: 2px solid #003580; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; box-shadow:0 2px 8px rgba(0,53,128,0.08); position:relative;">
+                        <span style="position:absolute; top:-10px; right:12px; background:#003580; color:#FFFFFF; font-size:0.62rem; font-weight:800; padding:2px 8px; border-radius:10px; text-transform:uppercase; font-family:var(--font-mono);">Popular Commuter Pass</span>
                         <div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size: 1.3rem; color: var(--primary);"><i class="fa-solid fa-bus"></i></span>
-                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">300 PTS</span>
+                                <span style="font-size: 1.5rem; color: #003580;"><i class="fa-solid fa-id-card"></i></span>
+                                <span style="background: #EBF1FB; color: #003580; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; font-family: var(--font-mono);">500 PTS</span>
                             </div>
-                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">KSRTC / BMTC Pass Discount</h4>
-                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">₹250 OFF Monthly Pass</div>
-                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Valid on all Mysuru city and Bengaluru BMTC non-AC routes.</p>
+                            <h4 style="margin: 8px 0 2px 0; font-size: 0.92rem; color: var(--text-primary); font-weight:800;">KSRTC / BMTC Full Monthly Bus Pass</h4>
+                            <div style="font-size: 1.05rem; font-weight: 900; color: #15803d; margin-top:2px;">100% Free All-Route Pass</div>
+                            <p style="margin: 6px 0 0 0; font-size: 0.72rem; color: var(--text-secondary); line-height:1.4;">Unlimited daily transit on all KSRTC Mysuru City &amp; BMTC Bengaluru non-AC routes for November 2026.</p>
                         </div>
-                        <button type="button" onclick="redeemPerk('PERK-BUS-250', 'KSRTC / BMTC Pass Discount', 300, '₹250 OFF')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#0284C7;">
-                            <i class="fa-solid fa-ticket"></i> Redeem (300 Pts)
+                        <button type="button" onclick="redeemPerk('PERK-BUS-MONTHLY', 'KSRTC / BMTC Full Monthly Bus Pass', 500, '100% Free Monthly Pass')" class="btn-wa" style="width: 100%; justify-content: center; padding: 9px; font-size: 0.8rem; background:#003580; font-weight:800;">
+                            <i class="fa-solid fa-id-card-clip"></i> Redeem Monthly Pass (500 Pts)
                         </button>
                     </div>
 
                     <!-- Perk 2: Property Tax Rebate -->
-                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
                         <div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size: 1.3rem; color: #B45309;"><i class="fa-solid fa-landmark"></i></span>
-                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">500 PTS</span>
+                                <span style="font-size: 1.4rem; color: #B45309;"><i class="fa-solid fa-landmark"></i></span>
+                                <span style="background: #EDE7DA; color: #1C1917; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; font-family: var(--font-mono);">500 PTS</span>
                             </div>
-                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">MCC Property Tax Credit</h4>
-                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">₹500 Tax Rebate Voucher</div>
-                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Direct credit against annual MCC property tax assessment.</p>
+                            <h4 style="margin: 8px 0 2px 0; font-size: 0.92rem; color: var(--text-primary); font-weight:800;">MCC Property Tax Credit Voucher</h4>
+                            <div style="font-size: 1.05rem; font-weight: 900; color: #15803d; margin-top:2px;">₹500 Tax Rebate Voucher</div>
+                            <p style="margin: 6px 0 0 0; font-size: 0.72rem; color: var(--text-secondary); line-height:1.4;">Official statutory credit voucher applicable against annual MCC SAS property tax assessments.</p>
                         </div>
-                        <button type="button" onclick="redeemPerk('PERK-TAX-500', 'MCC Property Tax Credit', 500, '₹500 Rebate')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#B45309;">
-                            <i class="fa-solid fa-stamp"></i> Redeem (500 Pts)
+                        <button type="button" onclick="redeemPerk('PERK-TAX-500', 'MCC Property Tax Credit Voucher', 500, '₹500 Tax Rebate')" class="btn-wa" style="width: 100%; justify-content: center; padding: 9px; font-size: 0.8rem; background:#B45309; font-weight:800;">
+                            <i class="fa-solid fa-stamp"></i> Redeem Tax Voucher (500 Pts)
                         </button>
                     </div>
 
-                    <!-- Perk 3: Municipal Pool Pass -->
-                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                    <!-- Perk 3: Bus Pass Discount Voucher -->
+                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
                         <div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size: 1.3rem; color: #0284C7;"><i class="fa-solid fa-person-swimming"></i></span>
-                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">150 PTS</span>
+                                <span style="font-size: 1.4rem; color: #0284C7;"><i class="fa-solid fa-bus"></i></span>
+                                <span style="background: #EDE7DA; color: #1C1917; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; font-family: var(--font-mono);">250 PTS</span>
                             </div>
-                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">Chamundi Vihar Sports Pass</h4>
-                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">1-Day Free Entry Pass</div>
-                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Access to Olympic pool &amp; sports tracks at Chamundi Vihar.</p>
+                            <h4 style="margin: 8px 0 2px 0; font-size: 0.92rem; color: var(--text-primary); font-weight:800;">KSRTC / BMTC Pass Discount Voucher</h4>
+                            <div style="font-size: 1.05rem; font-weight: 900; color: #15803d; margin-top:2px;">₹250 OFF Pass Renewal</div>
+                            <p style="margin: 6px 0 0 0; font-size: 0.72rem; color: var(--text-secondary); line-height:1.4;">Instant counter voucher for ₹250 discount on monthly transit pass renewals at any bus depot.</p>
                         </div>
-                        <button type="button" onclick="redeemPerk('PERK-POOL-150', 'Chamundi Vihar Sports Pass', 150, '1-Day Free Entry')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#059669;">
-                            <i class="fa-solid fa-id-card"></i> Redeem (150 Pts)
+                        <button type="button" onclick="redeemPerk('PERK-BUS-250', 'KSRTC / BMTC Pass Discount Voucher', 250, '₹250 OFF Pass')" class="btn-wa" style="width: 100%; justify-content: center; padding: 9px; font-size: 0.8rem; background:#0284C7; font-weight:800;">
+                            <i class="fa-solid fa-ticket"></i> Redeem Voucher (250 Pts)
                         </button>
                     </div>
 
-                    <!-- Perk 4: Clean EV Charging -->
-                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                    <!-- Perk 4: Municipal Sports & Pool Pass -->
+                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
                         <div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size: 1.3rem; color: #EA580C;"><i class="fa-solid fa-bolt"></i></span>
-                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">400 PTS</span>
+                                <span style="font-size: 1.4rem; color: #059669;"><i class="fa-solid fa-person-swimming"></i></span>
+                                <span style="background: #EDE7DA; color: #1C1917; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; font-family: var(--font-mono);">200 PTS</span>
                             </div>
-                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">Bescom / EV Fast Charging</h4>
-                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">20 kWh Free Fast Charge</div>
-                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Redeemable at all municipal EV charging hubs.</p>
+                            <h4 style="margin: 8px 0 2px 0; font-size: 0.92rem; color: var(--text-primary); font-weight:800;">Chamundi Sports &amp; Pool Pass</h4>
+                            <div style="font-size: 1.05rem; font-weight: 900; color: #15803d; margin-top:2px;">1-Month Free Access Pass</div>
+                            <p style="margin: 6px 0 0 0; font-size: 0.72rem; color: var(--text-secondary); line-height:1.4;">Full 30-day access to Chamundi Vihar Olympic Swimming Pool and municipal running tracks.</p>
                         </div>
-                        <button type="button" onclick="redeemPerk('PERK-EV-400', 'Bescom EV Charging Voucher', 400, '20 kWh Free')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#EA580C;">
-                            <i class="fa-solid fa-plug-circle-bolt"></i> Redeem (400 Pts)
+                        <button type="button" onclick="redeemPerk('PERK-POOL-200', 'Chamundi Sports & Olympic Pool Pass', 200, '1-Month Free Pass')" class="btn-wa" style="width: 100%; justify-content: center; padding: 9px; font-size: 0.8rem; background:#059669; font-weight:800;">
+                            <i class="fa-solid fa-person-swimming"></i> Redeem Pass (200 Pts)
+                        </button>
+                    </div>
+
+                    <!-- Perk 5: Clean EV Charging Voucher -->
+                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size: 1.4rem; color: #EA580C;"><i class="fa-solid fa-bolt"></i></span>
+                                <span style="background: #EDE7DA; color: #1C1917; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; font-family: var(--font-mono);">300 PTS</span>
+                            </div>
+                            <h4 style="margin: 8px 0 2px 0; font-size: 0.92rem; color: var(--text-primary); font-weight:800;">Bescom EV Fast Charging Pass</h4>
+                            <div style="font-size: 1.05rem; font-weight: 900; color: #15803d; margin-top:2px;">50 kWh Free Fast Charge</div>
+                            <p style="margin: 6px 0 0 0; font-size: 0.72rem; color: var(--text-secondary); line-height:1.4;">Redeemable at all Mysuru &amp; Bengaluru municipal public electric vehicle charging stations.</p>
+                        </div>
+                        <button type="button" onclick="redeemPerk('PERK-EV-300', 'Bescom EV Fast Charging Pass', 300, '50 kWh Free Charge')" class="btn-wa" style="width: 100%; justify-content: center; padding: 9px; font-size: 0.8rem; background:#EA580C; font-weight:800;">
+                            <i class="fa-solid fa-plug-circle-bolt"></i> Redeem Voucher (300 Pts)
                         </button>
                     </div>
 
@@ -1460,14 +1480,58 @@
                         <span style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono); display:block; margin-top:4px;">SCAN AT TRANSIT KIOSK</span>
                     </div>
 
-                    <div style="display:flex; gap:8px; justify-content:center;">
-                        <button type="button" class="btn-wa" onclick="shareVoucherToWhatsApp()" style="font-size:0.75rem; padding:8px 14px;">
-                            <i class="fa-brands fa-whatsapp"></i> Save to WhatsApp
+                    <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+                        <button type="button" class="btn-sms" onclick="sendVoucherViaSMS(document.getElementById('modal-voucher-code').textContent, document.getElementById('modal-perk-title').textContent, document.getElementById('modal-perk-discount').textContent)" style="background:#003580; color:#FFFFFF; border:none; border-radius:6px; font-size:0.75rem; padding:8px 14px; font-weight:700; cursor:pointer;" title="Deliver pass to your mobile via SMS">
+                            <i class="fa-solid fa-comment-sms"></i> Send Pass via SMS
                         </button>
-                        <button type="button" class="btn-sms" onclick="window.print()" style="font-size:0.75rem; padding:8px 14px;">
-                            <i class="fa-solid fa-print"></i> Print Voucher
+                        <button type="button" class="btn-wa" onclick="shareVoucherToWhatsApp()" style="font-size:0.75rem; padding:8px 14px;">
+                            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button type="button" class="btn-secondary" onclick="window.print()" style="font-size:0.75rem; padding:8px 14px; background:#E2E8F0; color:#1E293B; border:none; border-radius:6px; font-weight:700; cursor:pointer;">
+                            <i class="fa-solid fa-print"></i> Print
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- ========================================================================= -->
+        <!-- Interactive Government SMS Inbox & Smartphone Simulator Modal            -->
+        <!-- ========================================================================= -->
+        <div class="modal-backdrop" id="sms-inbox-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,0.75); backdrop-filter:blur(6px); z-index:100000; align-items:center; justify-content:center; padding:16px;">
+            <div style="background:#FFFFFF; border-radius:24px; width:100%; max-width:390px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.4); border:3px solid #003580; display:flex; flex-direction:column; max-height:90vh;">
+                <!-- Phone Top Bar -->
+                <div style="background:#003580; color:#FFFFFF; padding:12px 18px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; font-family:var(--font-mono);">
+                    <span>18:02 · 5G <i class="fa-solid fa-signal"></i></span>
+                    <span style="font-weight:700;">Government SMS Gateway</span>
+                    <span>94% <i class="fa-solid fa-battery-three-quarters"></i></span>
+                </div>
+                <!-- SMS Thread Header -->
+                <div style="background:#F8FAFC; border-bottom:1px solid #E2E8F0; padding:14px 18px; display:flex; align-items:center; justify-content:space-between;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="width:40px; height:40px; border-radius:50%; background:#003580; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px;">
+                            🏛️
+                        </div>
+                        <div>
+                            <div style="font-weight:800; font-size:0.95rem; color:#0F172A; display:flex; align-items:center; gap:4px;">
+                                VK-MCCJAN <i class="fa-solid fa-circle-check" style="color:#0284C7; font-size:12px;" title="Government DLT Verified Sender"></i>
+                            </div>
+                            <div style="font-size:0.68rem; color:#64748B;">National DLT ID: 1407161240001 (MCC PWD)</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeSMSInboxModal()" style="background:#E2E8F0; border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; color:#475569;">&times;</button>
+                </div>
+                <!-- SMS Message History -->
+                <div id="sms-thread-messages" style="flex:1; padding:16px; overflow-y:auto; background:#F1F5F9; display:flex; flex-direction:column; gap:12px; font-size:0.8rem; font-family:var(--font-mono);">
+                    <!-- Dynamic SMS Bubbles inserted via script -->
+                </div>
+                <!-- Interactive Reply Box -->
+                <div style="padding:12px 16px; background:#FFFFFF; border-top:1px solid #E2E8F0; display:flex; gap:8px;">
+                    <input type="text" id="sms-reply-input" placeholder="Reply 'STATUS' to track ticket..." style="flex:1; border:1px solid #CBD5E1; border-radius:20px; padding:8px 14px; font-size:0.8rem; outline:none;" onkeydown="if(event.key==='Enter') sendCitizenSMSQuery();" />
+                    <button type="button" onclick="sendCitizenSMSQuery()" style="background:#003580; color:#FFFFFF; border:none; border-radius:50%; width:34px; height:34px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1961,20 +2025,173 @@
             } catch (e) {}
         }
 
-        function subscribeNotification(channel = 'WHATSAPP') {
+        // =========================================================================
+        // CITIZEN SMS ALERTS & TELECOM DLT GATEWAY ENGINE
+        // =========================================================================
+        let citizenSMSHistory = [
+            {
+                id: 'SMS-101',
+                sender: 'VK-MCCJAN',
+                time: '08:30 IST',
+                text: '[MCC-JANAHITHA] Welcome to Mysuru City Corporation Smart Grievance Tracker. Dial 1800-425-4766 for 24x7 citizen support. Reply STATUS to track road repairs.'
+            }
+        ];
+
+        function triggerIncomingSMSBanner(data) {
+            let banner = document.getElementById('live-sms-alert-banner');
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = 'live-sms-alert-banner';
+                banner.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    max-width: 440px;
+                    width: calc(100% - 40px);
+                    background: #FFFFFF;
+                    border: 2.5px solid #003580;
+                    border-radius: 14px;
+                    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+                    z-index: 100000;
+                    padding: 16px;
+                    font-family: 'Noto Sans', sans-serif;
+                    color: #1A1A1A;
+                    animation: slideDownIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                `;
+                document.body.appendChild(banner);
+            }
+
+            const isSMS = (data.channel || 'SMS').toUpperCase() === 'SMS';
+            const headerColor = isSMS ? '#003580' : '#15803d';
+            const headerIcon = isSMS ? '<i class="fa-solid fa-comment-sms"></i>' : '<i class="fa-brands fa-whatsapp"></i>';
+            const channelTag = isSMS ? 'DLT GOVT SMS · BSNL/AIRTEL' : 'WHATSAPP OFFICIAL API';
+
+            // Add to SMS History
+            citizenSMSHistory.unshift({
+                id: 'SMS-' + Math.floor(1000 + Math.random() * 9000),
+                sender: data.sender || 'VK-MCCJAN',
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                text: data.text
+            });
+
+            banner.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:22px; color:${headerColor};">${headerIcon}</span>
+                        <div>
+                            <div style="font-size:0.85rem; font-weight:800; color:${headerColor}; letter-spacing:0.3px;">
+                                ${data.sender || 'VK-MCCJAN'} 
+                                <span style="font-size:0.62rem; background:${isSMS ? '#EBF1FB' : '#DCFCE7'}; color:${headerColor}; padding:2px 7px; border-radius:4px; font-family:'IBM Plex Mono',monospace; margin-left:4px; font-weight:800;">${channelTag}</span>
+                            </div>
+                            <div style="font-size:0.68rem; color:#6B7280; font-family:'IBM Plex Mono',monospace;">To: <b>${data.phone || '+91 98765 43210'}</b> · Just now</div>
+                        </div>
+                    </div>
+                    <button onclick="dismissIncomingSMSBanner()" style="background:#F1F5F9; border:none; border-radius:50%; width:24px; height:24px; font-size:14px; color:#475569; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+                </div>
+                <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:10px 12px; font-size:0.78rem; font-family:'IBM Plex Mono',monospace; line-height:1.45; white-space:pre-wrap; color:#0F172A; max-height:140px; overflow-y:auto;" id="live-sms-banner-text">${data.text}</div>
+                <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                    <button onclick="copySMSText()" style="background:#F3F4F6; border:1px solid #D1D5DB; color:#374151; padding:6px 12px; border-radius:6px; font-size:0.74rem; font-weight:700; cursor:pointer;">
+                        <i class="fa-regular fa-copy"></i> Copy SMS
+                    </button>
+                    <button onclick="openSMSViewerModal()" style="background:#003580; color:#FFFFFF; border:none; padding:6px 14px; border-radius:6px; font-size:0.74rem; font-weight:800; cursor:pointer;">
+                        <i class="fa-solid fa-mobile-screen"></i> Open SMS Inbox Simulator
+                    </button>
+                </div>
+            `;
+
+            banner.style.display = 'block';
+
+            if (window._smsBannerTimer) clearTimeout(window._smsBannerTimer);
+            window._smsBannerTimer = setTimeout(() => {
+                dismissIncomingSMSBanner();
+            }, 12000);
+        }
+
+        function dismissIncomingSMSBanner() {
+            const banner = document.getElementById('live-sms-alert-banner');
+            if (banner) banner.style.display = 'none';
+        }
+
+        function copySMSText() {
+            const textEl = document.getElementById('live-sms-banner-text');
+            const txt = textEl ? textEl.textContent : (lastCitizenMessagePayload ? lastCitizenMessagePayload.text : '');
+            if (txt) {
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(txt);
+                }
+                showToast("📋 SMS Copied!", "Message body copied to clipboard.");
+            }
+        }
+
+        function openSMSViewerModal() {
+            dismissIncomingSMSBanner();
+            const modal = document.getElementById('sms-inbox-modal');
+            const list = document.getElementById('sms-thread-messages');
+            if (!modal || !list) return;
+
+            list.innerHTML = citizenSMSHistory.map(m => `
+                <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:12px; padding:10px 12px; box-shadow:0 1px 3px rgba(0,0,0,0.05); text-align:left;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.68rem; color:#64748B;">
+                        <b style="color:#003580;">${m.sender}</b>
+                        <span>${m.time}</span>
+                    </div>
+                    <div style="color:#0F172A; line-height:1.45; font-size:0.75rem;">${m.text}</div>
+                </div>
+            `).join('');
+
+            modal.style.display = 'flex';
+        }
+
+        function closeSMSInboxModal() {
+            const m = document.getElementById('sms-inbox-modal');
+            if (m) m.style.display = 'none';
+        }
+
+        function sendCitizenSMSQuery() {
+            const inp = document.getElementById('sms-reply-input');
+            const q = inp ? inp.value.trim() : '';
+            if (!q) return;
+
+            // Push citizen reply
+            citizenSMSHistory.unshift({
+                id: 'SMS-' + Math.floor(1000 + Math.random() * 9000),
+                sender: 'You',
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                text: q
+            });
+
+            inp.value = '';
+            openSMSViewerModal();
+
+            // Auto-reply
+            setTimeout(() => {
+                const tktId = currentTicket ? currentTicket.ticket_id : 'PWD-2026-OCT-0941';
+                const statusMsg = `[MCC-JANAHITHA] Ticket #${tktId}: Rapid Response Crew KA-09-EA-4122 is on-site at VVCE Ring Road. Asphalt compaction ETA 45m. Reply 1 for supervisor call.`;
+                citizenSMSHistory.unshift({
+                    id: 'SMS-' + Math.floor(1000 + Math.random() * 9000),
+                    sender: 'VK-MCCJAN',
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    text: statusMsg
+                });
+                playAlertChime('arrival');
+                openSMSViewerModal();
+            }, 600);
+        }
+
+        function subscribeNotification(channel = 'SMS') {
+            const activeChannel = channel.toUpperCase();
             const { displayPhone, cleanDigits } = getNormalizedCitizenPhone();
             const phoneInput = document.getElementById('subscriber-phone');
             if (phoneInput) phoneInput.value = displayPhone.replace('+91 ', '');
 
-            // Persist locally for field crew and future sessions
             localStorage.setItem('urbansight_subscribed_phone', displayPhone);
             localStorage.setItem('urbansight_subscribed_digits', cleanDigits);
-            localStorage.setItem('urbansight_subscribed_channel', channel);
+            localStorage.setItem('urbansight_subscribed_channel', activeChannel);
 
             const tkt = currentTicket || {
                 ticket_id: 'PWD-2026-OCT-0941',
                 hazard_name: 'Pothole (Critical P1)',
-                location_name: 'Outer Ring Road near Bellandur Flyover Pillar 34',
+                location_name: 'VVCE Outer Ring Road, Gokulam',
                 status: 'IN_PROGRESS'
             };
 
@@ -1982,24 +2199,39 @@
             const locName = tkt.location_name || 'Mysuru Ring Road';
             const hazName = tkt.hazard_name || 'Pothole';
 
-            const msgText = `🚨 *URBANSIGHT AI · MUNICIPAL ROAD REPAIR ALERT* 🚨\n\n` +
-                `Hello Citizen! You are subscribed to live updates for repair #${tktId}.\n` +
-                `📍 *Defect:* ${hazName}\n` +
-                `📌 *Location:* ${locName}\n` +
-                `⚡ *Live Milestones Active:*\n` +
-                `  1. Instant notification when Municipal Van arrives on-site\n` +
-                `  2. Instant notification when repair is completed & verified\n` +
-                `🔗 *Tracker:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${tktId}\n\n` +
-                `— Mysuru City Corporation (MCC) & Smart City Mission`;
+            let msgText = '';
+            if (activeChannel === 'SMS') {
+                msgText = `[MCC-JANAHITHA] Grievance #${tktId} registered for ${hazName} at ${locName}. Telecom DLT alerts active for crew arrival & completion. Ref ID: DLT-KA-${Math.floor(100000 + Math.random() * 900000)}. Helpline: 1800-425-4766. — Govt of Karnataka`;
+            } else {
+                msgText = `🚨 *URBANSIGHT AI · MUNICIPAL ROAD REPAIR ALERT* 🚨
 
-            lastCitizenMessagePayload = { text: msgText, phone: displayPhone, cleanPhone: cleanDigits, channel: channel };
+` +
+                    `Hello Citizen! You are subscribed to live updates for repair #${tktId}.
+` +
+                    `📍 *Defect:* ${hazName}
+` +
+                    `📌 *Location:* ${locName}
+` +
+                    `⚡ *Live Milestones Active:*
+` +
+                    `  1. Instant notification when Municipal Van arrives on-site
+` +
+                    `  2. Instant notification when repair is completed & verified
+` +
+                    `🔗 *Tracker:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${tktId}
 
-            // Call backend API
+` +
+                    `— Mysuru City Corporation (MCC) & Smart City Mission`;
+            }
+
+            lastCitizenMessagePayload = { text: msgText, phone: displayPhone, cleanPhone: cleanDigits, channel: activeChannel };
+
+            // Call Backend APIs
             fetch('/api/subscribe-alerts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    channel: channel.toUpperCase(),
+                    channel: activeChannel,
                     phone_number: displayPhone,
                     ticket_id: tktId
                 })
@@ -2009,7 +2241,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    channel: channel.toUpperCase(),
+                    channel: activeChannel,
                     phone_number: displayPhone,
                     ticket_id: tktId,
                     recipient_type: 'CITIZEN',
@@ -2017,49 +2249,33 @@
                 })
             }).catch(() => {});
 
+            playAlertChime('arrival');
+
+            triggerIncomingSMSBanner({
+                sender: activeChannel === 'SMS' ? 'VK-MCCJAN' : 'MCC-WHATSAPP',
+                phone: displayPhone,
+                text: msgText,
+                channel: activeChannel
+            });
+
             showToast(
-                `✓ Subscribed via ${channel}!`,
-                `Instant alerts for ${tktId} will be delivered to ${displayPhone}.`
+                activeChannel === 'SMS' ? '📱 SMS Alerts Subscribed!' : '✓ WhatsApp Subscribed!',
+                `Real-time alerts active for ${displayPhone} via National Telecom DLT.`
             );
 
             // Display active strip
             const strip = document.getElementById('subscriber-status-strip');
             const numEl = document.getElementById('active-subscriber-number');
             if (strip && numEl) {
-                numEl.textContent = displayPhone;
+                numEl.textContent = `${displayPhone} (${activeChannel})`;
                 strip.style.display = 'flex';
             }
 
-            // Display simulated chat bubble preview
-            renderChatBubblePreview(msgText, channel, 'Subscribed Confirmation');
-        }
-
-        function renderChatBubblePreview(msgText, channel, badgeText = '✓ Verified Municipal Gateway') {
-            const bubbleWrap = document.getElementById('citizen-msg-bubble-wrap');
-            const bubbleText = document.getElementById('citizen-msg-text-bubble');
-            const channelIcon = document.getElementById('citizen-msg-channel-icon');
-            const channelBadge = document.getElementById('citizen-msg-badge');
-
-            if (bubbleWrap && bubbleText) {
-                bubbleWrap.style.display = 'block';
-                bubbleText.textContent = msgText.replace(/\\n/g, '\n');
-                if (channel.toUpperCase() === 'WHATSAPP') {
-                    channelIcon.innerHTML = '<i class="fa-brands fa-whatsapp"></i>';
-                    channelIcon.style.color = '#25D366';
-                    channelBadge.textContent = '✓ ' + (badgeText || 'WhatsApp Cloud API');
-                    channelBadge.style.background = 'rgba(37,211,102,0.15)';
-                    channelBadge.style.color = '#15803d';
-                } else {
-                    channelIcon.innerHTML = '<i class="fa-solid fa-comment-sms"></i>';
-                    channelIcon.style.color = '#0284C7';
-                    channelBadge.textContent = '✓ ' + (badgeText || 'Telecom DLT Gateway');
-                    channelBadge.style.background = 'rgba(2,132,199,0.15)';
-                    channelBadge.style.color = '#0369a1';
-                }
-            }
+            renderChatBubblePreview(msgText, activeChannel, activeChannel === 'SMS' ? 'DLT Telecom Gateway (BSNL/Airtel)' : 'WhatsApp Cloud API');
         }
 
         function receiveMilestoneAlert(milestone, details = {}) {
+            const activeChannel = (localStorage.getItem('urbansight_subscribed_channel') || 'SMS').toUpperCase();
             const { displayPhone, cleanDigits } = getNormalizedCitizenPhone();
             const tkt = currentTicket || {
                 ticket_id: details.ticket_id || 'PWD-2026-OCT-0941',
@@ -2071,7 +2287,6 @@
             let msgText = '', badgeText = '', toastTitle = '';
 
             if (milestone === 'IN_PROGRESS' || milestone === 'CREW_ARRIVED_ON_SITE') {
-                // Stepper update to Step 4
                 for (let i = 1; i <= 3; i++) {
                     const n = document.getElementById(`step-${i}`);
                     if (n) { n.className = 'step-node completed'; }
@@ -2086,18 +2301,28 @@
                 const t4 = document.getElementById('step-4-time');
                 if (t4) t4.innerHTML = `<b>Just now (Crew On-Site)</b>`;
 
-                msgText = `🚜 *URBANSIGHT AI · MUNICIPAL CREW ON-SITE* 🚜\n\n` +
-                    `Hello Citizen! Rapid Response Crew Van #KA-09-EA-4122 has ARRIVED ON-SITE at ${locName} for Work Order #${tktId}.\n` +
-                    `⚡ *Status:* IN PROGRESS (Road excavation & hot DBM asphalt compaction underway)\n` +
-                    `⏱️ *Expected completion:* Under 90 minutes\n` +
-                    `🔗 *Track live:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${tktId}\n\n` +
-                    `— Mysuru City Corporation (MCC) PWD Rapid Response Unit`;
+                if (activeChannel === 'SMS') {
+                    msgText = `[MCC-JANAHITHA] Urgent Alert: Rapid Response Crew Van #KA-09-EA-4122 ARRIVED ON-SITE at ${locName} for Grievance #${tktId}. Road compaction in progress. Track: https://urbansight.ai/t/${tktId} — MCC PWD`;
+                    badgeText = 'Instant SMS · Crew On-Site';
+                } else {
+                    msgText = `🚜 *URBANSIGHT AI · MUNICIPAL CREW ON-SITE* 🚜
 
-                badgeText = 'Instant Alert · Crew On-Site';
+` +
+                        `Hello Citizen! Rapid Response Crew Van #KA-09-EA-4122 has ARRIVED ON-SITE at ${locName} for Work Order #${tktId}.
+` +
+                        `⚡ *Status:* IN PROGRESS (Road excavation & hot DBM asphalt compaction underway)
+` +
+                        `⏱️ *Expected completion:* Under 90 minutes
+` +
+                        `🔗 *Track live:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${tktId}
+
+` +
+                        `— Mysuru City Corporation (MCC) PWD Rapid Response Unit`;
+                    badgeText = 'Instant Alert · Crew On-Site';
+                }
                 toastTitle = '🚜 Municipal Crew Arrived On-Site!';
                 playAlertChime('arrival');
             } else {
-                // Stepper update to Step 5
                 for (let i = 1; i <= 5; i++) {
                     const n = document.getElementById(`step-${i}`);
                     if (n) { n.className = 'step-node completed'; }
@@ -2108,34 +2333,45 @@
                 const t5 = document.getElementById('step-5-time');
                 if (t5) t5.innerHTML = `<b>Just now (Repaired & Audited)</b>`;
 
-                msgText = `🎉 *URBANSIGHT AI · ROAD REPAIR COMPLETED & CLOSED* 🎉\n\n` +
-                    `Hello Citizen! Work Order #${tktId} at ${locName} has been successfully REPAIRED, AUDITED & CLOSED.\n` +
-                    `✅ *Quality Audit:* 98.4% asphalt compaction passed\n` +
-                    `🚜 *Field Unit:* Rapid Response Van #KA-09-EA-4122\n` +
-                    `📄 *Official Voucher:* https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=${tktId}\n\n` +
-                    `Thank you for helping keep Mysuru roads safe!\n` +
-                    `— Mysuru City Corporation (MCC) & Smart City Mission`;
+                if (activeChannel === 'SMS') {
+                    msgText = `[MCC-JANAHITHA] Resolved: Road defect #${tktId} at ${locName} successfully REPAIRED & compaction verified. Official statutory voucher: https://urbansight.ai/v/${tktId}. Thank you! — MCC`;
+                    badgeText = 'Instant SMS · Ticket Closed';
+                } else {
+                    msgText = `🎉 *URBANSIGHT AI · ROAD REPAIR COMPLETED & CLOSED* 🎉
 
-                badgeText = 'Instant Alert · Ticket Closed';
+` +
+                        `Hello Citizen! Work Order #${tktId} at ${locName} has been successfully REPAIRED, AUDITED & CLOSED.
+` +
+                        `✅ *Quality Audit:* 98.4% asphalt compaction passed
+` +
+                        `🚜 *Field Unit:* Rapid Response Van #KA-09-EA-4122
+` +
+                        `📄 *Official Voucher:* https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=${tktId}
+
+` +
+                        `Thank you for helping keep Mysuru roads safe!
+` +
+                        `— Mysuru City Corporation (MCC) & Smart City Mission`;
+                    badgeText = 'Instant Alert · Ticket Closed';
+                }
                 toastTitle = '🎉 Road Defect Repaired & Verified!';
                 playAlertChime('resolved');
             }
 
-            lastCitizenMessagePayload = { text: msgText, phone: displayPhone, cleanPhone: cleanDigits, channel: 'WHATSAPP' };
+            lastCitizenMessagePayload = { text: msgText, phone: displayPhone, cleanPhone: cleanDigits, channel: activeChannel };
 
-            // Show active strip
-            const strip = document.getElementById('subscriber-status-strip');
-            const numEl = document.getElementById('active-subscriber-number');
-            if (strip && numEl) {
-                numEl.textContent = displayPhone;
-                strip.style.display = 'flex';
-            }
+            triggerIncomingSMSBanner({
+                sender: activeChannel === 'SMS' ? 'VK-MCCJAN' : 'MCC-WHATSAPP',
+                phone: displayPhone,
+                text: msgText,
+                channel: activeChannel
+            });
 
-            renderChatBubblePreview(msgText, 'WHATSAPP', badgeText);
+            renderChatBubblePreview(msgText, activeChannel, badgeText);
 
             showToast(
                 toastTitle,
-                `Instant WhatsApp & SMS notifications delivered to ${displayPhone}.`
+                `Delivered via ${activeChannel} to ${displayPhone}.`
             );
         }
 
@@ -2143,12 +2379,13 @@
             receiveMilestoneAlert(milestone);
             const { displayPhone } = getNormalizedCitizenPhone();
             const tktId = currentTicket ? currentTicket.ticket_id : 'PWD-2026-OCT-0941';
+            const channel = (localStorage.getItem('urbansight_subscribed_channel') || 'SMS').toUpperCase();
 
             fetch('/api/send-alert', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    channel: 'WHATSAPP',
+                    channel: channel,
                     phone_number: displayPhone,
                     ticket_id: tktId,
                     recipient_type: 'CITIZEN',
@@ -2157,161 +2394,70 @@
             }).catch(() => {});
         }
 
-        function openCitizenWhatsAppChat() {
-            const { cleanDigits } = getNormalizedCitizenPhone();
-            const clean = lastCitizenMessagePayload.cleanPhone || cleanDigits || '919876543210';
-            const url = `https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(lastCitizenMessagePayload.text.replace(/\\n/g, '\n'))}`;
-            window.open(url, '_blank');
-        }
-
-        function openCitizenSMSApp() {
-            const { displayPhone } = getNormalizedCitizenPhone();
-            const phone = lastCitizenMessagePayload.phone || displayPhone || '+919876543210';
-            const url = `sms:${phone}?body=${encodeURIComponent(lastCitizenMessagePayload.text.replace(/\\n/g, '\n'))}`;
-            window.location.href = url;
-        }
-
-        // Cross-tab synchronization with Mobile Field Crew PWA
-        try {
-            const alertChannel = new BroadcastChannel('urbansight_crew_events');
-            alertChannel.onmessage = (e) => {
-                if (e.data && e.data.status) {
-                    receiveMilestoneAlert(e.data.status, e.data);
-                }
-            };
-        } catch (e) {}
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'urbansight_crew_event' && e.newValue) {
-                try {
-                    const data = JSON.parse(e.newValue);
-                    if (data && data.status) {
-                        receiveMilestoneAlert(data.status, data);
-                    }
-                } catch (err) {}
-            }
-        });
-
-        // Hybrid API Fetch: Load live work orders if FastAPI backend is available
-        async function loadBackendWorkOrders() {
-            try {
-                const res = await fetch('/api/work-orders');
-                if (res.ok) {
-                    const orders = await res.json();
-                    if (orders && orders.length > 0) {
-                        orders.forEach(wo => {
-                            if (!SAMPLE_TICKETS[wo.ticket_id]) {
-                                SAMPLE_TICKETS[wo.ticket_id] = {
-                                    ticket_id: wo.ticket_id,
-                                    short_id: wo.ticket_id.replace('2026-', ''),
-                                    hazard_type: wo.hazard_type,
-                                    severity: wo.severity,
-                                    hazard_name: `${wo.hazard_type.replace('_', ' ')} (${wo.severity})`,
-                                    location_name: wo.location_name,
-                                    ward: wo.dispatched_to,
-                                    lat: wo.lat,
-                                    lng: wo.lng,
-                                    cluster_count: wo.cluster_count,
-                                    fleet_bus: "BMTC Transit Grid",
-                                    cpwd_sor: wo.estimated_cost_inr ? `₹${wo.estimated_cost_inr} INR` : "CPWD SOR Standard Rate",
-                                    sla_hours: wo.sla_hours,
-                                    remaining_sec: wo.sla_hours * 3600,
-                                    status: wo.status,
-                                    step: wo.status === 'RESOLVED' ? 5 : (wo.status === 'IN_PROGRESS' ? 4 : 3),
-                                    step1_time: "Auto-Logged",
-                                    step2_time: `${wo.cluster_count} Passes`,
-                                    step3_time: wo.created_at,
-                                    step4_time: "Field Crew Assigned",
-                                    step5_time: "Pending Verification",
-                                    image_src: "image1.jpg",
-                                    bbox_label: `${wo.hazard_type} (Detected)`,
-                                    bbox_style: { top: "45%", left: "35%", width: "32%", height: "38%" }
-                                };
-                            }
-                        });
-                    }
-                }
-            } catch (e) {
-                // Offline fallback is active by default
-            }
-        }
-
-        // Initialize with default ticket
-        renderTicket(SAMPLE_TICKETS["PWD-2026-OCT-0941"]);
-        // Check pre-saved subscriber phone
-        try {
-            const savedPhone = localStorage.getItem('urbansight_subscribed_phone');
-            if (savedPhone) {
-                const pInput = document.getElementById('subscriber-phone');
-                if (pInput) pInput.value = savedPhone.replace('+91 ', '');
-                const strip = document.getElementById('subscriber-status-strip');
-                const numEl = document.getElementById('active-subscriber-number');
-                if (strip && numEl) {
-                    numEl.textContent = savedPhone;
-                    strip.style.display = 'flex';
-                }
-            }
-        } catch(e) {}
-
-        
         // =========================================================================
-        // Adopt-a-Road Citizen Rewards Program (Anti-Spam Verification & Perks)
+        // MONTHLY BUS PASSES & MUNICIPAL VOUCHERS REDEMPTION ENGINE
         // =========================================================================
         let citizenRewardsState = {
-            points: 850,
+            points: 1450,
             tier: 'Gold Custodian 🥇',
             adoptedRoad: 'VVCE Ring Road & Gokulam 3rd Stage',
             redeemed: []
         };
 
-        function loadCitizenRewards() {
-            try {
-                const saved = localStorage.getItem('urbansight_citizen_rewards');
-                if (saved) {
-                    citizenRewardsState = JSON.parse(saved);
-                    const ptsEl = document.getElementById('user-points-balance');
-                    if (ptsEl) ptsEl.textContent = citizenRewardsState.points;
-                    const tierEl = document.getElementById('user-tier-badge');
-                    if (tierEl) tierEl.textContent = citizenRewardsState.tier;
-                    const roadEl = document.getElementById('adopted-road-name');
-                    if (roadEl) roadEl.textContent = citizenRewardsState.adoptedRoad;
-                    renderRedeemedVouchers();
-                }
-            } catch(e) {}
-        }
-
-        function saveCitizenRewards() {
-            try {
-                localStorage.setItem('urbansight_citizen_rewards', JSON.stringify(citizenRewardsState));
-            } catch(e) {}
+        function earnMoreCitizenPoints(pts = 250) {
+            citizenRewardsState.points += pts;
+            saveCitizenRewards();
+            const el = document.getElementById('user-points-balance');
+            if (el) el.textContent = citizenRewardsState.points.toLocaleString();
+            playAlertChime('arrival');
+            showToast(`🎉 +${pts} Civic Points Added!`, `Your verified road report was clustered by AI. Balance: ${citizenRewardsState.points} PTS.`);
         }
 
         function redeemPerk(perkId, title, cost, discount) {
             if (citizenRewardsState.points < cost) {
-                showToast("Insufficient Points", `You have ${citizenRewardsState.points} points. This perk requires ${cost} points.`);
+                showToast("Insufficient Points", `You have ${citizenRewardsState.points} points. This perk requires ${cost} points. Click '+250 PTS' to earn points.`);
                 return;
             }
 
             citizenRewardsState.points -= cost;
-            const voucherId = `MCC-PERK-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+            const isPass = title.toLowerCase().includes('pass');
+            const voucherPrefix = isPass ? 'KSRTC-PASS-2026-' : 'MCC-VOUCH-2026-';
+            const voucherId = `${voucherPrefix}${Math.floor(1000 + Math.random() * 9000)}`;
+            
             const voucher = {
                 id: voucherId,
+                perkId: perkId,
                 title: title,
                 discount: discount,
-                date: new Date().toLocaleDateString()
+                cost: cost,
+                isPass: isPass,
+                status: 'ACTIVE · READY FOR SCAN',
+                validUntil: '30 Nov 2026',
+                date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
             };
+
             citizenRewardsState.redeemed.unshift(voucher);
             saveCitizenRewards();
 
             // Update UI
-            document.getElementById('user-points-balance').textContent = citizenRewardsState.points;
+            const ptsEl = document.getElementById('user-points-balance');
+            if (ptsEl) ptsEl.textContent = citizenRewardsState.points.toLocaleString();
 
-            // Audio Chime
             playAlertChime('resolved');
 
-            // Show Toast & Modal
-            showToast("🎉 Perk Redeemed!", `You redeemed ${cost} pts for ${title}. Certificate issued.`);
+            // Trigger instant SMS confirmation to citizen phone
+            const { displayPhone } = getNormalizedCitizenPhone();
+            const smsText = `[MCC-JANAHITHA] Confirmation: You successfully redeemed ${cost} pts for ${title} (${discount}). Pass #${voucherId} is active & valid until 30 Nov 2026. Show QR at conductor / municipal kiosk. — Govt of Karnataka`;
+            triggerIncomingSMSBanner({
+                sender: 'VK-MCCJAN',
+                phone: displayPhone,
+                text: smsText,
+                channel: 'SMS'
+            });
 
+            showToast("🎉 Pass Redeemed Successfully!", `Deducted ${cost} pts. Pass #${voucherId} generated and SMS sent to ${displayPhone}.`);
+
+            // Update & show modal
             document.getElementById('modal-perk-title').textContent = title;
             document.getElementById('modal-perk-discount').textContent = discount;
             document.getElementById('modal-voucher-code').textContent = voucherId;
@@ -2334,16 +2480,62 @@
 
             if (citizenRewardsState.redeemed.length > 0) {
                 box.style.display = 'block';
-                list.innerHTML = citizenRewardsState.redeemed.map(v => `
-                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:6px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
-                        <div>
-                            <b>${v.title}</b> · <span style="color:#15803d; font-weight:800;">${v.discount}</span>
-                            <div style="font-size:0.68rem; color:var(--text-tertiary); font-family:var(--font-mono);">CODE: ${v.id} · Issued ${v.date}</div>
+                list.innerHTML = citizenRewardsState.redeemed.map((v, idx) => `
+                    <div style="background:#FFFFFF; border:1.5px solid ${v.isPass ? '#003580' : '#D1D5DB'}; border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:36px; height:36px; border-radius:8px; background:${v.isPass ? '#EBF1FB' : '#FEF3C7'}; color:${v.isPass ? '#003580' : '#B45309'}; display:flex; align-items:center; justify-content:center; font-size:16px;">
+                                <i class="${v.isPass ? 'fa-solid fa-id-card' : 'fa-solid fa-ticket'}"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight:800; font-size:0.88rem; color:#0F172A;">${v.title}</div>
+                                <div style="font-size:0.75rem; color:#15803d; font-weight:800;">${v.discount} · <span style="color:#64748B; font-family:'IBM Plex Mono',monospace; font-weight:600;">ID: ${v.id}</span></div>
+                                <div style="font-size:0.68rem; color:#6B7280;">Issued: ${v.date} · Valid until: ${v.validUntil}</div>
+                            </div>
                         </div>
-                        <span style="color:#15803d; font-weight:700;"><i class="fa-solid fa-check"></i> Active</span>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <button type="button" onclick="viewRedeemedVoucher(${idx})" style="background:#003580; color:#FFFFFF; border:none; padding:6px 12px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;" title="View Digital Pass & Conductor QR Code">
+                                <i class="fa-solid fa-qrcode"></i> View QR
+                            </button>
+                            <button type="button" onclick="sendVoucherViaSMS('${v.id}', '${v.title}', '${v.discount}')" style="background:#F1F5F9; border:1px solid #CBD5E1; color:#003580; padding:6px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;" title="Send this pass to your phone via SMS">
+                                <i class="fa-solid fa-comment-sms"></i> SMS Pass
+                            </button>
+                            <button type="button" onclick="markVoucherUsed(${idx})" style="background:${v.status.includes('REDEEMED') ? '#E2E8F0' : '#15803d'}; color:#FFFFFF; border:none; padding:6px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer;" ${v.status.includes('REDEEMED') ? 'disabled' : ''}>
+                                ${v.status.includes('REDEEMED') ? '✓ Redeemed' : 'Use at Kiosk'}
+                            </button>
+                        </div>
                     </div>
                 `).join('');
             }
+        }
+
+        function viewRedeemedVoucher(idx) {
+            const v = citizenRewardsState.redeemed[idx];
+            if (!v) return;
+            document.getElementById('modal-perk-title').textContent = v.title;
+            document.getElementById('modal-perk-discount').textContent = v.discount;
+            document.getElementById('modal-voucher-code').textContent = v.id;
+            document.getElementById('perk-voucher-modal').style.display = 'flex';
+        }
+
+        function markVoucherUsed(idx) {
+            if (citizenRewardsState.redeemed[idx]) {
+                citizenRewardsState.redeemed[idx].status = 'REDEEMED AT KIOSK · ' + new Date().toLocaleDateString();
+                saveCitizenRewards();
+                renderRedeemedVouchers();
+                showToast("✓ Pass Used at Counter", `Pass #${citizenRewardsState.redeemed[idx].id} marked as redeemed.`);
+            }
+        }
+
+        function sendVoucherViaSMS(id, title, discount) {
+            const { displayPhone } = getNormalizedCitizenPhone();
+            const txt = `[MCC-JANAHITHA] Your Digital Pass: ${title} (${discount}). Pass No: #${id}. Valid until 30 Nov 2026. Show to BMTC/KSRTC transit conductor or municipal cashier to redeem.`;
+            triggerIncomingSMSBanner({
+                sender: 'VK-MCCJAN',
+                phone: displayPhone,
+                text: txt,
+                channel: 'SMS'
+            });
+            showToast("📱 Pass SMS Sent!", `Pass #${id} sent to ${displayPhone}.`);
         }
 
         function closePerkVoucherModal() {
