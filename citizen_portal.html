@@ -3,77 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UrbanSight AI — Public Citizen Road Repair Portal | PWD Ticket Tracker</title>
+    <title>UrbanSight AI — Unified Citizen Navigation & Public Road Safety Portal | Infothon 7.0</title>
 
     <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-    /* Background Hierarchy (Warm Linen & Sandstone Depths) */
-    --bg-base: #F5F2EB;               /* Warm soft linen beige page background */
-    --bg-subtle: #EDE7DA;             /* Warm sandstone background */
-    --bg-surface: #FAF8F5;            /* Creamy ivory surface */
-    --bg-card: rgba(255, 255, 255, 0.94); /* Crisp warm white card */
-    --bg-card-hover: #ECE6D8;         /* Warm sand card hover */
-    --bg-card-solid: #FFFFFF;         /* Solid card white */
-    --bg-glass-panel: rgba(245, 242, 235, 0.92); /* Glassmorphism beige panel */
-    --bg-pill: rgba(0, 0, 0, 0.04);   /* Soft subtle pill background */
-    --bg-pill-hover: rgba(0, 0, 0, 0.08);
+            /* Warm Linen Minimal Tech Design System */
+            --bg-base: #0F172A;
+            --bg-surface: #1E293B;
+            --bg-card: rgba(30, 41, 59, 0.94);
+            --bg-card-solid: #1E293B;
+            --bg-pill: rgba(255, 255, 255, 0.06);
+            --bg-pill-hover: rgba(255, 255, 255, 0.12);
 
-    /* Borders & Hairlines */
-    --border-subtle: #E2DCCB;          /* Soft warm tan border */
-    --border-medium: #DDD6C6;          /* Sandstone border */
-    --border-hover: rgba(2, 132, 199, 0.4);
-    --border-glow: rgba(2, 132, 199, 0.2);
+            --border-subtle: #334155;
+            --border-medium: #475569;
+            --border-glow: rgba(2, 132, 199, 0.4);
 
-    /* Brand Accents */
-    --primary: #0284C7;               /* High-contrast civic ocean sapphire */
-    --primary-gradient: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-    --primary-glow: rgba(2, 132, 199, 0.25);
-    --primary-muted: rgba(2, 132, 199, 0.1);
+            --primary: #0284C7;
+            --primary-glow: rgba(2, 132, 199, 0.35);
+            --primary-neon: #00E5FF;
+            --caution: #F59E0B;
+            --caution-glow: rgba(245, 158, 11, 0.35);
+            --critical: #EF4444;
+            --critical-glow: rgba(239, 68, 68, 0.4);
+            --success: #10B981;
+            --success-glow: rgba(16, 185, 129, 0.35);
 
-    /* Functional Telemetry Accents */
-    --caution: #EA580C;               /* Civic safety orange / terracotta */
-    --caution-glow: rgba(234, 88, 12, 0.25);
-    --caution-muted: rgba(234, 88, 12, 0.1);
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-tertiary: #64748B;
 
-    --critical: #DC2626;              /* Alert crimson */
-    --critical-glow: rgba(220, 38, 38, 0.25);
-    --critical-muted: rgba(220, 38, 38, 0.1);
-
-    --success: #059669;               /* Deep emerald green */
-    --success-glow: rgba(5, 150, 105, 0.25);
-    --success-muted: rgba(5, 150, 105, 0.1);
-
-    --indigo: #4F46E5;                /* Slate indigo */
-    --purple: #7C3AED;                /* Royal amethyst */
-    --purple-muted: rgba(124, 58, 237, 0.1);
-
-    /* Typography */
-    --text-primary: #1C1917;          /* Stone 900 charcoal - deep contrast */
-    --text-secondary: #57534E;        /* Stone 600 warm slate */
-    --text-tertiary: #78716C;         /* Stone 500 subtle */
-    --text-inverse: #FFFFFF;
-
-    --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-
-    /* Transitions & Curves */
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --transition-fast: 0.15s var(--ease-out);
-    --transition-medium: 0.25s var(--ease-out);
-}
+            --font-heading: 'Plus Jakarta Sans', sans-serif;
+            --font-ui: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: var(--font-heading);
+            font-family: var(--font-ui);
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
@@ -83,2764 +59,1721 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            line-height: 1.5;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(2, 132, 199, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
         }
 
-        /* Portal Header */
-        .portal-header {
-            background: rgba(245, 242, 235, 0.95);
-            border-bottom: 2px solid var(--border-color);
-            padding: 16px 32px;
+        /* Top Government Authority Strip */
+        .gov-strip {
+            background: #090D16;
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 6px 20px;
+            font-size: 0.74rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            backdrop-filter: blur(12px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .portal-brand {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .portal-badge {
-            width: 46px;
-            height: 46px;
-            background: linear-gradient(135deg, #00E5FF22, #00E5FF44);
-            border: 2px solid var(--primary);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            color: var(--primary);
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        .portal-title-block h1 {
-            font-size: 1.25rem;
-            font-weight: 800;
+        .gov-strip-left {
             display: flex;
             align-items: center;
             gap: 10px;
-            letter-spacing: -0.3px;
         }
 
-        .portal-title-block p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-        }
-
-        .pill-tag {
+        .gov-flag-badge {
+            background: linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%);
+            width: 14px;
+            height: 10px;
+            border-radius: 2px;
             display: inline-block;
-            font-size: 0.68rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-family: var(--font-mono);
-            text-transform: uppercase;
         }
 
-        .pill-cyan { background: rgba(0, 229, 255, 0.15); color: var(--primary); border: 1px solid var(--primary); }
-        .pill-green { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
-        .pill-amber { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
-        .pill-red { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); }
-        .pill-purple { background: rgba(139, 92, 246, 0.15); color: var(--purple); border: 1px solid var(--purple); }
+        /* Main App Header */
+        .app-header {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
 
-        .header-nav-links {
+        .brand-block {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .btn-portal {
-            background: #FFFFFF;
+        .brand-logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            color: #FFFFFF;
+            box-shadow: 0 0 16px var(--primary-glow);
+        }
+
+        .brand-titles h1 {
+            font-family: var(--font-heading);
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-titles p {
+            font-size: 0.74rem;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+
+        /* View Mode Switcher Pills */
+        .view-mode-selector {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 3px;
+            border-radius: 999px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .btn-view-pill {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view-pill:hover {
+            color: var(--text-primary);
+        }
+
+        .btn-view-pill.active {
+            background: var(--primary);
+            color: #FFFFFF;
+            box-shadow: 0 2px 10px var(--primary-glow);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: var(--bg-surface);
             border: 1px solid var(--border-medium);
             color: var(--text-primary);
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            text-decoration: none;
+            gap: 6px;
             transition: all 0.2s;
+            text-decoration: none;
         }
 
-        .btn-portal:hover {
-            background: #334155;
+        .btn-action:hover {
             border-color: var(--primary);
-            color: var(--primary);
+            color: var(--primary-neon);
         }
 
-        /* Hero Search Section */
-        .hero-search-section {
-            background: radial-gradient(circle at 50% 20%, rgba(0, 229, 255, 0.08) 0%, transparent 60%);
-            padding: 48px 24px 32px;
-            text-align: center;
-            max-width: 900px;
+        .btn-action.active-chime {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        /* Live Multilingual Audio Bar */
+        .audio-substrip {
+            background: #111C2E;
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 6px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.76rem;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .voice-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .lang-btn.active {
+            background: rgba(2, 132, 199, 0.2);
+            border-color: var(--primary);
+            color: var(--primary-neon);
+            font-weight: 700;
+        }
+
+        .voice-preview-banner {
+            font-family: var(--font-mono);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Master Dual-Grid Container (Judge Presentation Split View) */
+        .master-portal-grid {
+            display: grid;
+            grid-template-columns: 48% 52%;
+            gap: 18px;
+            padding: 16px 20px 24px;
+            flex: 1;
+            max-width: 1750px;
             margin: 0 auto;
             width: 100%;
         }
 
-        .hero-headline {
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 10px;
+        /* Responsive Layout Modes */
+        .master-portal-grid.mode-driver {
+            grid-template-columns: 1fr;
+        }
+        .master-portal-grid.mode-driver .citizen-column {
+            display: none;
         }
 
-        .hero-headline span {
-            color: var(--primary);
-            text-shadow: 0 0 20px var(--primary-glow);
+        .master-portal-grid.mode-citizen {
+            grid-template-columns: 1fr;
+        }
+        .master-portal-grid.mode-citizen .driver-column {
+            display: none;
         }
 
-        .hero-sub {
-            font-size: 1rem;
-            color: var(--text-muted);
-            margin-bottom: 30px;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Search Bar */
-        .search-container {
+        /* Left Column: Driver HUD Navigation Cockpit */
+        .driver-column {
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Right Column: Citizen Repair Tracker & SLA Oversight */
+        .citizen-column {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Shared Card Container */
+        .dash-card {
             background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 6px 10px 6px 18px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s;
-            margin-bottom: 16px;
-        }
-
-        .search-container:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 25px var(--primary-glow);
-        }
-
-        .search-icon {
-            font-size: 1.2rem;
-            color: var(--text-dim);
-            margin-right: 12px;
-        }
-
-        .search-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: #FFFFFF;
-            font-size: 1.05rem;
-            font-family: var(--font-mono);
-        }
-
-        .search-input::placeholder {
-            color: var(--text-dim);
-            font-family: var(--font-heading);
-            font-size: 0.95rem;
-        }
-
-        .btn-search {
-            background: linear-gradient(135deg, #00E5FF, #00B4D8);
-            color: #FFFFFF;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-search:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        /* Sample Quick-Click Pills */
-        .sample-pills-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .quick-pill {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--text-primary);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .quick-pill:hover {
-            background: rgba(0, 229, 255, 0.15);
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: scale(1.03);
-        }
-
-        /* Main Content Container */
-        .portal-content {
-            max-width: 1100px;
-            margin: 0 auto 40px;
-            padding: 0 24px;
-            width: 100%;
-        }
-
-        /* Ticket Result Card */
-        .ticket-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
             position: relative;
             overflow: hidden;
-            margin-bottom: 30px;
         }
 
-        .ticket-card::before {
+        .dash-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--purple), var(--success));
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border-medium), transparent);
         }
 
-        /* Ticket Top Summary Row */
-        .ticket-top-row {
+        .card-header-row {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
-            gap: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            padding-bottom: 24px;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .ticket-id-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .ticket-id-tag {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-family: var(--font-mono);
-            letter-spacing: 0.5px;
-        }
-
-        .ticket-number {
-            font-size: 1.8rem;
-            font-weight: 800;
-            font-family: var(--font-mono);
-            color: #FFFFFF;
-            letter-spacing: -0.5px;
-        }
-
-        .ticket-hazard-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 4px;
-        }
-
-        .ticket-meta-badges {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        /* 5-Stage Status Stepper */
-        .stepper-section {
-            margin: 36px 0;
-        }
-
-        .stepper-title {
+        .card-title-text {
+            font-family: var(--font-heading);
             font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
+            letter-spacing: 0.6px;
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .stepper-track {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            position: relative;
-            margin: 20px 0;
+        /* --- DRIVER HUD SPECIFIC COMPONENTS --- */
+        /* Cockpit Top Gauge Row */
+        .cockpit-gauge-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 14px;
+            align-items: center;
         }
 
-        .stepper-line {
+        .speedo-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .speedo-svg {
+            width: 170px;
+            height: 100px;
+        }
+
+        .speed-arc-bg {
+            fill: none;
+            stroke: #334155;
+            stroke-width: 12;
+            stroke-linecap: round;
+        }
+
+        .speed-arc-val {
+            fill: none;
+            stroke: url(#speed-grad);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 140;
+            transition: stroke-dashoffset 0.4s ease;
+            filter: drop-shadow(0 0 8px var(--primary-glow));
+        }
+
+        .speed-text-overlay {
             position: absolute;
-            top: 24px;
-            left: 5%;
-            right: 5%;
-            height: 4px;
-            background: #FFFFFF;
+            bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+        }
+
+        .speed-num {
+            font-family: var(--font-mono);
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            text-shadow: 0 0 16px rgba(0, 229, 255, 0.4);
+        }
+
+        .speed-unit {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--primary-neon);
+            letter-spacing: 1.5px;
+            font-family: var(--font-mono);
+        }
+
+        .hud-telemetry-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .metric-cell {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-family: var(--font-mono);
+        }
+
+        .metric-lbl {
+            font-size: 0.68rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+        }
+
+        .metric-val {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 2px;
+        }
+
+        /* Hazard Warning Card */
+        .hazard-alert-box {
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 2px solid var(--critical);
+            box-shadow: 0 0 25px var(--critical-glow), inset 0 0 15px rgba(239, 68, 68, 0.15);
+            animation: pulseAlert 1.4s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseAlert {
+            0% { border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+            100% { border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 32px rgba(239, 68, 68, 0.6); }
+        }
+
+        .hazard-top-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .hazard-badge-pill {
+            background: var(--critical);
+            color: #FFFFFF;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            font-family: var(--font-mono);
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+        }
+
+        .hazard-dist-countdown {
+            font-family: var(--font-mono);
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--caution);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .maneuver-instruction-banner {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin: 10px 0;
+        }
+
+        .maneuver-arrow-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(2, 132, 199, 0.2);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: var(--primary-neon);
+            animation: bounceArrow 1s infinite alternate;
+        }
+
+        @keyframes bounceArrow {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-6px); }
+        }
+
+        .maneuver-text-group h3 {
+            font-family: var(--font-heading);
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: 0.2px;
+        }
+
+        .maneuver-text-group p {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Route Selector Strip */
+        .route-selector-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-route-chip {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.74rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-route-chip:hover {
+            color: var(--text-primary);
+            border-color: var(--primary);
+        }
+
+        .btn-route-chip.active {
+            background: rgba(2, 132, 199, 0.2);
+            border-color: var(--primary);
+            color: var(--primary-neon);
+            font-weight: 700;
+        }
+
+        /* --- CITIZEN TRACKER SPECIFIC COMPONENTS --- */
+        /* Search Box */
+        .search-pill-box {
+            display: flex;
+            align-items: center;
+            background: #090D16;
+            border: 1.5px solid var(--border-medium);
+            border-radius: 10px;
+            padding: 4px 6px 4px 14px;
+            transition: all 0.25s;
+        }
+
+        .search-pill-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 16px var(--primary-glow);
+        }
+
+        .search-input-field {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #FFFFFF;
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+        }
+
+        .btn-search-go {
+            background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+            border: none;
+            color: #FFFFFF;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quick-tickets-strip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .quick-ticket-chip {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            font-size: 0.70rem;
+            font-family: var(--font-mono);
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .quick-ticket-chip:hover {
+            color: var(--primary-neon);
+            border-color: var(--primary);
+            background: rgba(2, 132, 199, 0.1);
+        }
+
+        /* 5-Stage Stepper */
+        .status-stepper-wrap {
+            margin: 10px 0 14px;
+            position: relative;
+        }
+
+        .stepper-progress-bar {
+            position: absolute;
+            top: 18px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: #334155;
             z-index: 1;
         }
 
-        .stepper-line-fill {
+        .stepper-progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--success), var(--primary));
-            transition: width 0.5s ease;
+            width: 75%;
+            background: linear-gradient(90deg, var(--success), var(--primary-neon));
             box-shadow: 0 0 10px var(--primary-glow);
+            transition: width 0.4s ease;
         }
 
-        .step-node {
+        .stepper-nodes-row {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            position: relative;
-            z-index: 2;
-            width: 18%;
+            width: 19%;
         }
 
-        .step-bubble {
-            width: 48px;
-            height: 48px;
+        .step-circle {
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
-            background: #FFFFFF;
-            border: 3px solid #334155;
+            background: #1E293B;
+            border: 2px solid #475569;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
-            color: var(--text-dim);
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            margin-bottom: 6px;
             transition: all 0.3s;
-            margin-bottom: 12px;
         }
 
-        .step-node.completed .step-bubble {
-            background: rgba(16, 185, 129, 0.2);
+        .step-item.completed .step-circle {
+            background: rgba(16, 185, 129, 0.25);
             border-color: var(--success);
             color: var(--success);
-            box-shadow: 0 0 15px var(--success-glow);
+            box-shadow: 0 0 12px var(--success-glow);
         }
 
-        .step-node.active .step-bubble {
-            background: rgba(0, 229, 255, 0.2);
-            border-color: var(--primary);
-            color: var(--primary);
-            box-shadow: 0 0 20px var(--primary-glow);
-            animation: pulse-active 1.5s infinite;
+        .step-item.active .step-circle {
+            background: rgba(0, 229, 255, 0.25);
+            border-color: var(--primary-neon);
+            color: var(--primary-neon);
+            box-shadow: 0 0 16px var(--primary-glow);
+            animation: pulseNode 1.4s infinite;
         }
 
-        @keyframes pulse-active {
-            0% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
-            50% { transform: scale(1.1); box-shadow: 0 0 25px var(--primary-glow); }
-            100% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
+        @keyframes pulseNode {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); box-shadow: 0 0 20px var(--primary-neon); }
+            100% { transform: scale(1); }
         }
 
-        .step-name {
-            font-size: 0.85rem;
+        .step-label {
+            font-size: 0.70rem;
             font-weight: 700;
-            color: #FFFFFF;
-            margin-bottom: 4px;
+            color: var(--text-primary);
+            line-height: 1.2;
         }
 
-        .step-desc {
-            font-size: 0.72rem;
-            color: var(--text-muted);
+        .step-time {
+            font-size: 0.64rem;
+            color: var(--text-tertiary);
             font-family: var(--font-mono);
-            line-height: 1.3;
+            margin-top: 2px;
         }
 
-        /* Two-Column Grid: Details & Camera Preview */
-        .ticket-grid {
+        /* 48-Hour SLA Countdown Box */
+        .sla-countdown-banner {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(30, 41, 59, 0.8) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .sla-left-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sla-timer-text {
+            font-family: var(--font-mono);
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: 0.5px;
+        }
+
+        .sla-target-badge {
+            background: rgba(245, 158, 11, 0.25);
+            color: var(--caution);
+            font-family: var(--font-mono);
+            font-size: 0.70rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 5px;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        /* Dual-Column Details & Photo Evidence */
+        .ticket-detail-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-top: 28px;
+            gap: 12px;
+            margin-top: 8px;
         }
 
-        .detail-panel {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            padding: 20px;
+        .detail-card-panel {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 12px;
         }
 
-        .detail-panel-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--text-muted);
-            margin-bottom: 14px;
+        .prop-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .detail-row {
-            display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
+            padding: 5px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            font-size: 0.88rem;
+            font-size: 0.78rem;
         }
 
-        .detail-row:last-child {
+        .prop-row:last-child {
             border-bottom: none;
         }
 
-        .detail-lbl {
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .prop-lbl {
+            color: var(--text-tertiary);
         }
 
-        .detail-val {
-            font-weight: 700;
+        .prop-val {
+            font-family: var(--font-mono);
+            font-weight: 600;
             color: var(--text-primary);
-            font-family: var(--font-mono);
-            text-align: right;
         }
 
-        /* SLA Timer Box */
-        .sla-timer-box {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(15, 23, 42, 0.8));
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 10px;
-            padding: 16px;
-            margin-top: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .sla-left {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .sla-lbl {
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--warning);
-            font-family: var(--font-mono);
-        }
-
-        .sla-countdown {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #FFFFFF;
-            font-family: var(--font-mono);
-        }
-
-        .sla-badge {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            font-family: var(--font-mono);
-        }
-
-        /* DPDP Blurred Camera Snapshot Preview */
-        .snapshot-container {
-            width: 100%;
-            height: 250px;
-            background: #000;
-            border-radius: 10px;
-            border: 1px solid var(--border-medium);
+        /* DPDP Camera Evidence Box */
+        .evidence-photo-box {
             position: relative;
+            height: 165px;
+            border-radius: 8px;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #000;
+            border: 1px solid var(--border-medium);
         }
 
-        .snapshot-img {
+        .evidence-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             opacity: 0.85;
         }
 
-        /* Simulated Bounding Box */
-        .bbox-overlay {
+        .dpdp-stamp {
             position: absolute;
-            top: 45%;
-            left: 35%;
-            width: 32%;
-            height: 38%;
-            border: 2px solid var(--danger);
-            background: rgba(239, 68, 68, 0.15);
-            box-shadow: 0 0 15px var(--danger-glow);
-            border-radius: 4px;
-            pointer-events: none;
-        }
-
-        .bbox-label {
-            position: absolute;
-            top: -24px;
-            left: 0;
-            background: var(--danger);
+            top: 8px;
+            left: 8px;
+            background: rgba(16, 185, 129, 0.95);
             color: #FFFFFF;
             font-family: var(--font-mono);
-            font-size: 0.68rem;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 3px;
-            white-space: nowrap;
-        }
-
-        /* DPDP Privacy Badge Overlay */
-        .dpdp-privacy-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(16, 185, 129, 0.9);
-            color: #FFFFFF;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-family: var(--font-mono);
-            backdrop-filter: blur(4px);
-            z-index: 5;
-        }
-
-        .camera-telemetry-tag {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--primary);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.68rem;
-            font-family: var(--font-mono);
-            z-index: 5;
-        }
-
-        /* Notification & Citizen Action Card */
-        .notification-card {
-            background: linear-gradient(135deg, rgba(0, 229, 255, 0.05), rgba(15, 23, 42, 0.95));
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        }
-
-        .notif-text h3 {
-            font-size: 1.1rem;
+            font-size: 0.65rem;
             font-weight: 800;
-            margin-bottom: 4px;
+            padding: 3px 7px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
-        .notif-text p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
+        .bbox-marker {
+            position: absolute;
+            top: 42%;
+            left: 36%;
+            width: 30%;
+            height: 38%;
+            border: 2px solid var(--critical);
+            background: rgba(239, 68, 68, 0.15);
+            box-shadow: 0 0 10px var(--critical-glow);
+            border-radius: 3px;
         }
 
-        .notif-form {
+        /* Citizen Action Row */
+        .citizen-action-strip {
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-top: 10px;
             flex-wrap: wrap;
         }
 
-        .phone-input {
-            background: #FFFFFF;
-            border: 1.5px solid var(--border-medium);
-            color: #1C1917 !important;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-family: var(--font-mono);
-            outline: none;
-            width: 190px;
-        }
-
-        .phone-input:focus {
-            border-color: var(--primary);
-        }
-
-        .btn-wa {
-            background: #25D366;
+        .btn-escalate {
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
             color: #FFFFFF;
             border: none;
-            padding: 10px 16px;
+            padding: 8px 14px;
             border-radius: 8px;
+            font-size: 0.78rem;
             font-weight: 700;
-            font-size: 0.85rem;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
+            box-shadow: 0 2px 10px var(--critical-glow);
             transition: all 0.2s;
         }
 
-        .btn-wa:hover {
-            background: #1EBE5D;
+        .btn-escalate:hover {
             transform: translateY(-1px);
         }
 
-        .btn-sms {
-            background: #0284C7;
-            border: 1px solid #0369A1;
+        .btn-whatsapp-notif {
+            background: #25D366;
             color: #FFFFFF;
-            padding: 10px 16px;
+            border: none;
+            padding: 8px 14px;
             border-radius: 8px;
+            font-size: 0.78rem;
             font-weight: 700;
-            font-size: 0.85rem;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
             transition: all 0.2s;
         }
 
-        .btn-sms:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+        .btn-whatsapp-notif:hover {
+            background: #1EBE5D;
         }
 
-        /* Success Toast */
-        .toast-popup {
+        /* Report Modal / Slide */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: #1E293B;
+            border: 1px solid var(--border-medium);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 520px;
+            padding: 22px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-lbl {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            background: #0F172A;
+            border: 1px solid var(--border-medium);
+            color: #FFFFFF;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Toast notification */
+        #toast-box {
             position: fixed;
             bottom: 24px;
             right: 24px;
-            background: var(--bg-card);
-            border: 2px solid var(--success);
+            background: #1E293B;
+            border: 1px solid var(--primary);
+            border-left: 4px solid var(--primary);
             color: #FFFFFF;
-            padding: 16px 22px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-            display: flex;
+            padding: 12px 18px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-size: 0.85rem;
+            z-index: 2000;
+            display: none;
             align-items: center;
-            gap: 12px;
-            z-index: 1000;
-            transform: translateY(120%);
-            transition: transform 0.3s ease;
+            gap: 10px;
         }
 
-        .toast-popup.show {
-            transform: translateY(0);
-        }
-
-        /* Portal Footer */
-        .portal-footer {
-            margin-top: auto;
-            background: #0B0F19;
-            border-top: 1px solid var(--border-color);
-            padding: 20px 24px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-dim);
-            font-family: var(--font-mono);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .ticket-grid {
+        @media (max-width: 1100px) {
+            .master-portal-grid {
                 grid-template-columns: 1fr;
             }
-            .stepper-track {
-                flex-direction: column;
-                gap: 20px;
-                align-items: flex-start;
-            }
-            .stepper-line {
-                display: none;
-            }
-            .step-node {
-                width: 100%;
-                flex-direction: row;
-                text-align: left;
-                gap: 16px;
-            }
-            .step-bubble {
-                margin-bottom: 0;
-            }
-            .notification-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
         }
-    /* =============================================================================
-   Official Government & GIGW 3.0 Styling System (MCC / Karnataka Govt)
-   ============================================================================= */
-:root {
-    --font-scale: 1;
-}
-
-body {
-    font-size: calc(14px * var(--font-scale)) !important;
-}
-
-/* Tier-0 Official Government Header */
-.gov-topbar {
-    background: #EDE7DA;
-    border-bottom: 1px solid var(--border-medium);
-    font-family: var(--font-ui);
-    position: relative;
-    z-index: 1001;
-}
-
-.gov-topbar-inner {
-    max-width: 1720px;
-    margin: 0 auto;
-    padding: 6px 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.gov-identity {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.gov-emblem-slot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.gov-text-block {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.15;
-}
-
-.gov-kannada {
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #9A3412;
-    letter-spacing: 0.02em;
-}
-
-.gov-english {
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.gov-mission-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 999px;
-    padding: 3px 12px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-}
-
-.badge-divider {
-    color: var(--border-medium);
-}
-
-.gov-access-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.font-sizer-group {
-    display: flex;
-    align-items: center;
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.btn-gov-tool {
-    background: transparent;
-    border: none;
-    padding: 4px 8px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.15s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.btn-gov-tool:hover, .btn-gov-tool.active {
-    background: var(--primary);
-    color: #FFFFFF;
-}
-
-.gov-lang-picker {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 6px;
-    padding: 2px 6px;
-    font-size: 0.68rem;
-}
-
-.gov-lang-picker select {
-    background: transparent;
-    border: none;
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    outline: none;
-    cursor: pointer;
-}
-
-.screen-reader-tag {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--success);
-    background: rgba(5, 150, 105, 0.1);
-    border: 1px solid rgba(5, 150, 105, 0.25);
-    border-radius: 4px;
-    padding: 2px 6px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-/* Indian National Tricolor Ribbon */
-.gov-tricolor-strip {
-    display: flex;
-    height: 3px;
-    width: 100%;
-}
-
-.tri-saffron { flex: 1; background: #FF9933; }
-.tri-white { flex: 1; background: #FFFFFF; }
-.tri-green { flex: 1; background: #138808; }
-
-/* Live Public Advisory Ticker */
-.gov-notice-ticker-bar {
-    background: #FFFBEB;
-    border-bottom: 1px solid #FDE68A;
-    display: flex;
-    align-items: center;
-    padding: 5px 1.5rem;
-    font-size: 0.73rem;
-    color: #92400E;
-    position: relative;
-    z-index: 999;
-}
-
-.notice-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: #FEF3C7;
-    border: 1px solid #F59E0B;
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-weight: 800;
-    font-size: 0.68rem;
-    color: #B45309;
-    white-space: nowrap;
-    margin-right: 12px;
-}
-
-.notice-badge .pulse-indicator {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #DC2626;
-    box-shadow: 0 0 6px rgba(220, 38, 38, 0.7);
-    animation: pulseNotice 1.5s infinite;
-}
-
-@keyframes pulseNotice {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(1.3); }
-}
-
-.notice-marquee-track {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-    white-space: nowrap;
-}
-
-.notice-marquee-content {
-    display: inline-block;
-    padding-left: 100%;
-    animation: marqueeScroll 32s linear infinite;
-    font-family: var(--font-ui);
-    letter-spacing: 0.01em;
-}
-
-.notice-marquee-content.paused {
-    animation-play-state: paused;
-}
-
-@keyframes marqueeScroll {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-100%, 0, 0); }
-}
-
-.notice-sep {
-    margin: 0 16px;
-    color: #F59E0B;
-}
-
-.notice-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-left: 12px;
-}
-
-.btn-notice-ctrl {
-    background: #FEF3C7;
-    border: 1px solid #FCD34D;
-    color: #92400E;
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.btn-notice-ctrl:hover {
-    background: #FDE68A;
-}
-
-/* Official Pill Styling in Navbar */
-.portal-pill.official-pill {
-    background: #EDE7DA;
-    border: 1px solid var(--border-medium);
-    color: #1C1917;
-    font-weight: 700;
-}
-
-.portal-pill.official-pill:hover {
-    background: #0284C7;
-    color: #FFFFFF;
-    border-color: #0284C7;
-}
-
-/* High Contrast Mode */
-body.high-contrast {
-    --bg-base: #000000 !important;
-    --bg-subtle: #111111 !important;
-    --bg-surface: #000000 !important;
-    --bg-card: #000000 !important;
-    --border-medium: #FFFF00 !important;
-    --border-subtle: #FFFF00 !important;
-    --text-primary: #FFFF00 !important;
-    --text-secondary: #FFFFFF !important;
-    --text-tertiary: #FFFF00 !important;
-    --primary: #00FFFF !important;
-    color: #FFFF00 !important;
-    background-color: #000000 !important;
-}
-
-body.high-contrast * {
-    border-color: #FFFF00 !important;
-}
-
-/* Official Government Footer */
-.gov-official-footer {
-    background: #EDE7DA;
-    border-top: 2px solid var(--border-medium);
-    margin-top: 2rem;
-    font-family: var(--font-ui);
-    color: var(--text-secondary);
-}
-
-.gov-footer-content {
-    max-width: 1720px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 1rem;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1.5fr;
-    gap: 2rem;
-}
-
-.gov-footer-col h4 {
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.gov-footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    font-size: 0.72rem;
-}
-
-.gov-footer-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: color 0.15s ease;
-}
-
-.gov-footer-links a:hover {
-    color: var(--primary);
-    text-decoration: underline;
-}
-
-.gov-footer-bottom {
-    border-top: 1px solid var(--border-subtle);
-    padding: 1rem 1.5rem;
-    max-width: 1720px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.68rem;
-    color: var(--text-tertiary);
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-/* Print Certificate Formatting */
-@media print {
-    body * {
-        visibility: hidden !important;
-    }
-    #modal-inspection-certificate, #modal-inspection-certificate * {
-        visibility: visible !important;
-    }
-    #modal-inspection-certificate {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        background: #FFFFFF !important;
-    }
-    .modal-card {
-        border: none !important;
-        box-shadow: none !important;
-        max-width: 100% !important;
-    }
-    .btn-modal-close, .modal-footer {
-        display: none !important;
-    }
-}
-
-</style>
+    </style>
 </head>
 <body>
-<!-- GIGW 3.0 Tier-0 Official Government Header -->
-    <div class="gov-topbar" id="gov-topbar">
-        <div class="gov-topbar-inner">
-            <!-- Left: Official Emblem & Titles -->
-            <div class="gov-identity">
-                <div class="gov-emblem-slot" title="Government of Karnataka & Mysuru City Corporation">
-                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="16" cy="16" r="15" fill="#FAF8F5" stroke="#B45309" stroke-width="1.5"/>
-                        <circle cx="16" cy="16" r="11" fill="none" stroke="#D97706" stroke-width="0.75" stroke-dasharray="2 1.5"/>
-                        <circle cx="16" cy="16" r="3.2" fill="#1E3A8A"/>
-                        <circle cx="16" cy="16" r="1" fill="#FFFFFF"/>
-                        <path d="M16 6V10M16 22V26M6 16H10M22 16H26M9 9L12 12M20 20L23 23M9 23L12 20M20 12L23 9" stroke="#1E3A8A" stroke-width="0.8"/>
-                        <path d="M11 16C11 13.2 13.2 11 16 11C18.8 11 21 13.2 21 16" stroke="#B45309" stroke-width="1.2" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <div class="gov-text-block">
-                    <span class="gov-kannada">ಕರ್ನಾಟಕ ಸರ್ಕಾರ · ಮೈಸೂರು ಮಹಾನಗರ ಪಾಲಿಕೆ</span>
-                    <span class="gov-english">Government of Karnataka · Mysuru City Corporation (MCC)</span>
-                </div>
-            </div>
 
-            <!-- Center: National Initiative Badges -->
-            <div class="gov-mission-badge">
-                <span class="badge-smart-city"><i class="fa-solid fa-city"></i> Smart Cities Mission</span>
-                <span class="badge-divider">|</span>
-                <span class="badge-gati"><i class="fa-solid fa-network-wired"></i> PM GatiShakti</span>
-                <span class="badge-divider">|</span>
-                <span class="badge-digital"><i class="fa-solid fa-flag"></i> Digital India</span>
-            </div>
-
-            <!-- Right: Accessibility & Language Controls -->
-            <div class="gov-access-controls">
-                <div class="font-sizer-group" title="Adjust Text Size (GIGW 3.0)">
-                    <button type="button" class="btn-gov-tool" onclick="setFontScale(0.9)" title="Decrease Font Size">A-</button>
-                    <button type="button" class="btn-gov-tool active" onclick="setFontScale(1.0)" title="Default Font Size">A</button>
-                    <button type="button" class="btn-gov-tool" onclick="setFontScale(1.15)" title="Increase Font Size">A+</button>
-                </div>
-                <button type="button" class="btn-gov-tool" onclick="toggleHighContrast()" title="Toggle High Contrast Mode">
-                    <i class="fa-solid fa-circle-half-stroke"></i> <span class="hide-mobile">Contrast</span>
-                </button>
-                <div class="gov-lang-picker">
-                    <i class="fa-solid fa-language"></i>
-                    <select id="gov-lang-select" aria-label="Official Language Switcher" onchange="changeOfficialLanguage(this.value)">
-                        <option value="en">English</option>
-                        <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                        <option value="hi">हिन्दी (Hindi)</option>
-                    </select>
-                </div>
-                <span class="screen-reader-tag hide-mobile" title="GIGW 3.0 / WCAG 2.1 AA Compliant">
-                    <i class="fa-solid fa-universal-access"></i> GIGW 3.0
-                </span>
-            </div>
+    <!-- 1. Government Authority Header -->
+    <div class="gov-strip">
+        <div class="gov-strip-left">
+            <span class="gov-flag-badge"></span>
+            <span style="font-weight: 700; color: #F59E0B;">ಕರ್ನಾಟಕ ಸರ್ಕಾರ · GOVT OF KARNATAKA</span>
+            <span style="color: var(--text-tertiary);">|</span>
+            <span style="font-weight: 600; color: var(--text-secondary);">Mysuru City Corporation (MCC) & BBMP Urban Sensing Grid</span>
+            <span style="color: var(--text-tertiary);">|</span>
+            <span style="color: var(--primary-neon); font-weight: 600;"><i class="fa-solid fa-satellite-dish"></i> Problem Statement #07 (SIH26124)</span>
         </div>
-        <!-- Indian National Flag Tricolor Ribbon -->
-        <div class="gov-tricolor-strip">
-            <span class="tri-saffron"></span>
-            <span class="tri-white"></span>
-            <span class="tri-green"></span>
+        <div style="display: flex; align-items: center; gap: 14px; font-family: var(--font-mono);">
+            <span style="color: var(--success);"><i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> DPDP ACT 2023 §2(t) COMPLIANT</span>
+            <span style="color: var(--text-secondary);">EDGE TELEMETRY: 30 FPS</span>
         </div>
     </div>
 
-    <!-- Live Public Notice Board & Monsoon Advisory Marquee -->
-    <div class="gov-notice-ticker-bar" id="gov-notice-bar">
-        <div class="notice-badge">
-            <span class="pulse-indicator"></span>
-            <i class="fa-solid fa-bullhorn"></i>
-            <span class="badge-label">MCC PUBLIC ADVISORY</span>
-        </div>
-        <div class="notice-marquee-track">
-            <div class="notice-marquee-content" id="notice-marquee-text">
-                <span>⚠️ <strong>Sayyaji Rao Road:</strong> Drainage desilting & rapid pothole restoration in progress. Transit bus route 119 diverted via Irwin Road.</span>
-                <span class="notice-sep">✦</span>
-                <span>🚨 <strong>Rapid Response:</strong> 12 dedicated high-capacity patch vans on standby across Gokulam, Kuvempunagar, and Bannimantap depots.</span>
-                <span class="notice-sep">✦</span>
-                <span>🎁 <strong>Adopt-a-Road Rewards:</strong> Citizens earn verified points for reporting road defects — redeemable for Mysore Palace & KSRTC passes.</span>
-                <span class="notice-sep">✦</span>
-                <span>⏱️ <strong>Janahitha Citizen Charter:</strong> Arterial road potholes guaranteed for repair within 48 hours under Sakala Services Act.</span>
+    <!-- 2. Main Portal Header with Unified View Switcher -->
+    <header class="app-header">
+        <div class="brand-block">
+            <div class="brand-logo-icon">
+                <i class="fa-solid fa-compass"></i>
             </div>
-        </div>
-        <div class="notice-actions">
-            <button class="btn-notice-ctrl" id="btn-pause-notice" onclick="toggleNoticeMarquee()" title="Pause/Play Ticker">
-                <i class="fa-solid fa-pause"></i>
-            </button>
-            <button class="btn-notice-ctrl" onclick="openAllNoticesModal()" title="View All Official Bulletins">
-                <i class="fa-solid fa-list-ul"></i> All Notices
-            </button>
-        </div>
-    </div>
-
-
-    
-
-    <!-- Portal Header -->
-    <header class="portal-header">
-        <div class="portal-brand">
-            <div class="portal-badge" title="UrbanSight AI Citizen Repair Portal">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Authentic Civic Shield Base -->
-    <path d="M16 2.5L5 6.8V14.5C5 22.2 9.8 28.1 16 29.8C22.2 28.1 27 22.2 27 14.5V6.8L16 2.5Z" fill="#FAF8F5" stroke="#0284C7" stroke-width="2" stroke-linejoin="round"/>
-    <path d="M16 4.8L7 8.3V14.5C7 21 10.9 26.1 16 27.6C21.1 26.1 25 21 25 14.5V8.3L16 4.8Z" fill="rgba(2, 132, 199, 0.08)"/>
-    <!-- Real Perspective Road with Center Divider -->
-    <path d="M11 26L13.8 15H18.2L21 26H11Z" fill="#57534E"/>
-    <line x1="16" y1="16" x2="16" y2="24" stroke="#FAF8F5" stroke-width="1.2" stroke-dasharray="2 2"/>
-    <!-- Realistic City Transit Electric Bus Front View -->
-    <rect x="10.5" y="8" width="11" height="8.5" rx="1.8" fill="#0284C7" stroke="#0369A1" stroke-width="0.8"/>
-    <!-- Bus Windshield Split Glass -->
-    <rect x="11.8" y="9.2" width="3.4" height="3" rx="0.4" fill="#E0F2FE"/>
-    <rect x="16.8" y="9.2" width="3.4" height="3" rx="0.4" fill="#E0F2FE"/>
-    <!-- Bus Destination Display Bar -->
-    <rect x="12.5" y="8.4" width="7" height="0.6" rx="0.2" fill="#FBBF24"/>
-    <!-- Bus Headlights (Warm Amber) -->
-    <circle cx="12.5" cy="14.5" r="1" fill="#F59E0B"/>
-    <circle cx="19.5" cy="14.5" r="1" fill="#F59E0B"/>
-    <!-- Realistic Optical Camera / Perception Sensor Lens -->
-    <circle cx="16" cy="6.2" r="2.2" fill="#EA580C" stroke="#FFFFFF" stroke-width="0.8"/>
-    <circle cx="16" cy="6.2" r="0.9" fill="#FFFFFF"/>
-</svg>
-            </div>
-            <div class="portal-title-block">
+            <div class="brand-titles">
                 <h1>
-                    UrbanSight AI · Citizen Road Repair Portal
-                    <span class="pill-tag pill-cyan">PUBLIC ACCESS</span>
+                    UrbanSight AI
+                    <span style="font-size: 0.65rem; background: rgba(0, 229, 255, 0.15); color: var(--primary-neon); padding: 2px 7px; border-radius: 999px; border: 1px solid var(--primary); font-weight: 700;">
+                        CITIZEN & DRIVER UNIFIED CONSOLE
+                    </span>
                 </h1>
-                <p>Track Municipal PWD Road Work Orders & Fleet Perception Status</p>
+                <p>Live Turn Detour Navigation + Public 48-Hour PWD Repair SLA Tracker</p>
             </div>
         </div>
 
-        <div class="header-nav-links">
+        <!-- Master View Switcher (For Judge Demo) -->
+        <div class="view-mode-selector">
+            <button class="btn-view-pill active" id="pill-split" onclick="switchViewMode('split')" title="Judge Side-by-Side Split View">
+                <i class="fa-solid fa-columns"></i>
+                <span>Split Cockpit (Judge Demo)</span>
+            </button>
+            <button class="btn-view-pill" id="pill-driver" onclick="switchViewMode('driver')" title="Focus on Driver In-Cab HUD">
+                <i class="fa-solid fa-tablet-screen-button"></i>
+                <span>Driver Navigation HUD</span>
+            </button>
+            <button class="btn-view-pill" id="pill-citizen" onclick="switchViewMode('citizen')" title="Focus on Public Citizen SLA Tracker">
+                <i class="fa-solid fa-users"></i>
+                <span>Citizen SLA Tracker</span>
+            </button>
+        </div>
 
-            <button type="button" class="btn-portal" onclick="openPublicTendersModal()" title="MCC e-Procurement Active Tenders">
-                <i class="fa-solid fa-landmark"></i> Tenders & RTI
+        <div class="header-actions">
+            <button class="btn-action active-chime" id="btn-audio-chime" onclick="toggleAudioChime()">
+                <i class="fa-solid fa-volume-high" id="chime-icon"></i>
+                <span id="chime-text">Chime: ON</span>
             </button>
-            <button type="button" class="btn-portal" onclick="openHelplinesModal()" title="MCC Emergency Helplines & Wards">
-                <i class="fa-solid fa-phone-volume"></i> Helplines & Wards
+            <button class="btn-action" onclick="openReportModal()" style="background: rgba(2, 132, 199, 0.2); border-color: var(--primary); color: #FFFFFF;">
+                <i class="fa-solid fa-camera"></i> Report Pothole
             </button>
-            <button type="button" class="btn-portal" onclick="openInspectionCertificateModal()" title="Official Road Safety Inspection Certificate">
-                <i class="fa-solid fa-certificate"></i> Inspection Certificate
-            </button>
-
-            <a href="index.html" class="btn-portal" title="Open Master ICCC Command System">
-                <i class="fa-solid fa-gauge"></i> ICCC Command Center
-            </a>
-            <a href="https://github.com/gaganks2006-ind/urbansight-ai" target="_blank" class="btn-portal" title="GitHub Repository"><i class="fa-brands fa-github"></i> GitHub</a>
-            <a href="driver_console.html" class="btn-portal" title="Open In-Cab Driver Tablet HUD">
-                <i class="fa-solid fa-tablet-screen-button"></i> Driver HUD
-            </a>
-            <a href="field_crew.html" class="btn-portal" title="Open Field Crew PWA">
-                <i class="fa-solid fa-truck-pickup"></i> Field Crew
-            </a>
-            <a href="voucher.html?ticket=PWD-OCT-0941" class="btn-portal" title="Open CPWD Voucher">
-                <i class="fa-solid fa-file-invoice"></i> Voucher
+            <a href="/" class="btn-action" title="Open ICCC City Command Center">
+                <i class="fa-solid fa-gauge-high"></i> ICCC Command
             </a>
         </div>
     </header>
 
-    <!-- Hero Search Section -->
-    <section class="hero-search-section">
-        <h2 class="hero-headline">Track <span>PWD Road Repair</span> Status</h2>
-        <p class="hero-sub">
-            Real-time verification of roadway distress reported by BMTC transit dashcams, verified via multi-pass DBSCAN clustering, and dispatched under the CPWD Schedule of Rates.
-        </p>
-
-        <!-- Search Bar -->
-        <div class="search-container">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input 
-                type="text" 
-                class="search-input" 
-                id="search-ticket-input" 
-                placeholder="Enter PWD Ticket ID (e.g., PWD-OCT-0941, PWD-OCT-0882)..."
-                autocomplete="off"
-                spellcheck="false"
-            />
-            <button class="btn-search" id="btn-search">
-                <i class="fa-solid fa-arrow-right"></i> Track Ticket
+    <!-- 3. Live Multilingual Voice Advisory Strip -->
+    <div class="audio-substrip">
+        <div class="voice-controls">
+            <span style="color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">In-Cab Audio Voice:</span>
+            <button class="lang-btn active" id="btn-lang-kn" onclick="setVoiceLang('kn-IN')">ಕನ್ನಡ (Kannada)</button>
+            <button class="lang-btn" id="btn-lang-hi" onclick="setVoiceLang('hi-IN')">हिन्दी (Hindi)</button>
+            <button class="lang-btn" id="btn-lang-en" onclick="setVoiceLang('en-IN')">English</button>
+            <button class="btn-action" onclick="speakVoiceAlert()" style="padding: 2px 8px; font-size: 0.72rem; margin-left: 6px;">
+                <i class="fa-solid fa-play"></i> Play Voice Alert
             </button>
         </div>
-
-        <!-- Sample Quick Click Pills -->
-        <div class="sample-pills-row">
-            <span>Quick Samples:</span>
-            <button class="quick-pill" data-ticket="PWD-2026-OCT-0941">📍 PWD-OCT-0941 (Bellandur Pothole)</button>
-            <button class="quick-pill" data-ticket="PWD-2026-OCT-0882">🌊 PWD-OCT-0882 (Silk Board Waterlogging)</button>
-            <button class="quick-pill" data-ticket="PWD-2026-OCT-0715">🛠️ PWD-OCT-0715 (VVCE Mysuru Road)</button>
-            <button class="quick-pill" data-ticket="PWD-2026-OCT-0720">🚦 PWD-OCT-0720 (Hunsur Road Signal, Mysuru)</button>
-            <button class="quick-pill" data-ticket="PWD-2026-OCT-0604">✅ PWD-OCT-0604 (Hebbal Crack - Closed)</button>
+        <div class="voice-preview-banner">
+            <i class="fa-solid fa-bullhorn" style="color: var(--caution);"></i>
+            <span id="voice-banner-text">"ಮುಂದೆ 180 ಮೀಟರ್ ದೂರದಲ್ಲಿ ರಸ್ತೆ ಗುಂಡಿ ಇದೆ. ಎಡ ಲೇನ್‌ನಲ್ಲಿ ಚಲಿಸಿ."</span>
         </div>
-    </section>
+    </div>
 
-    <!-- Main Content Container -->
-    <main class="portal-content">
+    <!-- 4. Master Split-Screen Cockpit Layout -->
+    <main class="master-portal-grid" id="portal-grid">
 
-        <!-- Ticket Result Card -->
-        <article class="ticket-card" id="ticket-result-card">
-
-            <!-- Top Row: Ticket ID, Severity, Status -->
-            <div class="ticket-top-row">
-                <div class="ticket-id-group">
-                    <span class="ticket-id-tag">Official Municipal Work Order</span>
-                    <div class="ticket-number" id="ticket-number-display">PWD-2026-OCT-0941</div>
-                    <div class="ticket-hazard-title" id="ticket-hazard-title">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <span>CRITICAL POTHOLE (9.4cm Depth)</span>
-                    </div>
-                </div>
-
-                <div class="ticket-meta-badges">
-                    <span class="pill-tag pill-red" id="ticket-severity-badge">CRITICAL P1</span>
-                    <span class="pill-tag pill-cyan" id="ticket-ward-badge">BBMP WARD 85</span>
-                    <span class="pill-tag pill-green" id="ticket-privacy-badge"><i class="fa-solid fa-shield"></i> DPDP COMPLIANT</span>
-                </div>
-            </div>
-
-            <!-- 5-Stage Status Stepper -->
-            <section class="stepper-section">
-                <div class="stepper-title">
-                    <i class="fa-solid fa-list-check" style="color:var(--primary);"></i>
-                    <span>Autonomous Resolution Pipeline Status</span>
-                </div>
-
-                <div class="stepper-track">
-                    <div class="stepper-line">
-                        <div class="stepper-line-fill" id="stepper-fill" style="width: 50%;"></div>
-                    </div>
-
-                    <!-- Step 1: Spotted by Bus Dashcam -->
-                    <div class="step-node completed" id="step-1">
-                        <div class="step-bubble"><i class="fa-solid fa-video"></i></div>
-                        <div class="step-name">1. Spotted by Bus</div>
-                        <div class="step-desc">YOLOv8 Edge AI<br><span id="step-1-time">Oct 7, 14:02 IST</span></div>
-                    </div>
-
-                    <!-- Step 2: Multi-Pass Verified -->
-                    <div class="step-node completed" id="step-2">
-                        <div class="step-bubble"><i class="fa-solid fa-circle-nodes"></i></div>
-                        <div class="step-name">2. Multi-Pass Verified</div>
-                        <div class="step-desc">DBSCAN Clustering<br><span id="step-2-time">14 Fleet Passes</span></div>
-                    </div>
-
-                    <!-- Step 3: PWD Work Order Dispatched -->
-                    <div class="step-node active" id="step-3">
-                        <div class="step-bubble"><i class="fa-solid fa-file-invoice"></i></div>
-                        <div class="step-name">3. PWD Dispatched</div>
-                        <div class="step-desc">CPWD SOR Code<br><span id="step-3-time">Ticket Dispatched</span></div>
-                    </div>
-
-                    <!-- Step 4: Repair In Progress -->
-                    <div class="step-node" id="step-4">
-                        <div class="step-bubble"><i class="fa-solid fa-person-digging"></i></div>
-                        <div class="step-name">4. In Progress</div>
-                        <div class="step-desc">Field Crew Assigned<br><span id="step-4-time">Pending Site Arrival</span></div>
-                    </div>
-
-                    <!-- Step 5: Closed / Repaired -->
-                    <div class="step-node" id="step-5">
-                        <div class="step-bubble"><i class="fa-solid fa-circle-check"></i></div>
-                        <div class="step-name">5. Closed & Verified</div>
-                        <div class="step-desc">Post-Repair Audit<br><span id="step-5-time">Final Inspection</span></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Two-Column Grid: Details & Camera Preview -->
-            <div class="ticket-grid">
-
-                <!-- Left Column: Municipal Details & SLA -->
-                <div class="detail-panel">
-                    <div class="detail-panel-title">
-                        <i class="fa-solid fa-landmark" style="color:var(--primary);"></i>
-                        <span>Municipal Ward & Jurisdiction</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-lbl"><i class="fa-solid fa-map-pin"></i> Location Name</span>
-                        <span class="detail-val" id="detail-loc">Outer Ring Road near Bellandur Flyover Pillar 34</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-lbl"><i class="fa-solid fa-building-columns"></i> Ward & Division</span>
-                        <span class="detail-val" id="detail-ward">BBMP Mahadevapura Ward 85 / PWD Div 4</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-lbl"><i class="fa-solid fa-crosshairs"></i> GPS Coordinates</span>
-                        <span class="detail-val" id="detail-coords">12.9250° N, 77.6760° E</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-lbl"><i class="fa-solid fa-bus"></i> Verification Fleet</span>
-                        <span class="detail-val" id="detail-fleet">BMTC-KA01-E542 (14 Confirmed Passes)</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-lbl"><i class="fa-solid fa-calculator"></i> CPWD Repair Estimate</span>
-                        <span class="detail-val" id="detail-cost" style="color:var(--primary);">₹1,850 INR (SOR Code 16.2.1)</span>
-                    </div>
-
-                    <!-- SLA Countdown Timer Box -->
-                    <div class="sla-timer-box">
-                        <div class="sla-left">
-                            <span class="sla-lbl"><i class="fa-regular fa-clock"></i> Resolution SLA Timer</span>
-                            <div class="sla-countdown" id="sla-countdown-display">38h 15m 24s</div>
-                            <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">
-                                Maximum SLA Limit: <span id="sla-total-hours">48</span> Hours
-                            </span>
-                        </div>
-                        <div class="sla-badge" id="sla-status-badge">
-                            ON TRACK (&lt;24h)
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column: DPDP Camera Snapshot Preview -->
-                <div class="detail-panel">
-                    <div class="detail-panel-title">
-                        <i class="fa-solid fa-camera" style="color:var(--primary);"></i>
-                        <span>Edge Camera Snapshot & Privacy Guard</span>
-                    </div>
-
-                    <div class="snapshot-container">
-                        <!-- Privacy Badge -->
-                        <div class="dpdp-privacy-badge">
-                            <i class="fa-solid fa-user-shield"></i>
-                            <span>DPDP Act 2023 §2(t) Active (Zero-Persistence Blur)</span>
-                        </div>
-
-                        <!-- Real Dashcam Photo -->
-                        <img src="image1.jpg" alt="Road Surface Distress" class="snapshot-img" id="snapshot-img" onerror="this.src='image2.jpg';">
-
-                        <!-- Detection Bounding Box -->
-                        <div class="bbox-overlay" id="bbox-box">
-                            <div class="bbox-label" id="bbox-label">POTHOLE: 9.4cm (96.5%)</div>
-                        </div>
-
-                        <!-- Camera Telemetry -->
-                        <div class="camera-telemetry-tag" id="cam-telemetry-tag">
-                            CAM-01 [1080p @ 30 FPS] · CONF: 0.965
-                        </div>
-                    </div>
-
-                    <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">
-                        <span><i class="fa-solid fa-lock" style="color:var(--success);"></i> License Plates & Faces Anonymized in Volatile RAM</span>
-                        <a href="https://github.com/gaganks2006-ind/urbansight-ai" target="_blank" style="color:var(--primary); text-decoration:none;">
-                            Audit Log <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-
-        </article>
-
-                <!-- Citizen SMS / WhatsApp Notification Subscription Card -->
-        <section class="notification-card">
-            <div class="notif-text">
-                <h3><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> Stay Updated on this Road Repair</h3>
-                <p>Receive instant SMS & WhatsApp notifications when the municipal crew arrives on-site and closes the ticket.</p>
-            </div>
-
-            <form class="notif-form" id="notif-form" onsubmit="event.preventDefault(); subscribeNotification('WHATSAPP');">
-                <div style="display:flex; align-items:center; background:#FFFFFF; border:1.5px solid var(--border-medium); border-radius:8px; padding:0 8px; box-shadow:0 1px 3px rgba(0,0,0,0.06); transition:border-color 0.2s;" id="phone-input-box">
-                    <span style="font-weight:800; font-family:var(--font-mono); font-size:0.9rem; color:#57534E; padding-right:8px; border-right:1px solid var(--border-medium); display:flex; align-items:center; gap:4px;">
-                        🇮🇳 +91
-                    </span>
-                    <input type="tel" class="phone-input" id="subscriber-phone" placeholder="98765 43210" maxlength="15" autocomplete="tel" required style="border:none; background:transparent; color:#1C1917 !important; font-size:1rem; font-weight:700; font-family:var(--font-mono); padding:10px 10px; width:170px; outline:none;" oninput="formatCitizenPhoneInput(this)" />
-                </div>
-                <button type="submit" class="btn-wa" title="Subscribe to WhatsApp Alerts">
-                    <i class="fa-brands fa-whatsapp"></i> WhatsApp Alerts
-                </button>
-                <button type="button" class="btn-sms" onclick="subscribeNotification('SMS')" title="Subscribe to Normal SMS Updates">
-                    <i class="fa-solid fa-comment-sms"></i> SMS
-                </button>
-            </form>
-
-            <!-- Active Subscription & Milestone Simulator Strip -->
-            <div id="subscriber-status-strip" style="display:none; margin-top:14px; padding:10px 14px; background:#FAF8F5; border:1.5px solid #25D366; border-radius:10px; font-size:0.78rem; font-family:var(--font-mono); color:var(--text-primary); align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <div style="width:24px; height:24px; border-radius:50%; background:rgba(37,211,102,0.15); color:#25D366; display:flex; align-items:center; justify-content:center; font-size:12px;">
-                        <i class="fa-solid fa-bell"></i>
-                    </div>
-                    <div>
-                        <div style="font-weight:800; color:var(--text-primary);">Subscribed Phone: <span id="active-subscriber-number" style="color:#15803d; font-weight:900;">+91 98765 43210</span></div>
-                        <div style="font-size:0.7rem; color:var(--text-tertiary);">Live alerts active for: <b>Crew Arrival On-Site</b> &amp; <b>Ticket Resolution</b></div>
-                    </div>
-                </div>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button type="button" onclick="simulateMilestoneTrigger('IN_PROGRESS')" style="background:#FFFBEB; border:1px solid #F59E0B; color:#B45309; border-radius:6px; padding:5px 10px; font-size:0.72rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Test alert when municipal rapid response van reaches the defect location">
-                        🚜 Test Crew On-Site
-                    </button>
-                    <button type="button" onclick="simulateMilestoneTrigger('RESOLVED')" style="background:#F0FDF4; border:1px solid #10B981; color:#047857; border-radius:6px; padding:5px 10px; font-size:0.72rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Test alert when road defect is repaired and closed">
-                        ✅ Test Crew Closed
-                    </button>
-                </div>
-            </div>
-
-            <!-- Interactive Live Chat/SMS Message Bubble Preview -->
-            <div id="citizen-msg-bubble-wrap" style="display:none; margin-top:16px; padding:14px 16px; background:#EDE7DA; border-radius:10px; border:1px solid var(--border-medium); text-align:left; animation:fadeIn 0.3s ease;">
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span id="citizen-msg-channel-icon" style="font-size:18px; color:#25D366;"><i class="fa-brands fa-whatsapp"></i></span>
-                        <div>
-                            <div style="font-size:0.82rem; font-weight:800; color:var(--text-primary);" id="citizen-msg-sender">Mysuru City Corporation PWD (UrbanSight AI)</div>
-                            <div style="font-size:0.68rem; color:var(--text-tertiary);" id="citizen-msg-time">Just now · Official Municipal Gateway</div>
-                        </div>
-                    </div>
-                    <span style="font-size:0.68rem; padding:3px 8px; border-radius:12px; background:rgba(37,211,102,0.15); color:#15803d; font-weight:700;" id="citizen-msg-badge">✓ Verified Bot</span>
-                </div>
-                <div id="citizen-msg-text-bubble" style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:12px; font-family:var(--font-mono); font-size:0.75rem; color:var(--text-primary); line-height:1.5; white-space:pre-wrap; margin-bottom:10px;"></div>
-                <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <button id="btn-open-wa-chat" class="btn-wa" style="padding:6px 12px; font-size:0.75rem;" onclick="openCitizenWhatsAppChat()">
-                        <i class="fa-brands fa-whatsapp"></i> Open in WhatsApp Web / App
-                    </button>
-                    <button id="btn-open-sms-chat" class="btn-sms" style="padding:6px 12px; font-size:0.75rem;" onclick="openCitizenSMSApp()">
-                        <i class="fa-solid fa-comment-sms"></i> Open in SMS App
-                    </button>
-                </div>
-            </div>
-        </section>
-
-    
-        <!-- ========================================================================= -->
-        <!-- Adopt-a-Road Citizen Rewards Club (Anti-Spam Verified Municipal Perks)   -->
-        <!-- ========================================================================= -->
-        <section class="rewards-section" id="rewards-section" style="margin-top: 32px; background: #FAF8F5; border: 2px solid var(--border-medium); border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
+        <!-- ===================================================================
+             LEFT COLUMN: DRIVER HUD & IN-CAB TURN NAVIGATION
+             =================================================================== -->
+        <section class="driver-column">
             
-            <!-- Rewards Section Header -->
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; border-bottom: 1px solid var(--border-medium); padding-bottom: 16px;">
-                <div>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="font-size: 1.5rem; color: #D97706;">🌟</span>
-                        <h2 style="margin:0; font-size: 1.35rem; font-weight: 800; color: var(--text-primary);">
-                            Adopt-a-Road Citizen Rewards Club
-                        </h2>
-                        <span style="background: rgba(245, 158, 11, 0.15); color: #B45309; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; border: 1px solid rgba(245, 158, 11, 0.3);">
-                            Anti-Spam Verified
+            <!-- Cockpit Speedometer & Dynamics Card -->
+            <div class="dash-card">
+                <div class="card-header-row">
+                    <div class="card-title-text">
+                        <i class="fa-solid fa-gauge" style="color: var(--primary-neon);"></i>
+                        In-Cab Telematics & Speedometer
+                    </div>
+                    <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--success);">
+                        <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> KSRTC-KA09-F402
+                    </div>
+                </div>
+
+                <div class="cockpit-gauge-row">
+                    <!-- SVG Speedometer Arc -->
+                    <div class="speedo-box">
+                        <svg class="speedo-svg" viewBox="0 0 200 120">
+                            <defs>
+                                <linearGradient id="speed-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#00E5FF" />
+                                    <stop offset="65%" stop-color="#0284C7" />
+                                    <stop offset="100%" stop-color="#EF4444" />
+                                </linearGradient>
+                            </defs>
+                            <path class="speed-arc-bg" d="M 20 105 A 80 80 0 0 1 180 105" />
+                            <path class="speed-arc-val" id="speed-arc" d="M 20 105 A 80 80 0 0 1 180 105" />
+                        </svg>
+                        <div class="speed-text-overlay">
+                            <span class="speed-num" id="live-speed-val">38</span>
+                            <span class="speed-unit">KM / H</span>
+                        </div>
+                    </div>
+
+                    <!-- Dynamics & Limits -->
+                    <div class="hud-telemetry-metrics">
+                        <div class="metric-cell">
+                            <div class="metric-lbl">Speed Limit</div>
+                            <div class="metric-val" style="color: #EF4444;"><i class="fa-solid fa-ban"></i> 50 km/h</div>
+                        </div>
+                        <div class="metric-cell">
+                            <div class="metric-lbl">IMU Shock (Z)</div>
+                            <div class="metric-val" id="live-imu-val" style="color: var(--caution);">-0.42 g</div>
+                        </div>
+                        <div class="metric-cell">
+                            <div class="metric-lbl">Road Ride Index</div>
+                            <div class="metric-val" style="color: var(--success);">88 / 100 (Grade A)</div>
+                        </div>
+                        <div class="metric-cell">
+                            <div class="metric-lbl">DPDP Camera</div>
+                            <div class="metric-val" style="color: var(--primary-neon);">30 FPS · ACTIVE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Imminent Hazard Alert Card (Live Detour Navigation) -->
+            <div class="dash-card">
+                <div class="hazard-alert-box" id="hazard-box">
+                    <div class="hazard-top-meta">
+                        <span class="hazard-badge-pill" id="hazard-title-badge">CRITICAL POTHOLE · 8.6cm</span>
+                        <span class="hazard-dist-countdown">
+                            <i class="fa-solid fa-crosshairs"></i>
+                            <span id="countdown-dist">180</span>m AHEAD
                         </span>
                     </div>
-                    <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">
-                        Earn official civic points for verified road hazard alerts and corridor custody. Points are unlocked <b>ONLY</b> when AI multi-pass transit bus cameras confirm the defect — zero spam, genuine civic impact.
-                    </p>
-                </div>
 
-                <!-- Points Balance Pill -->
-                <div style="background: #EDE7DA; border: 1.5px solid var(--border-medium); border-radius: 12px; padding: 10px 18px; display: flex; align-items: center; gap: 12px;">
-                    <div>
-                        <div style="font-size: 0.68rem; color: var(--text-tertiary); font-family: var(--font-mono); font-weight: 700; text-transform: uppercase;">Citizen Balance</div>
-                        <div style="font-size: 1.5rem; font-weight: 900; color: #B45309; font-family: var(--font-mono); display:flex; align-items:center; gap:4px;">
-                            <span id="user-points-balance">850</span> <span style="font-size:0.8rem; font-weight:700;">PTS</span>
+                    <div class="maneuver-instruction-banner">
+                        <div class="maneuver-arrow-icon" id="maneuver-icon">
+                            <i class="fa-solid fa-arrow-turn-up fa-rotate-270"></i>
+                        </div>
+                        <div class="maneuver-text-group">
+                            <h3 id="maneuver-heading">MERGE LEFT IN 25 METERS</h3>
+                            <p id="maneuver-sub">Bypassing severe crater on VVCE Ring Road near Hunsur Junction</p>
                         </div>
                     </div>
-                    <div style="border-left: 1px solid var(--border-medium); padding-left: 12px;">
-                        <div style="font-size: 0.68rem; color: var(--text-tertiary); font-family: var(--font-mono);">CUSTODIAN TIER</div>
-                        <div style="font-size: 0.85rem; font-weight: 800; color: #15803d;" id="user-tier-badge">Gold Custodian 🥇</div>
+
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px; font-size: 0.74rem;">
+                        <span style="color: var(--text-secondary); font-family: var(--font-mono);">
+                            <i class="fa-solid fa-shield-halved" style="color: var(--success);"></i> Multi-Pass Auto Verified
+                        </span>
+                        <button class="btn-action" onclick="simulateNextHazardPass()" style="font-size: 0.72rem; padding: 4px 10px;">
+                            <i class="fa-solid fa-forward-step"></i> Next Hazard Sample
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Adopted Corridor & Anti-Spam Zero Trust Strip -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 22px;">
-                <!-- Adopted Road Card -->
-                <div style="background: #FFFFFF; border: 1px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(2, 132, 199, 0.12); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                            <i class="fa-solid fa-road"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">Adopted Road Corridor</div>
-                            <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-primary);" id="adopted-road-name">VVCE Ring Road &amp; Gokulam 3rd Stage</div>
-                            <div style="font-size: 0.68rem; color: #15803d; font-weight: 700;">1.4 km Protected • 1.5x Point Multiplier Active</div>
-                        </div>
+            <!-- Transit Corridors Route Switcher -->
+            <div class="dash-card">
+                <div class="card-header-row">
+                    <div class="card-title-text">
+                        <i class="fa-solid fa-route" style="color: var(--primary);"></i>
+                        Active Transit Corridor Route
                     </div>
-                    <button type="button" onclick="openAdoptRoadModal()" style="background: #FAF8F5; border: 1px solid var(--border-medium); color: var(--text-primary); border-radius: 6px; padding: 6px 10px; font-size: 0.72rem; font-weight: 700; cursor: pointer; white-space:nowrap;">
-                        <i class="fa-solid fa-plus"></i> Adopt Street
+                    <span style="font-size: 0.70rem; color: var(--text-tertiary); font-family: var(--font-mono);">GPS WAYPOINTS: 42</span>
+                </div>
+
+                <div class="route-selector-row">
+                    <button class="btn-route-chip active" onclick="switchCorridor('mysuru')">
+                        <i class="fa-solid fa-bus"></i> VVCE Ring Road (Mysuru)
+                    </button>
+                    <button class="btn-route-chip" onclick="switchCorridor('orr')">
+                        <i class="fa-solid fa-bus"></i> BMTC Outer Ring Road (ORR)
+                    </button>
+                    <button class="btn-route-chip" onclick="switchCorridor('ecity')">
+                        <i class="fa-solid fa-bus"></i> Electronic City Elevated Toll
                     </button>
                 </div>
-
-                <!-- Anti-Spam Protocol Card -->
-                <div style="background: #FFFFFF; border: 1px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(5, 150, 105, 0.12); color: var(--success); display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <div>
-                        <div style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">Anti-Spam Verification Rule</div>
-                        <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">Zero-Trust Perception Pipeline</div>
-                        <div style="font-size: 0.68rem; color: var(--text-secondary);">Points credit ONLY after bus dashcam AI or DBSCAN multi-pass confirms distress.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Verified Reports Points Ledger Table -->
-            <div style="margin-bottom: 22px;">
-                <div style="font-size: 0.82rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                    <i class="fa-solid fa-receipt" style="color: var(--primary);"></i>
-                    Recent Verified Citizen Reports &amp; Point Ledger
-                </div>
-
-                <div style="overflow-x: auto; border: 1px solid var(--border-medium); border-radius: 8px; background: #FFFFFF;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.76rem; text-align: left;">
-                        <thead>
-                            <tr style="background: #EDE7DA; border-bottom: 1px solid var(--border-medium); color: var(--text-secondary); font-family: var(--font-mono);">
-                                <th style="padding: 8px 12px;">REPORT ID</th>
-                                <th style="padding: 8px 12px;">HAZARD &amp; LOCATION</th>
-                                <th style="padding: 8px 12px;">VERIFICATION SOURCE</th>
-                                <th style="padding: 8px 12px;">STATUS</th>
-                                <th style="padding: 8px 12px; text-align:right;">POINTS</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rewards-ledger-tbody">
-                            <tr style="border-bottom: 1px solid var(--border-medium);">
-                                <td style="padding: 8px 12px; font-family:var(--font-mono); font-weight:700;">#REP-MY-881</td>
-                                <td style="padding: 8px 12px;"><b>Pothole (Critical P1)</b><br><span style="color:var(--text-tertiary);">VVCE Ring Road Junction, Gokulam</span></td>
-                                <td style="padding: 8px 12px;"><i class="fa-solid fa-bus" style="color:var(--primary);"></i> Bus #KA-09-F-1102 &amp; DBSCAN (14 Passes)</td>
-                                <td style="padding: 8px 12px;"><span style="color:#15803d; font-weight:700;">✓ Fleet Confirmed</span></td>
-                                <td style="padding: 8px 12px; text-align:right; font-family:var(--font-mono); font-weight:800; color:#15803d;">+150 PTS</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid var(--border-medium);">
-                                <td style="padding: 8px 12px; font-family:var(--font-mono); font-weight:700;">#REP-MY-842</td>
-                                <td style="padding: 8px 12px;"><b>Waterlogging (P2)</b><br><span style="color:var(--text-tertiary);">Silk Board Junction / Hosur Rd</span></td>
-                                <td style="padding: 8px 12px;"><i class="fa-solid fa-circle-nodes" style="color:var(--primary);"></i> 8 Confirmed Transit Passes</td>
-                                <td style="padding: 8px 12px;"><span style="color:#15803d; font-weight:700;">✓ Fleet Confirmed</span></td>
-                                <td style="padding: 8px 12px; text-align:right; font-family:var(--font-mono); font-weight:800; color:#15803d;">+120 PTS</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid var(--border-medium);">
-                                <td style="padding: 8px 12px; font-family:var(--font-mono); font-weight:700;">#REP-MY-790</td>
-                                <td style="padding: 8px 12px;"><b>Road Surface Fissure</b><br><span style="color:var(--text-tertiary);">Gokulam 3rd Stage Main Road</span></td>
-                                <td style="padding: 8px 12px;"><i class="fa-solid fa-shield-check" style="color:#10B981;"></i> Municipal Compaction Audit PASS</td>
-                                <td style="padding: 8px 12px;"><span style="color:#0369a1; font-weight:700;">✓ Closed &amp; Verified</span></td>
-                                <td style="padding: 8px 12px; text-align:right; font-family:var(--font-mono); font-weight:800; color:#15803d;">+200 PTS</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 8px 12px; font-family:var(--font-mono); font-weight:700;">#REP-MY-910</td>
-                                <td style="padding: 8px 12px;"><b>Surface Crack</b><br><span style="color:var(--text-tertiary);">Infosys Mysore Gate 2 Arterial</span></td>
-                                <td style="padding: 8px 12px;"><i class="fa-solid fa-clock" style="color:#F59E0B;"></i> Awaiting Next Bus Pass Verification</td>
-                                <td style="padding: 8px 12px;"><span style="color:#B45309; font-weight:700;">⏳ Pending Fleet Pass</span></td>
-                                <td style="padding: 8px 12px; text-align:right; font-family:var(--font-mono); font-weight:700; color:var(--text-tertiary);">0 PTS (Pending)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Municipal Perks Marketplace (Redeemable Rewards) -->
-            <div>
-                <div style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-tags" style="color: #D97706;"></i>
-                        Municipal Perks Marketplace (Redeem Your Civic Points)
-                    </div>
-                    <span style="font-size: 0.72rem; color: var(--text-tertiary);">Instant QR Voucher Issued Upon Claim</span>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px;">
-                    
-                    <!-- Perk 1: Transit Pass -->
-                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
-                        <div>
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size: 1.3rem; color: var(--primary);"><i class="fa-solid fa-bus"></i></span>
-                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">300 PTS</span>
-                            </div>
-                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">KSRTC / BMTC Pass Discount</h4>
-                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">₹250 OFF Monthly Pass</div>
-                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Valid on all Mysuru city and Bengaluru BMTC non-AC routes.</p>
-                        </div>
-                        <button type="button" onclick="redeemPerk('PERK-BUS-250', 'KSRTC / BMTC Pass Discount', 300, '₹250 OFF')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#0284C7;">
-                            <i class="fa-solid fa-ticket"></i> Redeem (300 Pts)
-                        </button>
-                    </div>
-
-                    <!-- Perk 2: Property Tax Rebate -->
-                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
-                        <div>
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size: 1.3rem; color: #B45309;"><i class="fa-solid fa-landmark"></i></span>
-                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">500 PTS</span>
-                            </div>
-                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">MCC Property Tax Credit</h4>
-                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">₹500 Tax Rebate Voucher</div>
-                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Direct credit against annual MCC property tax assessment.</p>
-                        </div>
-                        <button type="button" onclick="redeemPerk('PERK-TAX-500', 'MCC Property Tax Credit', 500, '₹500 Rebate')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#B45309;">
-                            <i class="fa-solid fa-stamp"></i> Redeem (500 Pts)
-                        </button>
-                    </div>
-
-                    <!-- Perk 3: Municipal Pool Pass -->
-                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
-                        <div>
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size: 1.3rem; color: #0284C7;"><i class="fa-solid fa-person-swimming"></i></span>
-                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">150 PTS</span>
-                            </div>
-                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">Chamundi Vihar Sports Pass</h4>
-                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">1-Day Free Entry Pass</div>
-                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Access to Olympic pool &amp; sports tracks at Chamundi Vihar.</p>
-                        </div>
-                        <button type="button" onclick="redeemPerk('PERK-POOL-150', 'Chamundi Vihar Sports Pass', 150, '1-Day Free Entry')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#059669;">
-                            <i class="fa-solid fa-id-card"></i> Redeem (150 Pts)
-                        </button>
-                    </div>
-
-                    <!-- Perk 4: Clean EV Charging -->
-                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
-                        <div>
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size: 1.3rem; color: #EA580C;"><i class="fa-solid fa-bolt"></i></span>
-                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">400 PTS</span>
-                            </div>
-                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">Bescom / EV Fast Charging</h4>
-                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">20 kWh Free Fast Charge</div>
-                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Redeemable at all municipal EV charging hubs.</p>
-                        </div>
-                        <button type="button" onclick="redeemPerk('PERK-EV-400', 'Bescom EV Charging Voucher', 400, '20 kWh Free')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#EA580C;">
-                            <i class="fa-solid fa-plug-circle-bolt"></i> Redeem (400 Pts)
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Redeemed Vouchers Container -->
-            <div id="redeemed-vouchers-box" style="display:none; margin-top:20px; padding:16px; background:#EDE7DA; border-radius:10px; border:1px solid var(--border-medium);">
-                <div style="font-size:0.8rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">
-                    <i class="fa-solid fa-certificate" style="color:#D97706;"></i> Your Active Municipal Reward Vouchers
-                </div>
-                <div id="active-vouchers-list" style="display:flex; flex-direction:column; gap:8px;"></div>
             </div>
 
         </section>
 
-        <!-- Modal: Official Municipal Perk Certificate -->
-        <div class="modal-backdrop" id="perk-voucher-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(28,25,23,0.7); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
-            <div style="background:#FAF8F5; border:2px solid var(--border-medium); border-radius:14px; width:100%; max-width:480px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:modalIn 0.2s ease-out;">
-                <div style="padding:16px 20px; background:#EDE7DA; border-bottom:1px solid var(--border-medium); display:flex; justify-content:space-between; align-items:center;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="font-size:18px;">🏛️</span>
-                        <div>
-                            <h3 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-primary);">Mysuru City Corporation (MCC)</h3>
-                            <p style="margin:0; font-size:0.7rem; color:var(--text-tertiary);">Official Civic Rewards Perk Certificate</p>
-                        </div>
+        <!-- ===================================================================
+             RIGHT COLUMN: CITIZEN ROAD REPAIR TRACKER & SLA OVERSIGHT
+             =================================================================== -->
+        <section class="citizen-column">
+
+            <!-- Search Bar & Quick Ticket Pills -->
+            <div class="dash-card">
+                <div class="card-header-row">
+                    <div class="card-title-text">
+                        <i class="fa-solid fa-magnifying-glass" style="color: var(--primary);"></i>
+                        Public Road Defect Tracker & Citizen Charter SLA
                     </div>
-                    <button type="button" onclick="closePerkVoucherModal()" style="background:transparent; border:none; font-size:1.4rem; color:var(--text-tertiary); cursor:pointer;">&times;</button>
+                    <span style="font-size: 0.70rem; color: var(--caution); font-family: var(--font-mono);">SLA: 48 HOURS</span>
                 </div>
-                <div style="padding:20px; text-align:center;">
-                    <div style="width:54px; height:54px; border-radius:50%; background:rgba(16,185,129,0.15); color:#10B981; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 12px auto;">
-                        <i class="fa-solid fa-circle-check"></i>
-                    </div>
-                    <h4 style="margin:0; font-size:1.15rem; font-weight:900; color:var(--text-primary);" id="modal-perk-title">KSRTC / BMTC Pass Discount</h4>
-                    <div style="font-size:1.2rem; font-weight:900; color:#15803d; margin:4px 0 12px 0;" id="modal-perk-discount">₹250 OFF Monthly Pass</div>
-                    
-                    <div style="background:#FFFFFF; border:1px solid var(--border-medium); border-radius:10px; padding:14px; margin-bottom:14px; text-align:left; font-family:var(--font-mono); font-size:0.74rem;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                            <span style="color:var(--text-tertiary);">VOUCHER CODE:</span>
-                            <span style="font-weight:800; color:var(--text-primary);" id="modal-voucher-code">MCC-PERK-2026-X891</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                            <span style="color:var(--text-tertiary);">ISSUED TO:</span>
-                            <span style="font-weight:800; color:var(--text-primary);">Gagan K. S. (MCC-GUARDIAN-849)</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                            <span style="color:var(--text-tertiary);">STATUS:</span>
-                            <span style="font-weight:800; color:#15803d;">ACTIVE · READY TO REDEEM</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between;">
-                            <span style="color:var(--text-tertiary);">VALID UNTIL:</span>
-                            <span style="font-weight:800; color:var(--text-primary);">31 Dec 2026</span>
-                        </div>
-                    </div>
 
-                    <!-- Simulated QR Code -->
-                    <div style="display:inline-block; padding:10px; background:#FFFFFF; border:1px solid var(--border-medium); border-radius:8px; margin-bottom:14px;">
-                        <div style="width:110px; height:110px; background:repeating-linear-gradient(45deg, #1C1917 0, #1C1917 8px, #FFFFFF 8px, #FFFFFF 16px); margin:0 auto; border-radius:4px; opacity:0.85;"></div>
-                        <span style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono); display:block; margin-top:4px;">SCAN AT TRANSIT KIOSK</span>
-                    </div>
+                <div class="search-pill-box">
+                    <input type="text" id="ticket-search-input" class="search-input-field" placeholder="Enter Ticket (e.g. PWD-OCT-0715) or Ward (Mahadevapura, VVCE)..." value="PWD-OCT-0715">
+                    <button class="btn-search-go" onclick="performTicketSearch()">
+                        <i class="fa-solid fa-arrow-right"></i> Track Status
+                    </button>
+                </div>
 
-                    <div style="display:flex; gap:8px; justify-content:center;">
-                        <button type="button" class="btn-wa" onclick="shareVoucherToWhatsApp()" style="font-size:0.75rem; padding:8px 14px;">
-                            <i class="fa-brands fa-whatsapp"></i> Save to WhatsApp
-                        </button>
-                        <button type="button" class="btn-sms" onclick="window.print()" style="font-size:0.75rem; padding:8px 14px;">
-                            <i class="fa-solid fa-print"></i> Print Voucher
-                        </button>
-                    </div>
+                <div class="quick-tickets-strip">
+                    <span style="font-size: 0.68rem; color: var(--text-tertiary); font-weight: 700;">QUICK LOOKUP:</span>
+                    <button class="quick-ticket-chip" onclick="loadTicket('PWD-OCT-0715')">PWD-OCT-0715 (VVCE Ring Rd)</button>
+                    <button class="quick-ticket-chip" onclick="loadTicket('MCC-2026-0941')">MCC-2026-0941 (Sayyaji Rao Rd)</button>
+                    <button class="quick-ticket-chip" onclick="loadTicket('BBMP-ORR-2473')">BBMP-ORR-2473 (Silk Board)</button>
                 </div>
             </div>
-        </div>
 
-        <!-- Modal: Adopt a Road Corridor -->
-        <div class="modal-backdrop" id="adopt-corridor-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(28,25,23,0.7); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
-            <div style="background:#FAF8F5; border:2px solid var(--border-medium); border-radius:14px; width:100%; max-width:440px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.3);">
-                <div style="padding:14px 18px; background:#EDE7DA; border-bottom:1px solid var(--border-medium); display:flex; justify-content:space-between; align-items:center;">
-                    <h3 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-primary);"><i class="fa-solid fa-road" style="color:var(--primary);"></i> Adopt a Neighborhood Corridor</h3>
-                    <button type="button" onclick="closeAdoptRoadModal()" style="background:transparent; border:none; font-size:1.4rem; color:var(--text-tertiary); cursor:pointer;">&times;</button>
-                </div>
-                <div style="padding:16px 18px; display:flex; flex-direction:column; gap:12px;">
+            <!-- Live 5-Stage Stepper & Status Banner -->
+            <div class="dash-card">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                     <div>
-                        <label style="font-size:0.72rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); display:block; margin-bottom:4px;">Select Municipal Corridor</label>
-                        <select id="adopt-corridor-select" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid var(--border-medium); background:#FFFFFF; color:var(--text-primary); font-family:var(--font-mono); font-size:0.8rem;">
-                            <option value="VVCE Ring Road &amp; Gokulam 3rd Stage">VVCE Ring Road &amp; Gokulam 3rd Stage (MCC Ward 9) · 1.4 km</option>
-                            <option value="Hunsur Road Kalamandira Signal Corridor">Hunsur Road Kalamandira Signal Corridor (MCC) · 2.1 km</option>
-                            <option value="Bengaluru ORR Bellandur Tech Corridor">Bengaluru ORR Bellandur Tech Corridor (BBMP W85) · 3.2 km</option>
-                            <option value="Chamundi Foothills Pilgrim Avenue">Chamundi Foothills Pilgrim Avenue (MCC) · 2.8 km</option>
-                        </select>
+                        <div style="font-size: 0.70rem; color: var(--text-tertiary); font-family: var(--font-mono); text-transform: uppercase;">Official Work Order</div>
+                        <h2 style="font-family: var(--font-mono); font-size: 1.35rem; font-weight: 800; color: #FFFFFF;" id="active-ticket-id">PWD-OCT-0715</h2>
                     </div>
-                    <div style="background:rgba(2,132,199,0.08); border:1px solid rgba(2,132,199,0.25); border-radius:8px; padding:10px; font-size:0.74rem; color:var(--text-primary);">
-                        <i class="fa-solid fa-sparkles" style="color:var(--primary);"></i> <b>Benefits of Adopting:</b> You become the official Civic Guardian for this street. Any pothole or road crack verified on your adopted street earns a <b>1.5x Point Multiplier</b> towards municipal perks!
+                    <span class="hazard-badge-pill" id="ticket-status-pill" style="background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success);">
+                        IN PROGRESS (STAGE 4/5)
+                    </span>
+                </div>
+
+                <!-- 5-Stage Stepper -->
+                <div class="status-stepper-wrap">
+                    <div class="stepper-progress-bar">
+                        <div class="stepper-progress-fill" id="stepper-fill"></div>
                     </div>
-                    <div style="display:flex; justify-content:flex-end; gap:8px;">
-                        <button type="button" onclick="closeAdoptRoadModal()" class="btn-sms" style="background:transparent; border:1px solid var(--border-medium); color:var(--text-secondary);">Cancel</button>
-                        <button type="button" onclick="confirmAdoptRoad()" class="btn-wa" style="background:#0284C7;"><i class="fa-solid fa-shield-heart"></i> Confirm Adoption</button>
+                    <div class="stepper-nodes-row">
+                        <div class="step-item completed" id="step-node-1">
+                            <div class="step-circle"><i class="fa-solid fa-camera"></i></div>
+                            <div class="step-label">1. Spotted</div>
+                            <div class="step-time">09:14 AM</div>
+                        </div>
+                        <div class="step-item completed" id="step-node-2">
+                            <div class="step-circle"><i class="fa-solid fa-cubes"></i></div>
+                            <div class="step-label">2. DBSCAN</div>
+                            <div class="step-time">09:14 AM</div>
+                        </div>
+                        <div class="step-item completed" id="step-node-3">
+                            <div class="step-circle"><i class="fa-solid fa-file-signature"></i></div>
+                            <div class="step-label">3. PWD Order</div>
+                            <div class="step-time">09:17 AM</div>
+                        </div>
+                        <div class="step-item active" id="step-node-4">
+                            <div class="step-circle"><i class="fa-solid fa-truck-pickup"></i></div>
+                            <div class="step-label">4. Repairing</div>
+                            <div class="step-time">In Progress</div>
+                        </div>
+                        <div class="step-item" id="step-node-5">
+                            <div class="step-circle"><i class="fa-solid fa-circle-check"></i></div>
+                            <div class="step-label">5. Certified</div>
+                            <div class="step-time">Pending</div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- 48-Hour SLA Countdown Banner -->
+                <div class="sla-countdown-banner">
+                    <div class="sla-left-info">
+                        <span style="font-size: 0.70rem; color: var(--caution); font-weight: 700; text-transform: uppercase; font-family: var(--font-mono);">
+                            <i class="fa-solid fa-clock"></i> Citizen Charter 48h SLA Deadline
+                        </span>
+                        <span class="sla-timer-text" id="sla-countdown-val">38h 14m 20s</span>
+                    </div>
+                    <div class="sla-target-badge">
+                        <i class="fa-solid fa-certificate"></i> GUARANTEED RESOLUTION
+                    </div>
+                </div>
+
+                <!-- Details & DPDP Camera Evidence Grid -->
+                <div class="ticket-detail-grid">
+                    <!-- Ticket Attributes -->
+                    <div class="detail-card-panel">
+                        <div class="prop-row">
+                            <span class="prop-lbl">Ward Jurisdiction</span>
+                            <span class="prop-val" id="ticket-ward">MCC Ward 9 (Jayalakshmipuram)</span>
+                        </div>
+                        <div class="prop-row">
+                            <span class="prop-lbl">Location Arterial</span>
+                            <span class="prop-val" id="ticket-loc">VVCE Ring Road Junction</span>
+                        </div>
+                        <div class="prop-row">
+                            <span class="prop-lbl">Hazard Type & Depth</span>
+                            <span class="prop-val" id="ticket-hazard" style="color: var(--critical);">Pothole (8.6 cm)</span>
+                        </div>
+                        <div class="prop-row">
+                            <span class="prop-lbl">Estimated Repair Cost</span>
+                            <span class="prop-val" id="ticket-cost">₹1,850 (CPWD SOR 2024)</span>
+                        </div>
+                        <div class="prop-row">
+                            <span class="prop-lbl">Assigned Repair Squad</span>
+                            <span class="prop-val" id="ticket-squad">MCC-CREW-VAN-02</span>
+                        </div>
+                    </div>
+
+                    <!-- DPDP Blurred Dashcam Evidence Preview -->
+                    <div class="evidence-photo-box">
+                        <div class="dpdp-stamp">
+                            <i class="fa-solid fa-user-shield"></i> DPDP §2(t) BLURRED
+                        </div>
+                        <div class="bbox-marker"></div>
+                        <img src="/static/image1.jpg" onerror="this.src='image1.jpg'" alt="DPDP Camera Evidence" class="evidence-img" id="ticket-photo-img">
+                        <div style="position: absolute; bottom: 6px; right: 8px; background: rgba(0,0,0,0.7); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.65rem; color: var(--primary-neon);">
+                            LAT: 12.3190° N · LNG: 76.6450° E
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions: Escalate & WhatsApp Alerts -->
+                <div class="citizen-action-strip">
+                    <button class="btn-escalate" onclick="escalateToCommissioner()">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Escalate to City Commissioner
+                    </button>
+                    <button class="btn-whatsapp-notif" onclick="openWhatsAppSubscribe()">
+                        <i class="fa-brands fa-whatsapp"></i> Get WhatsApp Repair Alert
+                    </button>
+                    <a href="/voucher.html?ticket=PWD-OCT-0715" id="ticket-voucher-btn" target="_blank" class="btn-action" style="font-size: 0.78rem;">
+                        <i class="fa-solid fa-file-invoice"></i> CPWD Voucher
+                    </a>
+                </div>
             </div>
-        </div>
+
+        </section>
 
     </main>
 
-    <!-- Notification Toast Popup -->
-    <div class="toast-popup" id="toast-popup">
-        <i class="fa-solid fa-circle-check" style="font-size:1.4rem; color:var(--success);"></i>
-        <div>
-            <div style="font-weight:700;" id="toast-title">Notification Subscribed!</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);" id="toast-msg">
-                Live repair status updates will be sent to your phone.
+    <!-- Citizen Defect Report Modal -->
+    <div class="modal-overlay" id="report-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-camera" style="color: var(--primary-neon);"></i> Report Road Defect
+                </h3>
+                <button onclick="closeReportModal()" style="background: none; border: none; color: var(--text-tertiary); font-size: 1.1rem; cursor: pointer;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-lbl">Hazard Category</label>
+                <select class="form-input" id="rep-type">
+                    <option value="POTHOLE">Deep Pothole (>5cm)</option>
+                    <option value="ROAD_CRACK">Severe Asphalt Fissure</option>
+                    <option value="WATERLOGGING">Monsoon Waterlogging</option>
+                    <option value="MANHOLE">Damaged Manhole Cover</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-lbl">Location / Landmark (Auto-GPS Detected)</label>
+                <input type="text" class="form-input" id="rep-loc" value="Hunsur Road near VVCE Campus, Mysuru (12.3190° N, 76.6450° E)">
+            </div>
+
+            <div class="form-group">
+                <label class="form-lbl">Estimated Crater Depth / Size</label>
+                <input type="text" class="form-input" id="rep-depth" value="8.5 cm">
+            </div>
+
+            <div class="form-group">
+                <label class="form-lbl">Attach Camera Snapshot (DPDP Privacy Redacted in RAM)</label>
+                <input type="file" class="form-input" accept="image/*" onchange="previewUserPhoto(event)">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
+                <button class="btn-action" onclick="closeReportModal()">Cancel</button>
+                <button class="btn-search-go" onclick="submitCitizenReport()">
+                    <i class="fa-solid fa-paper-plane"></i> Submit to AI Triage
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Portal Footer -->
-    <footer class="portal-footer">
-        <p>UrbanSight AI — Smart Cities & Mobility Track (Problem Statement #07 · SIH26124) | VVCE Mysuru</p>
-        <p style="margin-top:4px; font-size:0.72rem; color:var(--text-dim);">
-            Automated PWD Dispatch conforms to CPWD Schedule of Rates 2024 & Digital Personal Data Protection Act 2023 §2(t).
-        </p>
-    </footer>
+    <!-- Toast Notification -->
+    <div id="toast-box">
+        <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 1.1rem;"></i>
+        <span id="toast-message">Official Ticket Generated Successfully</span>
+    </div>
 
-    <!-- Client-Side State, Dynamic Search, and Hybrid Polling -->
+    <!-- JavaScript Application Engine -->
     <script>
-        // Sample static fallback dataset for offline and GitHub Pages view
-        const SAMPLE_TICKETS = {
-            "PWD-2026-OCT-0941": {
-                ticket_id: "PWD-2026-OCT-0941",
-                short_id: "PWD-OCT-0941",
-                hazard_type: "POTHOLE",
-                severity: "CRITICAL_P1",
-                hazard_name: "CRITICAL POTHOLE (9.4cm Depth)",
-                location_name: "Outer Ring Road near Bellandur Flyover Pillar 34",
-                ward: "BBMP Mahadevapura Ward 85 / PWD Div 4",
-                lat: 12.9250,
-                lng: 77.6760,
-                cluster_count: 14,
-                fleet_bus: "BMTC-KA01-E542",
-                cpwd_sor: "₹1,850 INR (SOR Code 16.2.1 - Bituminous Mastic Patch)",
-                sla_hours: 48,
-                remaining_sec: 137724, // ~38h 15m
-                status: "AUTO_DISPATCHED",
-                step: 3,
-                step1_time: "Oct 7, 14:02 IST",
-                step2_time: "14 Fleet Passes",
-                step3_time: "Oct 7, 14:10 IST",
-                step4_time: "Pending Crew Arrival",
-                step5_time: "Scheduled Oct 9",
-                image_src: "image1.jpg",
-                bbox_label: "POTHOLE: 9.4cm (96.5%)",
-                bbox_style: { top: "45%", left: "35%", width: "32%", height: "38%" }
+        // =====================================================================
+        // DATASETS & STATE
+        // =====================================================================
+        let currentVoiceLang = 'kn-IN';
+        let audioEnabled = true;
+        let currentDistance = 180;
+        let currentSpeed = 38;
+        let audioCtx = null;
+        let activeCorridorKey = 'mysuru';
+
+        const CORRIDOR_HAZARDS = {
+            'mysuru': [
+                {
+                    title: 'CRITICAL POTHOLE · 8.6cm',
+                    distance: 180,
+                    maneuver: 'MERGE LEFT IN 25 METERS',
+                    sub: 'Bypassing severe crater on VVCE Ring Road near Hunsur Junction',
+                    arrow: 'fa-arrow-turn-up fa-rotate-270',
+                    ticket: 'PWD-OCT-0715',
+                    ward: 'MCC Ward 9 (Jayalakshmipuram)',
+                    loc: 'VVCE Ring Road Junction, Mysuru',
+                    hazard: 'Pothole (8.6 cm)',
+                    cost: '₹1,850',
+                    squad: 'MCC-CREW-VAN-02',
+                    image: '/static/image1.jpg'
+                },
+                {
+                    title: 'WATERLOGGING · 15cm Deep',
+                    distance: 110,
+                    maneuver: 'REDUCE SPEED TO 20 KM/H',
+                    sub: 'Monsoon water accumulation under Columbia Asia Flyover',
+                    arrow: 'fa-arrow-down',
+                    ticket: 'MCC-2026-0941',
+                    ward: 'MCC Ward 1 (Gokulam)',
+                    loc: 'Sayyaji Rao Road Corridor, Mysuru',
+                    hazard: 'Waterlogging (15 cm)',
+                    cost: '₹2,400',
+                    squad: 'MCC-CREW-VAN-01',
+                    image: '/static/image2.jpg'
+                }
+            ],
+            'orr': [
+                {
+                    title: 'CRITICAL CRATER · 9.8cm',
+                    distance: 220,
+                    maneuver: 'MERGE RIGHT IN 30 METERS',
+                    sub: 'Severe asphalt failure near Silk Board Flyover Ramp Lane 2',
+                    arrow: 'fa-arrow-turn-up fa-rotate-90',
+                    ticket: 'BBMP-ORR-2473',
+                    ward: 'BBMP Mahadevapura Ward 85',
+                    loc: 'Silk Board Junction Flyover Approach',
+                    hazard: 'Pothole (9.8 cm)',
+                    cost: '₹3,250',
+                    squad: 'BBMP-CREW-VAN-04',
+                    image: '/static/image1.jpg'
+                }
+            ]
+        };
+
+        let currentHazardIndex = 0;
+
+        // Multilingual Voice Audio Advisory Dict
+        const VOICE_PACKS = {
+            'kn-IN': {
+                voiceCode: 'kn-IN',
+                alert: (d) => `ಮುಂದೆ ${d} ಮೀಟರ್ ದೂರದಲ್ಲಿ ರಸ್ತೆ ಗುಂಡಿ ಇದೆ. ಎಡ ಲೇನ್‌ನಲ್ಲಿ ಚಲಿಸಿ ಮತ್ತು ವೇಗವನ್ನು ಕಡಿಮೆ ಮಾಡಿ.`
             },
-            "PWD-2026-OCT-0882": {
-                ticket_id: "PWD-2026-OCT-0882",
-                short_id: "PWD-OCT-0882",
-                hazard_type: "WATERLOGGING",
-                severity: "HIGH_P2",
-                hazard_name: "WATERLOGGING (15cm Hydroplaning Puddle)",
-                location_name: "Silk Board Underpass Southbound Service Arterial",
-                ward: "BBMP Bommanahalli Ward 174 / Stormwater Division",
-                lat: 12.9125,
-                lng: 77.6395,
-                cluster_count: 8,
-                fleet_bus: "BMTC-KA57-E912",
-                cpwd_sor: "₹3,400 INR (SOR Code 12.4 - High-Flow Sump Pump Outflow)",
-                sla_hours: 24,
-                remaining_sec: 58200, // ~16h 10m
-                status: "CREW_ASSIGNED",
-                step: 4,
-                step1_time: "Oct 7, 13:30 IST",
-                step2_time: "8 Fleet Passes",
-                step3_time: "Oct 7, 13:45 IST",
-                step4_time: "Crew En Route (Van #KA01-G82)",
-                step5_time: "Pending Clearance",
-                image_src: "image2.jpg",
-                bbox_label: "WATERLOGGING: 15cm (94.2%)",
-                bbox_style: { top: "40%", left: "25%", width: "50%", height: "42%" }
+            'hi-IN': {
+                voiceCode: 'hi-IN',
+                alert: (d) => `आगे ${d} मीटर पर गहरा गड्ढा है। कृपया बाईं लेन में जाएं और गति धीमी करें।`
             },
-            "PWD-2026-OCT-0715": {
-                ticket_id: "PWD-2026-OCT-0715",
-                short_id: "PWD-OCT-0715",
-                hazard_type: "POTHOLE",
-                severity: "CRITICAL_P1",
-                hazard_name: "CRITICAL POTHOLE (8.6cm Depth)",
-                location_name: "VVCE Ring Road Junction, Gokulam, Mysuru",
-                ward: "MCC Mysuru Engineering Ward 9 / MUDA Zone",
-                lat: 12.3190,
-                lng: 76.6450,
-                cluster_count: 6,
-                fleet_bus: "KSRTC-KA09-E102",
-                cpwd_sor: "₹1,620 INR (SOR Code 16.2 - Cold Asphalt Rapid Patch)",
-                sla_hours: 48,
-                remaining_sec: 76400, // ~21h 13m
-                status: "IN_PROGRESS",
-                step: 4,
-                step1_time: "Oct 7, 12:15 IST",
-                step2_time: "6 Fleet Passes",
-                step3_time: "Oct 7, 12:30 IST",
-                step4_time: "Asphalt Compactor Active",
-                step5_time: "Finishing Layer",
-                image_src: "image1.jpg",
-                bbox_label: "POTHOLE: 8.6cm (97.1%)",
-                bbox_style: { top: "50%", left: "30%", width: "35%", height: "35%" }
-            },
-            "PWD-2026-OCT-0604": {
-                ticket_id: "PWD-2026-OCT-0604",
-                short_id: "PWD-OCT-0604",
-                hazard_type: "ROAD_CRACK",
-                severity: "MEDIUM_P3",
-                hazard_name: "TRANSVERSE ROAD CRACK (4.5m Length)",
-                location_name: "Hebbal Flyover Kempapura Bus Bay Ramp",
-                ward: "BBMP East / Yelahanka Division",
-                lat: 13.0358,
-                lng: 77.5970,
-                cluster_count: 9,
-                fleet_bus: "BMTC-KA03-E304",
-                cpwd_sor: "₹950 INR (SOR Code 14.1 - Polymeric Crack Sealant)",
-                sla_hours: 72,
-                remaining_sec: 0,
-                status: "RESOLVED",
-                step: 5,
-                step1_time: "Oct 5, 09:20 IST",
-                step2_time: "9 Fleet Passes",
-                step3_time: "Oct 5, 10:00 IST",
-                step4_time: "Oct 6, 11:30 IST",
-                step5_time: "Oct 6, 16:45 IST (Resolved)",
-                image_src: "image2.jpg",
-                bbox_label: "CRACK REPAIRED (Audit PASS)",
-                bbox_style: { top: "45%", left: "20%", width: "60%", height: "30%" }
+            'en-IN': {
+                voiceCode: 'en-IN',
+                alert: (d) => `Pothole detected ${d} meters ahead. Merge to left lane and reduce speed.`
             }
         };
 
-        let currentRemainingSec = 137724;
-        let slaInterval = null;
+        // =====================================================================
+        // VIEW SWITCHER (JUDGE DEMO MODES)
+        // =====================================================================
+        function switchViewMode(mode) {
+            const grid = document.getElementById('portal-grid');
+            document.querySelectorAll('.btn-view-pill').forEach(b => b.classList.remove('active'));
 
-        // Render Ticket
-        function renderTicket(ticket) {
-            currentTicket = ticket;
-            document.getElementById('ticket-number-display').textContent = ticket.ticket_id;
-            document.getElementById('ticket-hazard-title').innerHTML = `
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span>${ticket.hazard_name}</span>
-            `;
+            grid.classList.remove('mode-driver', 'mode-citizen');
 
-            // Severity Badge
-            const sevBadge = document.getElementById('ticket-severity-badge');
-            sevBadge.textContent = ticket.severity.replace('_', ' ');
-            if (ticket.severity.includes('P1')) {
-                sevBadge.className = 'pill-tag pill-red';
-            } else if (ticket.severity.includes('P2')) {
-                sevBadge.className = 'pill-tag pill-amber';
-            } else {
-                sevBadge.className = 'pill-tag pill-cyan';
+            if (mode === 'split') {
+                document.getElementById('pill-split').classList.add('active');
+            } else if (mode === 'driver') {
+                document.getElementById('pill-driver').classList.add('active');
+                grid.classList.add('mode-driver');
+            } else if (mode === 'citizen') {
+                document.getElementById('pill-citizen').classList.add('active');
+                grid.classList.add('mode-citizen');
             }
+        }
 
-            // Ward
-            document.getElementById('ticket-ward-badge').textContent = ticket.ward.split('/')[0].trim();
+        // =====================================================================
+        // AUDIO & VOICE SPEECH SYNTHESIS
+        // =====================================================================
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
 
-            // Details
-            document.getElementById('detail-loc').textContent = ticket.location_name;
-            document.getElementById('detail-ward').textContent = ticket.ward;
-            document.getElementById('detail-coords').textContent = `${ticket.lat.toFixed(4)}° N, ${ticket.lng.toFixed(4)}° E`;
-            document.getElementById('detail-fleet').textContent = `${ticket.fleet_bus} (${ticket.cluster_count} Confirmed Passes)`;
-            document.getElementById('detail-cost').textContent = ticket.cpwd_sor;
-            document.getElementById('sla-total-hours').textContent = ticket.sla_hours;
+        function playChimeAlert() {
+            if (!audioEnabled) return;
+            try {
+                initAudioContext();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
 
-            // Step Times
-            document.getElementById('step-1-time').textContent = ticket.step1_time;
-            document.getElementById('step-2-time').textContent = ticket.step2_time;
-            document.getElementById('step-3-time').textContent = ticket.step3_time;
-            document.getElementById('step-4-time').textContent = ticket.step4_time;
-            document.getElementById('step-5-time').textContent = ticket.step5_time;
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
 
-            // Stepper Nodes
-            const currentStep = ticket.step;
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(880, now);
+                osc1.frequency.exponentialRampToValueAtTime(1174, now + 0.15);
+
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(1760, now + 0.16);
+                osc2.frequency.exponentialRampToValueAtTime(880, now + 0.35);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.25, now + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc1.start(now);
+                osc1.stop(now + 0.2);
+                osc2.start(now + 0.15);
+                osc2.stop(now + 0.45);
+            } catch(e) {
+                console.warn("Audio chime error:", e);
+            }
+        }
+
+        function toggleAudioChime() {
+            initAudioContext();
+            audioEnabled = !audioEnabled;
+            const btn = document.getElementById('btn-audio-chime');
+            const icon = document.getElementById('chime-icon');
+            const txt = document.getElementById('chime-text');
+
+            if (audioEnabled) {
+                btn.classList.add('active-chime');
+                icon.className = 'fa-solid fa-volume-high';
+                txt.textContent = 'Chime: ON';
+                playChimeAlert();
+                showToast("In-Cab Audio Chime Activated");
+            } else {
+                btn.classList.remove('active-chime');
+                icon.className = 'fa-solid fa-volume-xmark';
+                txt.textContent = 'Chime: MUTED';
+                showToast("Audio Alerts Muted");
+            }
+        }
+
+        function setVoiceLang(code) {
+            currentVoiceLang = code;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            if (code === 'kn-IN') document.getElementById('btn-lang-kn').classList.add('active');
+            if (code === 'hi-IN') document.getElementById('btn-lang-hi').classList.add('active');
+            if (code === 'en-IN') document.getElementById('btn-lang-en').classList.add('active');
+
+            const text = VOICE_PACKS[code].alert(Math.round(currentDistance));
+            document.getElementById('voice-banner-text').textContent = `"${text}"`;
+            speakVoiceAlert();
+        }
+
+        function speakVoiceAlert() {
+            playChimeAlert();
+            const text = VOICE_PACKS[currentVoiceLang].alert(Math.round(currentDistance));
+            document.getElementById('voice-banner-text').textContent = `"${text}"`;
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = currentVoiceLang;
+                u.rate = 0.95;
+                window.speechSynthesis.speak(u);
+            }
+        }
+
+        // =====================================================================
+        // DYNAMIC HAZARD DETOUR & TICKER SIMULATOR
+        // =====================================================================
+        function updateSpeedometer(speed) {
+            currentSpeed = speed;
+            document.getElementById('live-speed-val').textContent = speed;
+            // Arc 283 is total. 0 km/h = 283 offset, 100 km/h = 0 offset
+            const offset = 283 - (speed / 100) * 283;
+            document.getElementById('speed-arc').style.strokeDashoffset = offset;
+        }
+
+        function simulateNextHazardPass() {
+            const list = CORRIDOR_HAZARDS[activeCorridorKey] || CORRIDOR_HAZARDS['mysuru'];
+            currentHazardIndex = (currentHazardIndex + 1) % list.length;
+            const h = list[currentHazardIndex];
+
+            currentDistance = h.distance;
+            document.getElementById('hazard-title-badge').textContent = h.title;
+            document.getElementById('countdown-dist').textContent = currentDistance;
+            document.getElementById('maneuver-heading').textContent = h.maneuver;
+            document.getElementById('maneuver-sub').textContent = h.sub;
+            document.getElementById('maneuver-icon').innerHTML = `<i class="fa-solid ${h.arrow}"></i>`;
+
+            loadTicket(h.ticket);
+            speakVoiceAlert();
+            showToast("Navigation Detour Alert: " + h.title);
+        }
+
+        function switchCorridor(key) {
+            activeCorridorKey = key;
+            document.querySelectorAll('.btn-route-chip').forEach(b => b.classList.remove('active'));
+            event.target.closest('.btn-route-chip').classList.add('active');
+            currentHazardIndex = -1;
+            simulateNextHazardPass();
+        }
+
+        // Dynamic countdown tick
+        setInterval(() => {
+            if (currentDistance > 30) {
+                currentDistance -= 5;
+            } else {
+                currentDistance = 180;
+            }
+            document.getElementById('countdown-dist').textContent = currentDistance;
+
+            // Slight speed fluctuation for realism
+            const jitter = Math.floor(Math.random() * 5) - 2;
+            updateSpeedometer(Math.max(25, Math.min(55, currentSpeed + jitter)));
+        }, 1200);
+
+        // =====================================================================
+        // CITIZEN SLA TRACKER & TICKET MANAGEMENT
+        // =====================================================================
+        const TICKET_DATABASE = {
+            'PWD-OCT-0715': {
+                id: 'PWD-OCT-0715',
+                status: 'IN PROGRESS (STAGE 4/5)',
+                stage: 4,
+                ward: 'MCC Ward 9 (Jayalakshmipuram)',
+                loc: 'VVCE Ring Road Junction, Mysuru',
+                hazard: 'Pothole (8.6 cm)',
+                cost: '₹1,850 (CPWD SOR 2024)',
+                squad: 'MCC-CREW-VAN-02',
+                image: '/static/image1.jpg'
+            },
+            'MCC-2026-0941': {
+                id: 'MCC-2026-0941',
+                status: 'DISPATCHED (STAGE 3/5)',
+                stage: 3,
+                ward: 'MCC Ward 1 (Gokulam)',
+                loc: 'Sayyaji Rao Road Corridor, Mysuru',
+                hazard: 'Waterlogging (15 cm)',
+                cost: '₹2,400 (CPWD SOR 2024)',
+                squad: 'MCC-CREW-VAN-01',
+                image: '/static/image2.jpg'
+            },
+            'BBMP-ORR-2473': {
+                id: 'BBMP-ORR-2473',
+                status: 'IN PROGRESS (STAGE 4/5)',
+                stage: 4,
+                ward: 'BBMP Mahadevapura Ward 85',
+                loc: 'Silk Board Junction Flyover Approach',
+                hazard: 'Pothole (9.8 cm)',
+                cost: '₹3,250 (CPWD SOR 2024)',
+                squad: 'BBMP-CREW-VAN-04',
+                image: '/static/image1.jpg'
+            }
+        };
+
+        function loadTicket(ticketId) {
+            const t = TICKET_DATABASE[ticketId] || TICKET_DATABASE['PWD-OCT-0715'];
+            document.getElementById('active-ticket-id').textContent = t.id;
+            document.getElementById('ticket-status-pill').textContent = t.status;
+            document.getElementById('ticket-ward').textContent = t.ward;
+            document.getElementById('ticket-loc').textContent = t.loc;
+            document.getElementById('ticket-hazard').textContent = t.hazard;
+            document.getElementById('ticket-cost').textContent = t.cost;
+            document.getElementById('ticket-squad').textContent = t.squad;
+
+            const img = document.getElementById('ticket-photo-img');
+            if (img) img.src = t.image;
+
+            const voucherBtn = document.getElementById('ticket-voucher-btn');
+            if (voucherBtn) voucherBtn.href = `/voucher.html?ticket=${t.id}`;
+
+            // Update stepper visual
+            updateStepperVisual(t.stage);
+        }
+
+        function updateStepperVisual(stage) {
+            const fill = document.getElementById('stepper-fill');
+            fill.style.width = ((stage - 1) / 4 * 100) + '%';
+
             for (let i = 1; i <= 5; i++) {
-                const node = document.getElementById(`step-${i}`);
-                node.className = 'step-node';
-                if (i < currentStep) {
+                const node = document.getElementById(`step-node-${i}`);
+                node.classList.remove('completed', 'active');
+                if (i < stage) {
                     node.classList.add('completed');
-                } else if (i === currentStep) {
-                    if (currentStep === 5) {
-                        node.classList.add('completed');
-                    } else {
-                        node.classList.add('active');
-                    }
+                } else if (i === stage) {
+                    node.classList.add('active');
                 }
             }
-
-            // Stepper Line Fill
-            const percent = ((currentStep - 1) / 4) * 100;
-            document.getElementById('stepper-fill').style.width = percent + '%';
-
-            // Snapshot & Bbox
-            document.getElementById('snapshot-img').src = ticket.image_src;
-            const bbox = document.getElementById('bbox-box');
-            bbox.style.top = ticket.bbox_style.top;
-            bbox.style.left = ticket.bbox_style.left;
-            bbox.style.width = ticket.bbox_style.width;
-            bbox.style.height = ticket.bbox_style.height;
-            document.getElementById('bbox-label').textContent = ticket.bbox_label;
-
-            // SLA Countdown
-            currentRemainingSec = ticket.remaining_sec;
-            updateSlaTimerDisplay();
-            if (slaInterval) clearInterval(slaInterval);
-            if (ticket.status !== 'RESOLVED' && currentRemainingSec > 0) {
-                slaInterval = setInterval(() => {
-                    currentRemainingSec = Math.max(0, currentRemainingSec - 1);
-                    updateSlaTimerDisplay();
-                }, 1000);
-            }
         }
 
-        function updateSlaTimerDisplay() {
-            const display = document.getElementById('sla-countdown-display');
-            const badge = document.getElementById('sla-status-badge');
-
-            if (currentRemainingSec <= 0) {
-                display.textContent = "COMPLETED / CLOSED";
-                display.style.color = "var(--success)";
-                badge.textContent = "SLA ACHIEVED";
-                badge.style.background = "rgba(16, 185, 129, 0.2)";
-                badge.style.color = "var(--success)";
-                return;
-            }
-
-            const h = Math.floor(currentRemainingSec / 3600);
-            const m = Math.floor((currentRemainingSec % 3600) / 60);
-            const s = currentRemainingSec % 60;
-
-            display.textContent = `${h}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
-            display.style.color = "#FFFFFF";
-
-            if (h < 12) {
-                badge.textContent = "EXPEDITED SLA (<12h)";
-                badge.style.background = "rgba(239, 68, 68, 0.2)";
-                badge.style.color = "var(--danger)";
-            } else {
-                badge.textContent = "ON TRACK (<24h)";
-                badge.style.background = "rgba(245, 158, 11, 0.2)";
-                badge.style.color = "var(--warning)";
-            }
-        }
-
-        // Search logic
-        function searchTicket(query) {
-            if (!query) return;
-            const cleanQuery = query.trim().toUpperCase();
-
-            // Match sample key or substring
-            let matched = null;
-            for (const key in SAMPLE_TICKETS) {
-                const item = SAMPLE_TICKETS[key];
-                if (
-                    item.ticket_id.toUpperCase().includes(cleanQuery) ||
-                    item.short_id.toUpperCase().includes(cleanQuery) ||
-                    item.location_name.toUpperCase().includes(cleanQuery) ||
-                    item.hazard_type.toUpperCase().includes(cleanQuery)
-                ) {
-                    matched = item;
-                    break;
+        function performTicketSearch() {
+            const val = document.getElementById('ticket-search-input').value.trim().toUpperCase();
+            if (!val) return;
+            for (let key in TICKET_DATABASE) {
+                if (key.includes(val) || TICKET_DATABASE[key].ward.toUpperCase().includes(val) || TICKET_DATABASE[key].loc.toUpperCase().includes(val)) {
+                    loadTicket(key);
+                    showToast(`Matched Ticket: ${key}`);
+                    return;
                 }
             }
+            showToast(`Searching municipal database for ${val}...`);
+            loadTicket('PWD-OCT-0715');
+        }
 
-            if (matched) {
-                renderTicket(matched);
-                document.getElementById('ticket-result-card').scrollIntoView({ behavior: 'smooth' });
-            } else {
-                showToast("Ticket Not Found", `No matching ticket for "${query}". Try sample tickets.`);
+        // SLA 48h Countdown Timer
+        let slaTotalSeconds = 38 * 3600 + 14 * 60 + 20;
+        setInterval(() => {
+            if (slaTotalSeconds > 0) slaTotalSeconds--;
+            const hrs = Math.floor(slaTotalSeconds / 3600);
+            const mins = Math.floor((slaTotalSeconds % 3600) / 60);
+            const secs = slaTotalSeconds % 60;
+            document.getElementById('sla-countdown-val').textContent = 
+                `${hrs}h ${mins < 10 ? '0' : ''}${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+        }, 1000);
+
+        // =====================================================================
+        // CITIZEN ACTIONS: ESCALATION, WHATSAPP, REPORTING
+        // =====================================================================
+        function escalateToCommissioner() {
+            const ticketId = document.getElementById('active-ticket-id').textContent;
+            showToast(`⚡ Ticket ${ticketId} Escalated to Mysuru City Commissioner (SLA Alert Triggered)`);
+            document.getElementById('ticket-status-pill').textContent = "ESCALATED TO COMMISSIONER (HIGH PRIORITY)";
+            document.getElementById('ticket-status-pill').style.background = "rgba(220, 38, 38, 0.3)";
+            document.getElementById('ticket-status-pill').style.borderColor = "var(--critical)";
+            document.getElementById('ticket-status-pill').style.color = "#FFFFFF";
+        }
+
+        function openWhatsAppSubscribe() {
+            const ticketId = document.getElementById('active-ticket-id').textContent;
+            const phone = prompt("Enter mobile number to receive live WhatsApp updates for " + ticketId + ":", "+91 98450 12345");
+            if (phone) {
+                showToast(`📲 WhatsApp alert subscription confirmed for ${ticketId} -> ${phone}`);
             }
         }
 
-        // Quick Click Pills
-        document.querySelectorAll('.quick-pill').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tid = btn.getAttribute('data-ticket');
-                document.getElementById('search-ticket-input').value = tid;
-                searchTicket(tid);
-            });
-        });
-
-        // Search Input listeners
-        document.getElementById('btn-search').addEventListener('click', () => {
-            searchTicket(document.getElementById('search-ticket-input').value);
-        });
-
-        document.getElementById('search-ticket-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                searchTicket(e.target.value);
-            }
-        });
-
-        // Toast feedback
-        function showToast(title, msg) {
-            const toast = document.getElementById('toast-popup');
-            document.getElementById('toast-title').textContent = title;
-            document.getElementById('toast-msg').textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3800);
+        function openReportModal() {
+            document.getElementById('report-modal').style.display = 'flex';
         }
 
-                // =========================================================================
-        // Citizen Mobile Number & Real-Time WhatsApp / SMS Alerts
-        // =========================================================================
-        let currentTicket = null;
-        let lastCitizenMessagePayload = { text: '', phone: '', cleanPhone: '', channel: 'WHATSAPP' };
-
-        function formatCitizenPhoneInput(input) {
-            let val = input.value.replace(/[^0-9]/g, '');
-            if (val.startsWith('91') && val.length > 10) {
-                val = val.slice(2);
-            }
-            if (val.length > 5) {
-                input.value = val.slice(0, 5) + ' ' + val.slice(5, 10);
-            } else {
-                input.value = val;
-            }
+        function closeReportModal() {
+            document.getElementById('report-modal').style.display = 'none';
         }
 
-        function getNormalizedCitizenPhone() {
-            const input = document.getElementById('subscriber-phone');
-            let raw = (input && input.value.trim()) ? input.value.trim() : '';
-            let digits = raw.replace(/[^0-9]/g, '');
-            if (digits.startsWith('91') && digits.length === 12) {
-                digits = digits.slice(2);
-            }
-            if (digits.length !== 10) {
-                // Check localStorage or default
-                const saved = localStorage.getItem('urbansight_subscribed_digits');
-                if (saved && saved.length >= 10) {
-                    digits = saved.slice(-10);
-                } else {
-                    digits = '9876543210';
-                }
-            }
-            const cleanDigits = '91' + digits;
-            const displayPhone = `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
-            return { displayPhone, cleanDigits };
+        function previewUserPhoto(e) {
+            showToast("Camera frame ingested: DPDP Act 2023 blur active");
         }
 
-        function playAlertChime(type = 'arrival') {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                if (type === 'arrival') {
-                    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-                    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
-                } else {
-                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.12);
-                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.24);
-                    osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.36);
-                }
-                gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (type === 'arrival' ? 0.4 : 0.6));
-                osc.start();
-                osc.stop(ctx.currentTime + (type === 'arrival' ? 0.4 : 0.6));
-            } catch (e) {}
-        }
+        function submitCitizenReport() {
+            const type = document.getElementById('rep-type').value;
+            const loc = document.getElementById('rep-loc').value;
+            const newTicket = "PWD-OCT-" + Math.floor(1000 + Math.random() * 9000);
 
-        function subscribeNotification(channel = 'WHATSAPP') {
-            const { displayPhone, cleanDigits } = getNormalizedCitizenPhone();
-            const phoneInput = document.getElementById('subscriber-phone');
-            if (phoneInput) phoneInput.value = displayPhone.replace('+91 ', '');
-
-            // Persist locally for field crew and future sessions
-            localStorage.setItem('urbansight_subscribed_phone', displayPhone);
-            localStorage.setItem('urbansight_subscribed_digits', cleanDigits);
-            localStorage.setItem('urbansight_subscribed_channel', channel);
-
-            const tkt = currentTicket || {
-                ticket_id: 'PWD-2026-OCT-0941',
-                hazard_name: 'Pothole (Critical P1)',
-                location_name: 'Outer Ring Road near Bellandur Flyover Pillar 34',
-                status: 'IN_PROGRESS'
+            TICKET_DATABASE[newTicket] = {
+                id: newTicket,
+                status: 'DISPATCHED (STAGE 3/5)',
+                stage: 3,
+                ward: 'MCC Ward 9 (Jayalakshmipuram)',
+                loc: loc,
+                hazard: type + ' (Verified)',
+                cost: '₹2,100 (CPWD SOR)',
+                squad: 'MCC-CREW-VAN-02',
+                image: '/static/image1.jpg'
             };
 
-            const tktId = tkt.ticket_id || 'PWD-2026-OCT-0941';
-            const locName = tkt.location_name || 'Mysuru Ring Road';
-            const hazName = tkt.hazard_name || 'Pothole';
-
-            const msgText = `🚨 *URBANSIGHT AI · MUNICIPAL ROAD REPAIR ALERT* 🚨\n\n` +
-                `Hello Citizen! You are subscribed to live updates for repair #${tktId}.\n` +
-                `📍 *Defect:* ${hazName}\n` +
-                `📌 *Location:* ${locName}\n` +
-                `⚡ *Live Milestones Active:*\n` +
-                `  1. Instant notification when Municipal Van arrives on-site\n` +
-                `  2. Instant notification when repair is completed & verified\n` +
-                `🔗 *Tracker:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${tktId}\n\n` +
-                `— Mysuru City Corporation (MCC) & Smart City Mission`;
-
-            lastCitizenMessagePayload = { text: msgText, phone: displayPhone, cleanPhone: cleanDigits, channel: channel };
-
-            // Call backend API
-            fetch('/api/subscribe-alerts', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    channel: channel.toUpperCase(),
-                    phone_number: displayPhone,
-                    ticket_id: tktId
-                })
-            }).catch(() => {});
-
-            fetch('/api/send-alert', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    channel: channel.toUpperCase(),
-                    phone_number: displayPhone,
-                    ticket_id: tktId,
-                    recipient_type: 'CITIZEN',
-                    message: msgText
-                })
-            }).catch(() => {});
-
-            showToast(
-                `✓ Subscribed via ${channel}!`,
-                `Instant alerts for ${tktId} will be delivered to ${displayPhone}.`
-            );
-
-            // Display active strip
-            const strip = document.getElementById('subscriber-status-strip');
-            const numEl = document.getElementById('active-subscriber-number');
-            if (strip && numEl) {
-                numEl.textContent = displayPhone;
-                strip.style.display = 'flex';
-            }
-
-            // Display simulated chat bubble preview
-            renderChatBubblePreview(msgText, channel, 'Subscribed Confirmation');
+            closeReportModal();
+            loadTicket(newTicket);
+            showToast(`✅ Official Work Order ${newTicket} dispatched with 48h SLA!`);
+            playChimeAlert();
         }
 
-        function renderChatBubblePreview(msgText, channel, badgeText = '✓ Verified Municipal Gateway') {
-            const bubbleWrap = document.getElementById('citizen-msg-bubble-wrap');
-            const bubbleText = document.getElementById('citizen-msg-text-bubble');
-            const channelIcon = document.getElementById('citizen-msg-channel-icon');
-            const channelBadge = document.getElementById('citizen-msg-badge');
-
-            if (bubbleWrap && bubbleText) {
-                bubbleWrap.style.display = 'block';
-                bubbleText.textContent = msgText.replace(/\\n/g, '\n');
-                if (channel.toUpperCase() === 'WHATSAPP') {
-                    channelIcon.innerHTML = '<i class="fa-brands fa-whatsapp"></i>';
-                    channelIcon.style.color = '#25D366';
-                    channelBadge.textContent = '✓ ' + (badgeText || 'WhatsApp Cloud API');
-                    channelBadge.style.background = 'rgba(37,211,102,0.15)';
-                    channelBadge.style.color = '#15803d';
-                } else {
-                    channelIcon.innerHTML = '<i class="fa-solid fa-comment-sms"></i>';
-                    channelIcon.style.color = '#0284C7';
-                    channelBadge.textContent = '✓ ' + (badgeText || 'Telecom DLT Gateway');
-                    channelBadge.style.background = 'rgba(2,132,199,0.15)';
-                    channelBadge.style.color = '#0369a1';
-                }
-            }
+        function showToast(msg) {
+            const box = document.getElementById('toast-box');
+            document.getElementById('toast-message').textContent = msg;
+            box.style.display = 'flex';
+            setTimeout(() => { box.style.display = 'none'; }, 4000);
         }
 
-        function receiveMilestoneAlert(milestone, details = {}) {
-            const { displayPhone, cleanDigits } = getNormalizedCitizenPhone();
-            const tkt = currentTicket || {
-                ticket_id: details.ticket_id || 'PWD-2026-OCT-0941',
-                location_name: details.location_name || 'VVCE Mysuru Ring Road'
-            };
-            const tktId = tkt.ticket_id || details.ticket_id || 'PWD-2026-OCT-0941';
-            const locName = details.location_name || tkt.location_name || 'Mysuru Ring Road Corridors';
-
-            let msgText = '', badgeText = '', toastTitle = '';
-
-            if (milestone === 'IN_PROGRESS' || milestone === 'CREW_ARRIVED_ON_SITE') {
-                // Stepper update to Step 4
-                for (let i = 1; i <= 3; i++) {
-                    const n = document.getElementById(`step-${i}`);
-                    if (n) { n.className = 'step-node completed'; }
-                }
-                const s4 = document.getElementById('step-4');
-                if (s4) s4.className = 'step-node active';
-                const s5 = document.getElementById('step-5');
-                if (s5) s5.className = 'step-node';
-                const fill = document.getElementById('stepper-fill');
-                if (fill) fill.style.width = '75%';
-
-                const t4 = document.getElementById('step-4-time');
-                if (t4) t4.innerHTML = `<b>Just now (Crew On-Site)</b>`;
-
-                msgText = `🚜 *URBANSIGHT AI · MUNICIPAL CREW ON-SITE* 🚜\n\n` +
-                    `Hello Citizen! Rapid Response Crew Van #KA-09-EA-4122 has ARRIVED ON-SITE at ${locName} for Work Order #${tktId}.\n` +
-                    `⚡ *Status:* IN PROGRESS (Road excavation & hot DBM asphalt compaction underway)\n` +
-                    `⏱️ *Expected completion:* Under 90 minutes\n` +
-                    `🔗 *Track live:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${tktId}\n\n` +
-                    `— Mysuru City Corporation (MCC) PWD Rapid Response Unit`;
-
-                badgeText = 'Instant Alert · Crew On-Site';
-                toastTitle = '🚜 Municipal Crew Arrived On-Site!';
-                playAlertChime('arrival');
-            } else {
-                // Stepper update to Step 5
-                for (let i = 1; i <= 5; i++) {
-                    const n = document.getElementById(`step-${i}`);
-                    if (n) { n.className = 'step-node completed'; }
-                }
-                const fill = document.getElementById('stepper-fill');
-                if (fill) fill.style.width = '100%';
-
-                const t5 = document.getElementById('step-5-time');
-                if (t5) t5.innerHTML = `<b>Just now (Repaired & Audited)</b>`;
-
-                msgText = `🎉 *URBANSIGHT AI · ROAD REPAIR COMPLETED & CLOSED* 🎉\n\n` +
-                    `Hello Citizen! Work Order #${tktId} at ${locName} has been successfully REPAIRED, AUDITED & CLOSED.\n` +
-                    `✅ *Quality Audit:* 98.4% asphalt compaction passed\n` +
-                    `🚜 *Field Unit:* Rapid Response Van #KA-09-EA-4122\n` +
-                    `📄 *Official Voucher:* https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=${tktId}\n\n` +
-                    `Thank you for helping keep Mysuru roads safe!\n` +
-                    `— Mysuru City Corporation (MCC) & Smart City Mission`;
-
-                badgeText = 'Instant Alert · Ticket Closed';
-                toastTitle = '🎉 Road Defect Repaired & Verified!';
-                playAlertChime('resolved');
-            }
-
-            lastCitizenMessagePayload = { text: msgText, phone: displayPhone, cleanPhone: cleanDigits, channel: 'WHATSAPP' };
-
-            // Show active strip
-            const strip = document.getElementById('subscriber-status-strip');
-            const numEl = document.getElementById('active-subscriber-number');
-            if (strip && numEl) {
-                numEl.textContent = displayPhone;
-                strip.style.display = 'flex';
-            }
-
-            renderChatBubblePreview(msgText, 'WHATSAPP', badgeText);
-
-            showToast(
-                toastTitle,
-                `Instant WhatsApp & SMS notifications delivered to ${displayPhone}.`
-            );
-        }
-
-        function simulateMilestoneTrigger(milestone) {
-            receiveMilestoneAlert(milestone);
-            const { displayPhone } = getNormalizedCitizenPhone();
-            const tktId = currentTicket ? currentTicket.ticket_id : 'PWD-2026-OCT-0941';
-
-            fetch('/api/send-alert', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    channel: 'WHATSAPP',
-                    phone_number: displayPhone,
-                    ticket_id: tktId,
-                    recipient_type: 'CITIZEN',
-                    message: lastCitizenMessagePayload.text
-                })
-            }).catch(() => {});
-        }
-
-        function openCitizenWhatsAppChat() {
-            const { cleanDigits } = getNormalizedCitizenPhone();
-            const clean = lastCitizenMessagePayload.cleanPhone || cleanDigits || '919876543210';
-            const url = `https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(lastCitizenMessagePayload.text.replace(/\\n/g, '\n'))}`;
-            window.open(url, '_blank');
-        }
-
-        function openCitizenSMSApp() {
-            const { displayPhone } = getNormalizedCitizenPhone();
-            const phone = lastCitizenMessagePayload.phone || displayPhone || '+919876543210';
-            const url = `sms:${phone}?body=${encodeURIComponent(lastCitizenMessagePayload.text.replace(/\\n/g, '\n'))}`;
-            window.location.href = url;
-        }
-
-        // Cross-tab synchronization with Mobile Field Crew PWA
-        try {
-            const alertChannel = new BroadcastChannel('urbansight_crew_events');
-            alertChannel.onmessage = (e) => {
-                if (e.data && e.data.status) {
-                    receiveMilestoneAlert(e.data.status, e.data);
-                }
-            };
-        } catch (e) {}
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'urbansight_crew_event' && e.newValue) {
-                try {
-                    const data = JSON.parse(e.newValue);
-                    if (data && data.status) {
-                        receiveMilestoneAlert(data.status, data);
-                    }
-                } catch (err) {}
-            }
+        // Initialize state on load
+        window.addEventListener('DOMContentLoaded', () => {
+            updateSpeedometer(38);
+            loadTicket('PWD-OCT-0715');
         });
-
-        // Hybrid API Fetch: Load live work orders if FastAPI backend is available
-        async function loadBackendWorkOrders() {
-            try {
-                const res = await fetch('/api/work-orders');
-                if (res.ok) {
-                    const orders = await res.json();
-                    if (orders && orders.length > 0) {
-                        orders.forEach(wo => {
-                            if (!SAMPLE_TICKETS[wo.ticket_id]) {
-                                SAMPLE_TICKETS[wo.ticket_id] = {
-                                    ticket_id: wo.ticket_id,
-                                    short_id: wo.ticket_id.replace('2026-', ''),
-                                    hazard_type: wo.hazard_type,
-                                    severity: wo.severity,
-                                    hazard_name: `${wo.hazard_type.replace('_', ' ')} (${wo.severity})`,
-                                    location_name: wo.location_name,
-                                    ward: wo.dispatched_to,
-                                    lat: wo.lat,
-                                    lng: wo.lng,
-                                    cluster_count: wo.cluster_count,
-                                    fleet_bus: "BMTC Transit Grid",
-                                    cpwd_sor: wo.estimated_cost_inr ? `₹${wo.estimated_cost_inr} INR` : "CPWD SOR Standard Rate",
-                                    sla_hours: wo.sla_hours,
-                                    remaining_sec: wo.sla_hours * 3600,
-                                    status: wo.status,
-                                    step: wo.status === 'RESOLVED' ? 5 : (wo.status === 'IN_PROGRESS' ? 4 : 3),
-                                    step1_time: "Auto-Logged",
-                                    step2_time: `${wo.cluster_count} Passes`,
-                                    step3_time: wo.created_at,
-                                    step4_time: "Field Crew Assigned",
-                                    step5_time: "Pending Verification",
-                                    image_src: "image1.jpg",
-                                    bbox_label: `${wo.hazard_type} (Detected)`,
-                                    bbox_style: { top: "45%", left: "35%", width: "32%", height: "38%" }
-                                };
-                            }
-                        });
-                    }
-                }
-            } catch (e) {
-                // Offline fallback is active by default
-            }
-        }
-
-        // Initialize with default ticket
-        renderTicket(SAMPLE_TICKETS["PWD-2026-OCT-0941"]);
-        // Check pre-saved subscriber phone
-        try {
-            const savedPhone = localStorage.getItem('urbansight_subscribed_phone');
-            if (savedPhone) {
-                const pInput = document.getElementById('subscriber-phone');
-                if (pInput) pInput.value = savedPhone.replace('+91 ', '');
-                const strip = document.getElementById('subscriber-status-strip');
-                const numEl = document.getElementById('active-subscriber-number');
-                if (strip && numEl) {
-                    numEl.textContent = savedPhone;
-                    strip.style.display = 'flex';
-                }
-            }
-        } catch(e) {}
-
-        
-        // =========================================================================
-        // Adopt-a-Road Citizen Rewards Program (Anti-Spam Verification & Perks)
-        // =========================================================================
-        let citizenRewardsState = {
-            points: 850,
-            tier: 'Gold Custodian 🥇',
-            adoptedRoad: 'VVCE Ring Road & Gokulam 3rd Stage',
-            redeemed: []
-        };
-
-        function loadCitizenRewards() {
-            try {
-                const saved = localStorage.getItem('urbansight_citizen_rewards');
-                if (saved) {
-                    citizenRewardsState = JSON.parse(saved);
-                    const ptsEl = document.getElementById('user-points-balance');
-                    if (ptsEl) ptsEl.textContent = citizenRewardsState.points;
-                    const tierEl = document.getElementById('user-tier-badge');
-                    if (tierEl) tierEl.textContent = citizenRewardsState.tier;
-                    const roadEl = document.getElementById('adopted-road-name');
-                    if (roadEl) roadEl.textContent = citizenRewardsState.adoptedRoad;
-                    renderRedeemedVouchers();
-                }
-            } catch(e) {}
-        }
-
-        function saveCitizenRewards() {
-            try {
-                localStorage.setItem('urbansight_citizen_rewards', JSON.stringify(citizenRewardsState));
-            } catch(e) {}
-        }
-
-        function redeemPerk(perkId, title, cost, discount) {
-            if (citizenRewardsState.points < cost) {
-                showToast("Insufficient Points", `You have ${citizenRewardsState.points} points. This perk requires ${cost} points.`);
-                return;
-            }
-
-            citizenRewardsState.points -= cost;
-            const voucherId = `MCC-PERK-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-            const voucher = {
-                id: voucherId,
-                title: title,
-                discount: discount,
-                date: new Date().toLocaleDateString()
-            };
-            citizenRewardsState.redeemed.unshift(voucher);
-            saveCitizenRewards();
-
-            // Update UI
-            document.getElementById('user-points-balance').textContent = citizenRewardsState.points;
-
-            // Audio Chime
-            playAlertChime('resolved');
-
-            // Show Toast & Modal
-            showToast("🎉 Perk Redeemed!", `You redeemed ${cost} pts for ${title}. Certificate issued.`);
-
-            document.getElementById('modal-perk-title').textContent = title;
-            document.getElementById('modal-perk-discount').textContent = discount;
-            document.getElementById('modal-voucher-code').textContent = voucherId;
-            document.getElementById('perk-voucher-modal').style.display = 'flex';
-
-            renderRedeemedVouchers();
-
-            // Call backend API
-            fetch('/api/redeem-reward', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ perk_id: perkId, citizen_id: 'MCC-GUARDIAN-849' })
-            }).catch(() => {});
-        }
-
-        function renderRedeemedVouchers() {
-            const box = document.getElementById('redeemed-vouchers-box');
-            const list = document.getElementById('active-vouchers-list');
-            if (!box || !list) return;
-
-            if (citizenRewardsState.redeemed.length > 0) {
-                box.style.display = 'block';
-                list.innerHTML = citizenRewardsState.redeemed.map(v => `
-                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:6px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
-                        <div>
-                            <b>${v.title}</b> · <span style="color:#15803d; font-weight:800;">${v.discount}</span>
-                            <div style="font-size:0.68rem; color:var(--text-tertiary); font-family:var(--font-mono);">CODE: ${v.id} · Issued ${v.date}</div>
-                        </div>
-                        <span style="color:#15803d; font-weight:700;"><i class="fa-solid fa-check"></i> Active</span>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function closePerkVoucherModal() {
-            const m = document.getElementById('perk-voucher-modal');
-            if (m) m.style.display = 'none';
-        }
-
-        function shareVoucherToWhatsApp() {
-            const code = document.getElementById('modal-voucher-code')?.textContent || 'MCC-PERK-2026-X891';
-            const title = document.getElementById('modal-perk-title')?.textContent || 'Municipal Perk';
-            const disc = document.getElementById('modal-perk-discount')?.textContent || 'Discount';
-            const { cleanDigits } = getNormalizedCitizenPhone();
-            const text = `🎉 *URBANSIGHT AI · MUNICIPAL CIVIC PERK VOUCHER* 🎉\n\n` +
-                `Perk: ${title}\n` +
-                `Benefit: ${disc}\n` +
-                `Voucher Code: #${code}\n` +
-                `Issued by: Mysuru City Corporation (MCC) Adopt-a-Road Program\n` +
-                `Validity: 31 Dec 2026\n\n` +
-                `Present this code at transit counters or municipal offices for instant redemption.`;
-
-            const url = `https://api.whatsapp.com/send?phone=${cleanDigits}&text=${encodeURIComponent(text.replace(/\\n/g, '\n'))}`;
-            window.open(url, '_blank');
-        }
-
-        function openAdoptRoadModal() {
-            const m = document.getElementById('adopt-corridor-modal');
-            if (m) m.style.display = 'flex';
-        }
-
-        function closeAdoptRoadModal() {
-            const m = document.getElementById('adopt-corridor-modal');
-            if (m) m.style.display = 'none';
-        }
-
-        function confirmAdoptRoad() {
-            const sel = document.getElementById('adopt-corridor-select');
-            const roadName = sel ? sel.value.split('(')[0].trim() : 'VVCE Ring Road';
-            citizenRewardsState.adoptedRoad = roadName;
-            citizenRewardsState.points += 50; // Bonus for adopting
-            saveCitizenRewards();
-
-            document.getElementById('adopted-road-name').textContent = roadName;
-            document.getElementById('user-points-balance').textContent = citizenRewardsState.points;
-            closeAdoptRoadModal();
-
-            playAlertChime('resolved');
-            showToast("🛣️ Road Corridor Adopted!", `You are now the Civic Guardian for ${roadName}. +50 Bonus points added!`);
-        }
-
-        loadCitizenRewards();
-        loadBackendWorkOrders();
-    // =============================================================================
-// Official Government Portal Features: Accessibility, SLA & Modals
-// =============================================================================
-
-function setFontScale(scale) {
-    document.documentElement.style.setProperty('--font-scale', scale);
-    const buttons = document.querySelectorAll('.font-sizer-group .btn-gov-tool');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    if (scale === 0.9 && buttons[0]) buttons[0].classList.add('active');
-    if (scale === 1.0 && buttons[1]) buttons[1].classList.add('active');
-    if (scale === 1.15 && buttons[2]) buttons[2].classList.add('active');
-}
-
-function toggleHighContrast() {
-    document.body.classList.toggle('high-contrast');
-    const isHc = document.body.classList.contains('high-contrast');
-    console.log('[GIGW] High contrast mode:', isHc ? 'ENABLED' : 'DISABLED');
-}
-
-function changeOfficialLanguage(lang) {
-    const banners = {
-        'kn': '⚠️ ಸಾರ್ವಜನಿಕ ಪ್ರಕಟಣೆ: ಸಯ್ಯಜಿ ರಾವ್ ರಸ್ತೆ ಡ್ರೈನೇಜ್ ಮತ್ತು ರಸ್ತೆ ಗುಂಡಿ ದುರಸ್ತಿ ಕಾರ್ಯ ನಡೆಯುತ್ತಿದೆ. ಬಸ್ ಮಾರ್ಗ 119 ಇರ್ವಿನ್ ರಸ್ತೆಯ ಮೂಲಕ ತಿರುಗಿಸಲಾಗಿದೆ.',
-        'hi': '⚠️ सार्वजनिक सूचना: सैय्याजी राव रोड पर जल निकासी और गड्ढों की मरम्मत कार्य जारी है। बस रूट 119 को इरविन रोड से मोड़ा गया है।',
-        'en': '⚠️ Sayyaji Rao Road: Drainage desilting & rapid pothole restoration in progress. Transit bus route 119 diverted via Irwin Road.'
-    };
-    const textEl = document.getElementById('notice-marquee-text');
-    if (textEl && banners[lang]) {
-        textEl.innerHTML = `<span><strong>${banners[lang]}</strong></span><span class="notice-sep">✦</span><span>🚨 <strong>MCC Rapid Response:</strong> 12 patch vans active across 9 zonal depots.</span>`;
-    }
-}
-
-function toggleNoticeMarquee() {
-    const marquee = document.getElementById('notice-marquee-text');
-    const btn = document.getElementById('btn-pause-notice');
-    if (marquee) {
-        marquee.classList.toggle('paused');
-        const isPaused = marquee.classList.contains('paused');
-        if (btn) btn.innerHTML = isPaused ? '<i class="fa-solid fa-play"></i>' : '<i class="fa-solid fa-pause"></i>';
-    }
-}
-
-function openPublicTendersModal() {
-    const modal = document.getElementById('modal-tenders');
-    if (modal) modal.style.display = 'flex';
-}
-
-function closePublicTendersModal() {
-    const modal = document.getElementById('modal-tenders');
-    if (modal) modal.style.display = 'none';
-}
-
-function openHelplinesModal() {
-    const modal = document.getElementById('modal-helplines');
-    if (modal) modal.style.display = 'flex';
-}
-
-function closeHelplinesModal() {
-    const modal = document.getElementById('modal-helplines');
-    if (modal) modal.style.display = 'none';
-}
-
-function filterHelplinesDirectory(query) {
-    const filter = (query || '').toLowerCase();
-    const rows = document.querySelectorAll('#zonal-directory-table tbody tr');
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(filter) ? '' : 'none';
-    });
-}
-
-function openGrievanceTrackerModal() {
-    const modal = document.getElementById('modal-grievance-tracker');
-    if (modal) modal.style.display = 'flex';
-}
-
-function closeGrievanceTrackerModal() {
-    const modal = document.getElementById('modal-grievance-tracker');
-    if (modal) modal.style.display = 'none';
-}
-
-function lookupGrievanceSLA(ticketId) {
-    const cleanId = (ticketId || 'MCC-2026-0941').trim();
-    const countdownEl = document.getElementById('sla-countdown-val');
-    const badgeEl = document.getElementById('sla-status-badge');
-    if (countdownEl) countdownEl.innerText = '29 hrs 30 mins remaining';
-    if (badgeEl) {
-        badgeEl.className = 'pill-tag pill-green';
-        badgeEl.innerHTML = '<i class="fa-solid fa-check"></i> WITHIN GUARANTEED SLA (48-HR)';
-    }
-    alert(`Fetched official Janahitha SLA record for Ticket: ${cleanId}\nStatus: Assigned to MCC Rapid Crew Van 04\nElapsed: 18.5 hrs | SLA Remaining: 29.5 hrs`);
-}
-
-function escalateToCommissioner() {
-    const ticketId = (document.getElementById('sla-ticket-input')?.value || 'MCC-2026-0941').trim();
-    const countdownEl = document.getElementById('sla-countdown-val');
-    const badgeEl = document.getElementById('sla-status-badge');
-    if (countdownEl) countdownEl.innerText = 'ESCALATED PRIORITY';
-    if (badgeEl) {
-        badgeEl.style.background = '#fee2e2';
-        badgeEl.style.color = '#dc2626';
-        badgeEl.style.borderColor = '#fca5a5';
-        badgeEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ESCALATED TO COMMISSIONER';
-    }
-    alert(`[KARNATAKA SAKALA SERVICES ACT 2011]\nGrievance ${ticketId} has been escalated to Zonal Commissioner (Zone 1 - Gokulam).\nEscalation Token: MCC-ESC-2026-8819\nDirect Notification dispatched to Assistant Executive Engineer.`);
-}
-
-function openInspectionCertificateModal() {
-    const modal = document.getElementById('modal-inspection-certificate');
-    if (modal) modal.style.display = 'flex';
-}
-
-function closeInspectionCertificateModal() {
-    const modal = document.getElementById('modal-inspection-certificate');
-    if (modal) modal.style.display = 'none';
-}
-
-function printInspectionCertificate() {
-    window.print();
-}
-
-function openAllNoticesModal() {
-    const modal = document.getElementById('modal-notices');
-    if (modal) modal.style.display = 'flex';
-}
-
-function closeAllNoticesModal() {
-    const modal = document.getElementById('modal-notices');
-    if (modal) modal.style.display = 'none';
-}
-
-
-</script>
-
+    </script>
 </body>
 </html>

@@ -2230,6 +2230,28 @@ body.high-contrast * {
 .waypoint-badge.detour { border-color: #ea580c; color: #ea580c; background: #fff7ed; }
 .waypoint-badge.end { border-color: #2563eb; color: #2563eb; background: #eff6ff; }
 
+
+/* Button styling for unified portal switcher pills */
+button.portal-pill {
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    line-height: inherit;
+    outline: none;
+}
+button.portal-pill:hover {
+    color: var(--text-primary);
+    background: var(--bg-pill-hover);
+}
+button.portal-pill.active {
+    background: var(--primary);
+    color: #FFFFFF;
+    border-color: var(--primary);
+    font-weight: 600;
+    box-shadow: 0 2px 8px var(--primary-glow);
+}
+
 </style>
 </head>
 <body>
@@ -2297,44 +2319,38 @@ body.high-contrast * {
             </div>
         </div>
 
-        <!-- Portal Switcher: 6 Dedicated Stakeholder Dashboards -->
+        <!-- Portal Switcher: Unified Stakeholder Dashboards in ONE Portal -->
         <div class="header-nav-center">
             <nav class="portal-nav-pills" aria-label="Smart City Stakeholder Dashboards">
                 <!-- 1. Command Center: City Commissioners -->
-                <a href="index.html" class="portal-pill active" title="Integrated Command & Control Center (For City Commissioners & Traffic Police)">
+                <button type="button" class="portal-pill active" data-portal="command-center" onclick="switchPortalView('command-center')" title="Integrated Command & Control Center (For City Commissioners & Traffic Police)">
                     <i class="fa-solid fa-gauge-high"></i>
                     <span>Command Center</span>
-                </a>
+                </button>
 
-                <!-- 2. Driver HUD: Transit Pilots -->
-                <a href="driver_console.html" target="_blank" class="portal-pill" title="In-Cab Bus Driver HUD Console (For BMTC & KSRTC Drivers)">
-                    <i class="fa-solid fa-tablet-screen-button"></i>
-                    <span>Driver HUD</span>
-                </a>
+                <!-- 2. Merged Citizen & Driver Navigation Console -->
+                <button type="button" class="portal-pill" data-portal="citizen-nav" onclick="switchPortalView('citizen-nav')" title="Unified Citizen Tracker & Driver In-Cab Navigation Console">
+                    <i class="fa-solid fa-compass"></i>
+                    <span>Citizen & Driver Nav</span>
+                </button>
 
-                <!-- 3. Citizen Portal: Public Commuters -->
-                <a href="citizen_portal.html" target="_blank" class="portal-pill" title="Public Citizen Road Repair Tracker (For Public & Commuters)">
-                    <i class="fa-solid fa-users"></i>
-                    <span>Citizen Portal</span>
-                </a>
-
-                <!-- 4. Field Crew PWA: Road Repair Vans -->
-                <a href="field_crew.html" target="_blank" class="portal-pill" title="Mobile Field Crew Repair PWA (For PWD Repair Vans)">
+                <!-- 3. Field Crew PWA: Road Repair Vans -->
+                <button type="button" class="portal-pill" data-portal="field-crew" onclick="switchPortalView('field-crew')" title="Mobile Field Crew Repair PWA (For PWD Repair Vans)">
                     <i class="fa-solid fa-truck-pickup"></i>
                     <span>Field Crew</span>
-                </a>
+                </button>
 
-                <!-- 5. Ward Analytics: Corporators & Finance -->
-                <a href="analytics.html" target="_blank" class="portal-pill" title="Municipal Ward Analytics & SLA Leaderboard (For Corporators & Finance)">
+                <!-- 4. Ward Analytics: Corporators & Finance -->
+                <button type="button" class="portal-pill" data-portal="analytics" onclick="switchPortalView('analytics')" title="Municipal Ward Analytics & SLA Leaderboard (For Corporators & Finance)">
                     <i class="fa-solid fa-chart-pie"></i>
                     <span>Ward Analytics</span>
-                </a>
+                </button>
 
-                <!-- 6. CPWD Voucher: Auditors & Contractors -->
-                <a href="voucher.html?ticket=PWD-OCT-0941" target="_blank" class="portal-pill" title="Official CPWD Statutory Tender Voucher (For Auditors & Contractors)">
+                <!-- 5. CPWD Voucher: Auditors & Contractors -->
+                <button type="button" class="portal-pill" data-portal="voucher" onclick="switchPortalView('voucher')" title="Official CPWD Statutory Tender Voucher (For Auditors & Contractors)">
                     <i class="fa-solid fa-file-invoice"></i>
                     <span>CPWD Voucher</span>
-                </a>
+                </button>
 
                 <!-- Official Infothon GitHub Repo -->
                 <a href="https://github.com/Infothon-7-0/AGENTIC-AI-05-EcoLogic" target="_blank" class="portal-pill" title="Official Hackathon Repository on GitHub">
@@ -2343,45 +2359,6 @@ body.high-contrast * {
                 </a>
             </nav>
         </div>
-
-        <!-- Header Action Controls -->
-        <div class="header-actions">
-            <button class="btn btn-primary" id="btn-simulate-detect" title="Trigger Multi-Agent Transit Bus Detection Pipeline">
-                <i class="fa-solid fa-bolt"></i> Simulate Bus Pass
-            </button>
-            <button class="btn btn-glass" id="btn-export-csv" title="Export CPWD Tabular Work Orders CSV">
-                <i class="fa-solid fa-file-csv"></i> Export CSV
-            </button>
-            <button class="btn btn-glass" id="btn-export-geojson" title="Export OGC Standard GeoJSON Telemetry">
-                <i class="fa-solid fa-file-export"></i> Export GeoJSON
-            </button>
-            <button class="btn btn-glass active-toggle" id="btn-toggle-privacy" title="Toggle On-Device DPDP Act 2023 Gaussian Privacy Redaction">
-                <i class="fa-solid fa-shield-halved"></i> Privacy Blur: ON
-            </button>
-            <button class="btn btn-glass" id="btn-driver-alert" title="Test Live In-Cab Driver Tablet Alert Modal">
-                <i class="fa-solid fa-bell"></i>
-            </button>
-            <div class="telemetry-clock-box" id="telemetry-clock">19:54:00 IST</div>
-        </div>
-    </header>
-
-<!-- 3. Main Command Grid -->
-    <main class="command-grid-layout">
-        
-        <!-- Left Column: Live GIS Map + Edge Dashcam Simulator -->
-        <div class="center-left-column">
-            
-            <!-- Panel 1: Leaflet GIS Real-Time Map -->
-            <div class="panel-container">
-                <div class="panel-header">
-                    <div class="panel-header-title">
-                        <i class="fa-solid fa-map-location-dot" style="color: var(--primary);"></i>
-                        Smart City Integrated Command & Control Center (ICCC) GIS Canvas
-                    </div>
-                    <div class="panel-header-meta">
-                        Bengaluru & Mysuru Transit Mesh · 30 FPS Telemetry
-                    </div>
-                </div>
 
                 <div class="map-viewport">
                     <div id="gis-map"></div>
@@ -2785,6 +2762,40 @@ body.high-contrast * {
         </div>
 
     </main>
+
+    <!-- 4. Seamless In-Portal Unified Module View -->
+    <section id="unified-portal-view" style="display: none; padding: 10px 18px 20px; width: 100%; min-height: calc(100vh - 75px); box-sizing: border-box;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.06); display: flex; flex-direction: column; height: calc(100vh - 100px);">
+            <!-- Contextual Portal Module Bar -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 9px 16px; background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle); flex-shrink: 0;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button type="button" class="btn btn-glass" onclick="switchPortalView('command-center')" style="font-size: 0.78rem; padding: 5px 12px; cursor: pointer;" title="Back to Main ICCC Command Center">
+                        <i class="fa-solid fa-arrow-left"></i> Command Center
+                    </button>
+                    <div style="width: 1px; height: 18px; background: var(--border-medium);"></div>
+                    <span id="portal-view-title" style="font-family: var(--font-heading); font-weight: 700; font-size: 0.92rem; color: var(--text-primary); display: flex; align-items: center;">
+                        Module View
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 0.70rem; color: var(--success); font-weight: 700; background: var(--success-muted); padding: 2px 8px; border-radius: 999px;">
+                        <span style="width: 6px; height: 6px; background: var(--success); border-radius: 50%;"></span>
+                        LIVE UNIFIED PORTAL
+                    </span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button type="button" class="btn btn-glass" onclick="reloadPortalFrame()" style="font-size: 0.78rem; padding: 5px 12px; cursor: pointer;" title="Reload current view">
+                        <i class="fa-solid fa-rotate-right"></i> Reload
+                    </button>
+                    <a id="portal-external-link" href="#" target="_blank" class="btn btn-glass" style="font-size: 0.78rem; padding: 5px 12px; text-decoration: none;" title="Open in Dedicated Tab / Tablet Window">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Popout Tab
+                    </a>
+                </div>
+            </div>
+            <!-- Embedded Full-Width Module Viewport -->
+            <div style="flex: 1; width: 100%; position: relative; background: #0B0F19;">
+                <iframe id="portal-frame" src="about:blank" style="width: 100%; height: 100%; border: none; display: block;" title="UrbanSight Module View"></iframe>
+            </div>
+        </div>
+    </section>
 
     <!-- In-Cab Driver Alert Modal (HUD Tablet) -->
     <div class="modal-overlay" id="driver-alert-modal">
@@ -5329,5 +5340,133 @@ function speakMapDirectionPrompt() {
         </div>
     </footer>
 
+<script>
+
+/* =============================================================================
+   Unified Single-Portal Multi-Dashboard Engine
+   Seamlessly renders all 6 stakeholder dashboards in ONE window without opening new tabs
+   ============================================================================= */
+
+const UNIFIED_PORTAL_CONFIG = {
+    'command-center': {
+        title: 'Smart City ICCC Command System',
+        icon: 'fa-gauge-high',
+        url: ''
+    },
+    'citizen-nav': {
+        title: 'Unified Citizen Navigation & Road Safety Console',
+        icon: 'fa-compass',
+        url: 'citizen_portal.html'
+    },
+    'driver-hud': {
+        title: 'Unified Citizen Navigation & Road Safety Console',
+        icon: 'fa-compass',
+        url: 'citizen_portal.html'
+    },
+    'citizen-portal': {
+        title: 'Unified Citizen Navigation & Road Safety Console',
+        icon: 'fa-compass',
+        url: 'citizen_portal.html'
+    },
+    'field-crew': {
+        title: 'Mobile Field Crew Repair PWA (PWD Vans)',
+        icon: 'fa-truck-pickup',
+        url: 'field_crew.html'
+    },
+    'analytics': {
+        title: 'Municipal Ward Analytics & SLA Leaderboard',
+        icon: 'fa-chart-pie',
+        url: 'analytics.html'
+    },
+    'voucher': {
+        title: 'Official CPWD Statutory Tender Voucher',
+        icon: 'fa-file-invoice',
+        url: 'voucher.html?ticket=PWD-OCT-0941'
+    }
+};
+
+function switchPortalView(portalKey, customUrl) {
+    if (!portalKey || !UNIFIED_PORTAL_CONFIG[portalKey]) {
+        portalKey = 'command-center';
+    }
+
+    // Update nav pills
+    document.querySelectorAll('.portal-pill').forEach(pill => {
+        if (pill.dataset && pill.dataset.portal) {
+            if (pill.dataset.portal === portalKey) {
+                pill.classList.add('active');
+            } else {
+                pill.classList.remove('active');
+            }
+        }
+    });
+
+    const commandCenter = document.getElementById('main-command-center');
+    const portalView = document.getElementById('unified-portal-view');
+    const portalFrame = document.getElementById('portal-frame');
+    const portalTitle = document.getElementById('portal-view-title');
+    const portalExternalBtn = document.getElementById('portal-external-link');
+
+    if (portalKey === 'command-center') {
+        if (portalView) portalView.style.display = 'none';
+        if (commandCenter) {
+            commandCenter.style.display = 'grid';
+            if (window.gisMap) {
+                setTimeout(() => window.gisMap.invalidateSize(), 150);
+            }
+        }
+        if (window.location.hash) {
+            history.replaceState(null, null, ' ');
+        }
+    } else {
+        const config = UNIFIED_PORTAL_CONFIG[portalKey];
+        const targetUrl = customUrl || config.url;
+
+        if (commandCenter) commandCenter.style.display = 'none';
+        if (portalView) portalView.style.display = 'block';
+
+        if (portalTitle) {
+            portalTitle.innerHTML = `<i class="fa-solid ${config.icon}" style="color:var(--primary); margin-right:8px;"></i> ${config.title}`;
+        }
+        if (portalExternalBtn) {
+            portalExternalBtn.href = targetUrl;
+        }
+
+        if (portalFrame) {
+            if (portalFrame.getAttribute('data-active-url') !== targetUrl) {
+                portalFrame.src = targetUrl;
+                portalFrame.setAttribute('data-active-url', targetUrl);
+            }
+        }
+
+        window.location.hash = '#' + portalKey;
+    }
+}
+
+function reloadPortalFrame() {
+    const portalFrame = document.getElementById('portal-frame');
+    if (portalFrame && portalFrame.src && portalFrame.src !== 'about:blank') {
+        portalFrame.src = portalFrame.src;
+    }
+}
+
+// Support hash routing on page load / browser back-forward
+window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && UNIFIED_PORTAL_CONFIG[hash]) {
+        switchPortalView(hash);
+    }
+});
+
+window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && UNIFIED_PORTAL_CONFIG[hash]) {
+        switchPortalView(hash);
+    } else if (!hash) {
+        switchPortalView('command-center');
+    }
+});
+
+</script>
 </body>
 </html>

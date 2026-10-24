@@ -1967,3 +1967,129 @@ function speakMapDirectionPrompt() {
         alert(prompt);
     }
 }
+
+
+/* =============================================================================
+   Unified Single-Portal Multi-Dashboard Engine
+   Seamlessly renders all 6 stakeholder dashboards in ONE window without opening new tabs
+   ============================================================================= */
+
+const UNIFIED_PORTAL_CONFIG = {
+    'command-center': {
+        title: 'Smart City ICCC Command System',
+        icon: 'fa-gauge-high',
+        url: ''
+    },
+    'citizen-nav': {
+        title: 'Unified Citizen Navigation & Road Safety Console',
+        icon: 'fa-compass',
+        url: 'citizen_portal.html'
+    },
+    'driver-hud': {
+        title: 'Unified Citizen Navigation & Road Safety Console',
+        icon: 'fa-compass',
+        url: 'citizen_portal.html'
+    },
+    'citizen-portal': {
+        title: 'Unified Citizen Navigation & Road Safety Console',
+        icon: 'fa-compass',
+        url: 'citizen_portal.html'
+    },
+    'field-crew': {
+        title: 'Mobile Field Crew Repair PWA (PWD Vans)',
+        icon: 'fa-truck-pickup',
+        url: 'field_crew.html'
+    },
+    'analytics': {
+        title: 'Municipal Ward Analytics & SLA Leaderboard',
+        icon: 'fa-chart-pie',
+        url: 'analytics.html'
+    },
+    'voucher': {
+        title: 'Official CPWD Statutory Tender Voucher',
+        icon: 'fa-file-invoice',
+        url: 'voucher.html?ticket=PWD-OCT-0941'
+    }
+};
+
+function switchPortalView(portalKey, customUrl) {
+    if (!portalKey || !UNIFIED_PORTAL_CONFIG[portalKey]) {
+        portalKey = 'command-center';
+    }
+
+    // Update nav pills
+    document.querySelectorAll('.portal-pill').forEach(pill => {
+        if (pill.dataset && pill.dataset.portal) {
+            if (pill.dataset.portal === portalKey) {
+                pill.classList.add('active');
+            } else {
+                pill.classList.remove('active');
+            }
+        }
+    });
+
+    const commandCenter = document.getElementById('main-command-center');
+    const portalView = document.getElementById('unified-portal-view');
+    const portalFrame = document.getElementById('portal-frame');
+    const portalTitle = document.getElementById('portal-view-title');
+    const portalExternalBtn = document.getElementById('portal-external-link');
+
+    if (portalKey === 'command-center') {
+        if (portalView) portalView.style.display = 'none';
+        if (commandCenter) {
+            commandCenter.style.display = 'grid';
+            if (window.gisMap) {
+                setTimeout(() => window.gisMap.invalidateSize(), 150);
+            }
+        }
+        if (window.location.hash) {
+            history.replaceState(null, null, ' ');
+        }
+    } else {
+        const config = UNIFIED_PORTAL_CONFIG[portalKey];
+        const targetUrl = customUrl || config.url;
+
+        if (commandCenter) commandCenter.style.display = 'none';
+        if (portalView) portalView.style.display = 'block';
+
+        if (portalTitle) {
+            portalTitle.innerHTML = `<i class="fa-solid ${config.icon}" style="color:var(--primary); margin-right:8px;"></i> ${config.title}`;
+        }
+        if (portalExternalBtn) {
+            portalExternalBtn.href = targetUrl;
+        }
+
+        if (portalFrame) {
+            if (portalFrame.getAttribute('data-active-url') !== targetUrl) {
+                portalFrame.src = targetUrl;
+                portalFrame.setAttribute('data-active-url', targetUrl);
+            }
+        }
+
+        window.location.hash = '#' + portalKey;
+    }
+}
+
+function reloadPortalFrame() {
+    const portalFrame = document.getElementById('portal-frame');
+    if (portalFrame && portalFrame.src && portalFrame.src !== 'about:blank') {
+        portalFrame.src = portalFrame.src;
+    }
+}
+
+// Support hash routing on page load / browser back-forward
+window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && UNIFIED_PORTAL_CONFIG[hash]) {
+        switchPortalView(hash);
+    }
+});
+
+window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && UNIFIED_PORTAL_CONFIG[hash]) {
+        switchPortalView(hash);
+    } else if (!hash) {
+        switchPortalView('command-center');
+    }
+});

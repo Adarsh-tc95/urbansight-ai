@@ -1166,3 +1166,25 @@ html, body {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* Button styling for unified portal switcher pills */
+button.portal-pill {
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    line-height: inherit;
+    outline: none;
+}
+button.portal-pill:hover {
+    color: var(--text-primary);
+    background: var(--bg-pill-hover);
+}
+button.portal-pill.active {
+    background: var(--primary);
+    color: #FFFFFF;
+    border-color: var(--primary);
+    font-weight: 600;
+    box-shadow: 0 2px 8px var(--primary-glow);
+}

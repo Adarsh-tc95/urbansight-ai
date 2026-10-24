@@ -102,7 +102,8 @@ def read_voucher(request: Request):
     """Renders the official printable CPWD tender voucher."""
     return templates.TemplateResponse(request=request, name="voucher.html")
 
-@app.get("/analytics")
+@app.get('/analytics')
+@app.get('/analytics.html')
 def read_analytics(request: Request):
     """Renders the executive ward performance & municipal ROI analytics dashboard."""
     return templates.TemplateResponse(request=request, name="analytics.html")
