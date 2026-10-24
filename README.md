@@ -17,9 +17,10 @@
 
 | Component | Cloud URL | Description |
 | :--- | :--- | :--- |
-| 🏙️ **Smart City ICCC Command Center** | [**gaganks2006-ind.github.io/urbansight-ai**](https://gaganks2006-ind.github.io/urbansight-ai/) | Real-time Leaflet GIS tracking of bus fleets, hazard clusters, and PWD ticket queues. |
-| 🚌 **In-Cab Driver HUD Console** | [**.../driver_console.html**](https://gaganks2006-ind.github.io/urbansight-ai/driver_console.html) | Tablet HUD with animated speedometer, audio chime alert, and approaching hazard lane-merge advice. |
-| 👥 **Citizen Repair Tracking Portal** | [**.../citizen_portal.html**](https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html) | Public lookup page tracking repair stages from dashcam detection to final municipal fix. |
+| 🏙️ **Smart City ICCC Command Center** | [**gaganks2006-ind.github.io/urbansight-ai**](https://gaganks2006-ind.github.io/urbansight-ai/) | Real-time Leaflet GIS tracking across Mysuru & Bengaluru, 40-waypoint ORR corridor, live bus telemetry, and instant Video/Photo AI Inspection Analyzer. |
+| 🚌 **In-Cab Driver HUD Console** | [**.../driver_console.html**](https://gaganks2006-ind.github.io/urbansight-ai/driver_console.html) | Tablet HUD with animated speedometer, audio chime alert, approaching hazard lane-merge advice, and route toggle (Bengaluru 500D ↔ Mysuru Ring Road). |
+| 👥 **Citizen Repair Tracking Portal** | [**.../citizen_portal.html**](https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html) | Public lookup page tracking repair stages from dashcam detection to final municipal fix (with BBMP & MCC Ward 9 samples). |
+| 📊 **Municipal Ward Analytics** | [**.../analytics.html**](https://gaganks2006-ind.github.io/urbansight-ai/analytics.html) | Executive governance dashboard tracking ward SLA adherence, MTTR, defect compositions, and 8.4x maintenance ROI savings. |
 | 🛠️ **Mobile Field Crew PWA** | [**.../field_crew.html**](https://gaganks2006-ind.github.io/urbansight-ai/field_crew.html) | Mobile PWA for PWD repair vans with Google Maps directions, Before/After image audits, and resolution triggers. |
 | 📄 **Official CPWD Tender Voucher** | [**.../voucher.html?ticket=PWD-OCT-0941**](https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=PWD-OCT-0941) | Government letterhead voucher with itemized SOR 2024 breakdown, 18% GST, penalty clauses, and signature blocks. |
 
