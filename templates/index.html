@@ -2557,10 +2557,18 @@ h1, h2, h3 {
                 </div>
 
                 <div class="dashcam-split-panel">
-                    <div class="video-simulation-canvas-box" style="position:relative;">
-                        <video id="live-camera-video" autoplay playsinline muted style="display:none;"></video>
-                        <video id="uploaded-media-video" playsinline muted loop style="display:none;"></video>
-                        <canvas id="dashcam-canvas" width="480" height="250"></canvas>
+                    <div class="video-simulation-canvas-box" style="position:relative; width:100%; height:250px; background:#04060C; overflow:hidden;">
+                        <!-- Real Hardware-Accelerated Video Layer -->
+                        <video id="uploaded-media-video" playsinline muted loop autoplay
+                               style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:1; display:block;">
+                        </video>
+                        <video id="live-camera-video" playsinline muted autoplay
+                               style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:1; display:none;">
+                        </video>
+                        <!-- Transparent Overlay Canvas for AI Bounding Boxes, DPDP Blur, and Telemetry -->
+                        <canvas id="dashcam-canvas" width="480" height="250"
+                                style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:2; cursor:pointer;">
+                        </canvas>
                         
                         <div class="hud-corner-telemetry" id="media-hud-telemetry">
                             <div id="media-hud-feed-name">FEED: KSRTC-KA09-E102 (MYSURU)</div>
@@ -4014,6 +4022,14 @@ function initDashcamSimulator() {
     baseImage.src = 'image1.jpg';
     mediaState.baseImage = baseImage;
 
+        // Ensure video playback starts on initial user interaction if autoplay was deferred
+    document.addEventListener('click', function unlockVideo() {
+        const vid = document.getElementById('uploaded-media-video');
+        if (vid && vid.paused && mediaState.mode === 'video') {
+            vid.play().catch(e => {});
+        }
+    }, { once: true });
+
     // Auto-start 4-Video Transit Inspection Tour on page load
     setTimeout(() => {
         if (typeof runTourStep === 'function') {
@@ -4065,27 +4081,21 @@ function initDashcamSimulator() {
 
         let hasDrawnMedia = false;
 
-        // 1. Draw Real Uploaded Video / Camera Stream Frame
-        if (mediaState.userVideo && (mediaState.userVideo.readyState >= 1 || !mediaState.userVideo.paused)) {
-            try {
-                ctx.drawImage(mediaState.userVideo, 0, 0, canvas.width, canvas.height);
-                hasDrawnMedia = true;
-            } catch (e) {
-                hasDrawnMedia = false;
+        // When mode is video, the underlying HTML5 <video> element plays directly at z-index:1.
+        // The canvas overlay at z-index:2 is transparent and draws only AI bounding boxes & HUD telemetry.
+        if (mediaState.mode === 'video') {
+            hasDrawnMedia = true; // Underlying video is visible directly!
+            const vid = document.getElementById('uploaded-media-video');
+            if (vid && vid.style.display !== 'block') {
+                vid.style.display = 'block';
             }
-        } 
-        
-        // 2. Draw Real Uploaded Photo
-        if (!hasDrawnMedia && mediaState.userImage && mediaState.userImage.complete && mediaState.userImage.naturalWidth > 0) {
+        } else if (mediaState.mode === 'image' && mediaState.userImage && mediaState.userImage.complete && mediaState.userImage.naturalWidth > 0) {
             ctx.drawImage(mediaState.userImage, 0, 0, canvas.width, canvas.height);
             hasDrawnMedia = true;
-        } 
-        
-        // 3. Draw Default Dashcam Base Image
-        if (!hasDrawnMedia && baseImage.complete && baseImage.naturalWidth > 0) {
+        } else if (mediaState.mode === 'image' && baseImage.complete && baseImage.naturalWidth > 0) {
             ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
             hasDrawnMedia = true;
-        } 
+        }
         
         // 4. Synthetic Road Perspective Fallback
         if (!hasDrawnMedia) {
@@ -4425,23 +4435,25 @@ function runTourStep(index) {
     if (icon) icon.className = autoTourActive ? "fa-solid fa-pause" : "fa-solid fa-play";
     if (title) title.textContent = item.shortTitle;
 
-    // Load Video into videoEl
+    // Load Video into visible hardware-accelerated videoEl
     let videoEl = document.getElementById('uploaded-media-video');
-    if (!videoEl) {
-        videoEl = document.createElement('video');
-        videoEl.id = 'uploaded-media-video';
-        videoEl.autoplay = true;
-        videoEl.loop = true;
+    if (videoEl) {
+        videoEl.style.display = 'block';
         videoEl.muted = true;
         videoEl.playsInline = true;
-        videoEl.style.display = 'none';
-        document.body.appendChild(videoEl);
+        videoEl.setAttribute('muted', '');
+        videoEl.setAttribute('playsinline', '');
+        videoEl.crossOrigin = 'anonymous';
+        videoEl.src = item.videoSrc;
+        videoEl.currentTime = 0;
+        videoEl.load();
+        const playPromise = videoEl.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(e => {
+                console.log('Autoplay deferred, awaiting interaction:', e);
+            });
+        }
     }
-    videoEl.crossOrigin = "anonymous";
-    videoEl.src = item.videoSrc;
-    videoEl.currentTime = 0;
-    videoEl.load();
-    videoEl.play().catch(e => console.log('Tour playback deferred:', e));
     mediaState.userVideo = videoEl;
     mediaState.mode = 'video';
     mediaState.sourceName = item.sourceName;
@@ -4870,9 +4882,10 @@ function toggleMediaPlayPause() {
     const icon = document.getElementById('playpause-icon');
     const text = document.getElementById('playpause-text');
 
-    if (mediaState.userVideo) {
-        if (mediaState.isPlaying) mediaState.userVideo.play().catch(e => console.log('Play err:', e));
-        else mediaState.userVideo.pause();
+    const vid = mediaState.userVideo || document.getElementById('uploaded-media-video');
+    if (vid) {
+        if (mediaState.isPlaying) vid.play().catch(e => console.log('Play err:', e));
+        else vid.pause();
     }
 
     if (mediaState.isPlaying) {
