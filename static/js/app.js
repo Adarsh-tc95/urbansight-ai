@@ -1218,3 +1218,135 @@ function startRealtimePolling() {
         });
     }, 3000);
 }
+
+
+
+// =============================================================================
+// Official Government Portal Features: Accessibility, SLA & Modals
+// =============================================================================
+
+function setFontScale(scale) {
+    document.documentElement.style.setProperty('--font-scale', scale);
+    const buttons = document.querySelectorAll('.font-sizer-group .btn-gov-tool');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    if (scale === 0.9 && buttons[0]) buttons[0].classList.add('active');
+    if (scale === 1.0 && buttons[1]) buttons[1].classList.add('active');
+    if (scale === 1.15 && buttons[2]) buttons[2].classList.add('active');
+}
+
+function toggleHighContrast() {
+    document.body.classList.toggle('high-contrast');
+    const isHc = document.body.classList.contains('high-contrast');
+    console.log('[GIGW] High contrast mode:', isHc ? 'ENABLED' : 'DISABLED');
+}
+
+function changeOfficialLanguage(lang) {
+    const banners = {
+        'kn': '⚠️ ಸಾರ್ವಜನಿಕ ಪ್ರಕಟಣೆ: ಸಯ್ಯಜಿ ರಾವ್ ರಸ್ತೆ ಡ್ರೈನೇಜ್ ಮತ್ತು ರಸ್ತೆ ಗುಂಡಿ ದುರಸ್ತಿ ಕಾರ್ಯ ನಡೆಯುತ್ತಿದೆ. ಬಸ್ ಮಾರ್ಗ 119 ಇರ್ವಿನ್ ರಸ್ತೆಯ ಮೂಲಕ ತಿರುಗಿಸಲಾಗಿದೆ.',
+        'hi': '⚠️ सार्वजनिक सूचना: सैय्याजी राव रोड पर जल निकासी और गड्ढों की मरम्मत कार्य जारी है। बस रूट 119 को इरविन रोड से मोड़ा गया है।',
+        'en': '⚠️ Sayyaji Rao Road: Drainage desilting & rapid pothole restoration in progress. Transit bus route 119 diverted via Irwin Road.'
+    };
+    const textEl = document.getElementById('notice-marquee-text');
+    if (textEl && banners[lang]) {
+        textEl.innerHTML = `<span><strong>${banners[lang]}</strong></span><span class="notice-sep">✦</span><span>🚨 <strong>MCC Rapid Response:</strong> 12 patch vans active across 9 zonal depots.</span>`;
+    }
+}
+
+function toggleNoticeMarquee() {
+    const marquee = document.getElementById('notice-marquee-text');
+    const btn = document.getElementById('btn-pause-notice');
+    if (marquee) {
+        marquee.classList.toggle('paused');
+        const isPaused = marquee.classList.contains('paused');
+        if (btn) btn.innerHTML = isPaused ? '<i class="fa-solid fa-play"></i>' : '<i class="fa-solid fa-pause"></i>';
+    }
+}
+
+function openPublicTendersModal() {
+    const modal = document.getElementById('modal-tenders');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closePublicTendersModal() {
+    const modal = document.getElementById('modal-tenders');
+    if (modal) modal.style.display = 'none';
+}
+
+function openHelplinesModal() {
+    const modal = document.getElementById('modal-helplines');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeHelplinesModal() {
+    const modal = document.getElementById('modal-helplines');
+    if (modal) modal.style.display = 'none';
+}
+
+function filterHelplinesDirectory(query) {
+    const filter = (query || '').toLowerCase();
+    const rows = document.querySelectorAll('#zonal-directory-table tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
+    });
+}
+
+function openGrievanceTrackerModal() {
+    const modal = document.getElementById('modal-grievance-tracker');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeGrievanceTrackerModal() {
+    const modal = document.getElementById('modal-grievance-tracker');
+    if (modal) modal.style.display = 'none';
+}
+
+function lookupGrievanceSLA(ticketId) {
+    const cleanId = (ticketId || 'MCC-2026-0941').trim();
+    const countdownEl = document.getElementById('sla-countdown-val');
+    const badgeEl = document.getElementById('sla-status-badge');
+    if (countdownEl) countdownEl.innerText = '29 hrs 30 mins remaining';
+    if (badgeEl) {
+        badgeEl.className = 'pill-tag pill-green';
+        badgeEl.innerHTML = '<i class="fa-solid fa-check"></i> WITHIN GUARANTEED SLA (48-HR)';
+    }
+    alert(`Fetched official Janahitha SLA record for Ticket: ${cleanId}\nStatus: Assigned to MCC Rapid Crew Van 04\nElapsed: 18.5 hrs | SLA Remaining: 29.5 hrs`);
+}
+
+function escalateToCommissioner() {
+    const ticketId = (document.getElementById('sla-ticket-input')?.value || 'MCC-2026-0941').trim();
+    const countdownEl = document.getElementById('sla-countdown-val');
+    const badgeEl = document.getElementById('sla-status-badge');
+    if (countdownEl) countdownEl.innerText = 'ESCALATED PRIORITY';
+    if (badgeEl) {
+        badgeEl.style.background = '#fee2e2';
+        badgeEl.style.color = '#dc2626';
+        badgeEl.style.borderColor = '#fca5a5';
+        badgeEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ESCALATED TO COMMISSIONER';
+    }
+    alert(`[KARNATAKA SAKALA SERVICES ACT 2011]\nGrievance ${ticketId} has been escalated to Zonal Commissioner (Zone 1 - Gokulam).\nEscalation Token: MCC-ESC-2026-8819\nDirect Notification dispatched to Assistant Executive Engineer.`);
+}
+
+function openInspectionCertificateModal() {
+    const modal = document.getElementById('modal-inspection-certificate');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeInspectionCertificateModal() {
+    const modal = document.getElementById('modal-inspection-certificate');
+    if (modal) modal.style.display = 'none';
+}
+
+function printInspectionCertificate() {
+    window.print();
+}
+
+function openAllNoticesModal() {
+    const modal = document.getElementById('modal-notices');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeAllNoticesModal() {
+    const modal = document.getElementById('modal-notices');
+    if (modal) modal.style.display = 'none';
+}

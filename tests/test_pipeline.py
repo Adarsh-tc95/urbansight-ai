@@ -779,5 +779,79 @@ class TestPeopleAndInclusion(unittest.TestCase):
         self.assertTrue(nav["field_crew_route"]["eta_minutes"] > 0)
 
 
+
+class TestOfficialGovernmentPortalServices(unittest.TestCase):
+    """Verifies official GIGW/KTPP public tenders, 9 Zonal Offices, 48-hr SLA tracking, ticket escalation, and verifiable inspection certificates."""
+
+    def test_public_tenders_and_ktpp_compliance(self):
+        from backend.main import get_public_tenders
+        res = get_public_tenders()
+        self.assertEqual(res["status"], "SUCCESS")
+        self.assertIn("KTPP", res["act_compliance"])
+        self.assertEqual(res["budget_summary"]["total_wards"], 65)
+        self.assertTrue(len(res["tenders"]) >= 4)
+        t0 = res["tenders"][0]
+        self.assertTrue(t0["tender_no"].startswith("KTPP/2026/MCC/"))
+        self.assertTrue(t0["estimated_cost_lakhs"] > 0)
+        self.assertIn("contractor_sla_rating", t0)
+        self.assertIn("rti_proactive_disclosure", res)
+
+    def test_zonal_directory_and_helplines(self):
+        from backend.main import get_zonal_directory
+        res = get_zonal_directory()
+        self.assertEqual(res["status"], "SUCCESS")
+        self.assertEqual(len(res["zones"]), 9)
+        self.assertTrue(len(res["emergency_helplines"]) >= 4)
+        toll_free = next((h for h in res["emergency_helplines"] if h["type"] == "toll_free"), None)
+        self.assertIsNotNone(toll_free)
+        self.assertIn("1800-425-4766", toll_free["phone"])
+        z1 = res["zones"][0]
+        self.assertEqual(z1["zone_id"], 1)
+        self.assertIn("Gokulam", z1["name"])
+        self.assertIn("Er. S. Mahesh", z1["aee"])
+
+    def test_public_notices(self):
+        from backend.main import get_public_notices
+        res = get_public_notices()
+        self.assertEqual(res["status"], "SUCCESS")
+        self.assertTrue(res["count"] >= 3)
+        n0 = res["notices"][0]
+        self.assertIn("Sayyaji Rao Road", n0["title"])
+
+    def test_sla_status_and_resolution_stages(self):
+        from backend.main import get_sla_status
+        res = get_sla_status("MCC-2026-0941")
+        self.assertEqual(res["status"], "SUCCESS")
+        self.assertEqual(res["citizen_charter_guaranteed_sla_hours"], 48)
+        self.assertEqual(len(res["resolution_stages"]), 6)
+        self.assertEqual(res["resolution_stages"][0]["status"], "COMPLETED")
+
+    def test_escalate_ticket_to_commissioner(self):
+        from backend.main import escalate_ticket, EscalateTicketRequest, get_sla_status
+        req = EscalateTicketRequest(
+            ticket_id="MCC-2026-0941",
+            citizen_phone="+91 98450 12345",
+            reason="48-Hour Citizen Charter SLA deadline expiring soon."
+        )
+        res = escalate_ticket(req)
+        self.assertEqual(res["status"], "SUCCESS")
+        self.assertTrue(res["escalation"]["escalation_id"].startswith("MCC-ESC-2026-"))
+        self.assertEqual(res["escalation"]["status"], "ESCALATED_TO_COMMISSIONER")
+
+        # Verify SLA status reflects escalation
+        sla = get_sla_status("MCC-2026-0941")
+        self.assertTrue(sla["is_escalated"])
+        self.assertEqual(sla["sla_compliance"], "ESCALATED_PRIORITY")
+
+    def test_inspection_certificate_generation(self):
+        from backend.main import get_inspection_certificate
+        res = get_inspection_certificate("MCC-2026-0941")
+        self.assertEqual(res["status"], "SUCCESS")
+        self.assertTrue(res["certificate_no"].startswith("MCC/PWD/RSI-2026/"))
+        self.assertIn("IRC:SP:20", res["standards_compliance"])
+        self.assertIn("SHA256:", res["digital_signature_hash"])
+        self.assertTrue(res["verification_qr_url"].startswith("https://"))
+
+
 if __name__ == '__main__':
     unittest.main()

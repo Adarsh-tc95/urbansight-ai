@@ -1530,9 +1530,481 @@ html, body {
     cursor: pointer;
 }
 
+
+/* =============================================================================
+   Official Government & GIGW 3.0 Styling System (MCC / Karnataka Govt)
+   ============================================================================= */
+:root {
+    --font-scale: 1;
+}
+
+body {
+    font-size: calc(14px * var(--font-scale)) !important;
+}
+
+/* Tier-0 Official Government Header */
+.gov-topbar {
+    background: #EDE7DA;
+    border-bottom: 1px solid var(--border-medium);
+    font-family: var(--font-ui);
+    position: relative;
+    z-index: 1001;
+}
+
+.gov-topbar-inner {
+    max-width: 1720px;
+    margin: 0 auto;
+    padding: 6px 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.gov-identity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gov-emblem-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gov-text-block {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.gov-kannada {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #9A3412;
+    letter-spacing: 0.02em;
+}
+
+.gov-english {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.gov-mission-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #FAF8F5;
+    border: 1px solid var(--border-medium);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.badge-divider {
+    color: var(--border-medium);
+}
+
+.gov-access-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.font-sizer-group {
+    display: flex;
+    align-items: center;
+    background: #FAF8F5;
+    border: 1px solid var(--border-medium);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.btn-gov-tool {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-gov-tool:hover, .btn-gov-tool.active {
+    background: var(--primary);
+    color: #FFFFFF;
+}
+
+.gov-lang-picker {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #FAF8F5;
+    border: 1px solid var(--border-medium);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 0.68rem;
+}
+
+.gov-lang-picker select {
+    background: transparent;
+    border: none;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    outline: none;
+    cursor: pointer;
+}
+
+.screen-reader-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--success);
+    background: rgba(5, 150, 105, 0.1);
+    border: 1px solid rgba(5, 150, 105, 0.25);
+    border-radius: 4px;
+    padding: 2px 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Indian National Tricolor Ribbon */
+.gov-tricolor-strip {
+    display: flex;
+    height: 3px;
+    width: 100%;
+}
+
+.tri-saffron { flex: 1; background: #FF9933; }
+.tri-white { flex: 1; background: #FFFFFF; }
+.tri-green { flex: 1; background: #138808; }
+
+/* Live Public Advisory Ticker */
+.gov-notice-ticker-bar {
+    background: #FFFBEB;
+    border-bottom: 1px solid #FDE68A;
+    display: flex;
+    align-items: center;
+    padding: 5px 1.5rem;
+    font-size: 0.73rem;
+    color: #92400E;
+    position: relative;
+    z-index: 999;
+}
+
+.notice-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #FEF3C7;
+    border: 1px solid #F59E0B;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-weight: 800;
+    font-size: 0.68rem;
+    color: #B45309;
+    white-space: nowrap;
+    margin-right: 12px;
+}
+
+.notice-badge .pulse-indicator {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #DC2626;
+    box-shadow: 0 0 6px rgba(220, 38, 38, 0.7);
+    animation: pulseNotice 1.5s infinite;
+}
+
+@keyframes pulseNotice {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+}
+
+.notice-marquee-track {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+}
+
+.notice-marquee-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marqueeScroll 32s linear infinite;
+    font-family: var(--font-ui);
+    letter-spacing: 0.01em;
+}
+
+.notice-marquee-content.paused {
+    animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+}
+
+.notice-sep {
+    margin: 0 16px;
+    color: #F59E0B;
+}
+
+.notice-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 12px;
+}
+
+.btn-notice-ctrl {
+    background: #FEF3C7;
+    border: 1px solid #FCD34D;
+    color: #92400E;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-notice-ctrl:hover {
+    background: #FDE68A;
+}
+
+/* Official Pill Styling in Navbar */
+.portal-pill.official-pill {
+    background: #EDE7DA;
+    border: 1px solid var(--border-medium);
+    color: #1C1917;
+    font-weight: 700;
+}
+
+.portal-pill.official-pill:hover {
+    background: #0284C7;
+    color: #FFFFFF;
+    border-color: #0284C7;
+}
+
+/* High Contrast Mode */
+body.high-contrast {
+    --bg-base: #000000 !important;
+    --bg-subtle: #111111 !important;
+    --bg-surface: #000000 !important;
+    --bg-card: #000000 !important;
+    --border-medium: #FFFF00 !important;
+    --border-subtle: #FFFF00 !important;
+    --text-primary: #FFFF00 !important;
+    --text-secondary: #FFFFFF !important;
+    --text-tertiary: #FFFF00 !important;
+    --primary: #00FFFF !important;
+    color: #FFFF00 !important;
+    background-color: #000000 !important;
+}
+
+body.high-contrast * {
+    border-color: #FFFF00 !important;
+}
+
+/* Official Government Footer */
+.gov-official-footer {
+    background: #EDE7DA;
+    border-top: 2px solid var(--border-medium);
+    margin-top: 2rem;
+    font-family: var(--font-ui);
+    color: var(--text-secondary);
+}
+
+.gov-footer-content {
+    max-width: 1720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 1rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 2rem;
+}
+
+.gov-footer-col h4 {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.gov-footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+}
+
+.gov-footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.gov-footer-links a:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.gov-footer-bottom {
+    border-top: 1px solid var(--border-subtle);
+    padding: 1rem 1.5rem;
+    max-width: 1720px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    color: var(--text-tertiary);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Print Certificate Formatting */
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+    #modal-inspection-certificate, #modal-inspection-certificate * {
+        visibility: visible !important;
+    }
+    #modal-inspection-certificate {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        background: #FFFFFF !important;
+    }
+    .modal-card {
+        border: none !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+    }
+    .btn-modal-close, .modal-footer {
+        display: none !important;
+    }
+}
+
 </style>
 </head>
 <body>
+
+    <!-- GIGW 3.0 Tier-0 Official Government Header -->
+    <div class="gov-topbar" id="gov-topbar">
+        <div class="gov-topbar-inner">
+            <!-- Left: Official Emblem & Titles -->
+            <div class="gov-identity">
+                <div class="gov-emblem-slot" title="Government of Karnataka & Mysuru City Corporation">
+                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="15" fill="#FAF8F5" stroke="#B45309" stroke-width="1.5"/>
+                        <circle cx="16" cy="16" r="11" fill="none" stroke="#D97706" stroke-width="0.75" stroke-dasharray="2 1.5"/>
+                        <circle cx="16" cy="16" r="3.2" fill="#1E3A8A"/>
+                        <circle cx="16" cy="16" r="1" fill="#FFFFFF"/>
+                        <path d="M16 6V10M16 22V26M6 16H10M22 16H26M9 9L12 12M20 20L23 23M9 23L12 20M20 12L23 9" stroke="#1E3A8A" stroke-width="0.8"/>
+                        <path d="M11 16C11 13.2 13.2 11 16 11C18.8 11 21 13.2 21 16" stroke="#B45309" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="gov-text-block">
+                    <span class="gov-kannada">ಕರ್ನಾಟಕ ಸರ್ಕಾರ · ಮೈಸೂರು ಮಹಾನಗರ ಪಾಲಿಕೆ</span>
+                    <span class="gov-english">Government of Karnataka · Mysuru City Corporation (MCC)</span>
+                </div>
+            </div>
+
+            <!-- Center: National Initiative Badges -->
+            <div class="gov-mission-badge">
+                <span class="badge-smart-city"><i class="fa-solid fa-city"></i> Smart Cities Mission</span>
+                <span class="badge-divider">|</span>
+                <span class="badge-gati"><i class="fa-solid fa-network-wired"></i> PM GatiShakti</span>
+                <span class="badge-divider">|</span>
+                <span class="badge-digital"><i class="fa-solid fa-flag"></i> Digital India</span>
+            </div>
+
+            <!-- Right: Accessibility & Language Controls -->
+            <div class="gov-access-controls">
+                <div class="font-sizer-group" title="Adjust Text Size (GIGW 3.0)">
+                    <button type="button" class="btn-gov-tool" onclick="setFontScale(0.9)" title="Decrease Font Size">A-</button>
+                    <button type="button" class="btn-gov-tool active" onclick="setFontScale(1.0)" title="Default Font Size">A</button>
+                    <button type="button" class="btn-gov-tool" onclick="setFontScale(1.15)" title="Increase Font Size">A+</button>
+                </div>
+                <button type="button" class="btn-gov-tool" onclick="toggleHighContrast()" title="Toggle High Contrast Mode">
+                    <i class="fa-solid fa-circle-half-stroke"></i> <span class="hide-mobile">Contrast</span>
+                </button>
+                <div class="gov-lang-picker">
+                    <i class="fa-solid fa-language"></i>
+                    <select id="gov-lang-select" aria-label="Official Language Switcher" onchange="changeOfficialLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
+                    </select>
+                </div>
+                <span class="screen-reader-tag hide-mobile" title="GIGW 3.0 / WCAG 2.1 AA Compliant">
+                    <i class="fa-solid fa-universal-access"></i> GIGW 3.0
+                </span>
+            </div>
+        </div>
+        <!-- Indian National Flag Tricolor Ribbon -->
+        <div class="gov-tricolor-strip">
+            <span class="tri-saffron"></span>
+            <span class="tri-white"></span>
+            <span class="tri-green"></span>
+        </div>
+    </div>
+
+    <!-- Live Public Notice Board & Monsoon Advisory Marquee -->
+    <div class="gov-notice-ticker-bar" id="gov-notice-bar">
+        <div class="notice-badge">
+            <span class="pulse-indicator"></span>
+            <i class="fa-solid fa-bullhorn"></i>
+            <span class="badge-label">MCC PUBLIC ADVISORY</span>
+        </div>
+        <div class="notice-marquee-track">
+            <div class="notice-marquee-content" id="notice-marquee-text">
+                <span>⚠️ <strong>Sayyaji Rao Road:</strong> Drainage desilting & rapid pothole restoration in progress. Transit bus route 119 diverted via Irwin Road.</span>
+                <span class="notice-sep">✦</span>
+                <span>🚨 <strong>Rapid Response:</strong> 12 dedicated high-capacity patch vans on standby across Gokulam, Kuvempunagar, and Bannimantap depots.</span>
+                <span class="notice-sep">✦</span>
+                <span>🎁 <strong>Adopt-a-Road Rewards:</strong> Citizens earn verified points for reporting road defects — redeemable for Mysore Palace & KSRTC passes.</span>
+                <span class="notice-sep">✦</span>
+                <span>⏱️ <strong>Janahitha Citizen Charter:</strong> Arterial road potholes guaranteed for repair within 48 hours under Sakala Services Act.</span>
+            </div>
+        </div>
+        <div class="notice-actions">
+            <button class="btn-notice-ctrl" id="btn-pause-notice" onclick="toggleNoticeMarquee()" title="Pause/Play Ticker">
+                <i class="fa-solid fa-pause"></i>
+            </button>
+            <button class="btn-notice-ctrl" onclick="openAllNoticesModal()" title="View All Official Bulletins">
+                <i class="fa-solid fa-list-ul"></i> All Notices
+            </button>
+        </div>
+    </div>
+
 
     <!-- 1. Branded Unified Header & Navigation Bar -->
     <header class="app-header">
@@ -1578,6 +2050,24 @@ html, body {
         <!-- Portal Switcher: Unified Smart City Navigation Pill Bar -->
         <div class="header-nav-center">
             <nav class="portal-nav-pills" aria-label="Smart City Portals">
+
+                <button type="button" class="portal-pill official-pill" onclick="openPublicTendersModal()" title="MCC e-Procurement Active Tenders & RTI Section 4(1)(b) Proactive Disclosures">
+                    <i class="fa-solid fa-landmark"></i>
+                    <span>Tenders & RTI</span>
+                </button>
+                <button type="button" class="portal-pill official-pill" onclick="openHelplinesModal()" title="MCC 24x7 Emergency Helplines & 9 Zonal Offices Directory">
+                    <i class="fa-solid fa-phone-volume"></i>
+                    <span>Helplines & Wards</span>
+                </button>
+                <button type="button" class="portal-pill official-pill" onclick="openGrievanceTrackerModal()" title="Janahitha / Seva Sindhu 48-Hour Citizen Charter SLA Tracker">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Janahitha SLA</span>
+                </button>
+                <button type="button" class="portal-pill official-pill" onclick="openInspectionCertificateModal()" title="Download / Print Official Road Safety Inspection Certificate with Seal & QR">
+                    <i class="fa-solid fa-certificate"></i>
+                    <span>Inspection Certificate</span>
+                </button>
+
                 <a href="index.html" class="portal-pill active" title="Integrated Command & Control Center">
                     <i class="fa-solid fa-gauge-high"></i>
                     <span>Command Center</span>
@@ -3168,7 +3658,138 @@ html, body {
                 });
             }, 3000);
         }
-    </script>
+    
+// =============================================================================
+// Official Government Portal Features: Accessibility, SLA & Modals
+// =============================================================================
+
+function setFontScale(scale) {
+    document.documentElement.style.setProperty('--font-scale', scale);
+    const buttons = document.querySelectorAll('.font-sizer-group .btn-gov-tool');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    if (scale === 0.9 && buttons[0]) buttons[0].classList.add('active');
+    if (scale === 1.0 && buttons[1]) buttons[1].classList.add('active');
+    if (scale === 1.15 && buttons[2]) buttons[2].classList.add('active');
+}
+
+function toggleHighContrast() {
+    document.body.classList.toggle('high-contrast');
+    const isHc = document.body.classList.contains('high-contrast');
+    console.log('[GIGW] High contrast mode:', isHc ? 'ENABLED' : 'DISABLED');
+}
+
+function changeOfficialLanguage(lang) {
+    const banners = {
+        'kn': '⚠️ ಸಾರ್ವಜನಿಕ ಪ್ರಕಟಣೆ: ಸಯ್ಯಜಿ ರಾವ್ ರಸ್ತೆ ಡ್ರೈನೇಜ್ ಮತ್ತು ರಸ್ತೆ ಗುಂಡಿ ದುರಸ್ತಿ ಕಾರ್ಯ ನಡೆಯುತ್ತಿದೆ. ಬಸ್ ಮಾರ್ಗ 119 ಇರ್ವಿನ್ ರಸ್ತೆಯ ಮೂಲಕ ತಿರುಗಿಸಲಾಗಿದೆ.',
+        'hi': '⚠️ सार्वजनिक सूचना: सैय्याजी राव रोड पर जल निकासी और गड्ढों की मरम्मत कार्य जारी है। बस रूट 119 को इरविन रोड से मोड़ा गया है।',
+        'en': '⚠️ Sayyaji Rao Road: Drainage desilting & rapid pothole restoration in progress. Transit bus route 119 diverted via Irwin Road.'
+    };
+    const textEl = document.getElementById('notice-marquee-text');
+    if (textEl && banners[lang]) {
+        textEl.innerHTML = `<span><strong>${banners[lang]}</strong></span><span class="notice-sep">✦</span><span>🚨 <strong>MCC Rapid Response:</strong> 12 patch vans active across 9 zonal depots.</span>`;
+    }
+}
+
+function toggleNoticeMarquee() {
+    const marquee = document.getElementById('notice-marquee-text');
+    const btn = document.getElementById('btn-pause-notice');
+    if (marquee) {
+        marquee.classList.toggle('paused');
+        const isPaused = marquee.classList.contains('paused');
+        if (btn) btn.innerHTML = isPaused ? '<i class="fa-solid fa-play"></i>' : '<i class="fa-solid fa-pause"></i>';
+    }
+}
+
+function openPublicTendersModal() {
+    const modal = document.getElementById('modal-tenders');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closePublicTendersModal() {
+    const modal = document.getElementById('modal-tenders');
+    if (modal) modal.style.display = 'none';
+}
+
+function openHelplinesModal() {
+    const modal = document.getElementById('modal-helplines');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeHelplinesModal() {
+    const modal = document.getElementById('modal-helplines');
+    if (modal) modal.style.display = 'none';
+}
+
+function filterHelplinesDirectory(query) {
+    const filter = (query || '').toLowerCase();
+    const rows = document.querySelectorAll('#zonal-directory-table tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
+    });
+}
+
+function openGrievanceTrackerModal() {
+    const modal = document.getElementById('modal-grievance-tracker');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeGrievanceTrackerModal() {
+    const modal = document.getElementById('modal-grievance-tracker');
+    if (modal) modal.style.display = 'none';
+}
+
+function lookupGrievanceSLA(ticketId) {
+    const cleanId = (ticketId || 'MCC-2026-0941').trim();
+    const countdownEl = document.getElementById('sla-countdown-val');
+    const badgeEl = document.getElementById('sla-status-badge');
+    if (countdownEl) countdownEl.innerText = '29 hrs 30 mins remaining';
+    if (badgeEl) {
+        badgeEl.className = 'pill-tag pill-green';
+        badgeEl.innerHTML = '<i class="fa-solid fa-check"></i> WITHIN GUARANTEED SLA (48-HR)';
+    }
+    alert(`Fetched official Janahitha SLA record for Ticket: ${cleanId}\nStatus: Assigned to MCC Rapid Crew Van 04\nElapsed: 18.5 hrs | SLA Remaining: 29.5 hrs`);
+}
+
+function escalateToCommissioner() {
+    const ticketId = (document.getElementById('sla-ticket-input')?.value || 'MCC-2026-0941').trim();
+    const countdownEl = document.getElementById('sla-countdown-val');
+    const badgeEl = document.getElementById('sla-status-badge');
+    if (countdownEl) countdownEl.innerText = 'ESCALATED PRIORITY';
+    if (badgeEl) {
+        badgeEl.style.background = '#fee2e2';
+        badgeEl.style.color = '#dc2626';
+        badgeEl.style.borderColor = '#fca5a5';
+        badgeEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ESCALATED TO COMMISSIONER';
+    }
+    alert(`[KARNATAKA SAKALA SERVICES ACT 2011]\nGrievance ${ticketId} has been escalated to Zonal Commissioner (Zone 1 - Gokulam).\nEscalation Token: MCC-ESC-2026-8819\nDirect Notification dispatched to Assistant Executive Engineer.`);
+}
+
+function openInspectionCertificateModal() {
+    const modal = document.getElementById('modal-inspection-certificate');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeInspectionCertificateModal() {
+    const modal = document.getElementById('modal-inspection-certificate');
+    if (modal) modal.style.display = 'none';
+}
+
+function printInspectionCertificate() {
+    window.print();
+}
+
+function openAllNoticesModal() {
+    const modal = document.getElementById('modal-notices');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeAllNoticesModal() {
+    const modal = document.getElementById('modal-notices');
+    if (modal) modal.style.display = 'none';
+}
+
+</script>
     <!-- WhatsApp & SMS Municipal Dispatch Modal -->
     <div class="modal-backdrop" id="msg-dispatch-modal" style="display:none;">
         <div class="modal-card" style="max-width:540px;">
@@ -3280,5 +3901,546 @@ html, body {
             </div>
         </div>
     </div>
+
+    <!-- =============================================================================
+         Official Government Modals
+         ============================================================================= -->
+
+    <!-- Modal 1: Public Tenders & RTI e-Procurement Board -->
+    <div class="modal-backdrop" id="modal-tenders" style="display:none;">
+        <div class="modal-card" style="max-width:850px; max-height:90vh; overflow-y:auto;">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:22px;">🏛️</span>
+                    <div>
+                        <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-primary);">MCC e-Procurement & Road Works Board</h3>
+                        <p style="margin:0; font-size:0.7rem; color:var(--text-tertiary);">Karnataka Transparency in Public Procurements (KTPP) Act 1999 · RTI Section 4(1)(b)</p>
+                    </div>
+                </div>
+                <button class="btn-modal-close" onclick="closePublicTendersModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:18px; display:flex; flex-direction:column; gap:14px;">
+                <!-- Budget Summary Cards -->
+                <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px;">
+                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:10px; text-align:center;">
+                        <div style="font-size:0.65rem; color:var(--text-tertiary); font-weight:700; text-transform:uppercase;">Sanctioned Budget</div>
+                        <div style="font-size:1.25rem; font-weight:800; color:#0284C7;">₹14.80 Cr</div>
+                        <div style="font-size:0.65rem; color:var(--text-secondary);">FY 2025-26</div>
+                    </div>
+                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:10px; text-align:center;">
+                        <div style="font-size:0.65rem; color:var(--text-tertiary); font-weight:700; text-transform:uppercase;">Utilized Funds</div>
+                        <div style="font-size:1.25rem; font-weight:800; color:#15803d;">₹9.42 Cr</div>
+                        <div style="font-size:0.65rem; color:var(--text-secondary);">63.6% Disbursed</div>
+                    </div>
+                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:10px; text-align:center;">
+                        <div style="font-size:0.65rem; color:var(--text-tertiary); font-weight:700; text-transform:uppercase;">Active Tenders</div>
+                        <div style="font-size:1.25rem; font-weight:800; color:#EA580C;">4 Works</div>
+                        <div style="font-size:0.65rem; color:var(--text-secondary);">In Progress</div>
+                    </div>
+                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:10px; text-align:center;">
+                        <div style="font-size:0.65rem; color:var(--text-tertiary); font-weight:700; text-transform:uppercase;">Wards Covered</div>
+                        <div style="font-size:1.25rem; font-weight:800; color:#7C3AED;">65 Wards</div>
+                        <div style="font-size:0.65rem; color:var(--text-secondary);">MCC Jurisdiction</div>
+                    </div>
+                </div>
+
+                <!-- Tenders Table -->
+                <div style="font-size:0.75rem; font-weight:800; color:var(--text-primary); text-transform:uppercase; letter-spacing:0.04em;">Active Road Resurfacing & Drainage Tenders</div>
+                <div style="overflow-x:auto;">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.73rem;">
+                        <thead>
+                            <tr style="background:#EDE7DA; border-bottom:1px solid var(--border-medium); text-align:left;">
+                                <th style="padding:8px 10px;">Tender ID</th>
+                                <th style="padding:8px 10px;">Work Description & Location</th>
+                                <th style="padding:8px 10px;">Ward</th>
+                                <th style="padding:8px 10px;">Cost (₹ Lakhs)</th>
+                                <th style="padding:8px 10px;">Contractor / SLA</th>
+                                <th style="padding:8px 10px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FFFFFF;">
+                                <td style="padding:8px 10px; font-family:var(--font-mono); font-weight:700; color:#0284C7;">KTPP/2026/MCC/R-0419</td>
+                                <td style="padding:8px 10px;">Asphalt overlay, micro-surfacing & cross-drain desilting on Hunsur Road</td>
+                                <td style="padding:8px 10px;">Ward 18</td>
+                                <td style="padding:8px 10px; font-weight:700;">₹42.50 L</td>
+                                <td style="padding:8px 10px;">M/s Cauvery Infra <span style="background:#dcfce7; color:#15803d; padding:1px 5px; border-radius:4px; font-size:0.65rem; font-weight:700;">94.2%</span></td>
+                                <td style="padding:8px 10px;"><span style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:700;">WORK ORDER</span></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FAF8F5;">
+                                <td style="padding:8px 10px; font-family:var(--font-mono); font-weight:700; color:#0284C7;">KTPP/2026/MCC/R-0420</td>
+                                <td style="padding:8px 10px;">Rapid jet-patching of arterial potholes & rumble strips along Sayyaji Rao Rd</td>
+                                <td style="padding:8px 10px;">Ward 22</td>
+                                <td style="padding:8px 10px; font-weight:700;">₹18.20 L</td>
+                                <td style="padding:8px 10px;">Mysore Civic Roads <span style="background:#dcfce7; color:#15803d; padding:1px 5px; border-radius:4px; font-size:0.65rem; font-weight:700;">91.5%</span></td>
+                                <td style="padding:8px 10px;"><span style="background:#fef3c7; color:#b45309; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:700;">IN PROGRESS</span></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FFFFFF;">
+                                <td style="padding:8px 10px; font-family:var(--font-mono); font-weight:700; color:#0284C7;">KTPP/2026/MCC/R-0421</td>
+                                <td style="padding:8px 10px;">Concrete box drain construction on Outer Ring Road (Hebbal - VVCE)</td>
+                                <td style="padding:8px 10px;">Ward 55</td>
+                                <td style="padding:8px 10px; font-weight:700;">₹85.00 L</td>
+                                <td style="padding:8px 10px;">PWD Special Projects <span style="background:#dcfce7; color:#15803d; padding:1px 5px; border-radius:4px; font-size:0.65rem; font-weight:700;">96.0%</span></td>
+                                <td style="padding:8px 10px;"><span style="background:#f3e8ff; color:#6b21a8; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:700;">TECH EVAL</span></td>
+                            </tr>
+                            <tr style="background:#FAF8F5;">
+                                <td style="padding:8px 10px; font-family:var(--font-mono); font-weight:700; color:#0284C7;">KTPP/2026/MCC/R-0422</td>
+                                <td style="padding:8px 10px;">Stormwater drain & footpath rehabilitation on Saraswathipuram Main Rd</td>
+                                <td style="padding:8px 10px;">Ward 35</td>
+                                <td style="padding:8px 10px; font-weight:700;">₹26.80 L</td>
+                                <td style="padding:8px 10px;">Chamundi Infra Ltd <span style="background:#dcfce7; color:#15803d; padding:1px 5px; border-radius:4px; font-size:0.65rem; font-weight:700;">89.8%</span></td>
+                                <td style="padding:8px 10px;"><span style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:700;">WORK ORDER</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:8px; padding:10px; font-size:0.72rem; color:#92400E; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <i class="fa-solid fa-file-contract"></i> <strong>Proactive RTI Disclosure:</strong> All road quality audits are published monthly under Section 4(1)(b) of the Right to Information Act 2005. Defect liability period is 24 months.
+                    </div>
+                    <button class="btn btn-primary" onclick="alert('Downloading Official MCC Public Procurement Audit Log (PDF)...')" style="font-size:0.7rem; padding:4px 10px; white-space:nowrap;">
+                        <i class="fa-solid fa-download"></i> Download Audit
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:10px 18px; background:#EDE7DA; display:flex; justify-content:flex-end;">
+                <button class="btn-modal-cancel" onclick="closePublicTendersModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: 24x7 Emergency Helplines & 9 Zonal Offices Directory -->
+    <div class="modal-backdrop" id="modal-helplines" style="display:none;">
+        <div class="modal-card" style="max-width:850px; max-height:90vh; overflow-y:auto;">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:22px;">🚨</span>
+                    <div>
+                        <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-primary);">MCC Emergency Helplines & Zonal Directory</h3>
+                        <p style="margin:0; font-size:0.7rem; color:var(--text-tertiary);">24x7 Control Rooms & Jurisdictional Engineers (Wards 1 to 65)</p>
+                    </div>
+                </div>
+                <button class="btn-modal-close" onclick="closeHelplinesModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:18px; display:flex; flex-direction:column; gap:14px;">
+                <!-- 24x7 Helplines Grid -->
+                <div style="font-size:0.75rem; font-weight:800; color:var(--text-primary); text-transform:uppercase;">24x7 Emergency Hotlines</div>
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;">
+                    <a href="tel:18004254766" style="text-decoration:none; background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:10px; display:flex; align-items:center; gap:10px;">
+                        <div style="width:36px; height:36px; border-radius:8px; background:#dbeafe; color:#0284c7; display:flex; align-items:center; justify-content:center; font-size:16px;">
+                            <i class="fa-solid fa-phone-volume"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.68rem; color:var(--text-tertiary); font-weight:700;">MCC TOLL-FREE</div>
+                            <div style="font-size:0.85rem; font-weight:800; color:#0284C7;">1800-425-4766</div>
+                            <div style="font-size:0.62rem; color:var(--text-secondary);">Potholes & Floods</div>
+                        </div>
+                    </a>
+                    <a href="tel:08212418800" style="text-decoration:none; background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:10px; display:flex; align-items:center; gap:10px;">
+                        <div style="width:36px; height:36px; border-radius:8px; background:#fee2e2; color:#dc2626; display:flex; align-items:center; justify-content:center; font-size:16px;">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.68rem; color:var(--text-tertiary); font-weight:700;">MCC CONTROL ROOM</div>
+                            <div style="font-size:0.85rem; font-weight:800; color:#DC2626;">0821-2418800</div>
+                            <div style="font-size:0.62rem; color:var(--text-secondary);">Disaster Cell</div>
+                        </div>
+                    </a>
+                    <a href="tel:1095" style="text-decoration:none; background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:10px; display:flex; align-items:center; gap:10px;">
+                        <div style="width:36px; height:36px; border-radius:8px; background:#fef3c7; color:#b45309; display:flex; align-items:center; justify-content:center; font-size:16px;">
+                            <i class="fa-solid fa-traffic-light"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:0.68rem; color:var(--text-tertiary); font-weight:700;">TRAFFIC POLICE</div>
+                            <div style="font-size:0.85rem; font-weight:800; color:#B45309;">1095 / +91 94808 02200</div>
+                            <div style="font-size:0.62rem; color:var(--text-secondary);">Road Hazards</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Zonal Directory Filter -->
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:0.75rem; font-weight:800; color:var(--text-primary); text-transform:uppercase;">Mysuru City Corporation 9 Zonal Offices Directory</div>
+                    <input type="text" id="zonal-search-input" onkeyup="filterHelplinesDirectory(this.value)" placeholder="Search Ward, Engineer or Zone..." style="padding:4px 10px; font-size:0.72rem; border:1px solid var(--border-medium); border-radius:6px; background:#FFFFFF; outline:none; width:220px;">
+                </div>
+
+                <!-- 9 Zonal Offices Table -->
+                <div style="overflow-x:auto;">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.72rem;" id="zonal-directory-table">
+                        <thead>
+                            <tr style="background:#EDE7DA; border-bottom:1px solid var(--border-medium); text-align:left;">
+                                <th style="padding:6px 10px;">Zone</th>
+                                <th style="padding:6px 10px;">Jurisdiction / Wards</th>
+                                <th style="padding:6px 10px;">Asst. Exec. Engineer (AEE)</th>
+                                <th style="padding:6px 10px;">Junior Engineer (JE)</th>
+                                <th style="padding:6px 10px;">Direct Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FFFFFF;">
+                                <td style="padding:6px 10px; font-weight:700;">Zone 1</td>
+                                <td style="padding:6px 10px;">Gokulam & V.V. Mohalla (Wards 1-7)</td>
+                                <td style="padding:6px 10px;">Er. S. Mahesh</td>
+                                <td style="padding:6px 10px;">Er. R. Chethan</td>
+                                <td style="padding:6px 10px;"><a href="tel:+918212418801" style="color:#0284C7; font-weight:700; text-decoration:none;">0821-2418801</a></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FAF8F5;">
+                                <td style="padding:6px 10px; font-weight:700;">Zone 2</td>
+                                <td style="padding:6px 10px;">Bannimantap & Mandi (Wards 8-14)</td>
+                                <td style="padding:6px 10px;">Er. K. Ramesh</td>
+                                <td style="padding:6px 10px;">Er. N. Shwetha</td>
+                                <td style="padding:6px 10px;"><a href="tel:+918212418802" style="color:#0284C7; font-weight:700; text-decoration:none;">0821-2418802</a></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FFFFFF;">
+                                <td style="padding:6px 10px; font-weight:700;">Zone 3</td>
+                                <td style="padding:6px 10px;">Nazarbad & Lashkar (Wards 15-22)</td>
+                                <td style="padding:6px 10px;">Er. Priya Venkatesh</td>
+                                <td style="padding:6px 10px;">Er. M. Vinay</td>
+                                <td style="padding:6px 10px;"><a href="tel:+918212418803" style="color:#0284C7; font-weight:700; text-decoration:none;">0821-2418803</a></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FAF8F5;">
+                                <td style="padding:6px 10px; font-weight:700;">Zone 4</td>
+                                <td style="padding:6px 10px;">Krishnamurthypuram (Wards 23-30)</td>
+                                <td style="padding:6px 10px;">Er. B. Girish</td>
+                                <td style="padding:6px 10px;">Er. K. Praveen</td>
+                                <td style="padding:6px 10px;"><a href="tel:+918212418804" style="color:#0284C7; font-weight:700; text-decoration:none;">0821-2418804</a></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FFFFFF;">
+                                <td style="padding:6px 10px; font-weight:700;">Zone 5</td>
+                                <td style="padding:6px 10px;">Kuvempunagar & Saraswathi (Wards 31-38)</td>
+                                <td style="padding:6px 10px;">Er. Anand Kumar</td>
+                                <td style="padding:6px 10px;">Er. S. Pooja</td>
+                                <td style="padding:6px 10px;"><a href="tel:+918212418805" style="color:#0284C7; font-weight:700; text-decoration:none;">0821-2418805</a></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FAF8F5;">
+                                <td style="padding:6px 10px; font-weight:700;">Zone 6</td>
+                                <td style="padding:6px 10px;">Ramakrishna Nagar (Wards 39-46)</td>
+                                <td style="padding:6px 10px;">Er. M. Suresh</td>
+                                <td style="padding:6px 10px;">Er. V. Ajay</td>
+                                <td style="padding:6px 10px;"><a href="tel:+918212418806" style="color:#0284C7; font-weight:700; text-decoration:none;">0821-2418806</a></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FFFFFF;">
+                                <td style="padding:6px 10px; font-weight:700;">Zone 7</td>
+                                <td style="padding:6px 10px;">Alanahalli & Siddhartha (Wards 47-53)</td>
+                                <td style="padding:6px 10px;">Er. C. Lokesh</td>
+                                <td style="padding:6px 10px;">Er. T. Manjunath</td>
+                                <td style="padding:6px 10px;"><a href="tel:+918212418807" style="color:#0284C7; font-weight:700; text-decoration:none;">0821-2418807</a></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid var(--border-subtle); background:#FAF8F5;">
+                                <td style="padding:6px 10px; font-weight:700;">Zone 8</td>
+                                <td style="padding:6px 10px;">Hebbal & Lokanayaka (Wards 54-60)</td>
+                                <td style="padding:6px 10px;">Er. R. Divya</td>
+                                <td style="padding:6px 10px;">Er. P. Harish</td>
+                                <td style="padding:6px 10px;"><a href="tel:+918212418808" style="color:#0284C7; font-weight:700; text-decoration:none;">0821-2418808</a></td>
+                            </tr>
+                            <tr style="background:#FFFFFF;">
+                                <td style="padding:6px 10px; font-weight:700;">Zone 9</td>
+                                <td style="padding:6px 10px;">Vidyaranyapuram & J.P. Nagar (Wards 61-65)</td>
+                                <td style="padding:6px 10px;">Er. H. Nagaraju</td>
+                                <td style="padding:6px 10px;">Er. D. Swamy</td>
+                                <td style="padding:6px 10px;"><a href="tel:+918212418809" style="color:#0284C7; font-weight:700; text-decoration:none;">0821-2418809</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:10px 18px; background:#EDE7DA; display:flex; justify-content:flex-end;">
+                <button class="btn-modal-cancel" onclick="closeHelplinesModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Janahitha 48-Hour Citizen Charter SLA Tracker -->
+    <div class="modal-backdrop" id="modal-grievance-tracker" style="display:none;">
+        <div class="modal-card" style="max-width:650px;">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:22px;">🔍</span>
+                    <div>
+                        <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-primary);">Janahitha Grievance SLA Tracker</h3>
+                        <p style="margin:0; font-size:0.7rem; color:var(--text-tertiary);">Karnataka Sakala Services Act 2011 · Guaranteed 48-Hour Arterial Road SLA</p>
+                    </div>
+                </div>
+                <button class="btn-modal-close" onclick="closeGrievanceTrackerModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:18px; display:flex; flex-direction:column; gap:12px;">
+                <!-- Search Input -->
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="sla-ticket-input" value="MCC-2026-0941" placeholder="Enter Ticket Number (e.g. MCC-2026-0941)" style="flex:1; padding:8px 12px; font-size:0.8rem; font-family:var(--font-mono); border:1px solid var(--border-medium); border-radius:6px; outline:none;">
+                    <button class="btn btn-primary" onclick="lookupGrievanceSLA(document.getElementById('sla-ticket-input').value)">
+                        <i class="fa-solid fa-magnifying-glass"></i> Track Status
+                    </button>
+                </div>
+
+                <!-- SLA Countdown Strip -->
+                <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-size:0.68rem; color:var(--text-tertiary); font-weight:700;">GUARANTEED CITIZEN SLA</div>
+                        <div style="font-size:1.1rem; font-weight:800; color:#15803d;" id="sla-countdown-val">29 hrs 30 mins remaining</div>
+                        <div style="font-size:0.65rem; color:var(--text-secondary);">48-Hour Resolution Target · MCC Zone 1 (Gokulam)</div>
+                    </div>
+                    <span style="background:#dcfce7; color:#15803d; border:1px solid #86efac; border-radius:999px; padding:4px 10px; font-size:0.7rem; font-weight:800;" id="sla-status-badge">
+                        <i class="fa-solid fa-check"></i> WITHIN GUARANTEED SLA
+                    </span>
+                </div>
+
+                <!-- 6-Stage Resolution Timeline -->
+                <div style="font-size:0.72rem; font-weight:800; color:var(--text-tertiary); text-transform:uppercase;">Resolution Milestones</div>
+                <div style="display:flex; flex-direction:column; gap:8px;" id="sla-stages-list">
+                    <div style="display:flex; align-items:center; gap:10px; background:#FFFFFF; padding:8px 12px; border-radius:6px; border:1px solid var(--border-subtle); font-size:0.73rem;">
+                        <i class="fa-solid fa-circle-check" style="color:#15803d; font-size:14px;"></i>
+                        <div style="flex:1;"><b>1. Detection Logged:</b> Automated transit fleet detection (Bus #119)</div>
+                        <span style="font-size:0.65rem; color:var(--text-tertiary);">08:30 IST</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; background:#FFFFFF; padding:8px 12px; border-radius:6px; border:1px solid var(--border-subtle); font-size:0.73rem;">
+                        <i class="fa-solid fa-circle-check" style="color:#15803d; font-size:14px;"></i>
+                        <div style="flex:1;"><b>2. AI Model Consensus:</b> YOLOv8 97.4% conf + DPDP Act §2(t) blurring</div>
+                        <span style="font-size:0.65rem; color:var(--text-tertiary);">08:31 IST</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; background:#FFFFFF; padding:8px 12px; border-radius:6px; border:1px solid var(--border-subtle); font-size:0.73rem;">
+                        <i class="fa-solid fa-circle-check" style="color:#15803d; font-size:14px;"></i>
+                        <div style="flex:1;"><b>3. CPWD Work Order Issued:</b> Code 16.14.2 DBM patch sanctioned</div>
+                        <span style="font-size:0.65rem; color:var(--text-tertiary);">08:35 IST</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; background:#FFFFFF; padding:8px 12px; border-radius:6px; border:1px solid var(--border-subtle); font-size:0.73rem;">
+                        <i class="fa-solid fa-circle-check" style="color:#15803d; font-size:14px;"></i>
+                        <div style="flex:1;"><b>4. Field Crew Dispatched:</b> MCC Rapid Van 04 on-site with hot mix</div>
+                        <span style="font-size:0.65rem; color:var(--text-tertiary);">09:10 IST</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; background:#FFFBEB; padding:8px 12px; border-radius:6px; border:1px solid #FDE68A; font-size:0.73rem;">
+                        <i class="fa-solid fa-spinner fa-spin" style="color:#d97706; font-size:14px;"></i>
+                        <div style="flex:1;"><b>5. Bitumen Patch & Vibratory Compaction:</b> Currently in progress</div>
+                        <span style="font-size:0.65rem; color:#b45309; font-weight:700;">ETA 40m</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; background:#FAF8F5; padding:8px 12px; border-radius:6px; border:1px solid var(--border-subtle); font-size:0.73rem; opacity:0.6;">
+                        <i class="fa-regular fa-circle" style="color:var(--text-tertiary); font-size:14px;"></i>
+                        <div style="flex:1;"><b>6. Quality Audit & WhatsApp/SMS Dispatch:</b> Pending repair completion</div>
+                        <span style="font-size:0.65rem; color:var(--text-tertiary);">Scheduled</span>
+                    </div>
+                </div>
+
+                <!-- Escalation Trigger Box -->
+                <div style="background:#FEF2F2; border:1px solid #FCA5A5; border-radius:8px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-size:0.72rem; font-weight:800; color:#991B1B;">SLA Grievance Escalation</div>
+                        <div style="font-size:0.65rem; color:#7F1D1D;">Under Karnataka Sakala Act, citizens can escalate overdue tickets directly to the Zonal Commissioner.</div>
+                    </div>
+                    <button class="btn" onclick="escalateToCommissioner()" style="background:#DC2626; color:#FFFFFF; border:none; padding:6px 12px; border-radius:6px; font-size:0.7rem; font-weight:800; cursor:pointer;">
+                        <i class="fa-solid fa-arrow-up-right-dots"></i> Escalate Ticket
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:10px 18px; background:#EDE7DA; display:flex; justify-content:flex-end;">
+                <button class="btn-modal-cancel" onclick="closeGrievanceTrackerModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Official Road Safety Inspection Certificate (Printable with Seal & QR) -->
+    <div class="modal-backdrop" id="modal-inspection-certificate" style="display:none;">
+        <div class="modal-card" style="max-width:720px; max-height:92vh; overflow-y:auto; background:#FFFFFF;">
+            <div class="modal-header" style="background:#EDE7DA;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:22px;">📜</span>
+                    <div>
+                        <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-primary);">Official Road Safety Inspection Certificate</h3>
+                        <p style="margin:0; font-size:0.7rem; color:var(--text-tertiary);">Public Works Department · Mysuru City Corporation (Govt. of Karnataka)</p>
+                    </div>
+                </div>
+                <button class="btn-modal-close" onclick="closeInspectionCertificateModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:24px; font-family:'Times New Roman', serif; color:#1C1917; background:#FFFFFF; position:relative;">
+                <!-- Watermark -->
+                <div style="position:absolute; top:45%; left:30%; font-size:4rem; color:rgba(2, 132, 199, 0.04); font-weight:900; transform:rotate(-30deg); pointer-events:none; font-family:sans-serif;">
+                    MYSURU CITY CORP
+                </div>
+
+                <!-- Certificate Header -->
+                <div style="text-align:center; border-bottom:2px double #1C1917; padding-bottom:12px; margin-bottom:16px;">
+                    <div style="font-size:0.85rem; font-weight:bold; letter-spacing:1px; color:#B45309;">GOVERNMENT OF KARNATAKA</div>
+                    <div style="font-size:1.3rem; font-weight:bold; margin:3px 0;">MYSURU CITY CORPORATION (MCC)</div>
+                    <div style="font-size:0.85rem; font-weight:600; color:#57534E;">OFFICE OF THE EXECUTIVE ENGINEER, PWD DIVISION MYSURU</div>
+                    <div style="font-size:0.75rem; color:#78716C; margin-top:2px;">Sayyaji Rao Road, Agrahara, Mysuru - 570024</div>
+                    <div style="margin-top:8px; display:inline-block; background:#FAF8F5; border:1px solid #1C1917; padding:4px 14px; font-size:0.8rem; font-weight:bold; text-transform:uppercase;">
+                        ROAD SAFETY & QUALITY COMPLIANCE CERTIFICATE
+                    </div>
+                </div>
+
+                <!-- Certificate Meta -->
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:14px; font-family:var(--font-mono);">
+                    <div><b>CERTIFICATE NO:</b> MCC/PWD/RSI-2026/0941</div>
+                    <div><b>DATE OF ISSUE:</b> 24 October 2026</div>
+                </div>
+
+                <!-- Body Text -->
+                <div style="font-size:0.85rem; line-height:1.6; text-align:justify; margin-bottom:16px;">
+                    This is to formally certify that the pavement distress detected at <b>VVCE Ring Road Junction, Gokulam, Mysuru (Coordinates: 12.3360° N, 76.6210° E)</b> has been subjected to continuous multi-pass transit edge perception, AI consensus verification, and CPWD SOR structural remediation.
+                </div>
+
+                <!-- Specifications Grid -->
+                <div style="border:1px solid #D1D5DB; border-radius:6px; padding:12px; margin-bottom:16px; font-size:0.8rem; background:#F9FAFB;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <div><b>Distress Type:</b> Severe Arterial Pothole (Depth: 9.8cm)</div>
+                        <div><b>Applicable Standard:</b> IRC:SP:20 (Indian Roads Congress)</div>
+                        <div><b>Pre-Repair PCI:</b> 41.2 (Poor Condition)</div>
+                        <div><b>Post-Repair PCI:</b> 96.5 (Excellent / Restored)</div>
+                        <div><b>Remediation Mix:</b> Dense Bituminous Macadam (DBM)</div>
+                        <div><b>Compaction Density:</b> 98.4% Marshall Standard</div>
+                        <div><b>Defect Liability:</b> 24 Months Guaranteed</div>
+                        <div><b>Field Van Unit:</b> MCC-CREW-VAN-04</div>
+                    </div>
+                </div>
+
+                <!-- Visual Evidence Frames -->
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:18px; text-align:center;">
+                    <div style="border:1px solid #E5E7EB; padding:6px; border-radius:4px;">
+                        <img src="image1.jpg" alt="Pre-Repair Inspection" style="width:100%; height:80px; object-fit:cover; border-radius:4px;">
+                        <div style="font-size:0.68rem; font-weight:bold; margin-top:3px;">Pre-Repair Distress</div>
+                        <div style="font-size:0.62rem; color:#6B7280;">Geo-tagged @ 12.3360, 76.6210</div>
+                    </div>
+                    <div style="border:1px solid #E5E7EB; padding:6px; border-radius:4px;">
+                        <img src="image2.jpg" alt="Post-Repair Restoration" style="width:100%; height:80px; object-fit:cover; border-radius:4px;">
+                        <div style="font-size:0.68rem; font-weight:bold; margin-top:3px;">Post-Repair Surface</div>
+                        <div style="font-size:0.62rem; color:#6B7280;">Compacted DBM Finish</div>
+                    </div>
+                    <div style="border:1px solid #E5E7EB; padding:6px; border-radius:4px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                        <!-- Verifiable QR Code Representation -->
+                        <div style="background:#FFFFFF; padding:4px; border:1px solid #000; width:65px; height:65px; display:flex; align-items:center; justify-content:center;">
+                            <i class="fa-solid fa-qrcode" style="font-size:48px; color:#1C1917;"></i>
+                        </div>
+                        <div style="font-size:0.65rem; font-weight:bold; margin-top:3px;">Scan to Verify</div>
+                        <div style="font-size:0.58rem; color:#6B7280;">Sakala Digital Token</div>
+                    </div>
+                </div>
+
+                <!-- Sign-off Block -->
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px dashed #9CA3AF; padding-top:14px;">
+                    <div>
+                        <div style="font-size:0.68rem; color:#6B7280; font-family:var(--font-mono);">DIGITAL VERIFICATION HASH:</div>
+                        <div style="font-size:0.62rem; font-family:var(--font-mono); color:#1F2937;">SHA256:7d8a94bc12ef88019340fe1028374a5d</div>
+                        <div style="font-size:0.68rem; color:#15803d; font-weight:bold; margin-top:3px;">
+                            <i class="fa-solid fa-stamp"></i> DIGITALLY SIGNED & SEALED
+                        </div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:0.85rem; font-weight:bold;">Er. S. Mahesh, B.E., M.Tech</div>
+                        <div style="font-size:0.75rem; color:#4B5563;">Assistant Executive Engineer (Roads)</div>
+                        <div style="font-size:0.72rem; color:#6B7280;">Mysuru City Corporation · Zone 1</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:12px 20px; background:#EDE7DA; display:flex; justify-content:space-between;">
+                <span style="font-size:0.7rem; color:var(--text-tertiary); display:flex; align-items:center; gap:5px;">
+                    <i class="fa-solid fa-shield-halved"></i> Validated under Karnataka Sakala Services Act 2011
+                </span>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-modal-cancel" onclick="closeInspectionCertificateModal()">Close</button>
+                    <button class="btn btn-primary" onclick="printInspectionCertificate()">
+                        <i class="fa-solid fa-print"></i> Print / Save Official Certificate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 5: All Public Notices & Bulletins -->
+    <div class="modal-backdrop" id="modal-notices" style="display:none;">
+        <div class="modal-card" style="max-width:650px;">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:20px;">📢</span>
+                    <div>
+                        <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-primary);">MCC Public Notices & Road Advisories</h3>
+                        <p style="margin:0; font-size:0.7rem; color:var(--text-tertiary);">Official Press Bulletins · Monsoon Advisories · Traffic Diversions</p>
+                    </div>
+                </div>
+                <button class="btn-modal-close" onclick="closeAllNoticesModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:18px; display:flex; flex-direction:column; gap:10px;">
+                <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:8px; padding:12px;">
+                    <div style="font-size:0.72rem; font-weight:800; color:#B45309; text-transform:uppercase;">Notice #MCC-2026-081 · 24 Oct 2026</div>
+                    <div style="font-size:0.85rem; font-weight:800; color:#92400E; margin:2px 0;">Sayyaji Rao Road Corridor Drainage & Asphalt Rectification</div>
+                    <div style="font-size:0.75rem; color:#78350F; line-height:1.4;">Monsoon drainage desilting and asphalt overlay underway along Sayyaji Rao Road corridor. Transit bus route 119 diverted via Irwin Road. Normal traffic resumption scheduled for 26 Oct.</div>
+                </div>
+                <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; padding:12px;">
+                    <div style="font-size:0.72rem; font-weight:800; color:#1D4ED8; text-transform:uppercase;">Notice #MCC-2026-082 · 24 Oct 2026</div>
+                    <div style="font-size:0.85rem; font-weight:800; color:#1E40AF; margin:2px 0;">Rapid Response Pothole Patch Vans Deployed Across 9 Depots</div>
+                    <div style="font-size:0.75rem; color:#1E3A8A; line-height:1.4;">MCC has deployed 12 high-capacity rapid response repair vans with hot DBM mix for 2-hour emergency repair of high-severity arterial potholes reported by fleet vision cameras and citizens.</div>
+                </div>
+                <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:12px;">
+                    <div style="font-size:0.72rem; font-weight:800; color:#15803D; text-transform:uppercase;">Notice #MCC-2026-083 · 23 Oct 2026</div>
+                    <div style="font-size:0.85rem; font-weight:800; color:#166534; margin:2px 0;">Adopt-a-Road Citizen Rewards Program Now Active</div>
+                    <div style="font-size:0.75rem; color:#14532D; line-height:1.4;">Citizens can earn municipal points for verified geo-tagged road defect reports redeemable for KSRTC bus pass discounts and Mysore Palace admission passes on the Janahitha portal.</div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:10px 18px; background:#EDE7DA; display:flex; justify-content:flex-end;">
+                <button class="btn-modal-cancel" onclick="closeAllNoticesModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================================================
+         Official GIGW 3.0 Government Footer
+         ============================================================================= -->
+    <footer class="gov-official-footer">
+        <div class="gov-footer-content">
+            <div class="gov-footer-col">
+                <h4><i class="fa-solid fa-landmark"></i> Mysuru City Corporation (MCC)</h4>
+                <p style="font-size:0.75rem; line-height:1.6; margin-bottom:8px;">
+                    UrbanSight AI is an autonomous transit-fleet pavement intelligence and citizen road safety framework developed for the Integrated Command & Control Center (ICCC) under the Smart Cities Mission and Digital India initiative.
+                </p>
+                <div style="font-size:0.7rem; color:var(--text-tertiary);">
+                    <b>MCC Head Office:</b> Sayyaji Rao Road, Agrahara, Mysuru, Karnataka 570024 · Tel: 0821-2418800
+                </div>
+            </div>
+            <div class="gov-footer-col">
+                <h4><i class="fa-solid fa-gavel"></i> Statutory Links</h4>
+                <ul class="gov-footer-links">
+                    <li><a href="#" onclick="openPublicTendersModal(); return false;">KTPP Act Tenders</a></li>
+                    <li><a href="#" onclick="openGrievanceTrackerModal(); return false;">Janahitha Citizen Charter</a></li>
+                    <li><a href="#" onclick="openPublicTendersModal(); return false;">RTI Section 4(1)(b)</a></li>
+                    <li><a href="#" onclick="openInspectionCertificateModal(); return false;">IRC:SP:20 Compliance</a></li>
+                    <li><a href="#" onclick="alert('DPDP Act 2023 §2(t) Gaussian blur applied to all public faces and license plates prior to telemetry ingest.'); return false;">DPDP Act 2023 Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="gov-footer-col">
+                <h4><i class="fa-solid fa-phone"></i> Emergency Lines</h4>
+                <ul class="gov-footer-links">
+                    <li><a href="tel:18004254766">Toll-Free: 1800-425-4766</a></li>
+                    <li><a href="tel:08212418800">Control Room: 0821-2418800</a></li>
+                    <li><a href="tel:1095">Traffic Police: 1095</a></li>
+                    <li><a href="tel:101">Fire & Rescue: 101</a></li>
+                    <li><a href="#" onclick="openHelplinesModal(); return false;">View All 9 Zonal Offices</a></li>
+                </ul>
+            </div>
+            <div class="gov-footer-col">
+                <h4><i class="fa-solid fa-user-tie"></i> Web Information Manager</h4>
+                <div style="font-size:0.72rem; line-height:1.5;">
+                    <div><b>Nodal Officer:</b> Assistant Executive Engineer (IT & ICCC)</div>
+                    <div><b>Organization:</b> Mysuru City Corporation (MCC)</div>
+                    <div><b>Email:</b> commissioner@mysurucitycorporation.co.in</div>
+                    <div style="margin-top:8px;">
+                        <span class="screen-reader-tag" style="background:rgba(2, 132, 199, 0.1); border-color:rgba(2, 132, 199, 0.3); color:#0284c7;">
+                            <i class="fa-solid fa-check-double"></i> Hosted at KSDC (NIC Cloud)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="gov-footer-bottom">
+            <div>
+                © 2026 Mysuru City Corporation & Ministry of Housing and Urban Affairs (MoHUA), Govt. of India. All rights reserved.
+            </div>
+            <div style="display:flex; align-items:center; gap:16px;">
+                <span><b>Monitored:</b> 412 km</span>
+                <span><b>Grievances Closed:</b> 1,482</span>
+                <span><b>Active Tenders:</b> 4</span>
+                <span><b>Wards:</b> 65</span>
+                <span><b>Last Updated:</b> 24 Oct 2026</span>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>

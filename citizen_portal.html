@@ -815,9 +815,481 @@
                 align-items: flex-start;
             }
         }
-    </style>
+    /* =============================================================================
+   Official Government & GIGW 3.0 Styling System (MCC / Karnataka Govt)
+   ============================================================================= */
+:root {
+    --font-scale: 1;
+}
+
+body {
+    font-size: calc(14px * var(--font-scale)) !important;
+}
+
+/* Tier-0 Official Government Header */
+.gov-topbar {
+    background: #EDE7DA;
+    border-bottom: 1px solid var(--border-medium);
+    font-family: var(--font-ui);
+    position: relative;
+    z-index: 1001;
+}
+
+.gov-topbar-inner {
+    max-width: 1720px;
+    margin: 0 auto;
+    padding: 6px 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.gov-identity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gov-emblem-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gov-text-block {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.gov-kannada {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #9A3412;
+    letter-spacing: 0.02em;
+}
+
+.gov-english {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.gov-mission-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #FAF8F5;
+    border: 1px solid var(--border-medium);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.badge-divider {
+    color: var(--border-medium);
+}
+
+.gov-access-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.font-sizer-group {
+    display: flex;
+    align-items: center;
+    background: #FAF8F5;
+    border: 1px solid var(--border-medium);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.btn-gov-tool {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-gov-tool:hover, .btn-gov-tool.active {
+    background: var(--primary);
+    color: #FFFFFF;
+}
+
+.gov-lang-picker {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #FAF8F5;
+    border: 1px solid var(--border-medium);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 0.68rem;
+}
+
+.gov-lang-picker select {
+    background: transparent;
+    border: none;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    outline: none;
+    cursor: pointer;
+}
+
+.screen-reader-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--success);
+    background: rgba(5, 150, 105, 0.1);
+    border: 1px solid rgba(5, 150, 105, 0.25);
+    border-radius: 4px;
+    padding: 2px 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Indian National Tricolor Ribbon */
+.gov-tricolor-strip {
+    display: flex;
+    height: 3px;
+    width: 100%;
+}
+
+.tri-saffron { flex: 1; background: #FF9933; }
+.tri-white { flex: 1; background: #FFFFFF; }
+.tri-green { flex: 1; background: #138808; }
+
+/* Live Public Advisory Ticker */
+.gov-notice-ticker-bar {
+    background: #FFFBEB;
+    border-bottom: 1px solid #FDE68A;
+    display: flex;
+    align-items: center;
+    padding: 5px 1.5rem;
+    font-size: 0.73rem;
+    color: #92400E;
+    position: relative;
+    z-index: 999;
+}
+
+.notice-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #FEF3C7;
+    border: 1px solid #F59E0B;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-weight: 800;
+    font-size: 0.68rem;
+    color: #B45309;
+    white-space: nowrap;
+    margin-right: 12px;
+}
+
+.notice-badge .pulse-indicator {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #DC2626;
+    box-shadow: 0 0 6px rgba(220, 38, 38, 0.7);
+    animation: pulseNotice 1.5s infinite;
+}
+
+@keyframes pulseNotice {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+}
+
+.notice-marquee-track {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+}
+
+.notice-marquee-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marqueeScroll 32s linear infinite;
+    font-family: var(--font-ui);
+    letter-spacing: 0.01em;
+}
+
+.notice-marquee-content.paused {
+    animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+}
+
+.notice-sep {
+    margin: 0 16px;
+    color: #F59E0B;
+}
+
+.notice-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 12px;
+}
+
+.btn-notice-ctrl {
+    background: #FEF3C7;
+    border: 1px solid #FCD34D;
+    color: #92400E;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-notice-ctrl:hover {
+    background: #FDE68A;
+}
+
+/* Official Pill Styling in Navbar */
+.portal-pill.official-pill {
+    background: #EDE7DA;
+    border: 1px solid var(--border-medium);
+    color: #1C1917;
+    font-weight: 700;
+}
+
+.portal-pill.official-pill:hover {
+    background: #0284C7;
+    color: #FFFFFF;
+    border-color: #0284C7;
+}
+
+/* High Contrast Mode */
+body.high-contrast {
+    --bg-base: #000000 !important;
+    --bg-subtle: #111111 !important;
+    --bg-surface: #000000 !important;
+    --bg-card: #000000 !important;
+    --border-medium: #FFFF00 !important;
+    --border-subtle: #FFFF00 !important;
+    --text-primary: #FFFF00 !important;
+    --text-secondary: #FFFFFF !important;
+    --text-tertiary: #FFFF00 !important;
+    --primary: #00FFFF !important;
+    color: #FFFF00 !important;
+    background-color: #000000 !important;
+}
+
+body.high-contrast * {
+    border-color: #FFFF00 !important;
+}
+
+/* Official Government Footer */
+.gov-official-footer {
+    background: #EDE7DA;
+    border-top: 2px solid var(--border-medium);
+    margin-top: 2rem;
+    font-family: var(--font-ui);
+    color: var(--text-secondary);
+}
+
+.gov-footer-content {
+    max-width: 1720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 1rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 2rem;
+}
+
+.gov-footer-col h4 {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.gov-footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+}
+
+.gov-footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.gov-footer-links a:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.gov-footer-bottom {
+    border-top: 1px solid var(--border-subtle);
+    padding: 1rem 1.5rem;
+    max-width: 1720px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    color: var(--text-tertiary);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Print Certificate Formatting */
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+    #modal-inspection-certificate, #modal-inspection-certificate * {
+        visibility: visible !important;
+    }
+    #modal-inspection-certificate {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        background: #FFFFFF !important;
+    }
+    .modal-card {
+        border: none !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+    }
+    .btn-modal-close, .modal-footer {
+        display: none !important;
+    }
+}
+
+</style>
 </head>
 <body>
+<!-- GIGW 3.0 Tier-0 Official Government Header -->
+    <div class="gov-topbar" id="gov-topbar">
+        <div class="gov-topbar-inner">
+            <!-- Left: Official Emblem & Titles -->
+            <div class="gov-identity">
+                <div class="gov-emblem-slot" title="Government of Karnataka & Mysuru City Corporation">
+                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="16" cy="16" r="15" fill="#FAF8F5" stroke="#B45309" stroke-width="1.5"/>
+                        <circle cx="16" cy="16" r="11" fill="none" stroke="#D97706" stroke-width="0.75" stroke-dasharray="2 1.5"/>
+                        <circle cx="16" cy="16" r="3.2" fill="#1E3A8A"/>
+                        <circle cx="16" cy="16" r="1" fill="#FFFFFF"/>
+                        <path d="M16 6V10M16 22V26M6 16H10M22 16H26M9 9L12 12M20 20L23 23M9 23L12 20M20 12L23 9" stroke="#1E3A8A" stroke-width="0.8"/>
+                        <path d="M11 16C11 13.2 13.2 11 16 11C18.8 11 21 13.2 21 16" stroke="#B45309" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="gov-text-block">
+                    <span class="gov-kannada">ಕರ್ನಾಟಕ ಸರ್ಕಾರ · ಮೈಸೂರು ಮಹಾನಗರ ಪಾಲಿಕೆ</span>
+                    <span class="gov-english">Government of Karnataka · Mysuru City Corporation (MCC)</span>
+                </div>
+            </div>
+
+            <!-- Center: National Initiative Badges -->
+            <div class="gov-mission-badge">
+                <span class="badge-smart-city"><i class="fa-solid fa-city"></i> Smart Cities Mission</span>
+                <span class="badge-divider">|</span>
+                <span class="badge-gati"><i class="fa-solid fa-network-wired"></i> PM GatiShakti</span>
+                <span class="badge-divider">|</span>
+                <span class="badge-digital"><i class="fa-solid fa-flag"></i> Digital India</span>
+            </div>
+
+            <!-- Right: Accessibility & Language Controls -->
+            <div class="gov-access-controls">
+                <div class="font-sizer-group" title="Adjust Text Size (GIGW 3.0)">
+                    <button type="button" class="btn-gov-tool" onclick="setFontScale(0.9)" title="Decrease Font Size">A-</button>
+                    <button type="button" class="btn-gov-tool active" onclick="setFontScale(1.0)" title="Default Font Size">A</button>
+                    <button type="button" class="btn-gov-tool" onclick="setFontScale(1.15)" title="Increase Font Size">A+</button>
+                </div>
+                <button type="button" class="btn-gov-tool" onclick="toggleHighContrast()" title="Toggle High Contrast Mode">
+                    <i class="fa-solid fa-circle-half-stroke"></i> <span class="hide-mobile">Contrast</span>
+                </button>
+                <div class="gov-lang-picker">
+                    <i class="fa-solid fa-language"></i>
+                    <select id="gov-lang-select" aria-label="Official Language Switcher" onchange="changeOfficialLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
+                    </select>
+                </div>
+                <span class="screen-reader-tag hide-mobile" title="GIGW 3.0 / WCAG 2.1 AA Compliant">
+                    <i class="fa-solid fa-universal-access"></i> GIGW 3.0
+                </span>
+            </div>
+        </div>
+        <!-- Indian National Flag Tricolor Ribbon -->
+        <div class="gov-tricolor-strip">
+            <span class="tri-saffron"></span>
+            <span class="tri-white"></span>
+            <span class="tri-green"></span>
+        </div>
+    </div>
+
+    <!-- Live Public Notice Board & Monsoon Advisory Marquee -->
+    <div class="gov-notice-ticker-bar" id="gov-notice-bar">
+        <div class="notice-badge">
+            <span class="pulse-indicator"></span>
+            <i class="fa-solid fa-bullhorn"></i>
+            <span class="badge-label">MCC PUBLIC ADVISORY</span>
+        </div>
+        <div class="notice-marquee-track">
+            <div class="notice-marquee-content" id="notice-marquee-text">
+                <span>⚠️ <strong>Sayyaji Rao Road:</strong> Drainage desilting & rapid pothole restoration in progress. Transit bus route 119 diverted via Irwin Road.</span>
+                <span class="notice-sep">✦</span>
+                <span>🚨 <strong>Rapid Response:</strong> 12 dedicated high-capacity patch vans on standby across Gokulam, Kuvempunagar, and Bannimantap depots.</span>
+                <span class="notice-sep">✦</span>
+                <span>🎁 <strong>Adopt-a-Road Rewards:</strong> Citizens earn verified points for reporting road defects — redeemable for Mysore Palace & KSRTC passes.</span>
+                <span class="notice-sep">✦</span>
+                <span>⏱️ <strong>Janahitha Citizen Charter:</strong> Arterial road potholes guaranteed for repair within 48 hours under Sakala Services Act.</span>
+            </div>
+        </div>
+        <div class="notice-actions">
+            <button class="btn-notice-ctrl" id="btn-pause-notice" onclick="toggleNoticeMarquee()" title="Pause/Play Ticker">
+                <i class="fa-solid fa-pause"></i>
+            </button>
+            <button class="btn-notice-ctrl" onclick="openAllNoticesModal()" title="View All Official Bulletins">
+                <i class="fa-solid fa-list-ul"></i> All Notices
+            </button>
+        </div>
+    </div>
+
+
+    
 
     <!-- Portal Header -->
     <header class="portal-header">
@@ -855,6 +1327,17 @@
         </div>
 
         <div class="header-nav-links">
+
+            <button type="button" class="btn-portal" onclick="openPublicTendersModal()" title="MCC e-Procurement Active Tenders">
+                <i class="fa-solid fa-landmark"></i> Tenders & RTI
+            </button>
+            <button type="button" class="btn-portal" onclick="openHelplinesModal()" title="MCC Emergency Helplines & Wards">
+                <i class="fa-solid fa-phone-volume"></i> Helplines & Wards
+            </button>
+            <button type="button" class="btn-portal" onclick="openInspectionCertificateModal()" title="Official Road Safety Inspection Certificate">
+                <i class="fa-solid fa-certificate"></i> Inspection Certificate
+            </button>
+
             <a href="index.html" class="btn-portal" title="Open Master ICCC Command System">
                 <i class="fa-solid fa-gauge"></i> ICCC Command Center
             </a>
@@ -2226,6 +2709,138 @@
 
         loadCitizenRewards();
         loadBackendWorkOrders();
-    </script>
+    // =============================================================================
+// Official Government Portal Features: Accessibility, SLA & Modals
+// =============================================================================
+
+function setFontScale(scale) {
+    document.documentElement.style.setProperty('--font-scale', scale);
+    const buttons = document.querySelectorAll('.font-sizer-group .btn-gov-tool');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    if (scale === 0.9 && buttons[0]) buttons[0].classList.add('active');
+    if (scale === 1.0 && buttons[1]) buttons[1].classList.add('active');
+    if (scale === 1.15 && buttons[2]) buttons[2].classList.add('active');
+}
+
+function toggleHighContrast() {
+    document.body.classList.toggle('high-contrast');
+    const isHc = document.body.classList.contains('high-contrast');
+    console.log('[GIGW] High contrast mode:', isHc ? 'ENABLED' : 'DISABLED');
+}
+
+function changeOfficialLanguage(lang) {
+    const banners = {
+        'kn': '⚠️ ಸಾರ್ವಜನಿಕ ಪ್ರಕಟಣೆ: ಸಯ್ಯಜಿ ರಾವ್ ರಸ್ತೆ ಡ್ರೈನೇಜ್ ಮತ್ತು ರಸ್ತೆ ಗುಂಡಿ ದುರಸ್ತಿ ಕಾರ್ಯ ನಡೆಯುತ್ತಿದೆ. ಬಸ್ ಮಾರ್ಗ 119 ಇರ್ವಿನ್ ರಸ್ತೆಯ ಮೂಲಕ ತಿರುಗಿಸಲಾಗಿದೆ.',
+        'hi': '⚠️ सार्वजनिक सूचना: सैय्याजी राव रोड पर जल निकासी और गड्ढों की मरम्मत कार्य जारी है। बस रूट 119 को इरविन रोड से मोड़ा गया है।',
+        'en': '⚠️ Sayyaji Rao Road: Drainage desilting & rapid pothole restoration in progress. Transit bus route 119 diverted via Irwin Road.'
+    };
+    const textEl = document.getElementById('notice-marquee-text');
+    if (textEl && banners[lang]) {
+        textEl.innerHTML = `<span><strong>${banners[lang]}</strong></span><span class="notice-sep">✦</span><span>🚨 <strong>MCC Rapid Response:</strong> 12 patch vans active across 9 zonal depots.</span>`;
+    }
+}
+
+function toggleNoticeMarquee() {
+    const marquee = document.getElementById('notice-marquee-text');
+    const btn = document.getElementById('btn-pause-notice');
+    if (marquee) {
+        marquee.classList.toggle('paused');
+        const isPaused = marquee.classList.contains('paused');
+        if (btn) btn.innerHTML = isPaused ? '<i class="fa-solid fa-play"></i>' : '<i class="fa-solid fa-pause"></i>';
+    }
+}
+
+function openPublicTendersModal() {
+    const modal = document.getElementById('modal-tenders');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closePublicTendersModal() {
+    const modal = document.getElementById('modal-tenders');
+    if (modal) modal.style.display = 'none';
+}
+
+function openHelplinesModal() {
+    const modal = document.getElementById('modal-helplines');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeHelplinesModal() {
+    const modal = document.getElementById('modal-helplines');
+    if (modal) modal.style.display = 'none';
+}
+
+function filterHelplinesDirectory(query) {
+    const filter = (query || '').toLowerCase();
+    const rows = document.querySelectorAll('#zonal-directory-table tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
+    });
+}
+
+function openGrievanceTrackerModal() {
+    const modal = document.getElementById('modal-grievance-tracker');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeGrievanceTrackerModal() {
+    const modal = document.getElementById('modal-grievance-tracker');
+    if (modal) modal.style.display = 'none';
+}
+
+function lookupGrievanceSLA(ticketId) {
+    const cleanId = (ticketId || 'MCC-2026-0941').trim();
+    const countdownEl = document.getElementById('sla-countdown-val');
+    const badgeEl = document.getElementById('sla-status-badge');
+    if (countdownEl) countdownEl.innerText = '29 hrs 30 mins remaining';
+    if (badgeEl) {
+        badgeEl.className = 'pill-tag pill-green';
+        badgeEl.innerHTML = '<i class="fa-solid fa-check"></i> WITHIN GUARANTEED SLA (48-HR)';
+    }
+    alert(`Fetched official Janahitha SLA record for Ticket: ${cleanId}\nStatus: Assigned to MCC Rapid Crew Van 04\nElapsed: 18.5 hrs | SLA Remaining: 29.5 hrs`);
+}
+
+function escalateToCommissioner() {
+    const ticketId = (document.getElementById('sla-ticket-input')?.value || 'MCC-2026-0941').trim();
+    const countdownEl = document.getElementById('sla-countdown-val');
+    const badgeEl = document.getElementById('sla-status-badge');
+    if (countdownEl) countdownEl.innerText = 'ESCALATED PRIORITY';
+    if (badgeEl) {
+        badgeEl.style.background = '#fee2e2';
+        badgeEl.style.color = '#dc2626';
+        badgeEl.style.borderColor = '#fca5a5';
+        badgeEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ESCALATED TO COMMISSIONER';
+    }
+    alert(`[KARNATAKA SAKALA SERVICES ACT 2011]\nGrievance ${ticketId} has been escalated to Zonal Commissioner (Zone 1 - Gokulam).\nEscalation Token: MCC-ESC-2026-8819\nDirect Notification dispatched to Assistant Executive Engineer.`);
+}
+
+function openInspectionCertificateModal() {
+    const modal = document.getElementById('modal-inspection-certificate');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeInspectionCertificateModal() {
+    const modal = document.getElementById('modal-inspection-certificate');
+    if (modal) modal.style.display = 'none';
+}
+
+function printInspectionCertificate() {
+    window.print();
+}
+
+function openAllNoticesModal() {
+    const modal = document.getElementById('modal-notices');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeAllNoticesModal() {
+    const modal = document.getElementById('modal-notices');
+    if (modal) modal.style.display = 'none';
+}
+
+
+</script>
+
 </body>
 </html>

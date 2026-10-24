@@ -1185,3 +1185,225 @@ def reset_system():
     orchestrator = UrbanSightOrchestrator()
     CITIZEN_SUBSCRIBERS.clear()
     return {"status": "RESET_SUCCESSFUL"}
+
+
+# =============================================================================
+# Official Government & Municipal Corporation Portal Services (GIGW / KTPP Act)
+# =============================================================================
+
+MUNICIPAL_TENDERS_DATA = {
+    "status": "SUCCESS",
+    "portal_name": "Mysuru City Corporation e-Procurement Portal",
+    "act_compliance": "Karnataka Transparency in Public Procurements (KTPP) Act 1999",
+    "budget_summary": {
+        "total_sanctioned_cr": 14.80,
+        "utilized_cr": 9.42,
+        "balance_cr": 5.38,
+        "total_wards": 65,
+        "audited_financial_year": "2025-26"
+    },
+    "tenders": [
+        {
+            "tender_no": "KTPP/2026/MCC/R-0419",
+            "work_title": "Asphalt overlay, micro-surfacing and cross-drain desilting on Hunsur Road Corridor (km 2.4 to 6.8)",
+            "ward": "Ward 18 (Vijayanagar - Gokulam)",
+            "estimated_cost_lakhs": 42.50,
+            "contractor_awarded": "M/s Cauvery Infra Projects Ltd",
+            "contractor_sla_rating": 94.2,
+            "status": "WORK_ORDER_ISSUED",
+            "dlp_months": 24,
+            "sanction_date": "2026-09-15",
+            "nit_url": "https://eproc.karnataka.gov.in"
+        },
+        {
+            "tender_no": "KTPP/2026/MCC/R-0420",
+            "work_title": "Rapid jet-patching of arterial potholes and rumble strip painting along Sayyaji Rao Road",
+            "ward": "Ward 22 (Lashkar Mohalla - Agrahara)",
+            "estimated_cost_lakhs": 18.20,
+            "contractor_awarded": "Mysore Civic Roads Consortium",
+            "contractor_sla_rating": 91.5,
+            "status": "IN_PROGRESS",
+            "dlp_months": 12,
+            "sanction_date": "2026-10-01",
+            "nit_url": "https://eproc.karnataka.gov.in"
+        },
+        {
+            "tender_no": "KTPP/2026/MCC/R-0421",
+            "work_title": "Concrete box drain construction and road resurfacing on Outer Ring Road (Hebbal - VVCE Section)",
+            "ward": "Ward 55 (Hebbal Industrial Area)",
+            "estimated_cost_lakhs": 85.00,
+            "contractor_awarded": "Karnataka State PWD Special Projects Division",
+            "contractor_sla_rating": 96.0,
+            "status": "TECHNICAL_EVALUATION",
+            "dlp_months": 36,
+            "sanction_date": "2026-10-12",
+            "nit_url": "https://eproc.karnataka.gov.in"
+        },
+        {
+            "tender_no": "KTPP/2026/MCC/R-0422",
+            "work_title": "Stormwater drain stabilization and paver block footpath rehabilitation on Saraswathipuram Main Road",
+            "ward": "Ward 35 (Saraswathipuram)",
+            "estimated_cost_lakhs": 26.80,
+            "contractor_awarded": "Chamundi Infrastructure Pvt Ltd",
+            "contractor_sla_rating": 89.8,
+            "status": "WORK_ORDER_ISSUED",
+            "dlp_months": 18,
+            "sanction_date": "2026-09-28",
+            "nit_url": "https://eproc.karnataka.gov.in"
+        }
+    ],
+    "rti_proactive_disclosure": {
+        "section": "Section 4(1)(b) of Right to Information Act 2005",
+        "nodal_officer": "Executive Engineer (Public Works), MCC Head Office, Mysuru",
+        "last_audit_date": "2026-10-20"
+    }
+}
+
+MUNICIPAL_ZONAL_DIRECTORY = {
+    "status": "SUCCESS",
+    "corporation": "Mysuru City Corporation (MCC)",
+    "head_office": "Sayyaji Rao Road, Agrahara, Mysuru, Karnataka 570024",
+    "emergency_helplines": [
+        {"service": "MCC 24x7 Control Room (Potholes & Floods)", "phone": "1800-425-4766", "type": "toll_free", "icon": "fa-phone-volume"},
+        {"service": "MCC Disaster Management Cell", "phone": "0821-2418800", "type": "landline", "icon": "fa-shield-halved"},
+        {"service": "Mysore City Traffic Police Helpline", "phone": "1095", "type": "traffic", "icon": "fa-traffic-light"},
+        {"service": "Traffic Police WhatsApp Grievance", "phone": "+91 94808 02200", "type": "whatsapp", "icon": "fa-whatsapp"},
+        {"service": "Fire & Emergency Rescue", "phone": "101", "type": "emergency", "icon": "fa-truck-medical"},
+        {"service": "KSRTC Bus Breakdown Assistance", "phone": "0821-2443602", "type": "transit", "icon": "fa-bus"}
+    ],
+    "zones": [
+        {"zone_id": 1, "name": "Zone 1 - Gokulam & V.V. Mohalla", "wards": "Wards 1 to 7", "aee": "Er. S. Mahesh", "je": "Er. R. Chethan", "phone": "+91-821-2418801", "address": "8th Main, Gokulam 3rd Stage, Mysuru"},
+        {"zone_id": 2, "name": "Zone 2 - Bannimantap & Mandi", "wards": "Wards 8 to 14", "aee": "Er. K. Ramesh", "je": "Er. N. Shwetha", "phone": "+91-821-2418802", "address": "Bannimantap 'A' Layout, Mysuru"},
+        {"zone_id": 3, "name": "Zone 3 - Nazarbad & Lashkar", "wards": "Wards 15 to 22", "aee": "Er. Priya Venkatesh", "je": "Er. M. Vinay", "phone": "+91-821-2418803", "address": "Tank Bund Road, Nazarbad, Mysuru"},
+        {"zone_id": 4, "name": "Zone 4 - Krishnamurthypuram", "wards": "Wards 23 to 30", "aee": "Er. B. Girish", "je": "Er. K. Praveen", "phone": "+91-821-2418804", "address": "Ballal Circle, Krishnamurthypuram, Mysuru"},
+        {"zone_id": 5, "name": "Zone 5 - Kuvempunagar", "wards": "Wards 31 to 38", "aee": "Er. Anand Kumar", "je": "Er. S. Pooja", "phone": "+91-821-2418805", "address": "Anikethana Road, Kuvempunagar, Mysuru"},
+        {"zone_id": 6, "name": "Zone 6 - Ramakrishna Nagar", "wards": "Wards 39 to 46", "aee": "Er. M. Suresh", "je": "Er. V. Ajay", "phone": "+91-821-2418806", "address": "E&F Block, Ramakrishna Nagar, Mysuru"},
+        {"zone_id": 7, "name": "Zone 7 - Alanahalli & Siddhartha", "wards": "Wards 47 to 53", "aee": "Er. C. Lokesh", "je": "Er. T. Manjunath", "phone": "+91-821-2418807", "address": "Bannur Road, Siddhartha Layout, Mysuru"},
+        {"zone_id": 8, "name": "Zone 8 - Hebbal & Lokanayaka", "wards": "Wards 54 to 60", "aee": "Er. R. Divya", "je": "Er. P. Harish", "phone": "+91-821-2418808", "address": "KRS Road, Hebbal, Mysuru"},
+        {"zone_id": 9, "name": "Zone 9 - Vidyaranyapuram", "wards": "Wards 61 to 65", "aee": "Er. H. Nagaraju", "je": "Er. D. Swamy", "phone": "+91-821-2418809", "address": "Near Chamundipuram Circle, Mysuru"}
+    ]
+}
+
+MUNICIPAL_PUBLIC_NOTICES = [
+    {
+        "id": "NOTICE-2026-081",
+        "title": "Sayyaji Rao Road Drainage Desilting & Pothole Rectification",
+        "summary": "Monsoon drainage desilting and asphalt overlay underway along Sayyaji Rao Road corridor. Transit bus route 119 diverted via Irwin Road.",
+        "date": "2026-10-24",
+        "category": "TRAFFIC_ADVISORY",
+        "is_urgent": True
+    },
+    {
+        "id": "NOTICE-2026-082",
+        "title": "Rapid Pothole Response Vans Stationed across 9 Zonal Depots",
+        "summary": "MCC has deployed 12 high-capacity rapid response repair vans with hot DBM mix for 2-hour emergency repair of high-severity arterial potholes.",
+        "date": "2026-10-24",
+        "category": "CIVIC_OPERATIONS",
+        "is_urgent": False
+    },
+    {
+        "id": "NOTICE-2026-083",
+        "title": "Adopt-a-Road Citizen Rewards Program Live on Janahitha Portal",
+        "summary": "Citizens can earn municipal points for verified geo-tagged road defect reports redeemable for KSRTC bus pass and Mysore Palace entry discounts.",
+        "date": "2026-10-23",
+        "category": "CITIZEN_SCHEME",
+        "is_urgent": False
+    }
+]
+
+ESCALATED_TICKETS = {}
+
+class EscalateTicketRequest(BaseModel):
+    ticket_id: str = "MCC-2026-0941"
+    citizen_phone: Optional[str] = "+91 98450 12345"
+    reason: Optional[str] = "48-Hour Citizen Charter SLA deadline expiring soon; urgent repair required."
+
+@app.get("/api/public-tenders")
+def get_public_tenders():
+    """Returns official MCC e-procurement active road tenders under KTPP Act 1999 and RTI Section 4(1)(b) proactive disclosures."""
+    return MUNICIPAL_TENDERS_DATA
+
+@app.get("/api/zonal-directory")
+def get_zonal_directory():
+    """Returns 24x7 emergency helplines and jurisdiction contact directory for all 9 Zonal Offices of Mysuru City Corporation."""
+    return MUNICIPAL_ZONAL_DIRECTORY
+
+@app.get("/api/public-notices")
+def get_public_notices():
+    """Returns active municipal public notices and monsoon road advisories."""
+    return {
+        "status": "SUCCESS",
+        "count": len(MUNICIPAL_PUBLIC_NOTICES),
+        "notices": MUNICIPAL_PUBLIC_NOTICES
+    }
+
+@app.get("/api/sla-status/{ticket_id}")
+def get_sla_status(ticket_id: str):
+    """Returns formal Janahitha / Seva Sindhu 48-Hour Citizen Charter SLA tracking status and resolution stages for a grievance ticket."""
+    clean_id = ticket_id.upper().strip()
+    is_escalated = clean_id in ESCALATED_TICKETS
+    return {
+        "status": "SUCCESS",
+        "ticket_id": clean_id,
+        "citizen_charter_guaranteed_sla_hours": 48,
+        "elapsed_hours": 18.5,
+        "remaining_sla_hours": 29.5,
+        "sla_compliance": "WITHIN_SLA" if not is_escalated else "ESCALATED_PRIORITY",
+        "jurisdiction": "MCC Zone 1 (Gokulam & V.V. Mohalla)",
+        "priority": "HIGH_ARTERIAL",
+        "assigned_crew": "MCC Rapid Response Van 04 (Gokulam Depot)",
+        "is_escalated": is_escalated,
+        "escalation_data": ESCALATED_TICKETS.get(clean_id),
+        "resolution_stages": [
+            {"step": 1, "title": "Detection Logged", "time": "24 Oct 2026, 08:30 IST", "status": "COMPLETED", "actor": "Transit Fleet Bus #119"},
+            {"step": 2, "title": "AI Model Consensus & DPDP Redaction", "time": "24 Oct 2026, 08:31 IST", "status": "COMPLETED", "actor": "Edge YOLO & Spatial Cluster"},
+            {"step": 3, "title": "CPWD Schedule of Rates Work Order Issued", "time": "24 Oct 2026, 08:35 IST", "status": "COMPLETED", "actor": "Automated Dispatcher Engine"},
+            {"step": 4, "title": "Municipal Crew Van Dispatched", "time": "24 Oct 2026, 09:10 IST", "status": "COMPLETED", "actor": "MCC Rapid Crew 04"},
+            {"step": 5, "title": "Hot Bitumen Patch & Vibratory Compaction", "time": "Pending (ETA: 40 mins)", "status": "IN_PROGRESS", "actor": "Field Repair Unit"},
+            {"step": 6, "title": "QC Inspection & Citizen SMS/WhatsApp Closure", "time": "Pending", "status": "PENDING", "actor": "Assistant Executive Engineer"}
+        ]
+    }
+
+@app.post("/api/escalate-ticket")
+def escalate_ticket(req: EscalateTicketRequest):
+    """Files a formal escalation under the Karnataka Citizen Services Guarantee Act to the Zonal Commissioner."""
+    clean_id = req.ticket_id.upper().strip()
+    esc_id = f"MCC-ESC-2026-{random.randint(1000, 9999)}"
+    esc_record = {
+        "escalation_id": esc_id,
+        "ticket_id": clean_id,
+        "citizen_phone": req.citizen_phone,
+        "reason": req.reason,
+        "escalation_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S IST"),
+        "escalation_officer": "Zonal Commissioner (Zone 1 - Gokulam)",
+        "status": "ESCALATED_TO_COMMISSIONER"
+    }
+    ESCALATED_TICKETS[clean_id] = esc_record
+    return {
+        "status": "SUCCESS",
+        "message": f"Grievance {clean_id} successfully escalated to Zonal Commissioner.",
+        "escalation": esc_record
+    }
+
+@app.get("/api/inspection-certificate/{ticket_id}")
+def get_inspection_certificate(ticket_id: str):
+    """Generates official verifiable Road Safety Inspection Certificate data with IRC:SP:20 compliance and digital signature."""
+    clean_id = ticket_id.upper().strip()
+    return {
+        "status": "SUCCESS",
+        "certificate_no": f"MCC/PWD/RSI-2026/{clean_id.replace('MCC-', '').replace('PWD-', '')}",
+        "issuing_authority": "Mysuru City Corporation & Public Works Department (Karnataka)",
+        "standards_compliance": "Indian Roads Congress (IRC:SP:20 - Rural & Urban Road Maintenance)",
+        "inspection_date": "24 October 2026",
+        "ticket_id": clean_id,
+        "location": "VVCE Ring Road Junction, Gokulam, Mysuru (12.3360° N, 76.6210° E)",
+        "defect_classification": "High-Severity Arterial Pothole (Depth: 9.8 cm, Diameter: 78 cm)",
+        "initial_pci_rating": 41.2,
+        "post_repair_pci_rating": 96.5,
+        "repair_specification": "Cold milling + Tack coat (CRS-2) + Dense Bituminous Macadam (DBM) compacted to 98% Marshall Density",
+        "executive_engineer": "Er. S. Mahesh, B.E., M.Tech (Structures)",
+        "designation": "Assistant Executive Engineer, PWD Zone 1, Mysuru",
+        "digital_signature_hash": f"SHA256:{uuid.uuid4().hex}{uuid.uuid4().hex[:16]}",
+        "verification_qr_url": f"https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket={clean_id}",
+        "citizen_guarantee": "Under Karnataka Sakala Services Act 2011, road repair defect liability guaranteed for 24 months."
+    }
