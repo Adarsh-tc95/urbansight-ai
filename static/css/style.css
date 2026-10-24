@@ -1702,3 +1702,44 @@ h1, h2, h3 {
     .ticket-stepper::before { display: none; }
     .filter-bar { flex-direction: column; align-items: stretch; }
 }
+
+/* Video Route & Corridor Georeference Alignment Bar */
+.video-corridor-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #EDE7DA;
+    border-bottom: 1px solid var(--border-medium);
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.corridor-select {
+    background: #FAF8F5;
+    border: 1px solid var(--border-medium);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+}
+
+.corridor-select:focus {
+    border-color: var(--primary);
+}
+
+.corridor-gps-badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #0284C7;
+    background: rgba(2, 132, 199, 0.08);
+    border: 1px solid rgba(2, 132, 199, 0.25);
+    padding: 2px 7px;
+    border-radius: 4px;
+}

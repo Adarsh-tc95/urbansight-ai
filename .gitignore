@@ -38,3 +38,5 @@ Thumbs.db
 
 .vercel
 .pytest_cache/
+
+.agents/

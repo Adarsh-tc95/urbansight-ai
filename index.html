@@ -1748,6 +1748,48 @@ h1, h2, h3 {
 .waypoint-badge.end { border-color: #2563eb; color: #2563eb; background: #eff6ff; }
 
 
+
+/* Video Route & Corridor Georeference Alignment Bar */
+.video-corridor-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #EDE7DA;
+    border-bottom: 1px solid var(--border-medium);
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.corridor-select {
+    background: #FAF8F5;
+    border: 1px solid var(--border-medium);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+}
+
+.corridor-select:focus {
+    border-color: var(--primary);
+}
+
+.corridor-gps-badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #0284C7;
+    background: rgba(2, 132, 199, 0.08);
+    border: 1px solid rgba(2, 132, 199, 0.25);
+    padding: 2px 7px;
+    border-radius: 4px;
+}
+
 </style>
 </head>
 <body>
@@ -2119,6 +2161,25 @@ h1, h2, h3 {
                         <input type="file" id="media-upload-input" accept="video/*,image/*" style="display:none;" onchange="handleMediaUpload(event)">
                         <button class="btn-media-upload" onclick="document.getElementById('media-upload-input').click()" title="Upload any custom MP4, WEBM video or JPG, PNG photo">
                             <i class="fa-solid fa-cloud-arrow-up"></i> Upload Video / Photo
+                        </button>
+                    </div>
+                </div>
+
+                                <!-- Video Corridor & GPS Georeference Alignment Bar -->
+                <div class="video-corridor-bar">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-weight:700; color:#0284C7;"><i class="fa-solid fa-location-crosshairs"></i> Video Corridor:</span>
+                        <select class="corridor-select" id="video-corridor-select" onchange="changeVideoCorridor(this.value)">
+                            <option value="mysuru-orr" selected>Mysuru Outer Ring Road (VVCE Gokulam ➔ Columbia Asia)</option>
+                            <option value="hunsur-rd">Hunsur Road (Kalamandira Signal ➔ University Gate)</option>
+                            <option value="sayyaji-rao">Sayyaji Rao Road (Agrahara ➔ Mysore Palace)</option>
+                            <option value="live-gps">🛰️ Live Browser GPS / Phone Geolocation</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="corridor-gps-badge" id="corridor-gps-badge">GPS: 12.3360°N, 76.6210°E</span>
+                        <button class="btn-playback-ctrl" id="btn-manual-resume" onclick="resumeVideoScan()" style="padding:2px 8px; font-size:0.7rem; display:none;" title="Resume Scanning Video">
+                            <i class="fa-solid fa-play"></i> Resume Scan
                         </button>
                     </div>
                 </div>
@@ -2614,6 +2675,7 @@ h1, h2, h3 {
             }).addTo(state.map);
 
             renderHazardsOnMap();
+    if (typeof updateLiveNavigationDirections === "function") { updateLiveNavigationDirections(d.type, d.lat, d.lng, d.loc); }
             renderBusesOnMap();
             renderPCIHeatmap(0);
             initMapDirectionsRoute();
@@ -2764,786 +2826,654 @@ h1, h2, h3 {
         }
 
                 // =========================================================================
-        // 3. Interactive Video & Photo Road Inspection AI Analyzer Engine
-        // =========================================================================
-        const mediaState = {
-            mode: 'video', // 'video' | 'image'
-            sourceName: 'Mysuru ORR Dashcam (KSRTC-KA09-E102)',
-            isPlaying: true,
-            dpdpActive: true,
-            userVideo: null,
-            userImage: null,
-            frameCount: 0,
-            defect: {
-                type: 'POTHOLE',
-                rdd: 'D40 (Pothole / Subsidence)',
-                conf: '97.4%',
-                depth: '8.9cm',
-                sev: 'CRITICAL_P1',
-                busId: 'KSRTC-KA09-E102',
-                loc: 'VVCE Ring Road Junction, Gokulam, Mysuru',
-                lat: 12.3360,
-                lng: 76.6210,
-                sorCode: 'CPWD 16.14.2 (DBM Patch)',
-                ticketId: 'PWD-OCT-0745'
+// 3. Interactive Video & Photo Road Inspection AI Analyzer Engine
+// =========================================================================
+const CORRIDORS = {
+    'mysuru-orr': {
+        name: 'Mysuru Outer Ring Road (VVCE Gokulam ➔ Columbia Asia)',
+        short: 'Mysuru ORR Corridor',
+        startLat: 12.3360,
+        startLng: 76.6210,
+        endLat: 12.3480,
+        endLng: 76.6620,
+        lengthKm: 6.8
+    },
+    'hunsur-rd': {
+        name: 'Hunsur Road (Kalamandira Signal ➔ University Gate)',
+        short: 'Hunsur Road Corridor',
+        startLat: 12.3140,
+        startLng: 76.6320,
+        endLat: 12.3040,
+        endLng: 76.6220,
+        lengthKm: 2.1
+    },
+    'sayyaji-rao': {
+        name: 'Sayyaji Rao Road (Agrahara ➔ Mysore Palace)',
+        short: 'Sayyaji Rao Road Corridor',
+        startLat: 12.3010,
+        startLng: 76.6520,
+        endLat: 12.3115,
+        endLng: 76.6535,
+        lengthKm: 1.4
+    },
+    'live-gps': {
+        name: 'Live Device Geolocation (GPS Sensor)',
+        short: 'Live Browser GPS',
+        startLat: 12.3360,
+        startLng: 76.6210,
+        endLat: 12.3360,
+        endLng: 76.6210,
+        lengthKm: 0.0
+    }
+};
+
+let currentCorridorKey = 'mysuru-orr';
+
+const mediaState = {
+    mode: 'video', // 'video' | 'image'
+    sourceName: 'Mysuru ORR Dashcam (KSRTC-KA09-E102)',
+    isPlaying: true,
+    dpdpActive: true,
+    userVideo: null,
+    userImage: null,
+    baseImage: null,
+    frameCount: 0,
+    isDefectLocked: false,
+    resumeCountdown: 4,
+    hasDispatchedOnce: false,
+    resumeTimerId: null,
+    defect: {
+        type: 'POTHOLE',
+        rdd: 'D40 (Pothole / Subsidence)',
+        conf: '97.6%',
+        depth: '9.4cm',
+        sev: 'CRITICAL_P1',
+        busId: 'KSRTC-KA09-E102',
+        loc: 'VVCE Ring Road Junction, Gokulam, Mysuru',
+        lat: 12.3360,
+        lng: 76.6210,
+        sorCode: 'CPWD 16.14.2 (DBM Patch)',
+        ticketId: 'PWD-OCT-0745'
+    }
+};
+
+function calculateCorridorCoordinates() {
+    const corr = CORRIDORS[currentCorridorKey] || CORRIDORS['mysuru-orr'];
+    let progress = 0.35;
+    if (mediaState.userVideo && mediaState.userVideo.duration > 0) {
+        progress = Math.min(1, Math.max(0, mediaState.userVideo.currentTime / mediaState.userVideo.duration));
+    }
+    const lat = Number((corr.startLat + progress * (corr.endLat - corr.startLat)).toFixed(4));
+    const lng = Number((corr.startLng + progress * (corr.endLng - corr.startLng)).toFixed(4));
+    
+    mediaState.defect.lat = lat;
+    mediaState.defect.lng = lng;
+    mediaState.defect.loc = `${corr.short} (Chainage: ${(progress * corr.lengthKm).toFixed(2)} km)`;
+    
+    const badge = document.getElementById('corridor-gps-badge');
+    if (badge) badge.textContent = `GPS: ${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E`;
+    
+    const hudCoords = document.getElementById('media-hud-coords');
+    if (hudCoords) hudCoords.textContent = `GPS: ${lat.toFixed(4)}°N, ${lng.toFixed(4)}°E`;
+
+    return { lat, lng };
+}
+
+function changeVideoCorridor(key) {
+    currentCorridorKey = key;
+    if (key === 'live-gps' && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const corr = CORRIDORS['live-gps'];
+            corr.startLat = pos.coords.latitude;
+            corr.startLng = pos.coords.longitude;
+            corr.endLat = pos.coords.latitude;
+            corr.endLng = pos.coords.longitude;
+            calculateCorridorCoordinates();
+            if (state.map) state.map.setView([pos.coords.latitude, pos.coords.longitude], 16);
+        }, err => console.log('GPS Geolocation Error:', err));
+    } else {
+        calculateCorridorCoordinates();
+        const corr = CORRIDORS[key];
+        if (state.map && corr) state.map.setView([corr.startLat, corr.startLng], 15);
+    }
+    updateMediaSidebar();
+}
+
+function lockDetectedDefect() {
+    if (mediaState.isDefectLocked) return;
+    mediaState.isDefectLocked = true;
+    mediaState.isPlaying = false;
+    
+    if (mediaState.userVideo && !mediaState.userVideo.paused) {
+        mediaState.userVideo.pause();
+    }
+    
+    calculateCorridorCoordinates();
+
+    if (!mediaState.hasDispatchedOnce) {
+        mediaState.hasDispatchedOnce = true;
+        runAIAnalysisAndDispatch();
+    }
+
+    const playIcon = document.getElementById('playpause-icon');
+    const playText = document.getElementById('playpause-text');
+    if (playIcon) playIcon.className = 'fa-solid fa-play';
+    if (playText) playText.textContent = 'PLAY';
+
+    const resBtn = document.getElementById('btn-manual-resume');
+    if (resBtn) resBtn.style.display = 'inline-flex';
+
+    mediaState.resumeCountdown = 4;
+    if (mediaState.resumeTimerId) clearInterval(mediaState.resumeTimerId);
+    mediaState.resumeTimerId = setInterval(() => {
+        mediaState.resumeCountdown--;
+        if (mediaState.resumeCountdown <= 0) {
+            clearInterval(mediaState.resumeTimerId);
+            mediaState.resumeTimerId = null;
+            resumeVideoScan();
+        }
+    }, 1000);
+}
+
+function resumeVideoScan() {
+    if (mediaState.resumeTimerId) {
+        clearInterval(mediaState.resumeTimerId);
+        mediaState.resumeTimerId = null;
+    }
+    mediaState.isDefectLocked = false;
+    mediaState.isPlaying = true;
+    
+    if (mediaState.userVideo && mediaState.userVideo.paused) {
+        mediaState.userVideo.play().catch(e => console.log('Resume playback:', e));
+    }
+    
+    const playIcon = document.getElementById('playpause-icon');
+    const playText = document.getElementById('playpause-text');
+    if (playIcon) playIcon.className = 'fa-solid fa-pause';
+    if (playText) playText.textContent = 'PAUSE';
+
+    const resBtn = document.getElementById('btn-manual-resume');
+    if (resBtn) resBtn.style.display = 'none';
+}
+
+function initDashcamSimulator() {
+    const canvas = document.getElementById('dashcam-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    canvas.style.cursor = 'pointer';
+    canvas.title = 'Click to Play / Pause or Resume Video Scan';
+    canvas.onclick = (e) => {
+        if (mediaState.isDefectLocked) {
+            resumeVideoScan();
+        } else {
+            toggleMediaPlayPause();
+        }
+    };
+
+    const baseImage = new Image();
+    baseImage.crossOrigin = "anonymous";
+    baseImage.onerror = () => {
+        if (!baseImage.src.includes('static/')) {
+            baseImage.src = 'static/image1.jpg';
+        }
+    };
+    baseImage.src = 'image1.jpg';
+    mediaState.baseImage = baseImage;
+
+    function drawLoop() {
+        if (mediaState.isPlaying) {
+            mediaState.frameCount++;
+            calculateCorridorCoordinates();
+            
+            // Stable detection trigger: locks once, pauses video, avoids roaming or duplicate logs
+            if (!mediaState.isDefectLocked && !mediaState.hasDispatchedOnce) {
+                const isVideoReady = mediaState.userVideo && (mediaState.userVideo.currentTime >= 1.2 || mediaState.frameCount >= 40);
+                const isSimReady = !mediaState.userVideo && mediaState.frameCount >= 45;
+                if (isVideoReady || isSimReady) {
+                    lockDetectedDefect();
+                }
             }
-        };
-
-        function initDashcamSimulator() {
-            const canvas = document.getElementById('dashcam-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-
-            const baseImage = new Image();
-            baseImage.crossOrigin = "anonymous";
-            baseImage.onerror = () => {
-                if (!baseImage.src.includes('static/')) {
-                    baseImage.src = 'static/image1.jpg';
-                }
-            };
-            baseImage.src = 'image1.jpg';
-            mediaState.baseImage = baseImage;
-
-            function drawLoop() {
-                if (mediaState.isPlaying) {
-                    mediaState.frameCount++;
-                }
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                if (mediaState.userVideo && !mediaState.userVideo.paused && !mediaState.userVideo.ended) {
-                    ctx.drawImage(mediaState.userVideo, 0, 0, canvas.width, canvas.height);
-                } else if (mediaState.userImage && mediaState.userImage.complete) {
-                    ctx.drawImage(mediaState.userImage, 0, 0, canvas.width, canvas.height);
-                } else if (baseImage.complete && baseImage.naturalWidth > 0) {
-                    ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
-                } else {
-                    // Synthetic Road Perspective
-                    const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                    grad.addColorStop(0, '#1E293B');
-                    grad.addColorStop(0.45, '#0F172A');
-                    grad.addColorStop(1, '#020617');
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.moveTo(canvas.width * 0.46, canvas.height * 0.38);
-                    ctx.lineTo(canvas.width * 0.08, canvas.height);
-                    ctx.moveTo(canvas.width * 0.54, canvas.height * 0.38);
-                    ctx.lineTo(canvas.width * 0.92, canvas.height);
-                    ctx.stroke();
-
-                    ctx.strokeStyle = '#F59E0B';
-                    ctx.lineWidth = 2;
-                    ctx.setLineDash([12, 16]);
-                    ctx.lineDashOffset = -mediaState.frameCount * 3;
-                    ctx.beginPath();
-                    ctx.moveTo(canvas.width * 0.5, canvas.height * 0.38);
-                    ctx.lineTo(canvas.width * 0.5, canvas.height);
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-                }
-
-                // AI Detection Crosshairs & Brackets
-                ctx.strokeStyle = 'rgba(2, 132, 199, 0.5)';
-                ctx.lineWidth = 1.5;
-                const bLen = 14;
-                ctx.beginPath();
-                ctx.moveTo(10, 10 + bLen); ctx.lineTo(10, 10); ctx.lineTo(10 + bLen, 10);
-                ctx.moveTo(canvas.width - 10 - bLen, 10); ctx.lineTo(canvas.width - 10, 10); ctx.lineTo(canvas.width - 10, 10 + bLen);
-                ctx.moveTo(10, canvas.height - 10 - bLen); ctx.lineTo(10, canvas.height - 10); ctx.lineTo(10 + bLen, canvas.height - 10);
-                ctx.moveTo(canvas.width - 10 - bLen, canvas.height - 10); ctx.lineTo(canvas.width - 10, canvas.height - 10); ctx.lineTo(canvas.width - 10, canvas.height - 10 - bLen);
-                ctx.stroke();
-
-                // Dynamic Scanline
-                const scanY = (mediaState.frameCount * 2.2) % canvas.height;
-                ctx.strokeStyle = 'rgba(2, 132, 199, 0.35)';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(12, scanY);
-                ctx.lineTo(canvas.width - 12, scanY);
-                ctx.stroke();
-
-                // DPDP Act 2023 §2(t) Privacy Gaussian Blurring
-                if (mediaState.dpdpActive) {
-                    ctx.save();
-                    ctx.filter = 'blur(10px)';
-                    ctx.fillStyle = 'rgba(40, 40, 40, 0.7)';
-                    // Civilian face mask
-                    ctx.fillRect(canvas.width * 0.14, canvas.height * 0.42, 28, 30);
-                    // Vehicle license plate mask
-                    ctx.fillRect(canvas.width * 0.72, canvas.height * 0.65, 54, 22);
-                    ctx.restore();
-
-                    ctx.strokeStyle = '#059669';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(canvas.width * 0.14, canvas.height * 0.42, 28, 30);
-                    ctx.strokeRect(canvas.width * 0.72, canvas.height * 0.65, 54, 22);
-
-                    ctx.fillStyle = '#059669';
-                    ctx.font = 'bold 8px "JetBrains Mono"';
-                    ctx.fillText('DPDP §2(t) MASK', canvas.width * 0.72, canvas.height * 0.65 - 3);
-                }
-
-                // AI Bounding Box for Detected Road Distress
-                const timeOsc = Math.sin(mediaState.frameCount * 0.05);
-                const boxX = canvas.width * 0.48 + timeOsc * 2;
-                const boxY = canvas.height * 0.58;
-                const boxW = 150;
-                const boxH = 65;
-
-                ctx.strokeStyle = '#EA580C';
-                ctx.lineWidth = 2.2;
-                ctx.strokeRect(boxX, boxY, boxW, boxH);
-
-                ctx.fillStyle = '#EA580C';
-                ctx.fillRect(boxX, boxY - 18, 148, 18);
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = 'bold 9px "JetBrains Mono"';
-                ctx.fillText(`${mediaState.defect.type} ${mediaState.defect.rdd.split(' ')[0]} · ${mediaState.defect.conf}`, boxX + 6, boxY - 5);
-
-                ctx.fillStyle = 'rgba(28, 25, 23, 0.9)';
-                ctx.fillRect(boxX, boxY + boxH + 3, 150, 16);
-                ctx.fillStyle = '#EA580C';
-                ctx.font = '8px "JetBrains Mono"';
-                ctx.fillText(`depth: ${mediaState.defect.depth} · z-shock: 2.4g`, boxX + 6, boxY + boxH + 14);
-
-                requestAnimationFrame(drawLoop);
-            }
-
-            requestAnimationFrame(drawLoop);
         }
 
-        function loadSampleMedia(type) {
-            // Update active pill
-            document.querySelectorAll('.btn-media-pill').forEach(b => b.classList.remove('active'));
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            if (type === 'mysuru-video') {
-                const btn = document.getElementById('btn-media-sample-mysuru');
-                if (btn) btn.classList.add('active');
-                mediaState.mode = 'video';
-                mediaState.sourceName = 'Mysuru ORR Dashcam (KSRTC-KA09-E102)';
-                mediaState.userVideo = null;
-                mediaState.userImage = null;
-                if (mediaState.baseImage) mediaState.baseImage.src = 'image1.jpg';
-                mediaState.defect = {
-                    type: 'POTHOLE',
-                    rdd: 'D40 (Pothole / Subsidence)',
-                    conf: '97.4%',
-                    depth: '8.9cm',
-                    sev: 'CRITICAL_P1',
-                    busId: 'KSRTC-KA09-E102',
-                    loc: 'VVCE Ring Road Junction, Gokulam, Mysuru',
-                    lat: 12.3360,
-                    lng: 76.6210,
-                    sorCode: 'CPWD 16.14.2 (DBM Patch)',
-                    ticketId: 'PWD-OCT-0745'
-                };
-            } else if (type === 'bengaluru-video') {
-                const btn = document.getElementById('btn-media-sample-blr');
-                if (btn) btn.classList.add('active');
-                mediaState.mode = 'video';
-                mediaState.sourceName = 'Bengaluru ORR Flyover Feed (BMTC-KA57-E912)';
-                mediaState.userVideo = null;
-                mediaState.userImage = null;
-                if (mediaState.baseImage) mediaState.baseImage.src = 'image1.jpg';
-                mediaState.defect = {
-                    type: 'POTHOLE',
-                    rdd: 'D40 (Pothole / Subsidence)',
-                    conf: '96.2%',
-                    depth: '9.4cm',
-                    sev: 'CRITICAL_P1',
-                    busId: 'BMTC-KA57-E912',
-                    loc: 'Outer Ring Road near Bellandur Pillar 34, Bengaluru',
-                    lat: 12.9250,
-                    lng: 77.6760,
-                    sorCode: 'CPWD 16.14.2 (DBM Patch)',
-                    ticketId: 'PWD-OCT-0948'
-                };
-            } else if (type === 'mysuru-pothole') {
-                const btn = document.getElementById('btn-media-sample-pothole');
-                if (btn) btn.classList.add('active');
-                mediaState.mode = 'image';
-                mediaState.sourceName = 'Hunsur Road Pothole Photo (MCC Ward 9)';
-                mediaState.userVideo = null;
-                mediaState.userImage = null;
-                if (mediaState.baseImage) mediaState.baseImage.src = 'image1.jpg';
-                mediaState.defect = {
-                    type: 'POTHOLE',
-                    rdd: 'D40 (Pothole / Subsidence)',
-                    conf: '98.1%',
-                    depth: '8.6cm',
-                    sev: 'CRITICAL_P1',
-                    busId: 'KSRTC-MY09-C330',
-                    loc: 'Hunsur Road Kalamandira Signal, Mysuru',
-                    lat: 12.3140,
-                    lng: 76.6320,
-                    sorCode: 'CPWD 16.14.2 (DBM Patch)',
-                    ticketId: 'PWD-OCT-0720'
-                };
-            } else if (type === 'silk-water') {
-                const btn = document.getElementById('btn-media-sample-water');
-                if (btn) btn.classList.add('active');
-                mediaState.mode = 'image';
-                mediaState.sourceName = 'Silk Board Underpass Monsoon Photo';
-                mediaState.userVideo = null;
-                mediaState.userImage = null;
-                if (mediaState.baseImage) mediaState.baseImage.src = 'image2.jpg';
-                mediaState.defect = {
-                    type: 'WATERLOGGING',
-                    rdd: 'W01 (Monsoon Waterlogging)',
-                    conf: '94.5%',
-                    depth: '35m Length',
-                    sev: 'HIGH_P2',
-                    busId: 'BMTC-KA57-E912',
-                    loc: 'Silk Board Underpass South Lane, Bengaluru',
-                    lat: 12.9125,
-                    lng: 77.6395,
-                    sorCode: 'CPWD 11.4.2 (Drain De-silt)',
-                    ticketId: 'PWD-OCT-0882'
-                };
-            }
+        let hasDrawnMedia = false;
 
-            // Update UI Sidebar
-            updateMediaSidebar();
-        }
-
-        
-        function handleMediaUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            mediaState.customFile = file;
-            const fileUrl = URL.createObjectURL(file);
-
-            if (file.type.startsWith('video/')) {
-                mediaState.mode = 'video';
-                mediaState.sourceName = `Real Road Video: ${file.name}`;
-                
-                let videoEl = document.getElementById('uploaded-media-video');
-                if (!videoEl) {
-                    videoEl = document.createElement('video');
-                    videoEl.id = 'uploaded-media-video';
-                    videoEl.style.display = 'none';
-                    document.body.appendChild(videoEl);
-                }
-                
-                videoEl.src = fileUrl;
-                videoEl.muted = true;
-                videoEl.loop = true;
-                videoEl.playsInline = true;
-                videoEl.setAttribute('playsinline', '');
-                videoEl.setAttribute('muted', '');
-                
-                videoEl.onloadedmetadata = () => {
-                    videoEl.play().catch(e => console.log('[Video] Autoplay pending click:', e));
-                };
-                videoEl.oncanplay = () => {
-                    videoEl.play().catch(e => console.log('[Video] Playback pending:', e));
-                };
-                videoEl.play().catch(e => console.log('[Video] Play deferred:', e));
-                
-                mediaState.userVideo = videoEl;
-                mediaState.userImage = null;
-            } else {
-                mediaState.mode = 'image';
-                mediaState.sourceName = `Real Road Photo: ${file.name}`;
-                const imgEl = new Image();
-                imgEl.src = fileUrl;
-                imgEl.onload = () => {
-                    mediaState.userImage = imgEl;
-                    mediaState.userVideo = null;
-                };
-                mediaState.userImage = imgEl;
-                mediaState.userVideo = null;
-            }
-
-            // Assign real road defect parameters detected by neural network
-            mediaState.defect = {
-                type: 'POTHOLE',
-                rdd: 'D40 (Pothole / Surface Cavity)',
-                conf: '97.6%',
-                depth: '9.4cm',
-                sev: 'CRITICAL_P1',
-                busId: 'KSRTC-KA09-E102',
-                loc: 'Mysuru Outer Ring Road (Real Road Video)',
-                lat: 12.3360,
-                lng: 76.6210,
-                sorCode: 'CPWD 16.14.2 (Dense Bituminous Macadam Patch)',
-                ticketId: `PWD-OCT-${Math.floor(1000 + Math.random() * 9000)}`
-            };
-
-            updateMediaSidebar();
-
-            // Automatically sync driving directions & map route to detected defect
-            if (typeof updateLiveNavigationDirections === 'function') {
-                updateLiveNavigationDirections('POTHOLE', 'right', 'Mysuru Outer Ring Road (Real Video Defect)');
-            }
-            if (typeof drawMapDirectionRoute === 'function') {
-                drawMapDirectionRoute([12.3360, 76.6210], 'Real Road Video Pothole Defect', 'detour');
-            }
-
-            // Push to Multi-Agent event log
-            if (state.logs) {
-                state.logs.unshift({
-                    time: new Date().toTimeString().split(' ')[0],
-                    agent: 'Agent 1: Vision',
-                    tagClass: 'agent-tag-vision',
-                    text: `[REAL VIDEO INGEST] Analyzed ${file.name} (${(file.size / (1024*1024)).toFixed(2)} MB). Neural Net detected 3 road distress targets: D40 Pothole (Depth: 9.4cm), D00 Crack, and Lane Ravelling.`
-                });
-                state.logs.unshift({
-                    time: new Date().toTimeString().split(' ')[0],
-                    agent: 'Agent 2: DBSCAN',
-                    tagClass: 'agent-tag-dbscan',
-                    text: `Clustered defect at [12.3360, 76.6210] with Mysuru Ring Road defect mesh (5m consensus).`
-                });
-                state.logs.unshift({
-                    time: new Date().toTimeString().split(' ')[0],
-                    agent: 'Agent 3: Dispatch',
-                    tagClass: 'agent-tag-dispatch',
-                    text: `Auto-generated CPWD Work Order #${mediaState.defect.ticketId} under SOR 16.14.2 for immediate DBM hot patch.`
-                });
-                renderEventLogs();
-            }
-
-            // Post file to backend multi-agent consensus pipeline
+        // 1. Draw Real Uploaded Video Frame
+        if (mediaState.userVideo && (mediaState.userVideo.readyState >= 1 || !mediaState.userVideo.paused)) {
             try {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('bus_id', 'KSRTC-KA09-E102');
-                formData.append('location_name', 'Mysuru Outer Ring Road Corridor');
-                formData.append('hazard_hint', 'POTHOLE');
-                fetch('/api/analyze-media', { method: 'POST', body: formData })
-                    .then(r => r.json())
-                    .then(data => {
-                        console.log('[Backend Multi-Agent Consensus] Video analyzed:', data);
-                    })
-                    .catch(err => console.log('[Backend API] Local fallback mode:', err));
-            } catch(e) {
-                console.log('[Backend API] Local fallback mode:', e);
+                ctx.drawImage(mediaState.userVideo, 0, 0, canvas.width, canvas.height);
+                hasDrawnMedia = true;
+            } catch (e) {
+                hasDrawnMedia = false;
             }
+        } 
+        
+        // 2. Draw Real Uploaded Photo
+        if (!hasDrawnMedia && mediaState.userImage && mediaState.userImage.complete && mediaState.userImage.naturalWidth > 0) {
+            ctx.drawImage(mediaState.userImage, 0, 0, canvas.width, canvas.height);
+            hasDrawnMedia = true;
+        } 
+        
+        // 3. Draw Default Dashcam Base Image
+        if (!hasDrawnMedia && baseImage.complete && baseImage.naturalWidth > 0) {
+            ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+            hasDrawnMedia = true;
+        } 
+        
+        // 4. Synthetic Road Perspective Fallback
+        if (!hasDrawnMedia) {
+            const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grad.addColorStop(0, '#1E293B');
+            grad.addColorStop(0.45, '#0F172A');
+            grad.addColorStop(1, '#020617');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width * 0.46, canvas.height * 0.38);
+            ctx.lineTo(canvas.width * 0.08, canvas.height);
+            ctx.moveTo(canvas.width * 0.54, canvas.height * 0.38);
+            ctx.lineTo(canvas.width * 0.92, canvas.height);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#F59E0B';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([12, 16]);
+            ctx.lineDashOffset = -mediaState.frameCount * 3;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width * 0.5, canvas.height * 0.38);
+            ctx.lineTo(canvas.width * 0.5, canvas.height);
+            ctx.stroke();
+            ctx.setLineDash([]);
         }
 
-        function initDashcamSimulator() {
-            const canvas = document.getElementById('dashcam-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
+        // Crosshairs Brackets
+        ctx.strokeStyle = 'rgba(2, 132, 199, 0.5)';
+        ctx.lineWidth = 1.5;
+        const bLen = 14;
+        ctx.beginPath();
+        ctx.moveTo(10, 10 + bLen); ctx.lineTo(10, 10); ctx.lineTo(10 + bLen, 10);
+        ctx.moveTo(canvas.width - 10 - bLen, 10); ctx.lineTo(canvas.width - 10, 10); ctx.lineTo(canvas.width - 10, 10 + bLen);
+        ctx.moveTo(10, canvas.height - 10 - bLen); ctx.lineTo(10, canvas.height - 10); ctx.lineTo(10 + bLen, canvas.height - 10);
+        ctx.moveTo(canvas.width - 10 - bLen, canvas.height - 10); ctx.lineTo(canvas.width - 10, canvas.height - 10); ctx.lineTo(canvas.width - 10, canvas.height - 10 - bLen);
+        ctx.stroke();
 
-            // Allow click on canvas to toggle video play/pause
-            canvas.style.cursor = 'pointer';
-            canvas.title = 'Click to Play / Pause Video';
-            canvas.onclick = () => {
-                if (mediaState.userVideo) {
-                    if (mediaState.userVideo.paused) {
-                        mediaState.userVideo.play();
-                    } else {
-                        mediaState.userVideo.pause();
-                    }
-                }
-            };
-
-            const baseImage = new Image();
-            baseImage.crossOrigin = "anonymous";
-            baseImage.onerror = () => {
-                if (!baseImage.src.includes('static/')) {
-                    baseImage.src = 'static/image1.jpg';
-                }
-            };
-            baseImage.src = 'image1.jpg';
-            mediaState.baseImage = baseImage;
-
-            function drawLoop() {
-                if (mediaState.isPlaying) {
-                    mediaState.frameCount++;
-                }
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                let hasDrawnMedia = false;
-
-                // 1. Draw Real Uploaded Video Frame
-                if (mediaState.userVideo && (mediaState.userVideo.readyState >= 1 || !mediaState.userVideo.paused)) {
-                    try {
-                        ctx.drawImage(mediaState.userVideo, 0, 0, canvas.width, canvas.height);
-                        hasDrawnMedia = true;
-                    } catch (e) {
-                        hasDrawnMedia = false;
-                    }
-                } 
-                
-                // 2. Draw Real Uploaded Photo
-                if (!hasDrawnMedia && mediaState.userImage && mediaState.userImage.complete && mediaState.userImage.naturalWidth > 0) {
-                    ctx.drawImage(mediaState.userImage, 0, 0, canvas.width, canvas.height);
-                    hasDrawnMedia = true;
-                } 
-                
-                // 3. Draw Default Dashcam Base Image
-                if (!hasDrawnMedia && baseImage.complete && baseImage.naturalWidth > 0) {
-                    ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
-                    hasDrawnMedia = true;
-                } 
-                
-                // 4. Synthetic Perspective Fallback
-                if (!hasDrawnMedia) {
-                    const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                    grad.addColorStop(0, '#1E293B');
-                    grad.addColorStop(0.45, '#0F172A');
-                    grad.addColorStop(1, '#020617');
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.moveTo(canvas.width * 0.46, canvas.height * 0.38);
-                    ctx.lineTo(canvas.width * 0.08, canvas.height);
-                    ctx.moveTo(canvas.width * 0.54, canvas.height * 0.38);
-                    ctx.lineTo(canvas.width * 0.92, canvas.height);
-                    ctx.stroke();
-
-                    ctx.strokeStyle = '#F59E0B';
-                    ctx.lineWidth = 2;
-                    ctx.setLineDash([12, 16]);
-                    ctx.lineDashOffset = -mediaState.frameCount * 3;
-                    ctx.beginPath();
-                    ctx.moveTo(canvas.width * 0.5, canvas.height * 0.38);
-                    ctx.lineTo(canvas.width * 0.5, canvas.height);
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-                }
-
-                // AI Detection Target Reticle & Crosshairs
-                ctx.strokeStyle = 'rgba(2, 132, 199, 0.6)';
-                ctx.lineWidth = 1.5;
-                const bLen = 14;
-                ctx.beginPath();
-                ctx.moveTo(10, 10 + bLen); ctx.lineTo(10, 10); ctx.lineTo(10 + bLen, 10);
-                ctx.moveTo(canvas.width - 10 - bLen, 10); ctx.lineTo(canvas.width - 10, 10); ctx.lineTo(canvas.width - 10, 10 + bLen);
-                ctx.moveTo(10, canvas.height - 10 - bLen); ctx.lineTo(10, canvas.height - 10); ctx.lineTo(10 + bLen, canvas.height - 10);
-                ctx.moveTo(canvas.width - 10 - bLen, canvas.height - 10); ctx.lineTo(canvas.width - 10, canvas.height - 10); ctx.lineTo(canvas.width - 10, canvas.height - 10 - bLen);
-                ctx.stroke();
-
-                // Dynamic Laser Scanline across road
-                const scanY = (mediaState.frameCount * 2.5) % canvas.height;
-                ctx.strokeStyle = 'rgba(0, 229, 255, 0.4)';
-                ctx.lineWidth = 1.2;
-                ctx.beginPath();
-                ctx.moveTo(12, scanY);
-                ctx.lineTo(canvas.width - 12, scanY);
-                ctx.stroke();
-
-                // Top Status Banner: Active Real-Time Road Distress Detection
-                ctx.fillStyle = 'rgba(28, 25, 23, 0.85)';
-                ctx.fillRect(10, 10, 280, 22);
-                ctx.strokeStyle = '#0284C7';
-                ctx.lineWidth = 1;
-                ctx.strokeRect(10, 10, 280, 22);
-                
-                ctx.fillStyle = '#00E5FF';
-                ctx.font = 'bold 9px "JetBrains Mono", monospace';
-                ctx.fillText('🔴 AI EDGE VISION: ROAD DISTRESS DETECTED', 16, 24);
-
-                // DPDP Act 2023 §2(t) Privacy Gaussian Blurring
-                if (mediaState.dpdpActive) {
-                    ctx.save();
-                    ctx.filter = 'blur(10px)';
-                    ctx.fillStyle = 'rgba(40, 40, 40, 0.7)';
-                    ctx.fillRect(canvas.width * 0.14, canvas.height * 0.38, 28, 28);
-                    ctx.fillRect(canvas.width * 0.74, canvas.height * 0.62, 54, 20);
-                    ctx.restore();
-
-                    ctx.strokeStyle = '#059669';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(canvas.width * 0.14, canvas.height * 0.38, 28, 28);
-                    ctx.strokeRect(canvas.width * 0.74, canvas.height * 0.62, 54, 20);
-
-                    ctx.fillStyle = '#059669';
-                    ctx.font = 'bold 8px "JetBrains Mono"';
-                    ctx.fillText('DPDP §2(t) MASK', canvas.width * 0.74, canvas.height * 0.62 - 3);
-                }
-
-                // =============================================================================
-                // DYNAMIC ROAD HAZARD & DAMAGE DETECTIONS
-                // =============================================================================
-
-                // 1. Primary Road Damage: Critical Pothole (D40) with dynamic perspective tracking
-                const pProg = ((mediaState.frameCount * 1.8) % 120) / 120;
-                const pBoxX = canvas.width * 0.38 + pProg * (canvas.width * 0.12);
-                const pBoxY = canvas.height * 0.50 + pProg * (canvas.height * 0.34);
-                const pBoxW = 125 + pProg * 45;
-                const pBoxH = 48 + pProg * 25;
-                const currentDepth = (8.5 + Math.sin(mediaState.frameCount * 0.05) * 1.5).toFixed(1);
-
-                // Pulsing Bounding Box
-                ctx.strokeStyle = '#DC2626';
-                ctx.lineWidth = 2.5;
-                ctx.strokeRect(pBoxX, pBoxY, pBoxW, pBoxH);
-
-                // Corner Target Accents
-                ctx.fillStyle = '#DC2626';
-                const cLen = 8;
-                ctx.fillRect(pBoxX - 2, pBoxY - 2, cLen, 3);
-                ctx.fillRect(pBoxX - 2, pBoxY - 2, 3, cLen);
-                ctx.fillRect(pBoxX + pBoxW - cLen + 2, pBoxY - 2, cLen, 3);
-                ctx.fillRect(pBoxX + pBoxW - 1, pBoxY - 2, 3, cLen);
-                ctx.fillRect(pBoxX - 2, pBoxY + pBoxH - 1, cLen, 3);
-                ctx.fillRect(pBoxX - 2, pBoxY + pBoxH - cLen + 2, 3, cLen);
-                ctx.fillRect(pBoxX + pBoxW - cLen + 2, pBoxY + pBoxH - 1, cLen, 3);
-                ctx.fillRect(pBoxX + pBoxW - 1, pBoxY + pBoxH - cLen + 2, 3, cLen);
-
-                // Top Tag Banner
-                ctx.fillStyle = '#DC2626';
-                ctx.fillRect(pBoxX, pBoxY - 18, Math.min(pBoxW, 160), 18);
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = 'bold 9px "JetBrains Mono", monospace';
-                ctx.fillText(`D40 POTHOLE · 97.6%`, pBoxX + 6, pBoxY - 5);
-
-                // Bottom Telemetry Tag
-                ctx.fillStyle = 'rgba(28, 25, 23, 0.92)';
-                ctx.fillRect(pBoxX, pBoxY + pBoxH + 3, Math.min(pBoxW, 175), 16);
-                ctx.strokeStyle = '#DC2626';
-                ctx.lineWidth = 1;
-                ctx.strokeRect(pBoxX, pBoxY + pBoxH + 3, Math.min(pBoxW, 175), 16);
-                ctx.fillStyle = '#FCA5A5';
-                ctx.font = 'bold 8px "JetBrains Mono", monospace';
-                ctx.fillText(`DEPTH: ${currentDepth}cm · CRITICAL P1`, pBoxX + 6, pBoxY + pBoxH + 14);
-
-                // 2. Secondary Road Damage: Longitudinal Road Surface Crack (D00)
-                const cBoxX = canvas.width * 0.65;
-                const cBoxY = canvas.height * 0.58 + Math.sin(mediaState.frameCount * 0.03) * 4;
-                const cBoxW = 100;
-                const cBoxH = 38;
-
-                ctx.strokeStyle = '#EA580C';
-                ctx.lineWidth = 1.8;
-                ctx.strokeRect(cBoxX, cBoxY, cBoxW, cBoxH);
-
-                ctx.fillStyle = '#EA580C';
-                ctx.fillRect(cBoxX, cBoxY - 16, cBoxW, 16);
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = 'bold 8px "JetBrains Mono", monospace';
-                ctx.fillText(`D00 CRACK · 94.2%`, cBoxX + 5, cBoxY - 4);
-
-                // 3. Lateral Driving Maneuver Overlay directly on video canvas
-                ctx.fillStyle = 'rgba(2, 132, 199, 0.92)';
-                ctx.fillRect(canvas.width * 0.22, canvas.height - 28, canvas.width * 0.56, 22);
-                ctx.strokeStyle = '#FFFFFF';
-                ctx.lineWidth = 1.2;
-                ctx.strokeRect(canvas.width * 0.22, canvas.height - 28, canvas.width * 0.56, 22);
-
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = 'bold 10px "Plus Jakarta Sans", sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('↖ MERGE LEFT LANE IN 25m TO BYPASS CRATER', canvas.width * 0.5, canvas.height - 13);
-                ctx.textAlign = 'left';
-
-                requestAnimationFrame(drawLoop);
-            }
-
-            requestAnimationFrame(drawLoop);
+        // Scanline (only when actively playing)
+        if (mediaState.isPlaying) {
+            const scanY = (mediaState.frameCount * 2.5) % canvas.height;
+            ctx.strokeStyle = 'rgba(2, 132, 199, 0.35)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(12, scanY);
+            ctx.lineTo(canvas.width - 12, scanY);
+            ctx.stroke();
         }
 
+        // DPDP Act 2023 §2(t) Privacy Gaussian Blurring
+        if (mediaState.dpdpActive) {
+            ctx.save();
+            ctx.filter = 'blur(10px)';
+            ctx.fillStyle = 'rgba(40, 40, 40, 0.7)';
+            ctx.fillRect(canvas.width * 0.14, canvas.height * 0.38, 28, 28);
+            ctx.fillRect(canvas.width * 0.74, canvas.height * 0.62, 54, 20);
+            ctx.restore();
 
-        function loadSampleMedia(type) {
-            // Update active pill
-            document.querySelectorAll('.btn-media-pill').forEach(b => b.classList.remove('active'));
+            ctx.strokeStyle = '#059669';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(canvas.width * 0.14, canvas.height * 0.38, 28, 28);
+            ctx.strokeRect(canvas.width * 0.74, canvas.height * 0.62, 54, 20);
 
-            if (type === 'mysuru-video') {
-                const btn = document.getElementById('btn-media-sample-mysuru');
-                if (btn) btn.classList.add('active');
-                mediaState.mode = 'video';
-                mediaState.sourceName = 'Mysuru ORR Dashcam (KSRTC-KA09-E102)';
-                mediaState.userVideo = null;
-                mediaState.userImage = null;
-                if (mediaState.baseImage) mediaState.baseImage.src = 'image1.jpg';
-                mediaState.defect = {
-                    type: 'POTHOLE',
-                    rdd: 'D40 (Pothole / Subsidence)',
-                    conf: '97.4%',
-                    depth: '8.9cm',
-                    sev: 'CRITICAL_P1',
-                    busId: 'KSRTC-KA09-E102',
-                    loc: 'VVCE Ring Road Junction, Gokulam, Mysuru',
-                    lat: 12.3360,
-                    lng: 76.6210,
-                    sorCode: 'CPWD 16.14.2 (DBM Patch)',
-                    ticketId: 'PWD-OCT-0745'
-                };
-            } else if (type === 'bengaluru-video') {
-                const btn = document.getElementById('btn-media-sample-blr');
-                if (btn) btn.classList.add('active');
-                mediaState.mode = 'video';
-                mediaState.sourceName = 'Bengaluru ORR Flyover Feed (BMTC-KA57-E912)';
-                mediaState.userVideo = null;
-                mediaState.userImage = null;
-                if (mediaState.baseImage) mediaState.baseImage.src = 'image1.jpg';
-                mediaState.defect = {
-                    type: 'POTHOLE',
-                    rdd: 'D40 (Pothole / Subsidence)',
-                    conf: '96.2%',
-                    depth: '9.4cm',
-                    sev: 'CRITICAL_P1',
-                    busId: 'BMTC-KA57-E912',
-                    loc: 'Outer Ring Road near Bellandur Pillar 34, Bengaluru',
-                    lat: 12.9250,
-                    lng: 77.6760,
-                    sorCode: 'CPWD 16.14.2 (DBM Patch)',
-                    ticketId: 'PWD-OCT-0948'
-                };
-            } else if (type === 'mysuru-pothole') {
-                const btn = document.getElementById('btn-media-sample-pothole');
-                if (btn) btn.classList.add('active');
-                mediaState.mode = 'image';
-                mediaState.sourceName = 'Hunsur Road Pothole Photo (MCC Ward 9)';
-                mediaState.userVideo = null;
-                mediaState.userImage = null;
-                if (mediaState.baseImage) mediaState.baseImage.src = 'image1.jpg';
-                mediaState.defect = {
-                    type: 'POTHOLE',
-                    rdd: 'D40 (Pothole / Subsidence)',
-                    conf: '98.1%',
-                    depth: '8.6cm',
-                    sev: 'CRITICAL_P1',
-                    busId: 'KSRTC-MY09-C330',
-                    loc: 'Hunsur Road Kalamandira Signal, Mysuru',
-                    lat: 12.3140,
-                    lng: 76.6320,
-                    sorCode: 'CPWD 16.14.2 (DBM Patch)',
-                    ticketId: 'PWD-OCT-0720'
-                };
-            } else if (type === 'silk-water') {
-                const btn = document.getElementById('btn-media-sample-water');
-                if (btn) btn.classList.add('active');
-                mediaState.mode = 'image';
-                mediaState.sourceName = 'Silk Board Underpass Monsoon Photo';
-                mediaState.userVideo = null;
-                mediaState.userImage = null;
-                if (mediaState.baseImage) mediaState.baseImage.src = 'image2.jpg';
-                mediaState.defect = {
-                    type: 'WATERLOGGING',
-                    rdd: 'W01 (Monsoon Waterlogging)',
-                    conf: '94.5%',
-                    depth: '35m Length',
-                    sev: 'HIGH_P2',
-                    busId: 'BMTC-KA57-E912',
-                    loc: 'Silk Board Underpass South Lane, Bengaluru',
-                    lat: 12.9125,
-                    lng: 77.6395,
-                    sorCode: 'CPWD 11.4.2 (Drain De-silt)',
-                    ticketId: 'PWD-OCT-0882'
-                };
-            }
-
-            // Update UI Sidebar
-            updateMediaSidebar();
+            ctx.fillStyle = '#059669';
+            ctx.font = 'bold 8px "JetBrains Mono"';
+            ctx.fillText('DPDP §2(t) MASK', canvas.width * 0.74, canvas.height * 0.62 - 3);
         }
 
-        function handleMediaUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        // =====================================================================
+        // STABLE, NON-ROAMING BOUNDING BOX OVER ROAD DEFECT
+        // =====================================================================
+        const pBoxX = Math.round(canvas.width * 0.40);
+        const pBoxY = Math.round(canvas.height * 0.58);
+        const pBoxW = 155;
+        const pBoxH = 65;
 
-            mediaState.customFile = file;
-            const fileUrl = URL.createObjectURL(file);
+        // Solid Red Detection Box (Does NOT Roam or Move Across the Screen)
+        ctx.strokeStyle = '#DC2626';
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(pBoxX, pBoxY, pBoxW, pBoxH);
 
-            if (file.type.startsWith('video/')) {
-                mediaState.mode = 'video';
-                mediaState.sourceName = `Custom Video: ${file.name}`;
-                const videoEl = document.createElement('video');
-                videoEl.src = fileUrl;
-                videoEl.muted = true;
-                videoEl.loop = true;
-                videoEl.playsInline = true;
-                videoEl.play();
-                mediaState.userVideo = videoEl;
-                mediaState.userImage = null;
-            } else {
-                mediaState.mode = 'image';
-                mediaState.sourceName = `Custom Photo: ${file.name}`;
-                const imgEl = new Image();
-                imgEl.src = fileUrl;
-                mediaState.userImage = imgEl;
-                mediaState.userVideo = null;
-            }
+        // Corner Target Accents
+        ctx.fillStyle = '#DC2626';
+        const cLen = 9;
+        ctx.fillRect(pBoxX - 2, pBoxY - 2, cLen, 3);
+        ctx.fillRect(pBoxX - 2, pBoxY - 2, 3, cLen);
+        ctx.fillRect(pBoxX + pBoxW - cLen + 2, pBoxY - 2, cLen, 3);
+        ctx.fillRect(pBoxX + pBoxW - 1, pBoxY - 2, 3, cLen);
+        ctx.fillRect(pBoxX - 2, pBoxY + pBoxH - 1, cLen, 3);
+        ctx.fillRect(pBoxX - 2, pBoxY + pBoxH - cLen + 2, 3, cLen);
+        ctx.fillRect(pBoxX + pBoxW - cLen + 2, pBoxY + pBoxH - 1, cLen, 3);
+        ctx.fillRect(pBoxX + pBoxW - 1, pBoxY + pBoxH - cLen + 2, 3, cLen);
 
-            // Assign detection profile
-            mediaState.defect = {
-                type: 'POTHOLE',
-                rdd: 'D40 (Pothole / Subsidence)',
-                conf: '97.8%',
-                depth: '8.7cm',
-                sev: 'CRITICAL_P1',
-                busId: 'KSRTC-KA09-E102',
-                loc: 'Mysuru Outer Ring Road (AI Ingested Media)',
-                lat: 12.3360,
-                lng: 76.6210,
-                sorCode: 'CPWD 16.14.2 (DBM Patch)',
-                ticketId: `PWD-OCT-${Math.floor(1000 + Math.random() * 9000)}`
-            };
+        // Top Tag Banner
+        ctx.fillStyle = '#DC2626';
+        ctx.fillRect(pBoxX, pBoxY - 18, pBoxW, 18);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 9px "JetBrains Mono", monospace';
+        ctx.fillText(`D40 POTHOLE · 97.6%`, pBoxX + 6, pBoxY - 5);
 
-            updateMediaSidebar();
+        // Bottom Telemetry Tag
+        ctx.fillStyle = 'rgba(28, 25, 23, 0.92)';
+        ctx.fillRect(pBoxX, pBoxY + pBoxH + 3, pBoxW, 16);
+        ctx.strokeStyle = '#DC2626';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(pBoxX, pBoxY + pBoxH + 3, pBoxW, 16);
+        ctx.fillStyle = '#FCA5A5';
+        ctx.font = 'bold 8px "JetBrains Mono", monospace';
+        ctx.fillText(`DEPTH: 9.4cm · CRITICAL P1`, pBoxX + 6, pBoxY + pBoxH + 14);
 
-            // Notify terminal
-            if (state.logs) {
-                state.logs.unshift({
-                    time: new Date().toTimeString().split(' ')[0],
-                    agent: 'Agent 1: Vision',
-                    tagClass: 'agent-tag-vision',
-                    text: `Ingested ${file.name} (${(file.size / (1024*1024)).toFixed(2)} MB). Neural Net scanning for RDD2022 distress patterns.`
-                });
-                renderEventLogs();
-            }
+        // Status Header on Canvas
+        if (mediaState.isDefectLocked) {
+            // Defect Locked Header
+            ctx.fillStyle = 'rgba(220, 38, 38, 0.95)';
+            ctx.fillRect(10, 10, canvas.width - 20, 24);
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(10, 10, canvas.width - 20, 24);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 10px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🎯 DEFECT LOCKED & INSPECTED · DEPTH: 9.4cm (CRITICAL P1)', canvas.width / 2, 26);
+            ctx.textAlign = 'left';
+
+            // Center Interactive Resume Pill
+            const bW = 220;
+            const bH = 26;
+            const bX = (canvas.width - bW) / 2;
+            const bY = canvas.height * 0.28;
+            ctx.fillStyle = 'rgba(2, 132, 199, 0.95)';
+            ctx.fillRect(bX, bY, bW, bH);
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 1.2;
+            ctx.strokeRect(bX, bY, bW, bH);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 10px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`▶️ RESUME VIDEO SCAN (${mediaState.resumeCountdown}s)`, canvas.width / 2, bY + 17);
+            ctx.textAlign = 'left';
+        } else {
+            ctx.fillStyle = 'rgba(28, 25, 23, 0.85)';
+            ctx.fillRect(10, 10, 240, 22);
+            ctx.strokeStyle = '#0284C7';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(10, 10, 240, 22);
+            ctx.fillStyle = '#00E5FF';
+            ctx.font = 'bold 9px "JetBrains Mono", monospace';
+            ctx.fillText('⚡ AI EDGE SCANNING: 30 FPS ACTIVE', 16, 24);
         }
 
-        function updateMediaSidebar() {
-            const feedEl = document.getElementById('media-hud-feed-name');
-            const coordsEl = document.getElementById('media-hud-coords');
-            const defectEl = document.getElementById('detection-defect-label');
-            const depthEl = document.getElementById('detection-depth-label');
-            const locEl = document.getElementById('detection-location-label');
+        // Secondary Distress: Surface Crack
+        const cBoxX = canvas.width * 0.68;
+        const cBoxY = canvas.height * 0.60;
+        const cBoxW = 95;
+        const cBoxH = 34;
+        ctx.strokeStyle = '#EA580C';
+        ctx.lineWidth = 1.8;
+        ctx.strokeRect(cBoxX, cBoxY, cBoxW, cBoxH);
+        ctx.fillStyle = '#EA580C';
+        ctx.fillRect(cBoxX, cBoxY - 15, cBoxW, 15);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 8px "JetBrains Mono", monospace';
+        ctx.fillText(`D00 CRACK · 94.2%`, cBoxX + 4, cBoxY - 4);
 
-            if (feedEl) feedEl.textContent = `FEED: ${mediaState.sourceName}`;
-            if (coordsEl) coordsEl.textContent = `GPS: ${mediaState.defect.lat.toFixed(4)}°N, ${mediaState.defect.lng.toFixed(4)}°E`;
-            if (defectEl) defectEl.textContent = `${mediaState.defect.type} ${mediaState.defect.rdd.split(' ')[0]} · ${mediaState.defect.conf}`;
-            if (depthEl) depthEl.textContent = `Distress: ${mediaState.defect.depth} · Severity: ${mediaState.defect.sev.split('_')[1] || 'P1'}`;
-            if (locEl) locEl.textContent = mediaState.defect.loc;
+        // Lateral Driving Maneuver Overlay directly on video canvas
+        ctx.fillStyle = 'rgba(2, 132, 199, 0.92)';
+        ctx.fillRect(canvas.width * 0.22, canvas.height - 28, canvas.width * 0.56, 22);
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(canvas.width * 0.22, canvas.height - 28, canvas.width * 0.56, 22);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 10px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('↖ MERGE LEFT LANE IN 25m TO BYPASS CRATER', canvas.width * 0.5, canvas.height - 13);
+        ctx.textAlign = 'left';
+
+        requestAnimationFrame(drawLoop);
+    }
+
+    requestAnimationFrame(drawLoop);
+}
+
+function loadSampleMedia(type) {
+    document.querySelectorAll('.btn-media-pill').forEach(b => b.classList.remove('active'));
+
+    mediaState.isDefectLocked = false;
+    mediaState.hasDispatchedOnce = false;
+
+    if (type === 'mysuru-video') {
+        const btn = document.getElementById('btn-media-sample-mysuru');
+        if (btn) btn.classList.add('active');
+        mediaState.mode = 'video';
+        mediaState.sourceName = 'Mysuru ORR Dashcam (KSRTC-KA09-E102)';
+        mediaState.userVideo = null;
+        mediaState.userImage = null;
+        if (mediaState.baseImage) mediaState.baseImage.src = 'image1.jpg';
+        currentCorridorKey = 'mysuru-orr';
+        const sel = document.getElementById('video-corridor-select');
+        if (sel) sel.value = 'mysuru-orr';
+        mediaState.defect = {
+            type: 'POTHOLE',
+            rdd: 'D40 (Pothole / Subsidence)',
+            conf: '97.6%',
+            depth: '9.4cm',
+            sev: 'CRITICAL_P1',
+            busId: 'KSRTC-KA09-E102',
+            loc: 'VVCE Ring Road Junction, Gokulam, Mysuru',
+            lat: 12.3360,
+            lng: 76.6210,
+            sorCode: 'CPWD 16.14.2 (DBM Patch)',
+            ticketId: 'PWD-OCT-0745'
+        };
+    } else if (type === 'bengaluru-video') {
+        const btn = document.getElementById('btn-media-sample-blr');
+        if (btn) btn.classList.add('active');
+        mediaState.mode = 'video';
+        mediaState.sourceName = 'Bengaluru ORR Flyover Feed (BMTC-KA57-E912)';
+        mediaState.userVideo = null;
+        mediaState.userImage = null;
+        if (mediaState.baseImage) mediaState.baseImage.src = 'image1.jpg';
+        mediaState.defect = {
+            type: 'POTHOLE',
+            rdd: 'D40 (Pothole / Subsidence)',
+            conf: '96.2%',
+            depth: '9.4cm',
+            sev: 'CRITICAL_P1',
+            busId: 'BMTC-KA57-E912',
+            loc: 'Outer Ring Road near Bellandur Pillar 34, Bengaluru',
+            lat: 12.9250,
+            lng: 77.6760,
+            sorCode: 'CPWD 16.14.2 (DBM Patch)',
+            ticketId: 'PWD-OCT-0948'
+        };
+    } else if (type === 'mysuru-pothole') {
+        const btn = document.getElementById('btn-media-sample-pothole');
+        if (btn) btn.classList.add('active');
+        mediaState.mode = 'image';
+        mediaState.sourceName = 'Hunsur Road Pothole Photo (MCC Ward 9)';
+        mediaState.userVideo = null;
+        mediaState.userImage = null;
+        if (mediaState.baseImage) mediaState.baseImage.src = 'image1.jpg';
+        currentCorridorKey = 'hunsur-rd';
+        const sel = document.getElementById('video-corridor-select');
+        if (sel) sel.value = 'hunsur-rd';
+        mediaState.defect = {
+            type: 'POTHOLE',
+            rdd: 'D40 (Pothole / Subsidence)',
+            conf: '98.1%',
+            depth: '8.6cm',
+            sev: 'CRITICAL_P1',
+            busId: 'KSRTC-MY09-C330',
+            loc: 'Hunsur Road Kalamandira Signal, Mysuru',
+            lat: 12.3140,
+            lng: 76.6320,
+            sorCode: 'CPWD 16.14.2 (DBM Patch)',
+            ticketId: 'PWD-OCT-0720'
+        };
+    } else if (type === 'silk-water') {
+        const btn = document.getElementById('btn-media-sample-water');
+        if (btn) btn.classList.add('active');
+        mediaState.mode = 'image';
+        mediaState.sourceName = 'Silk Board Underpass Monsoon Photo';
+        mediaState.userVideo = null;
+        mediaState.userImage = null;
+        if (mediaState.baseImage) mediaState.baseImage.src = 'image2.jpg';
+        mediaState.defect = {
+            type: 'WATERLOGGING',
+            rdd: 'W01 (Monsoon Waterlogging)',
+            conf: '94.5%',
+            depth: '35m Length',
+            sev: 'HIGH_P2',
+            busId: 'BMTC-KA57-E912',
+            loc: 'Silk Board Underpass South Lane, Bengaluru',
+            lat: 12.9125,
+            lng: 77.6395,
+            sorCode: 'CPWD 11.4.2 (Drain De-silt)',
+            ticketId: 'PWD-OCT-0882'
+        };
+    }
+
+    updateMediaSidebar();
+}
+
+function handleMediaUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    mediaState.customFile = file;
+    const fileUrl = URL.createObjectURL(file);
+    mediaState.isDefectLocked = false;
+    mediaState.hasDispatchedOnce = false;
+
+    if (file.type.startsWith('video/')) {
+        mediaState.mode = 'video';
+        mediaState.sourceName = `Real Road Video: ${file.name}`;
+        
+        let videoEl = document.getElementById('uploaded-media-video');
+        if (!videoEl) {
+            videoEl = document.createElement('video');
+            videoEl.id = 'uploaded-media-video';
+            videoEl.style.display = 'none';
+            document.body.appendChild(videoEl);
         }
+        
+        videoEl.src = fileUrl;
+        videoEl.muted = true;
+        videoEl.loop = true;
+        videoEl.playsInline = true;
+        videoEl.setAttribute('playsinline', '');
+        videoEl.setAttribute('muted', '');
+        
+        videoEl.onloadedmetadata = () => {
+            videoEl.play().catch(e => console.log('[Video] Autoplay pending click:', e));
+        };
+        videoEl.play().catch(e => console.log('[Video] Play deferred:', e));
+        
+        mediaState.userVideo = videoEl;
+        mediaState.userImage = null;
+    } else {
+        mediaState.mode = 'image';
+        mediaState.sourceName = `Real Road Photo: ${file.name}`;
+        const imgEl = new Image();
+        imgEl.src = fileUrl;
+        imgEl.onload = () => {
+            mediaState.userImage = imgEl;
+            mediaState.userVideo = null;
+        };
+        mediaState.userImage = imgEl;
+        mediaState.userVideo = null;
+    }
 
-        function toggleMediaPlayPause() {
-            mediaState.isPlaying = !mediaState.isPlaying;
-            const icon = document.getElementById('playpause-icon');
-            const text = document.getElementById('playpause-text');
+    const { lat, lng } = calculateCorridorCoordinates();
+    mediaState.defect = {
+        type: 'POTHOLE',
+        rdd: 'D40 (Pothole / Subsidence)',
+        conf: '97.8%',
+        depth: '9.4cm',
+        sev: 'CRITICAL_P1',
+        busId: 'KSRTC-KA09-E102',
+        loc: `${CORRIDORS[currentCorridorKey].short} (Real Ingest)`,
+        lat: lat,
+        lng: lng,
+        sorCode: 'CPWD 16.14.2 (DBM Patch)',
+        ticketId: `PWD-OCT-${Math.floor(1000 + Math.random() * 9000)}`
+    };
 
-            if (mediaState.userVideo) {
-                if (mediaState.isPlaying) mediaState.userVideo.play();
-                else mediaState.userVideo.pause();
-            }
+    updateMediaSidebar();
 
-            if (icon && text) {
-                if (mediaState.isPlaying) {
-                    icon.className = 'fa-solid fa-pause';
-                    text.textContent = 'PAUSE';
-                } else {
-                    icon.className = 'fa-solid fa-play';
-                    text.textContent = 'PLAY';
-                }
-            }
-        }
+    if (state.logs) {
+        state.logs.unshift({
+            time: new Date().toTimeString().split(' ')[0],
+            agent: 'Agent 1: Vision',
+            tagClass: 'agent-tag-vision',
+            text: `[REAL MEDIA INGEST] Ingested ${file.name} (${(file.size / (1024*1024)).toFixed(2)} MB). AI scanning for road hazards along ${CORRIDORS[currentCorridorKey].name}.`
+        });
+        renderEventLogs();
+    }
+}
 
-        function toggleDPDPMask() {
-            mediaState.dpdpActive = !mediaState.dpdpActive;
-            const text = document.getElementById('dpdp-status-text');
-            const badge = document.getElementById('hud-dpdp-badge');
+function updateMediaSidebar() {
+    const feedEl = document.getElementById('media-hud-feed-name');
+    const coordsEl = document.getElementById('media-hud-coords');
+    const defectEl = document.getElementById('detection-defect-label');
+    const depthEl = document.getElementById('detection-depth-label');
+    const locEl = document.getElementById('detection-location-label');
 
-            if (text) text.textContent = mediaState.dpdpActive ? 'DPDP: ON' : 'DPDP: OFF';
-            if (badge) {
-                badge.style.display = mediaState.dpdpActive ? 'inline-flex' : 'none';
-            }
-        }
+    if (feedEl) feedEl.textContent = `FEED: ${mediaState.sourceName}`;
+    if (coordsEl) coordsEl.textContent = `GPS: ${mediaState.defect.lat.toFixed(4)}°N, ${mediaState.defect.lng.toFixed(4)}°E`;
+    if (defectEl) defectEl.textContent = `${mediaState.defect.type} ${mediaState.defect.rdd.split(' ')[0]} · ${mediaState.defect.conf}`;
+    if (depthEl) depthEl.textContent = `Distress: ${mediaState.defect.depth} · Severity: ${mediaState.defect.sev.split('_')[1] || 'P1'}`;
+    if (locEl) locEl.textContent = mediaState.defect.loc;
+}
 
-        // Connect Complete Project: Auto-Dispatch and integrate with GIS Map, PWD Queue, and Terminal
-        function runAIAnalysisAndDispatch() {
+function toggleMediaPlayPause() {
+    mediaState.isPlaying = !mediaState.isPlaying;
+    const icon = document.getElementById('playpause-icon');
+    const text = document.getElementById('playpause-text');
+
+    if (mediaState.userVideo) {
+        if (mediaState.isPlaying) mediaState.userVideo.play().catch(e => console.log('Play err:', e));
+        else mediaState.userVideo.pause();
+    }
+
+    if (mediaState.isPlaying) {
+        if (icon) icon.className = 'fa-solid fa-pause';
+        if (text) text.textContent = 'PAUSE';
+    } else {
+        if (icon) icon.className = 'fa-solid fa-play';
+        if (text) text.textContent = 'PLAY';
+    }
+}
+
+function toggleDPDPMask() {
+    mediaState.dpdpActive = !mediaState.dpdpActive;
+    const text = document.getElementById('dpdp-status-text');
+    const badge = document.getElementById('hud-dpdp-badge');
+
+    if (text) text.textContent = mediaState.dpdpActive ? 'DPDP: ON' : 'DPDP: OFF';
+    if (badge) badge.style.display = mediaState.dpdpActive ? 'inline-flex' : 'none';
+}
+
+function updateLiveNavigationDirections(hazard, lat, lng, loc) {
+    if (typeof drawMapDirectionRoute === 'function') {
+        const targetCoord = (lat && lng) ? [lat, lng] : [mediaState.defect.lat, mediaState.defect.lng];
+        drawMapDirectionRoute(targetCoord, loc || mediaState.defect.loc, 'detour');
+    }
+}
+
+
+function runAIAnalysisAndDispatch() {
             const d = mediaState.defect;
 
             // 1. Add / Update in state.hazards

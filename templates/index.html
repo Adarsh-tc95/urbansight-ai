@@ -372,6 +372,25 @@
                     </div>
                 </div>
 
+                                <!-- Video Corridor & GPS Georeference Alignment Bar -->
+                <div class="video-corridor-bar">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-weight:700; color:#0284C7;"><i class="fa-solid fa-location-crosshairs"></i> Video Corridor:</span>
+                        <select class="corridor-select" id="video-corridor-select" onchange="changeVideoCorridor(this.value)">
+                            <option value="mysuru-orr" selected>Mysuru Outer Ring Road (VVCE Gokulam ➔ Columbia Asia)</option>
+                            <option value="hunsur-rd">Hunsur Road (Kalamandira Signal ➔ University Gate)</option>
+                            <option value="sayyaji-rao">Sayyaji Rao Road (Agrahara ➔ Mysore Palace)</option>
+                            <option value="live-gps">🛰️ Live Browser GPS / Phone Geolocation</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span class="corridor-gps-badge" id="corridor-gps-badge">GPS: 12.3360°N, 76.6210°E</span>
+                        <button class="btn-playback-ctrl" id="btn-manual-resume" onclick="resumeVideoScan()" style="padding:2px 8px; font-size:0.7rem; display:none;" title="Resume Scanning Video">
+                            <i class="fa-solid fa-play"></i> Resume Scan
+                        </button>
+                    </div>
+                </div>
+
                 <div class="dashcam-split-panel">
                     <div class="video-simulation-canvas-box" style="position:relative;">
                         <video id="live-camera-video" autoplay playsinline muted style="display:none;"></video>
@@ -619,11 +638,7 @@
         </div>
     </div>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <!-- Main Application JS -->
-    <script src="/static/js/app.js">
+    <script>
 // =============================================================================
 // Official Government Portal Features: Accessibility, SLA & Modals
 // =============================================================================
@@ -1590,5 +1605,9 @@ function speakMapDirectionPrompt() {
         </div>
     </footer>
 
+    <!-- Leaflet GIS Map JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Core Application Logic -->
+    <script src="/static/js/app.js"></script>
 </body>
 </html>
