@@ -872,7 +872,41 @@
                 display: none;
             }
         }
-    </style>
+    
+/* Multilingual Voice Picker & Buttons */
+.btn-lang-pill {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-lang-pill:hover {
+    color: #FFFFFF;
+}
+
+.btn-lang-pill.active {
+    background: var(--primary);
+    color: #000000;
+    font-weight: 800;
+}
+
+.voice-pulse-circle {
+    animation: pulseGlow 1.8s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.4); }
+    70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(0, 229, 255, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
+}
+
+</style>
 </head>
 <body>
 
@@ -942,7 +976,19 @@
             <button class="btn-hud" id="btn-chime-test" title="Test Web Audio API Alert Chime">
                 <i class="fa-solid fa-bell"></i> TEST
             </button>
-                        <button class="btn-hud" id="btn-route-toggle" onclick="toggleDriverRoute()" title="Switch Route between Bengaluru ORR and Mysuru Outer Ring Road">
+                                    <!-- Multilingual Voice Advisory Selector (Kannada / Hindi / English) -->
+            <div class="voice-picker-group" style="display:inline-flex; align-items:center; background:rgba(15,23,42,0.85); border:1px solid var(--border-color); border-radius:8px; padding:2px 6px; gap:4px;">
+                <span style="font-size:0.7rem; font-weight:700; color:var(--text-muted); display:inline-flex; align-items:center; gap:4px;">
+                    <i class="fa-solid fa-language" style="color:var(--primary);"></i> Voice:
+                </span>
+                <button class="btn-lang-pill active" id="lang-kn" onclick="setDriverVoiceLanguage('kn-IN')" title="ಕನ್ನಡ ಧ್ವನಿ ಎಚ್ಚರಿಕೆ">ಕನ್ನಡ</button>
+                <button class="btn-lang-pill" id="lang-hi" onclick="setDriverVoiceLanguage('hi-IN')" title="हिन्दी आवाज़ अलर्ट">हिन्दी</button>
+                <button class="btn-lang-pill" id="lang-en" onclick="setDriverVoiceLanguage('en-IN')" title="English Voice Alerts">EN</button>
+            </div>
+            <button class="btn-hud" id="btn-voice-speak" onclick="triggerVoiceSpeech(true)" title="Speak Voice Alert in selected language">
+                <i class="fa-solid fa-headset" style="color:#00E5FF;"></i> <span id="voice-speak-text">ಕನ್ನಡ ಧ್ವನಿ (Play)</span>
+            </button>
+            <button class="btn-hud" id="btn-route-toggle" onclick="toggleDriverRoute()" title="Switch Route between Bengaluru ORR and Mysuru Outer Ring Road">
                 <i class="fa-solid fa-route" style="color:var(--primary);"></i>
                 <span id="route-toggle-label">Route: 500D (BLR)</span>
             </button>
@@ -1071,6 +1117,26 @@
                         </div>
                     </div>
 
+                                        <!-- Multilingual Voice Advisory Banner -->
+                    <div class="voice-advisory-banner" id="voice-advisory-banner" style="margin-top:12px; padding:10px 14px; background:rgba(0, 229, 255, 0.08); border:1.5px solid rgba(0, 229, 255, 0.3); border-radius:10px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="voice-pulse-circle" style="width:28px; height:28px; border-radius:50%; background:rgba(0,229,255,0.2); color:#00E5FF; display:flex; align-items:center; justify-content:center; font-size:13px;">
+                                <i class="fa-solid fa-microphone-lines"></i>
+                            </div>
+                            <div>
+                                <div style="font-size:0.68rem; font-family:var(--font-mono); color:var(--primary); font-weight:700; text-transform:uppercase;" id="voice-lang-tag">
+                                    🎙️ ಕನ್ನಡ ಧ್ವನಿ ಎಚ್ಚರಿಕೆ (Kannada In-Cab Audio)
+                                </div>
+                                <div style="font-size:0.95rem; font-weight:800; color:#FFFFFF; margin-top:2px;" id="voice-spoken-display">
+                                    "ಮುಂದೆ 220 ಮೀಟರ್‌ನಲ್ಲಿ ಗುಂಡಿ ಇದೆ. ಎಚ್ಚರ! ಎಡ ಪಥಕ್ಕೆ ಚಲಿಸಿ."
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-hud" style="padding:6px 12px; font-size:0.75rem;" onclick="triggerVoiceSpeech(true)" title="Replay Voice Alert">
+                            <i class="fa-solid fa-volume-high"></i> ಕೇಳಿ
+                        </button>
+                    </div>
+
                     <!-- 3-Lane Road Visualizer -->
                     <div class="lane-indicator-strip">
                         <div class="lane-col lane-safe" id="lane-1">
@@ -1191,6 +1257,39 @@
             </div>
         </section>
 
+    
+        <!-- Route Ride-Quality & Phone Accelerometer Smoothness Card -->
+        <div class="ride-quality-widget" style="margin-top:16px; background:var(--bg-panel); border:1px solid var(--border-color); border-radius:12px; padding:14px 18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-gauge-simple-high" style="color:var(--primary); font-size:16px;"></i>
+                    <span style="font-size:0.8rem; font-weight:800; color:#FFFFFF; text-transform:uppercase; letter-spacing:0.5px;">Route Ride-Quality &amp; Suspension Stress (Phone Accelerometer)</span>
+                </div>
+                <span class="tag-pill pill-green" id="rq-live-grade">SMOOTH · GRADE A (88/100)</span>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; text-align:center;">
+                <div style="background:#1E293B; padding:8px 6px; border-radius:8px;">
+                    <div style="font-size:0.65rem; color:var(--text-muted); font-family:var(--font-mono);">RIDE SCORE</div>
+                    <div style="font-size:1.15rem; font-weight:900; color:#10B981;" id="rq-live-score">88 / 100</div>
+                    <div style="font-size:0.65rem; color:#10B981;" id="rq-live-status">Smooth Road</div>
+                </div>
+                <div style="background:#1E293B; padding:8px 6px; border-radius:8px;">
+                    <div style="font-size:0.65rem; color:var(--text-muted); font-family:var(--font-mono);">Z-AXIS SHOCK</div>
+                    <div style="font-size:1.15rem; font-weight:900; color:#F59E0B;" id="rq-live-shock">-0.14 g</div>
+                    <div style="font-size:0.65rem; color:var(--text-muted);">Phone IMU</div>
+                </div>
+                <div style="background:#1E293B; padding:8px 6px; border-radius:8px;">
+                    <div style="font-size:0.65rem; color:var(--text-muted); font-family:var(--font-mono);">RMS VIBRATION</div>
+                    <div style="font-size:1.15rem; font-weight:900; color:#00E5FF;" id="rq-live-rms">0.078 g</div>
+                    <div style="font-size:0.65rem; color:var(--text-muted);">50Hz Sensor</div>
+                </div>
+                <div style="background:#1E293B; padding:8px 6px; border-radius:8px;">
+                    <div style="font-size:0.65rem; color:var(--text-muted); font-family:var(--font-mono);">SUSPENSION WEAR</div>
+                    <div style="font-size:1.15rem; font-weight:900; color:#38BDF8;" id="rq-live-wear">+6% (Normal)</div>
+                    <div style="font-size:0.65rem; color:var(--text-muted);" id="rq-live-next">Maint: 75d</div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Bottom Evaluation Strip (Quick Scenarios for Infothon Judges) -->
@@ -1226,6 +1325,142 @@
         let countdownTimer = null;
         let isAlertActive = true;
         let apiConnected = false;
+
+        
+        // =========================================================================
+        // Multilingual Voice Advisory Engine (Kannada, Hindi, English)
+        // =========================================================================
+        let currentVoiceLang = 'kn-IN'; // Default to Kannada for Karnataka Transit (KSRTC/BMTC)
+        let lastSpokenDistance = null;
+
+        const MULTILINGUAL_ADVISORIES = {
+            'kn-IN': {
+                name: 'ಕನ್ನಡ',
+                badge: '🎙️ ಕನ್ನಡ ಧ್ವನಿ ಎಚ್ಚರಿಕೆ (Kannada In-Cab Audio)',
+                pothole: (d) => `ಮುಂದೆ ${d} ಮೀಟರ್‌ನಲ್ಲಿ ಗುಂಡಿ ಇದೆ. ಎಚ್ಚರ! ಎಡ ಪಥಕ್ಕೆ ಚಲಿಸಿ ಮತ್ತು ವೇಗ ಕಡಿಮೆ ಮಾಡಿ.`,
+                waterlogging: (d) => `ಮುಂದೆ ${d} ಮೀಟರ್‌ನಲ್ಲಿ ರಸ್ತೆಯಲ್ಲಿ ನೀರು ನಿಂತಿದೆ. ವಾಹನದ ವೇಗ 20 ಕಿಲೋಮೀಟರ್‌ಗೆ ಕಡಿಮೆ ಮಾಡಿ.`,
+                crack: (d) => `ಮುಂದೆ ${d} ಮೀಟರ್‌ನಲ್ಲಿ ರಸ್ತೆ ಬಿರುಕು ಇದೆ. ನಿಧಾನವಾಗಿ ಚಲಿಸಿ.`,
+                allClear: () => `ಮುಂದಿನ ರಸ್ತೆ ಸ್ಪಷ್ಟವಾಗಿದೆ. ಸುರಕ್ಷಿತ ಪ್ರಯಾಣ.`,
+                buttonText: 'ಕನ್ನಡ ಧ್ವನಿ'
+            },
+            'hi-IN': {
+                name: 'हिन्दी',
+                badge: '🎙️ हिन्दी आवाज़ अलर्ट (Hindi In-Cab Audio)',
+                pothole: (d) => `आगे ${d} मीटर पर गहरा गड्ढा है। कृपया गति धीमी करें और बाईं लेन में जाएं।`,
+                waterlogging: (d) => `आगे ${d} मीटर पर जलभराव है। वाहन की गति 20 किमी प्रति घंटा तक कम करें।`,
+                crack: (d) => `आगे ${d} मीटर पर सड़क पर दरार है। कृपया सावधानी से चलें।`,
+                allClear: () => `आगे सड़क पूरी तरह साफ है। सुरक्षित यात्रा करें।`,
+                buttonText: 'हिन्दी आवाज़'
+            },
+            'en-IN': {
+                name: 'English',
+                badge: '🎙️ English Audio Alert (In-Cab HUD)',
+                pothole: (d) => `Pothole detected ${d} meters ahead. Merge to left lane and reduce speed to 20 km/h.`,
+                waterlogging: (d) => `Waterlogged road surface ${d} meters ahead. Reduce speed.`,
+                crack: (d) => `Road surface fissure ${d} meters ahead. Proceed with caution.`,
+                allClear: () => `Roadway ahead is completely clear. Safe driving.`,
+                buttonText: 'English Audio'
+            }
+        };
+
+        function setDriverVoiceLanguage(lang) {
+            currentVoiceLang = lang;
+            document.querySelectorAll('.btn-lang-pill').forEach(b => b.classList.remove('active'));
+            if (lang === 'kn-IN') document.getElementById('lang-kn')?.classList.add('active');
+            if (lang === 'hi-IN') document.getElementById('lang-hi')?.classList.add('active');
+            if (lang === 'en-IN') document.getElementById('lang-en')?.classList.add('active');
+
+            const btnText = document.getElementById('voice-speak-text');
+            if (btnText && MULTILINGUAL_ADVISORIES[lang]) {
+                btnText.textContent = MULTILINGUAL_ADVISORIES[lang].buttonText + ' (Play)';
+            }
+
+            updateVoiceAdvisoryDisplay();
+            triggerVoiceSpeech(true);
+        }
+
+        function getVoiceAdvisoryText(dist) {
+            const d = dist !== undefined ? dist : Math.round(currentDistance);
+            const pack = MULTILINGUAL_ADVISORIES[currentVoiceLang] || MULTILINGUAL_ADVISORIES['kn-IN'];
+            return pack.pothole(d);
+        }
+
+        function updateVoiceAdvisoryDisplay() {
+            const pack = MULTILINGUAL_ADVISORIES[currentVoiceLang] || MULTILINGUAL_ADVISORIES['kn-IN'];
+            const tagEl = document.getElementById('voice-lang-tag');
+            const displayEl = document.getElementById('voice-spoken-display');
+            if (tagEl) tagEl.textContent = pack.badge;
+            if (displayEl) displayEl.textContent = `"${getVoiceAdvisoryText()}"`;
+        }
+
+        function triggerVoiceSpeech(force = false) {
+            if (!audioEnabled && !force) return;
+            const text = getVoiceAdvisoryText();
+
+            // Web Audio Chime first
+            playChime('critical');
+
+            // Web Speech API Text-to-Speech
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop prior audio
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentVoiceLang;
+                utterance.rate = currentVoiceLang === 'kn-IN' ? 0.9 : 0.95;
+                utterance.pitch = 1.0;
+
+                // Attempt to pick matching system voice if installed
+                const voices = window.speechSynthesis.getVoices();
+                const matchedVoice = voices.find(v => v.lang.startsWith(currentVoiceLang.split('-')[0]));
+                if (matchedVoice) utterance.voice = matchedVoice;
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // =========================================================================
+        // Route Ride-Quality & Phone Accelerometer Smoothness Telemetry
+        // =========================================================================
+        const ROUTE_RQ_PROFILES = {
+            'mysuru_ringroad': {
+                score: 88,
+                grade: 'SMOOTH · GRADE A (88/100)',
+                status: 'Smooth Road',
+                shock: '-0.14 g',
+                rms: '0.078 g',
+                wear: '+6% (Normal)',
+                maint: 'Maint: 75d',
+                color: '#10B981'
+            },
+            'bmtc_orr': {
+                score: 62,
+                grade: 'MODERATE · GRADE C (62/100)',
+                status: 'Rough Surface',
+                shock: '-0.37 g',
+                rms: '0.245 g',
+                wear: '+42% (High Fatigue)',
+                maint: 'Maint: 14d (Urgent)',
+                color: '#F59E0B'
+            }
+        };
+
+        function updateRideQualityDisplay() {
+            const profile = ROUTE_RQ_PROFILES[currentRouteKey] || ROUTE_RQ_PROFILES['bmtc_orr'];
+            const scoreEl = document.getElementById('rq-live-score');
+            const shockEl = document.getElementById('rq-live-shock');
+            const rmsEl = document.getElementById('rq-live-rms');
+            const wearEl = document.getElementById('rq-live-wear');
+            const gradeEl = document.getElementById('rq-live-grade');
+            const statusEl = document.getElementById('rq-live-status');
+            const nextEl = document.getElementById('rq-live-next');
+
+            if (scoreEl) { scoreEl.textContent = `${profile.score} / 100`; scoreEl.style.color = profile.color; }
+            if (shockEl) shockEl.textContent = profile.shock;
+            if (rmsEl) rmsEl.textContent = profile.rms;
+            if (wearEl) wearEl.textContent = profile.wear;
+            if (gradeEl) { gradeEl.textContent = profile.grade; gradeEl.style.borderColor = profile.color; }
+            if (statusEl) { statusEl.textContent = profile.status; statusEl.style.color = profile.color; }
+            if (nextEl) nextEl.textContent = profile.maint;
+        }
 
         // Sound synthesizer using Web Audio API
         function initAudio() {

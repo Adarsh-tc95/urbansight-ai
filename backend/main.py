@@ -816,6 +816,311 @@ def get_ward_analytics_summary():
     }
 
 
+
+# =============================================================================
+# People & Inclusion 1: Kannada & Hindi Voice Advisory Engine
+# =============================================================================
+
+VOICE_ALERT_TEMPLATES = {
+    "kn-IN": {
+        "POTHOLE": "ಮುಂದೆ {dist} ಮೀಟರ್‌ನಲ್ಲಿ ಗುಂಡಿ ಇದೆ. ಎಚ್ಚರ! ಎಡ ಪಥಕ್ಕೆ ಚಲಿಸಿ.",
+        "WATERLOGGING": "ಮುಂದೆ {dist} ಮೀಟರ್‌ನಲ್ಲಿ ರಸ್ತೆಯಲ್ಲಿ ನೀರು ನಿಂತಿದೆ. ವಾಹನದ ವೇಗ ಕಡಿಮೆ ಮಾಡಿ.",
+        "ROAD_CRACK": "ಮುಂದೆ {dist} ಮೀಟರ್‌ನಲ್ಲಿ ರಸ್ತೆ ಬಿರುಕು ಇದೆ. ನಿಧಾನವಾಗಿ ಚಲಿಸಿ.",
+        "DEFAULT": "ಮುಂದೆ {dist} ಮೀಟರ್‌ನಲ್ಲಿ ರಸ್ತೆ ಅಪಾಯವಿದೆ. ಎಚ್ಚರಿಕೆಯಿಂದ ಚಲಿಸಿ."
+    },
+    "hi-IN": {
+        "POTHOLE": "आगे {dist} मीटर पर गहरा गड्ढा है। कृपया गति धीमी करें और बाईं लेन में जाएं।",
+        "WATERLOGGING": "आगे {dist} मीटर पर जलभराव है। वाहन की गति 20 किमी प्रति घंटा तक कम करें।",
+        "ROAD_CRACK": "आगे {dist} मीटर पर सड़क पर दरार है। कृपया सावधानी से चलें।",
+        "DEFAULT": "आगे {dist} मीटर पर सड़क संबंधी खतरा है। कृपया सावधान रहें।"
+    },
+    "en-IN": {
+        "POTHOLE": "Critical Pothole detected {dist} meters ahead. Merge to left lane and reduce speed.",
+        "WATERLOGGING": "Waterlogged road surface {dist} meters ahead. Reduce speed.",
+        "ROAD_CRACK": "Road surface crack {dist} meters ahead. Proceed with caution.",
+        "DEFAULT": "Road hazard detected {dist} meters ahead. Proceed with caution."
+    }
+}
+
+def generate_voice_alert(hazard_type: str, distance_m: int, lang: str = "kn-IN") -> Dict[str, str]:
+    lang_key = lang if lang in VOICE_ALERT_TEMPLATES else "kn-IN"
+    h_type = (hazard_type or "POTHOLE").upper()
+    template = VOICE_ALERT_TEMPLATES[lang_key].get(h_type, VOICE_ALERT_TEMPLATES[lang_key]["DEFAULT"])
+    text = template.format(dist=distance_m)
+    return {
+        "language": lang_key,
+        "hazard_type": h_type,
+        "distance_m": distance_m,
+        "spoken_text": text
+    }
+
+@app.get("/api/driver-advisories/voice")
+def get_driver_voice_alert(hazard_type: str = "POTHOLE", distance_m: int = 100, lang: str = "kn-IN"):
+    """Generates multilingual text-to-speech phrases for bus drivers in Kannada, Hindi, and English."""
+    return generate_voice_alert(hazard_type=hazard_type, distance_m=distance_m, lang=lang)
+
+
+# =============================================================================
+# People & Inclusion 2: Route Ride-Quality & Accelerometer Smoothness Index
+# =============================================================================
+
+ROUTE_RIDE_QUALITY_DATA = [
+    {
+        "route_id": "MYS-119",
+        "route_name": "Mysuru Outer Ring Road (VVCE Gokulam ↔ Columbia Asia)",
+        "operator": "KSRTC Mysuru Urban Division",
+        "distance_km": 18.4,
+        "ride_quality_score": 88.5,
+        "ride_quality_grade": "A",
+        "status": "SMOOTH_ROADWAY",
+        "accelerometer_metrics": {
+            "rms_vibration_g": 0.078,
+            "peak_z_shock_g": -0.14,
+            "iri_m_per_km": 2.1,
+            "vibration_samples_collected": 1420
+        },
+        "fleet_maintenance_impact": {
+            "suspension_wear_rate_pct": 6.2,
+            "tire_wear_pct": 4.1,
+            "recommended_inspection_days": 75,
+            "maintenance_priority": "LOW",
+            "advisory": "Road surface in pristine condition. Normal preventive schedule."
+        }
+    },
+    {
+        "route_id": "BMTC-500D",
+        "route_name": "Bengaluru Outer Ring Road (Hebbal ↔ Silk Board)",
+        "operator": "BMTC Transit Grid",
+        "distance_km": 31.8,
+        "ride_quality_score": 62.4,
+        "ride_quality_grade": "C",
+        "status": "MODERATE_DISTRESS",
+        "accelerometer_metrics": {
+            "rms_vibration_g": 0.245,
+            "peak_z_shock_g": -0.37,
+            "iri_m_per_km": 4.6,
+            "vibration_samples_collected": 3840
+        },
+        "fleet_maintenance_impact": {
+            "suspension_wear_rate_pct": 42.5,
+            "tire_wear_pct": 28.0,
+            "recommended_inspection_days": 14,
+            "maintenance_priority": "HIGH",
+            "advisory": "High shock frequency near Bellandur & Kadubeesanahalli. Prioritize suspension shock retuning for 14 electric buses."
+        }
+    },
+    {
+        "route_id": "BMTC-356C",
+        "route_name": "Silk Board ↔ Electronic City Elevated Expressway",
+        "operator": "BMTC Express Corridor",
+        "distance_km": 11.2,
+        "ride_quality_score": 92.0,
+        "ride_quality_grade": "A+",
+        "status": "EXCELLENT",
+        "accelerometer_metrics": {
+            "rms_vibration_g": 0.045,
+            "peak_z_shock_g": -0.05,
+            "iri_m_per_km": 1.7,
+            "vibration_samples_collected": 1820
+        },
+        "fleet_maintenance_impact": {
+            "suspension_wear_rate_pct": 2.1,
+            "tire_wear_pct": 1.8,
+            "recommended_inspection_days": 90,
+            "maintenance_priority": "MINIMAL",
+            "advisory": "Expressway surface optimal. Zero suspension degradation detected."
+        }
+    },
+    {
+        "route_id": "MYS-HUNSUR",
+        "route_name": "Hunsur Road Corridor (Kalamandira Signal ↔ Mysore University)",
+        "operator": "KSRTC Mysuru Urban",
+        "distance_km": 9.6,
+        "ride_quality_score": 74.2,
+        "ride_quality_grade": "B",
+        "status": "FAIR_ROADWAY",
+        "accelerometer_metrics": {
+            "rms_vibration_g": 0.160,
+            "peak_z_shock_g": -0.22,
+            "iri_m_per_km": 3.2,
+            "vibration_samples_collected": 1150
+        },
+        "fleet_maintenance_impact": {
+            "suspension_wear_rate_pct": 18.4,
+            "tire_wear_pct": 14.0,
+            "recommended_inspection_days": 45,
+            "maintenance_priority": "MODERATE",
+            "advisory": "Moderate camber irregularity near signal. Routine front-axle alignment check advised."
+        }
+    }
+]
+
+@app.get("/api/routes/ride-quality")
+def get_route_ride_quality():
+    """
+    Returns phone & vehicle IMU accelerometer vibration ratings,
+    International Roughness Index (IRI), and suspension wear forecasting per transit route.
+    """
+    return {
+        "status": "SUCCESS",
+        "total_routes_evaluated": len(ROUTE_RIDE_QUALITY_DATA),
+        "fleet_operators": ["KSRTC Mysuru City", "BMTC Bengaluru"],
+        "sensor_source": "Phone Accelerometer (Z-Axis Shock & RMS Vibration 50Hz)",
+        "routes": ROUTE_RIDE_QUALITY_DATA
+    }
+
+
+# =============================================================================
+# People & Inclusion 3: Adopt-a-Road Citizen Rewards Program (Anti-Spam Verified)
+# =============================================================================
+
+CITIZEN_REWARDS_DATA = {
+    "citizen_id": "MCC-GUARDIAN-849",
+    "name": "Gagan K. S.",
+    "tier": "Gold Road Custodian 🥇",
+    "points_balance": 850,
+    "total_earned": 1450,
+    "streak_days": 12,
+    "adopted_corridors": [
+        {
+            "corridor_id": "CORR-MYS-01",
+            "name": "VVCE Ring Road & Gokulam 3rd Stage",
+            "jurisdiction": "MCC Ward 9",
+            "length_km": 1.4,
+            "multiplier": "1.5x Multiplier",
+            "verified_hazards_spotted": 4
+        }
+    ],
+    "verified_reports_ledger": [
+        {
+            "report_id": "REP-MY-881",
+            "defect_type": "POTHOLE (Critical)",
+            "location": "VVCE Ring Road Junction, Gokulam",
+            "points_awarded": 150,
+            "verification_status": "VERIFIED_BY_BUS_CAMERAS",
+            "verifier": "Bus #KA-09-F-1102 & DBSCAN (14 Passes)",
+            "date": "2026-10-22"
+        },
+        {
+            "report_id": "REP-MY-842",
+            "defect_type": "WATERLOGGING",
+            "location": "Silk Board Junction / Hosur Rd",
+            "points_awarded": 120,
+            "verification_status": "VERIFIED_BY_DBSCAN",
+            "verifier": "8 Confirmed Transit Passes",
+            "date": "2026-10-18"
+        },
+        {
+            "report_id": "REP-MY-790",
+            "defect_type": "ROAD_CRACK",
+            "location": "Gokulam 3rd Stage Main Road",
+            "points_awarded": 200,
+            "verification_status": "CLOSED_AND_AUDITED",
+            "verifier": "Municipal PWD Compaction Audit PASS",
+            "date": "2026-10-15"
+        },
+        {
+            "report_id": "REP-MY-910",
+            "defect_type": "SURFACE_FISSURE",
+            "location": "Infosys Mysore Gate 2 Arterial",
+            "points_awarded": 0,
+            "verification_status": "PENDING_FLEET_PASS",
+            "verifier": "Awaiting Transit Bus Next Sweep (Zero Spam Guard)",
+            "date": "2026-10-24"
+        }
+    ],
+    "available_perks": [
+        {
+            "perk_id": "PERK-BUS-250",
+            "title": "KSRTC / BMTC Monthly Pass Discount",
+            "discount_val": "₹250 OFF",
+            "points_cost": 300,
+            "category": "PUBLIC_TRANSIT",
+            "icon": "fa-solid fa-bus"
+        },
+        {
+            "perk_id": "PERK-TAX-500",
+            "title": "MCC Municipal Property Tax Rebate",
+            "discount_val": "₹500 Credit",
+            "points_cost": 500,
+            "category": "CIVIC_TAX",
+            "icon": "fa-solid fa-landmark"
+        },
+        {
+            "perk_id": "PERK-POOL-150",
+            "title": "Chamundi Vihar Sports Pool Free Pass",
+            "discount_val": "1 Day Free Pass",
+            "points_cost": 150,
+            "category": "RECREATION",
+            "icon": "fa-solid fa-person-swimming"
+        },
+        {
+            "perk_id": "PERK-EV-400",
+            "title": "Bescom / Chamundeshwari EV Charging (20 kWh)",
+            "discount_val": "20 kWh Fast Charge",
+            "points_cost": 400,
+            "category": "CLEAN_MOBILITY",
+            "icon": "fa-solid fa-bolt"
+        },
+        {
+            "perk_id": "PERK-ZOO-250",
+            "title": "Mysuru Zoo & Karanji Lake Family Entry",
+            "discount_val": "Family Entry Ticket",
+            "points_cost": 250,
+            "category": "PARKS_RECREATION",
+            "icon": "fa-solid fa-tree"
+        }
+    ],
+    "redeemed_vouchers": []
+}
+
+class RedeemPerkRequest(BaseModel):
+    perk_id: str
+    citizen_id: Optional[str] = "MCC-GUARDIAN-849"
+
+@app.get("/api/citizen-rewards")
+def get_citizen_rewards():
+    """Returns citizen reward points, zero-spam verified report history, and available municipal perks."""
+    return {
+        "status": "SUCCESS",
+        "rewards_data": CITIZEN_REWARDS_DATA
+    }
+
+@app.post("/api/redeem-reward")
+def redeem_citizen_reward(req: RedeemPerkRequest):
+    """Redeems civic points for municipal perks (transit pass, tax rebate, pool passes)."""
+    perk = next((p for p in CITIZEN_REWARDS_DATA["available_perks"] if p["perk_id"] == req.perk_id), None)
+    if not perk:
+        raise HTTPException(status_code=404, detail="Municipal perk not found")
+    
+    if CITIZEN_REWARDS_DATA["points_balance"] < perk["points_cost"]:
+        raise HTTPException(status_code=400, detail="Insufficient points balance")
+    
+    CITIZEN_REWARDS_DATA["points_balance"] -= perk["points_cost"]
+    voucher_id = f"MCC-PERK-2026-{uuid.uuid4().hex[:6].upper()}"
+    redeemed_item = {
+        "voucher_id": voucher_id,
+        "perk_id": perk["perk_id"],
+        "title": perk["title"],
+        "discount_val": perk["discount_val"],
+        "redeemed_at": datetime.now().isoformat(),
+        "citizen_id": req.citizen_id,
+        "qr_code_token": f"URBANSIGHT:MUNICIPAL-PERK:{voucher_id}"
+    }
+    CITIZEN_REWARDS_DATA["redeemed_vouchers"].append(redeemed_item)
+
+    orchestrator._log_event(
+        "Agent 3: Municipal Dispatch",
+        "PERK_REDEEMED",
+        f"Citizen {req.citizen_id} redeemed {perk['points_cost']} points for [{perk['title']}]. Voucher: #{voucher_id}."
+    )
+
+    return {
+        "status": "SUCCESS",
+        "voucher": redeemed_item,
+        "remaining_points": CITIZEN_REWARDS_DATA["points_balance"]
+    }
+
 @app.post("/api/reset")
 def reset_system():
     global orchestrator

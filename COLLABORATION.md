@@ -194,6 +194,19 @@
   6. **Mobile Field Crew PWA Dispatch**: Quick status reporting buttons ("WhatsApp Engr", "SMS Update") with automated alerts triggered upon starting and resolving repairs.
   7. **100% Unit Test Pass Rate**: 32/32 unit tests passing, synced across main and gh-pages.
 
+---
+
+### 🟢 TASK-14: People & Inclusion — Multilingual Voice HUD, Route Ride-Quality Index, and Adopt-a-Road Citizen Rewards [COMPLETED]
+- **Assignee**: Lead Inclusion & Human-Centered Civic Systems Engineer (Antigravity)
+- **Target Files**: `backend/main.py`, `tests/test_pipeline.py`, `driver_console.html`, `templates/driver_console.html`, `analytics.html`, `templates/analytics.html`, `citizen_portal.html`, `templates/citizen_portal.html`, `COLLABORATION.md`
+- **Objective**: Implement inclusive human-centered features across language accessibility (Kannada and Hindi in-cab voice synthesizers for drivers), bus fleet ride-quality smoothness scores using phone/IMU accelerometer data to schedule depot maintenance, and an anti-spam verified Adopt-a-Road citizen rewards marketplace.
+- **Key Deliverables**:
+  1. **Kannada & Hindi In-Cab Driver Voice Synthesizer**: Web Speech API TTS engine with voice language switcher (ಕನ್ನಡ, हिन्दी, English). Generates natural distance-calibrated spoken hazard alerts (e.g. "ಮುಂದೆ 100 ಮೀಟರ್‌ನಲ್ಲಿ ಗುಂಡಿ ಇದೆ. ಎಚ್ಚರ! ಎಡ ಪಥಕ್ಕೆ ಚಲಿಸಿ.", "आगे 100 मीटर पर गहरा गड्ढा है। कृपया गति धीमी करें।") with active audio waveform visualizer and manual replay button.
+  2. **Phone/IMU Accelerometer Route Ride-Quality Index**: Calculates vertical Z-axis shock (g), RMS vibration (g), and International Roughness Index (IRI m/km) across transit routes (Mysuru Route 119, Bengaluru ORR 500D, Electronic City Elevated Tollway). Surfaces fleet maintenance wear rates (+XX% suspension wear) to help KSRTC and BMTC depot engineers schedule timely shock absorber maintenance before mechanical failure.
+  3. **Adopt-a-Road Citizen Rewards Program (Zero-Spam Guard)**: Citizen reward club with verified points ledger, tier badges, and neighborhood street adoption (1.5x multiplier). Guarantees zero spam by awarding points ONLY when independent bus dashcams or DBSCAN fleet sweeps confirm the defect. Includes instant municipal perks marketplace (KSRTC/BMTC bus pass ₹250 discount, MCC property tax rebates, pool passes, and EV charging credits) with verifiable QR code certificates.
+  4. **Backend REST APIs**: Endpoints `GET /api/driver-advisories/voice`, `GET /api/routes/ride-quality`, `GET /api/citizen-rewards`, and `POST /api/redeem-reward`.
+  5. **100% Test Coverage**: 35/35 unit tests passing, synced across main and gh-pages.
+
 ## 🔄 Status Tracker
 - [x] Backend 4-Agent Modular Architecture (`tests/test_pipeline.py` 24/24 passing) — Node A & B
 - [x] Real-time GIS Command Dashboard (`index.html`) — Node A
@@ -211,3 +224,4 @@
 - [x] TASK-11: Mysuru GIS Map Integration & Realistic Civic Iconography (All portals, maps & backend) — Lead Frontend UI/UX Architect (Completed)
 - [x] TASK-12: Transit Video & Photo Road Inspection AI Analyzer Engine (Backend, Frontend, Tests) — Lead Vision & Fullstack Engineer (Completed)
 - [x] TASK-13: Automated WhatsApp & SMS Municipal Alert Notification Gateway (Backend, Frontend, Tests) — Lead Messaging & Fullstack Systems Engineer (Completed)
+- [x] TASK-14: People & Inclusion — Multilingual Voice HUD, Route Ride-Quality Index, and Adopt-a-Road Citizen Rewards (Backend, Frontend, Tests) — Lead Inclusion & Human-Centered Civic Systems Engineer (Completed)

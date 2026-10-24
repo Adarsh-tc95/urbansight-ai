@@ -1131,6 +1131,302 @@
             </div>
         </section>
 
+    
+        <!-- ========================================================================= -->
+        <!-- Adopt-a-Road Citizen Rewards Club (Anti-Spam Verified Municipal Perks)   -->
+        <!-- ========================================================================= -->
+        <section class="rewards-section" id="rewards-section" style="margin-top: 32px; background: #FAF8F5; border: 2px solid var(--border-medium); border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
+            
+            <!-- Rewards Section Header -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; border-bottom: 1px solid var(--border-medium); padding-bottom: 16px;">
+                <div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size: 1.5rem; color: #D97706;">🌟</span>
+                        <h2 style="margin:0; font-size: 1.35rem; font-weight: 800; color: var(--text-primary);">
+                            Adopt-a-Road Citizen Rewards Club
+                        </h2>
+                        <span style="background: rgba(245, 158, 11, 0.15); color: #B45309; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; border: 1px solid rgba(245, 158, 11, 0.3);">
+                            Anti-Spam Verified
+                        </span>
+                    </div>
+                    <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">
+                        Earn official civic points for verified road hazard alerts and corridor custody. Points are unlocked <b>ONLY</b> when AI multi-pass transit bus cameras confirm the defect — zero spam, genuine civic impact.
+                    </p>
+                </div>
+
+                <!-- Points Balance Pill -->
+                <div style="background: #EDE7DA; border: 1.5px solid var(--border-medium); border-radius: 12px; padding: 10px 18px; display: flex; align-items: center; gap: 12px;">
+                    <div>
+                        <div style="font-size: 0.68rem; color: var(--text-tertiary); font-family: var(--font-mono); font-weight: 700; text-transform: uppercase;">Citizen Balance</div>
+                        <div style="font-size: 1.5rem; font-weight: 900; color: #B45309; font-family: var(--font-mono); display:flex; align-items:center; gap:4px;">
+                            <span id="user-points-balance">850</span> <span style="font-size:0.8rem; font-weight:700;">PTS</span>
+                        </div>
+                    </div>
+                    <div style="border-left: 1px solid var(--border-medium); padding-left: 12px;">
+                        <div style="font-size: 0.68rem; color: var(--text-tertiary); font-family: var(--font-mono);">CUSTODIAN TIER</div>
+                        <div style="font-size: 0.85rem; font-weight: 800; color: #15803d;" id="user-tier-badge">Gold Custodian 🥇</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adopted Corridor & Anti-Spam Zero Trust Strip -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 22px;">
+                <!-- Adopted Road Card -->
+                <div style="background: #FFFFFF; border: 1px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(2, 132, 199, 0.12); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <i class="fa-solid fa-road"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">Adopted Road Corridor</div>
+                            <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-primary);" id="adopted-road-name">VVCE Ring Road &amp; Gokulam 3rd Stage</div>
+                            <div style="font-size: 0.68rem; color: #15803d; font-weight: 700;">1.4 km Protected • 1.5x Point Multiplier Active</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="openAdoptRoadModal()" style="background: #FAF8F5; border: 1px solid var(--border-medium); color: var(--text-primary); border-radius: 6px; padding: 6px 10px; font-size: 0.72rem; font-weight: 700; cursor: pointer; white-space:nowrap;">
+                        <i class="fa-solid fa-plus"></i> Adopt Street
+                    </button>
+                </div>
+
+                <!-- Anti-Spam Protocol Card -->
+                <div style="background: #FFFFFF; border: 1px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(5, 150, 105, 0.12); color: var(--success); display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">Anti-Spam Verification Rule</div>
+                        <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">Zero-Trust Perception Pipeline</div>
+                        <div style="font-size: 0.68rem; color: var(--text-secondary);">Points credit ONLY after bus dashcam AI or DBSCAN multi-pass confirms distress.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verified Reports Points Ledger Table -->
+            <div style="margin-bottom: 22px;">
+                <div style="font-size: 0.82rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-receipt" style="color: var(--primary);"></i>
+                    Recent Verified Citizen Reports &amp; Point Ledger
+                </div>
+
+                <div style="overflow-x: auto; border: 1px solid var(--border-medium); border-radius: 8px; background: #FFFFFF;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.76rem; text-align: left;">
+                        <thead>
+                            <tr style="background: #EDE7DA; border-bottom: 1px solid var(--border-medium); color: var(--text-secondary); font-family: var(--font-mono);">
+                                <th style="padding: 8px 12px;">REPORT ID</th>
+                                <th style="padding: 8px 12px;">HAZARD &amp; LOCATION</th>
+                                <th style="padding: 8px 12px;">VERIFICATION SOURCE</th>
+                                <th style="padding: 8px 12px;">STATUS</th>
+                                <th style="padding: 8px 12px; text-align:right;">POINTS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rewards-ledger-tbody">
+                            <tr style="border-bottom: 1px solid var(--border-medium);">
+                                <td style="padding: 8px 12px; font-family:var(--font-mono); font-weight:700;">#REP-MY-881</td>
+                                <td style="padding: 8px 12px;"><b>Pothole (Critical P1)</b><br><span style="color:var(--text-tertiary);">VVCE Ring Road Junction, Gokulam</span></td>
+                                <td style="padding: 8px 12px;"><i class="fa-solid fa-bus" style="color:var(--primary);"></i> Bus #KA-09-F-1102 &amp; DBSCAN (14 Passes)</td>
+                                <td style="padding: 8px 12px;"><span style="color:#15803d; font-weight:700;">✓ Fleet Confirmed</span></td>
+                                <td style="padding: 8px 12px; text-align:right; font-family:var(--font-mono); font-weight:800; color:#15803d;">+150 PTS</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-medium);">
+                                <td style="padding: 8px 12px; font-family:var(--font-mono); font-weight:700;">#REP-MY-842</td>
+                                <td style="padding: 8px 12px;"><b>Waterlogging (P2)</b><br><span style="color:var(--text-tertiary);">Silk Board Junction / Hosur Rd</span></td>
+                                <td style="padding: 8px 12px;"><i class="fa-solid fa-circle-nodes" style="color:var(--primary);"></i> 8 Confirmed Transit Passes</td>
+                                <td style="padding: 8px 12px;"><span style="color:#15803d; font-weight:700;">✓ Fleet Confirmed</span></td>
+                                <td style="padding: 8px 12px; text-align:right; font-family:var(--font-mono); font-weight:800; color:#15803d;">+120 PTS</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-medium);">
+                                <td style="padding: 8px 12px; font-family:var(--font-mono); font-weight:700;">#REP-MY-790</td>
+                                <td style="padding: 8px 12px;"><b>Road Surface Fissure</b><br><span style="color:var(--text-tertiary);">Gokulam 3rd Stage Main Road</span></td>
+                                <td style="padding: 8px 12px;"><i class="fa-solid fa-shield-check" style="color:#10B981;"></i> Municipal Compaction Audit PASS</td>
+                                <td style="padding: 8px 12px;"><span style="color:#0369a1; font-weight:700;">✓ Closed &amp; Verified</span></td>
+                                <td style="padding: 8px 12px; text-align:right; font-family:var(--font-mono); font-weight:800; color:#15803d;">+200 PTS</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 12px; font-family:var(--font-mono); font-weight:700;">#REP-MY-910</td>
+                                <td style="padding: 8px 12px;"><b>Surface Crack</b><br><span style="color:var(--text-tertiary);">Infosys Mysore Gate 2 Arterial</span></td>
+                                <td style="padding: 8px 12px;"><i class="fa-solid fa-clock" style="color:#F59E0B;"></i> Awaiting Next Bus Pass Verification</td>
+                                <td style="padding: 8px 12px;"><span style="color:#B45309; font-weight:700;">⏳ Pending Fleet Pass</span></td>
+                                <td style="padding: 8px 12px; text-align:right; font-family:var(--font-mono); font-weight:700; color:var(--text-tertiary);">0 PTS (Pending)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Municipal Perks Marketplace (Redeemable Rewards) -->
+            <div>
+                <div style="font-size: 0.85rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-tags" style="color: #D97706;"></i>
+                        Municipal Perks Marketplace (Redeem Your Civic Points)
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-tertiary);">Instant QR Voucher Issued Upon Claim</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px;">
+                    
+                    <!-- Perk 1: Transit Pass -->
+                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size: 1.3rem; color: var(--primary);"><i class="fa-solid fa-bus"></i></span>
+                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">300 PTS</span>
+                            </div>
+                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">KSRTC / BMTC Pass Discount</h4>
+                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">₹250 OFF Monthly Pass</div>
+                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Valid on all Mysuru city and Bengaluru BMTC non-AC routes.</p>
+                        </div>
+                        <button type="button" onclick="redeemPerk('PERK-BUS-250', 'KSRTC / BMTC Pass Discount', 300, '₹250 OFF')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#0284C7;">
+                            <i class="fa-solid fa-ticket"></i> Redeem (300 Pts)
+                        </button>
+                    </div>
+
+                    <!-- Perk 2: Property Tax Rebate -->
+                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size: 1.3rem; color: #B45309;"><i class="fa-solid fa-landmark"></i></span>
+                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">500 PTS</span>
+                            </div>
+                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">MCC Property Tax Credit</h4>
+                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">₹500 Tax Rebate Voucher</div>
+                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Direct credit against annual MCC property tax assessment.</p>
+                        </div>
+                        <button type="button" onclick="redeemPerk('PERK-TAX-500', 'MCC Property Tax Credit', 500, '₹500 Rebate')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#B45309;">
+                            <i class="fa-solid fa-stamp"></i> Redeem (500 Pts)
+                        </button>
+                    </div>
+
+                    <!-- Perk 3: Municipal Pool Pass -->
+                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size: 1.3rem; color: #0284C7;"><i class="fa-solid fa-person-swimming"></i></span>
+                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">150 PTS</span>
+                            </div>
+                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">Chamundi Vihar Sports Pass</h4>
+                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">1-Day Free Entry Pass</div>
+                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Access to Olympic pool &amp; sports tracks at Chamundi Vihar.</p>
+                        </div>
+                        <button type="button" onclick="redeemPerk('PERK-POOL-150', 'Chamundi Vihar Sports Pass', 150, '1-Day Free Entry')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#059669;">
+                            <i class="fa-solid fa-id-card"></i> Redeem (150 Pts)
+                        </button>
+                    </div>
+
+                    <!-- Perk 4: Clean EV Charging -->
+                    <div style="background: #FFFFFF; border: 1.5px solid var(--border-medium); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size: 1.3rem; color: #EA580C;"><i class="fa-solid fa-bolt"></i></span>
+                                <span style="background: #EDE7DA; color: #1C1917; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; font-family: var(--font-mono);">400 PTS</span>
+                            </div>
+                            <h4 style="margin: 6px 0 2px 0; font-size: 0.85rem; color: var(--text-primary);">Bescom / EV Fast Charging</h4>
+                            <div style="font-size: 0.95rem; font-weight: 900; color: #15803d;">20 kWh Free Fast Charge</div>
+                            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-tertiary);">Redeemable at all municipal EV charging hubs.</p>
+                        </div>
+                        <button type="button" onclick="redeemPerk('PERK-EV-400', 'Bescom EV Charging Voucher', 400, '20 kWh Free')" class="btn-wa" style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem; background:#EA580C;">
+                            <i class="fa-solid fa-plug-circle-bolt"></i> Redeem (400 Pts)
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Redeemed Vouchers Container -->
+            <div id="redeemed-vouchers-box" style="display:none; margin-top:20px; padding:16px; background:#EDE7DA; border-radius:10px; border:1px solid var(--border-medium);">
+                <div style="font-size:0.8rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">
+                    <i class="fa-solid fa-certificate" style="color:#D97706;"></i> Your Active Municipal Reward Vouchers
+                </div>
+                <div id="active-vouchers-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+
+        </section>
+
+        <!-- Modal: Official Municipal Perk Certificate -->
+        <div class="modal-backdrop" id="perk-voucher-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(28,25,23,0.7); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+            <div style="background:#FAF8F5; border:2px solid var(--border-medium); border-radius:14px; width:100%; max-width:480px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:modalIn 0.2s ease-out;">
+                <div style="padding:16px 20px; background:#EDE7DA; border-bottom:1px solid var(--border-medium); display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:18px;">🏛️</span>
+                        <div>
+                            <h3 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-primary);">Mysuru City Corporation (MCC)</h3>
+                            <p style="margin:0; font-size:0.7rem; color:var(--text-tertiary);">Official Civic Rewards Perk Certificate</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closePerkVoucherModal()" style="background:transparent; border:none; font-size:1.4rem; color:var(--text-tertiary); cursor:pointer;">&times;</button>
+                </div>
+                <div style="padding:20px; text-align:center;">
+                    <div style="width:54px; height:54px; border-radius:50%; background:rgba(16,185,129,0.15); color:#10B981; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 12px auto;">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h4 style="margin:0; font-size:1.15rem; font-weight:900; color:var(--text-primary);" id="modal-perk-title">KSRTC / BMTC Pass Discount</h4>
+                    <div style="font-size:1.2rem; font-weight:900; color:#15803d; margin:4px 0 12px 0;" id="modal-perk-discount">₹250 OFF Monthly Pass</div>
+                    
+                    <div style="background:#FFFFFF; border:1px solid var(--border-medium); border-radius:10px; padding:14px; margin-bottom:14px; text-align:left; font-family:var(--font-mono); font-size:0.74rem;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span style="color:var(--text-tertiary);">VOUCHER CODE:</span>
+                            <span style="font-weight:800; color:var(--text-primary);" id="modal-voucher-code">MCC-PERK-2026-X891</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span style="color:var(--text-tertiary);">ISSUED TO:</span>
+                            <span style="font-weight:800; color:var(--text-primary);">Gagan K. S. (MCC-GUARDIAN-849)</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span style="color:var(--text-tertiary);">STATUS:</span>
+                            <span style="font-weight:800; color:#15803d;">ACTIVE · READY TO REDEEM</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span style="color:var(--text-tertiary);">VALID UNTIL:</span>
+                            <span style="font-weight:800; color:var(--text-primary);">31 Dec 2026</span>
+                        </div>
+                    </div>
+
+                    <!-- Simulated QR Code -->
+                    <div style="display:inline-block; padding:10px; background:#FFFFFF; border:1px solid var(--border-medium); border-radius:8px; margin-bottom:14px;">
+                        <div style="width:110px; height:110px; background:repeating-linear-gradient(45deg, #1C1917 0, #1C1917 8px, #FFFFFF 8px, #FFFFFF 16px); margin:0 auto; border-radius:4px; opacity:0.85;"></div>
+                        <span style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono); display:block; margin-top:4px;">SCAN AT TRANSIT KIOSK</span>
+                    </div>
+
+                    <div style="display:flex; gap:8px; justify-content:center;">
+                        <button type="button" class="btn-wa" onclick="shareVoucherToWhatsApp()" style="font-size:0.75rem; padding:8px 14px;">
+                            <i class="fa-brands fa-whatsapp"></i> Save to WhatsApp
+                        </button>
+                        <button type="button" class="btn-sms" onclick="window.print()" style="font-size:0.75rem; padding:8px 14px;">
+                            <i class="fa-solid fa-print"></i> Print Voucher
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal: Adopt a Road Corridor -->
+        <div class="modal-backdrop" id="adopt-corridor-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(28,25,23,0.7); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+            <div style="background:#FAF8F5; border:2px solid var(--border-medium); border-radius:14px; width:100%; max-width:440px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+                <div style="padding:14px 18px; background:#EDE7DA; border-bottom:1px solid var(--border-medium); display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-primary);"><i class="fa-solid fa-road" style="color:var(--primary);"></i> Adopt a Neighborhood Corridor</h3>
+                    <button type="button" onclick="closeAdoptRoadModal()" style="background:transparent; border:none; font-size:1.4rem; color:var(--text-tertiary); cursor:pointer;">&times;</button>
+                </div>
+                <div style="padding:16px 18px; display:flex; flex-direction:column; gap:12px;">
+                    <div>
+                        <label style="font-size:0.72rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); display:block; margin-bottom:4px;">Select Municipal Corridor</label>
+                        <select id="adopt-corridor-select" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid var(--border-medium); background:#FFFFFF; color:var(--text-primary); font-family:var(--font-mono); font-size:0.8rem;">
+                            <option value="VVCE Ring Road &amp; Gokulam 3rd Stage">VVCE Ring Road &amp; Gokulam 3rd Stage (MCC Ward 9) · 1.4 km</option>
+                            <option value="Hunsur Road Kalamandira Signal Corridor">Hunsur Road Kalamandira Signal Corridor (MCC) · 2.1 km</option>
+                            <option value="Bengaluru ORR Bellandur Tech Corridor">Bengaluru ORR Bellandur Tech Corridor (BBMP W85) · 3.2 km</option>
+                            <option value="Chamundi Foothills Pilgrim Avenue">Chamundi Foothills Pilgrim Avenue (MCC) · 2.8 km</option>
+                        </select>
+                    </div>
+                    <div style="background:rgba(2,132,199,0.08); border:1px solid rgba(2,132,199,0.25); border-radius:8px; padding:10px; font-size:0.74rem; color:var(--text-primary);">
+                        <i class="fa-solid fa-sparkles" style="color:var(--primary);"></i> <b>Benefits of Adopting:</b> You become the official Civic Guardian for this street. Any pothole or road crack verified on your adopted street earns a <b>1.5x Point Multiplier</b> towards municipal perks!
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:8px;">
+                        <button type="button" onclick="closeAdoptRoadModal()" class="btn-sms" style="background:transparent; border:1px solid var(--border-medium); color:var(--text-secondary);">Cancel</button>
+                        <button type="button" onclick="confirmAdoptRoad()" class="btn-wa" style="background:#0284C7;"><i class="fa-solid fa-shield-heart"></i> Confirm Adoption</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <!-- Notification Toast Popup -->
@@ -1788,6 +2084,147 @@
             }
         } catch(e) {}
 
+        
+        // =========================================================================
+        // Adopt-a-Road Citizen Rewards Program (Anti-Spam Verification & Perks)
+        // =========================================================================
+        let citizenRewardsState = {
+            points: 850,
+            tier: 'Gold Custodian 🥇',
+            adoptedRoad: 'VVCE Ring Road & Gokulam 3rd Stage',
+            redeemed: []
+        };
+
+        function loadCitizenRewards() {
+            try {
+                const saved = localStorage.getItem('urbansight_citizen_rewards');
+                if (saved) {
+                    citizenRewardsState = JSON.parse(saved);
+                    const ptsEl = document.getElementById('user-points-balance');
+                    if (ptsEl) ptsEl.textContent = citizenRewardsState.points;
+                    const tierEl = document.getElementById('user-tier-badge');
+                    if (tierEl) tierEl.textContent = citizenRewardsState.tier;
+                    const roadEl = document.getElementById('adopted-road-name');
+                    if (roadEl) roadEl.textContent = citizenRewardsState.adoptedRoad;
+                    renderRedeemedVouchers();
+                }
+            } catch(e) {}
+        }
+
+        function saveCitizenRewards() {
+            try {
+                localStorage.setItem('urbansight_citizen_rewards', JSON.stringify(citizenRewardsState));
+            } catch(e) {}
+        }
+
+        function redeemPerk(perkId, title, cost, discount) {
+            if (citizenRewardsState.points < cost) {
+                showToast("Insufficient Points", `You have ${citizenRewardsState.points} points. This perk requires ${cost} points.`);
+                return;
+            }
+
+            citizenRewardsState.points -= cost;
+            const voucherId = `MCC-PERK-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+            const voucher = {
+                id: voucherId,
+                title: title,
+                discount: discount,
+                date: new Date().toLocaleDateString()
+            };
+            citizenRewardsState.redeemed.unshift(voucher);
+            saveCitizenRewards();
+
+            // Update UI
+            document.getElementById('user-points-balance').textContent = citizenRewardsState.points;
+
+            // Audio Chime
+            playAlertChime('resolved');
+
+            // Show Toast & Modal
+            showToast("🎉 Perk Redeemed!", `You redeemed ${cost} pts for ${title}. Certificate issued.`);
+
+            document.getElementById('modal-perk-title').textContent = title;
+            document.getElementById('modal-perk-discount').textContent = discount;
+            document.getElementById('modal-voucher-code').textContent = voucherId;
+            document.getElementById('perk-voucher-modal').style.display = 'flex';
+
+            renderRedeemedVouchers();
+
+            // Call backend API
+            fetch('/api/redeem-reward', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ perk_id: perkId, citizen_id: 'MCC-GUARDIAN-849' })
+            }).catch(() => {});
+        }
+
+        function renderRedeemedVouchers() {
+            const box = document.getElementById('redeemed-vouchers-box');
+            const list = document.getElementById('active-vouchers-list');
+            if (!box || !list) return;
+
+            if (citizenRewardsState.redeemed.length > 0) {
+                box.style.display = 'block';
+                list.innerHTML = citizenRewardsState.redeemed.map(v => `
+                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:6px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
+                        <div>
+                            <b>${v.title}</b> · <span style="color:#15803d; font-weight:800;">${v.discount}</span>
+                            <div style="font-size:0.68rem; color:var(--text-tertiary); font-family:var(--font-mono);">CODE: ${v.id} · Issued ${v.date}</div>
+                        </div>
+                        <span style="color:#15803d; font-weight:700;"><i class="fa-solid fa-check"></i> Active</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function closePerkVoucherModal() {
+            const m = document.getElementById('perk-voucher-modal');
+            if (m) m.style.display = 'none';
+        }
+
+        function shareVoucherToWhatsApp() {
+            const code = document.getElementById('modal-voucher-code')?.textContent || 'MCC-PERK-2026-X891';
+            const title = document.getElementById('modal-perk-title')?.textContent || 'Municipal Perk';
+            const disc = document.getElementById('modal-perk-discount')?.textContent || 'Discount';
+            const { cleanDigits } = getNormalizedCitizenPhone();
+            const text = `🎉 *URBANSIGHT AI · MUNICIPAL CIVIC PERK VOUCHER* 🎉\n\n` +
+                `Perk: ${title}\n` +
+                `Benefit: ${disc}\n` +
+                `Voucher Code: #${code}\n` +
+                `Issued by: Mysuru City Corporation (MCC) Adopt-a-Road Program\n` +
+                `Validity: 31 Dec 2026\n\n` +
+                `Present this code at transit counters or municipal offices for instant redemption.`;
+
+            const url = `https://api.whatsapp.com/send?phone=${cleanDigits}&text=${encodeURIComponent(text.replace(/\\n/g, '\n'))}`;
+            window.open(url, '_blank');
+        }
+
+        function openAdoptRoadModal() {
+            const m = document.getElementById('adopt-corridor-modal');
+            if (m) m.style.display = 'flex';
+        }
+
+        function closeAdoptRoadModal() {
+            const m = document.getElementById('adopt-corridor-modal');
+            if (m) m.style.display = 'none';
+        }
+
+        function confirmAdoptRoad() {
+            const sel = document.getElementById('adopt-corridor-select');
+            const roadName = sel ? sel.value.split('(')[0].trim() : 'VVCE Ring Road';
+            citizenRewardsState.adoptedRoad = roadName;
+            citizenRewardsState.points += 50; // Bonus for adopting
+            saveCitizenRewards();
+
+            document.getElementById('adopted-road-name').textContent = roadName;
+            document.getElementById('user-points-balance').textContent = citizenRewardsState.points;
+            closeAdoptRoadModal();
+
+            playAlertChime('resolved');
+            showToast("🛣️ Road Corridor Adopted!", `You are now the Civic Guardian for ${roadName}. +50 Bonus points added!`);
+        }
+
+        loadCitizenRewards();
         loadBackendWorkOrders();
     </script>
 </body>

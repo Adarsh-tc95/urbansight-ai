@@ -705,5 +705,60 @@ class TestAlertMessagingEngine(unittest.TestCase):
         self.assertIn("COMPLETED", res_resolved["notifications_dispatched"][0]["whatsapp_message"])
 
 
+class TestPeopleAndInclusion(unittest.TestCase):
+    """Verifies Kannada & Hindi voice alerts, route ride-quality scores, and citizen rewards."""
+
+    def test_multilingual_voice_alert_generation(self):
+        from backend.main import generate_voice_alert
+        # Test Kannada
+        kn = generate_voice_alert(hazard_type="POTHOLE", distance_m=100, lang="kn-IN")
+        self.assertEqual(kn["language"], "kn-IN")
+        self.assertIn("ಮೀಟರ್‌ನಲ್ಲಿ ಗುಂಡಿ ಇದೆ", kn["spoken_text"])
+        self.assertIn("100", kn["spoken_text"])
+
+        # Test Hindi
+        hi = generate_voice_alert(hazard_type="POTHOLE", distance_m=100, lang="hi-IN")
+        self.assertEqual(hi["language"], "hi-IN")
+        self.assertIn("मीटर पर गहरा गड्ढा है", hi["spoken_text"])
+
+        # Test English
+        en = generate_voice_alert(hazard_type="WATERLOGGING", distance_m=150, lang="en-IN")
+        self.assertEqual(en["language"], "en-IN")
+        self.assertIn("Waterlogged road surface", en["spoken_text"])
+
+    def test_route_ride_quality_telemetry(self):
+        from backend.main import get_route_ride_quality
+        res = get_route_ride_quality()
+        self.assertEqual(res["status"], "SUCCESS")
+        self.assertTrue(res["total_routes_evaluated"] >= 3)
+        routes = res["routes"]
+        # Verify Mysuru Ring Road
+        mys_route = next((r for r in routes if r["route_id"] == "MYS-119"), None)
+        self.assertIsNotNone(mys_route)
+        self.assertTrue(mys_route["ride_quality_score"] > 80)
+        self.assertIn("rms_vibration_g", mys_route["accelerometer_metrics"])
+        self.assertIn("suspension_wear_rate_pct", mys_route["fleet_maintenance_impact"])
+
+    def test_adopt_a_road_citizen_rewards_and_redemption(self):
+        from backend.main import get_citizen_rewards, redeem_citizen_reward, RedeemPerkRequest
+        rewards = get_citizen_rewards()
+        self.assertEqual(rewards["status"], "SUCCESS")
+        data = rewards["rewards_data"]
+        initial_balance = data["points_balance"]
+        self.assertTrue(initial_balance >= 300)
+
+        # Test Zero-Spam Verification: pending report has 0 points awarded
+        pending_rep = next((r for r in data["verified_reports_ledger"] if r["verification_status"] == "PENDING_FLEET_PASS"), None)
+        self.assertIsNotNone(pending_rep)
+        self.assertEqual(pending_rep["points_awarded"], 0)
+
+        # Test perk redemption (KSRTC/BMTC Pass Discount for 300 points)
+        req = RedeemPerkRequest(perk_id="PERK-BUS-250", citizen_id=data["citizen_id"])
+        red_res = redeem_citizen_reward(req)
+        self.assertEqual(red_res["status"], "SUCCESS")
+        self.assertEqual(red_res["remaining_points"], initial_balance - 300)
+        self.assertTrue(red_res["voucher"]["voucher_id"].startswith("MCC-PERK-2026-"))
+
+
 if __name__ == '__main__':
     unittest.main()

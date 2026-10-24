@@ -682,6 +682,148 @@
 
         </div>
 
+    
+        <!-- Transit Fleet Ride-Quality & Route Smoothness Index Section -->
+        <section class="panel-box" style="margin-top: 1.5rem; width: 100%;">
+            <div class="panel-head" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <div class="panel-title" style="font-size: 0.95rem; font-weight:800;">
+                    <i class="fa-solid fa-gauge-simple-high" style="color:var(--primary);"></i>
+                    Transit Fleet Ride-Quality &amp; Route Smoothness Index (KSRTC &amp; BMTC)
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:0.75rem; color:var(--text-tertiary); font-family:var(--font-mono);">
+                        <i class="fa-solid fa-mobile-screen-button"></i> Source: Phone Accelerometer &amp; Edge IMU (50 Hz Z-Shock)
+                    </span>
+                    <button class="btn-table-action" onclick="fetchRouteRideQuality()" style="cursor:pointer; background:#FAF8F5;">
+                        <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div style="padding: 1.25rem;">
+                <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:1rem; line-height:1.5;">
+                    Continuous vehicle vertical vibration (<code style="font-family:var(--font-mono); color:var(--primary);">$a_z$</code> shock) and International Roughness Index (IRI) continuously collected by bus-mounted devices. <b>Prevents vehicle wear</b>: Poor road corridors fatigue shock absorbers and wear tires up to <b>3.5x faster</b>, enabling operators to schedule predictive depot maintenance before mechanical failure.
+                </p>
+
+                <!-- Grid of Route Smoothness Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;" id="route-cards-container">
+                    
+                    <!-- Route 1: Mysuru Outer Ring Road -->
+                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px; border-left:4px solid #10B981;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div>
+                                <span style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); font-family:var(--font-mono);">ROUTE MYS-119 · KSRTC MYSURU</span>
+                                <h4 style="margin:2px 0 0 0; font-size:0.9rem; color:var(--text-primary);">Mysuru Ring Road (VVCE ↔ Columbia Asia)</h4>
+                            </div>
+                            <span class="pill-badge pill-green" style="font-size:0.72rem; font-weight:800;">88.5 · GRADE A</span>
+                        </div>
+                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; background:#EDE7DA; padding:8px; border-radius:6px; text-align:center;">
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">Z-SHOCK</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#15803d;">-0.14 g</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">RMS VIB</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:var(--primary);">0.078 g</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">IRI INDEX</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#15803d;">2.1 m/km</div>
+                            </div>
+                        </div>
+                        <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.4;">
+                            <i class="fa-solid fa-wrench" style="color:#10B981;"></i> <b>Suspension Wear +6.2% (Pristine):</b> Shock absorbers operating within optimal damping envelope. Next fleet depot inspection: <b>75 days</b>.
+                        </div>
+                    </div>
+
+                    <!-- Route 2: Bengaluru Outer Ring Road 500D -->
+                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px; border-left:4px solid #EA580C;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div>
+                                <span style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); font-family:var(--font-mono);">ROUTE BMTC-500D · BMTC ORR</span>
+                                <h4 style="margin:2px 0 0 0; font-size:0.9rem; color:var(--text-primary);">Outer Ring Road (Hebbal ↔ Silk Board)</h4>
+                            </div>
+                            <span class="pill-badge pill-orange" style="font-size:0.72rem; font-weight:800;">62.4 · GRADE C</span>
+                        </div>
+                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; background:#EDE7DA; padding:8px; border-radius:6px; text-align:center;">
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">Z-SHOCK</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#DC2626;">-0.37 g</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">RMS VIB</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#EA580C;">0.245 g</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">IRI INDEX</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#DC2626;">4.6 m/km</div>
+                            </div>
+                        </div>
+                        <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.4;">
+                            <i class="fa-solid fa-triangle-exclamation" style="color:#EA580C;"></i> <b>Suspension Wear +42.5% (High Fatigue):</b> Severe shocks near Bellandur &amp; Kadubeesanahalli. Schedule suspension retuning for <b>14 electric buses</b> within <b>14 days</b>.
+                        </div>
+                    </div>
+
+                    <!-- Route 3: Electronic City Expressway -->
+                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px; border-left:4px solid #0284C7;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div>
+                                <span style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); font-family:var(--font-mono);">ROUTE BMTC-356C · TOLLWAY EXPRESS</span>
+                                <h4 style="margin:2px 0 0 0; font-size:0.9rem; color:var(--text-primary);">Silk Board ↔ Electronic City Elevated</h4>
+                            </div>
+                            <span class="pill-badge pill-cyan" style="font-size:0.72rem; font-weight:800;">92.0 · GRADE A+</span>
+                        </div>
+                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; background:#EDE7DA; padding:8px; border-radius:6px; text-align:center;">
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">Z-SHOCK</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#0284C7;">-0.05 g</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">RMS VIB</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#0284C7;">0.045 g</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">IRI INDEX</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#0284C7;">1.7 m/km</div>
+                            </div>
+                        </div>
+                        <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.4;">
+                            <i class="fa-solid fa-circle-check" style="color:#0284C7;"></i> <b>Suspension Wear +2.1% (Optimal):</b> Elevated expressway surface smooth. Zero abnormal chassis stress detected. Inspection: <b>90 days</b>.
+                        </div>
+                    </div>
+
+                    <!-- Route 4: Hunsur Road Mysuru -->
+                    <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px; border-left:4px solid #F59E0B;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div>
+                                <span style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); font-family:var(--font-mono);">ROUTE MYS-HUNSUR · KSRTC URBAN</span>
+                                <h4 style="margin:2px 0 0 0; font-size:0.9rem; color:var(--text-primary);">Hunsur Road (Kalamandira ↔ University)</h4>
+                            </div>
+                            <span class="pill-badge pill-amber" style="font-size:0.72rem; font-weight:800;">74.2 · GRADE B</span>
+                        </div>
+                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; background:#EDE7DA; padding:8px; border-radius:6px; text-align:center;">
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">Z-SHOCK</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#B45309;">-0.22 g</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">RMS VIB</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#B45309;">0.160 g</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.65rem; color:var(--text-tertiary); font-family:var(--font-mono);">IRI INDEX</div>
+                                <div style="font-size:0.85rem; font-weight:800; color:#B45309;">3.2 m/km</div>
+                            </div>
+                        </div>
+                        <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.4;">
+                            <i class="fa-solid fa-clock-rotate-left" style="color:#F59E0B;"></i> <b>Suspension Wear +18.4% (Moderate):</b> Irregularities near Kalamandira signal. Front-axle alignment check recommended in <b>45 days</b>.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- Client-side script with API integration & fallback -->
