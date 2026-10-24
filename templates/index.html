@@ -4546,6 +4546,49 @@ function runAIAnalysisAndDispatch(targetPothole) {
                 dispatchesEl.textContent = `${state.workOrders.length} Active`;
             }
 
+            // Also add companion traffic congestion bottleneck nearby to show full AI multi-modal detection
+            const congId = `HAZ-CONG-${Math.floor(100 + Math.random() * 900)}`;
+            const existingCong = state.hazards.find(h => h.id === congId);
+            if (!existingCong) {
+                state.hazards.push({
+                    id: congId,
+                    type: "CONGESTION",
+                    sev: "MEDIUM_P3",
+                    lat: d.lat + 0.0025,
+                    lng: d.lng + 0.0020,
+                    name: `${d.loc} (Bottleneck Traffic Delay 14 km/h)`,
+                    conf: "91.5%",
+                    passes: 2,
+                    ticket: null,
+                    sorCode: "TRAFFIC-CORRIDOR"
+                });
+                renderHazardsOnMap();
+            }
+
+            // Broadcast across browser tabs (Field Crew PWA, Driver In-Cab Console, Citizen Portal)
+            try {
+                const eventPayload = {
+                    event_type: "NEW_DEFECT_DISPATCHED",
+                    ticket_id: d.ticketId,
+                    type: d.type,
+                    hazard_type: d.type,
+                    severity: d.sev,
+                    status: "DISPATCHED",
+                    location_name: d.loc,
+                    lat: d.lat,
+                    lng: d.lng,
+                    depth: d.depth,
+                    conf: d.conf,
+                    sorCode: d.sorCode,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('urbansight_crew_event', JSON.stringify(eventPayload));
+                const bc = new BroadcastChannel('urbansight_crew_events');
+                bc.postMessage(eventPayload);
+            } catch (err) {
+                console.log('[Broadcast Error]:', err);
+            }
+
             // 6. Show interactive confirmation toast with voucher link
             showDispatchToast(d);
 

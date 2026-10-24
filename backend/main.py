@@ -1698,12 +1698,12 @@ def get_hazard_proximity_advisory(lat: float = 12.3360, lng: float = 76.6210, sp
         }
     
     # Calculate nearest hazard using Haversine
-    from backend.agents.geospatial_cluster import haversine_distance
+    from backend.agents.geospatial_cluster import haversine_distance_meters
     nearest = None
     min_dist = float('inf')
     
     for h in active_hazards:
-        d = haversine_distance(lat, lng, h.lat, h.lng)
+        d = haversine_distance_meters(lat, lng, h.lat, h.lng)
         if d < min_dist:
             min_dist = d
             nearest = h
@@ -1715,6 +1715,7 @@ def get_hazard_proximity_advisory(lat: float = 12.3360, lng: float = 76.6210, sp
     alert_level = "CRITICAL" if dist_m <= 150 else ("WARNING" if dist_m <= 400 else "ADVISORY")
     h_type = nearest.hazard_type.value if nearest else "POTHOLE"
     loc = nearest.location_name if nearest else "Arterial Corridor"
+    h_id = getattr(nearest, 'id', getattr(nearest, 'hazard_id', 'HAZ-001')) if nearest else 'HAZ-001'
     
     # Multilingual text
     speech_kn = f"ಎಚ್ಚರಿಕೆ! {dist_m} ಮೀಟರ್ ಮುಂದೆ ಆಳವಾದ ರಸ್ತೆ ಗುಂಡಿ ಇದೆ. ಎಡ ಪಥಕ್ಕೆ ಬದಲಿಸಿ, ವೇಗ ಕಡಿಮೆ ಮಾಡಿ."
@@ -1724,7 +1725,7 @@ def get_hazard_proximity_advisory(lat: float = 12.3360, lng: float = 76.6210, sp
     return {
         "status": "HAZARD_ALERT",
         "nearest_hazard": {
-            "hazard_id": nearest.hazard_id,
+            "hazard_id": h_id,
             "type": h_type,
             "location_name": loc,
             "lat": dest_lat,

@@ -81,6 +81,11 @@ class UrbanSightOrchestrator:
         if len(self.event_logs) > 50:
             self.event_logs.pop()
 
+
+    def get_active_hazards(self) -> List[HazardDetection]:
+        """Returns all active tracked canonical hazards."""
+        return [h for h in self.hazards if getattr(h, 'status', None) != TicketStatus.RESOLVED]
+
     def get_system_metrics(self) -> Dict[str, Any]:
         """Aggregates high-level telemetry metrics for the ICCC Command Dashboard."""
         return {
