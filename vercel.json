@@ -36,6 +36,10 @@
       "dest": "/field_crew.html"
     },
     {
+      "src": "/analytics",
+      "dest": "/analytics.html"
+    },
+    {
       "src": "/voucher",
       "dest": "/voucher.html"
     },
