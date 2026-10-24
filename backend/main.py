@@ -139,9 +139,14 @@ def read_voucher(request: Request):
     return templates.TemplateResponse(request=request, name="voucher.html")
 
 @app.get("/analytics")
+@app.get("/analytics.html")
 def read_analytics(request: Request):
     """Renders the executive ward performance & municipal ROI analytics dashboard."""
     return templates.TemplateResponse(request=request, name="analytics.html")
+
+@app.get("/favicon.ico")
+def get_favicon():
+    return Response(status_code=204)
 
 
 # =============================================================================

@@ -4959,11 +4959,17 @@ function updateMediaSidebar() {
     const depthEl = document.getElementById('detection-depth-label');
     const locEl = document.getElementById('detection-location-label');
 
-    if (feedEl) feedEl.textContent = `FEED: ${mediaState.sourceName}`;
-    if (coordsEl) coordsEl.textContent = `GPS: ${mediaState.defect.lat.toFixed(4)}°N, ${mediaState.defect.lng.toFixed(4)}°E`;
-    if (defectEl) defectEl.textContent = `${mediaState.defect.type} ${mediaState.defect.rdd.split(' ')[0]} · ${mediaState.defect.conf}`;
-    if (depthEl) depthEl.textContent = `Distress: ${mediaState.defect.depth} · Severity: ${mediaState.defect.sev.split('_')[1] || 'P1'}`;
-    if (locEl) locEl.textContent = mediaState.defect.loc;
+    const latVal = (mediaState.defect && typeof mediaState.defect.lat === 'number') ? mediaState.defect.lat : 12.3360;
+    const lngVal = (mediaState.defect && typeof mediaState.defect.lng === 'number') ? mediaState.defect.lng : 76.6210;
+
+    if (feedEl) feedEl.textContent = `FEED: ${mediaState.sourceName || 'KSRTC-KA09-E102'}`;
+    if (coordsEl) coordsEl.textContent = `GPS: ${latVal.toFixed(4)}°N, ${lngVal.toFixed(4)}°E`;
+    if (defectEl && mediaState.defect) defectEl.textContent = `${mediaState.defect.type || 'POTHOLE'} ${(mediaState.defect.rdd || 'D40').split(' ')[0]} · ${mediaState.defect.conf || '98.4%'}`;
+    if (depthEl && mediaState.defect) {
+        const sevText = mediaState.defect.sev ? (mediaState.defect.sev.includes('_') ? mediaState.defect.sev.split('_')[1] : mediaState.defect.sev) : 'P1';
+        depthEl.textContent = `Distress: ${mediaState.defect.depth || '20.2cm'} · Severity: ${sevText}`;
+    }
+    if (locEl && mediaState.defect) locEl.textContent = mediaState.defect.loc || 'Mysuru ORR Corridor';
 }
 
 function toggleMediaPlayPause() {
@@ -6367,82 +6373,7 @@ function switchFooterTab(tabKey) {
     <!-- =============================================================================
          Official GIGW 3.0 Government Footer
          ============================================================================= -->
-        <!-- =============================================================================
-         Official Single-Tab Government Governance & Directory Bar (GIGW 3.0)
-         ============================================================================= -->
-    <footer class="gov-single-tab-footer">
-        <div class="footer-tab-nav">
-            <button class="footer-tab-pill active" id="ftab-btn-statutory" onclick="switchFooterTab('statutory')">
-                <i class="fa-solid fa-gavel"></i> Statutory Links
-            </button>
-            <button class="footer-tab-pill" id="ftab-btn-emergency" onclick="switchFooterTab('emergency')">
-                <i class="fa-solid fa-phone"></i> Emergency Lines
-            </button>
-            <button class="footer-tab-pill" id="ftab-btn-manager" onclick="switchFooterTab('manager')">
-                <i class="fa-solid fa-user-tie"></i> Web Information Manager
-            </button>
-            <button class="footer-tab-pill" id="ftab-btn-about" onclick="switchFooterTab('about')">
-                <i class="fa-solid fa-landmark"></i> MCC Info
-            </button>
-            <span class="footer-tab-badge">
-                <i class="fa-solid fa-cloud"></i> Hosted at KSDC (NIC Cloud)
-            </span>
-        </div>
-
-        <div class="footer-tab-panel" id="footer-tab-statutory">
-            <span class="ftab-label"><i class="fa-solid fa-scale-balanced"></i> Statutory &amp; Compliance:</span>
-            <a href="#" onclick="openPublicTendersModal(); return false;"><i class="fa-solid fa-file-signature"></i> KTPP Act Tenders</a>
-            <span class="ftab-sep">·</span>
-            <a href="#" onclick="openGrievanceTrackerModal(); return false;"><i class="fa-solid fa-clock-rotate-left"></i> Janahitha Citizen Charter</a>
-            <span class="ftab-sep">·</span>
-            <a href="#" onclick="openPublicTendersModal(); return false;"><i class="fa-solid fa-book-open"></i> RTI Section 4(1)(b)</a>
-            <span class="ftab-sep">·</span>
-            <a href="#" onclick="openInspectionCertificateModal(); return false;"><i class="fa-solid fa-certificate"></i> IRC:SP:20 Compliance</a>
-            <span class="ftab-sep">·</span>
-            <a href="#" onclick="alert('DPDP Act 2023 §2(t) in-memory Gaussian redaction active.'); return false;"><i class="fa-solid fa-shield-halved"></i> DPDP Act 2023 Privacy Policy</a>
-        </div>
-
-        <div class="footer-tab-panel" id="footer-tab-emergency" style="display:none;">
-            <span class="ftab-label"><i class="fa-solid fa-phone-volume"></i> 24x7 Emergency Helplines:</span>
-            <a href="tel:18004254766"><b>Toll-Free:</b> 1800-425-4766</a>
-            <span class="ftab-sep">·</span>
-            <a href="tel:08212418800"><b>Control Room:</b> 0821-2418800</a>
-            <span class="ftab-sep">·</span>
-            <a href="tel:1095"><b>Traffic Police:</b> 1095</a>
-            <span class="ftab-sep">·</span>
-            <a href="tel:101"><b>Fire &amp; Rescue:</b> 101</a>
-            <span class="ftab-sep">·</span>
-            <a href="#" onclick="openHelplinesModal(); return false;"><i class="fa-solid fa-building-flag"></i> View All 9 Zonal Offices</a>
-        </div>
-
-        <div class="footer-tab-panel" id="footer-tab-manager" style="display:none;">
-            <span class="ftab-label"><i class="fa-solid fa-user-check"></i> Web Information Manager:</span>
-            <span><b>Nodal Officer:</b> Assistant Executive Engineer (IT &amp; ICCC)</span>
-            <span class="ftab-sep">·</span>
-            <span><b>Agency:</b> Mysuru City Corporation (MCC)</span>
-            <span class="ftab-sep">·</span>
-            <a href="mailto:commissioner@mysurucitycorporation.co.in"><b>Email:</b> commissioner@mysurucitycorporation.co.in</a>
-        </div>
-
-        <div class="footer-tab-panel" id="footer-tab-about" style="display:none;">
-            <span class="ftab-label"><i class="fa-solid fa-city"></i> Mysuru City Corporation:</span>
-            <span>Sayyaji Rao Road, Agrahara, Mysuru, Karnataka 570024</span>
-            <span class="ftab-sep">·</span>
-            <span><b>Tel:</b> 0821-2418800</span>
-            <span class="ftab-sep">·</span>
-            <span>UrbanSight AI Autonomous Smart City Framework · MoHUA &amp; Govt. of Karnataka</span>
-        </div>
-
-        <div class="gov-footer-bottom-bar">
-            <span>© 2026 Mysuru City Corporation &amp; MoHUA Govt. of India. All rights reserved.</span>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <span><b>Monitored:</b> 412 km</span>
-                <span><b>Grievances:</b> 1,482</span>
-                <span><b>Active Tenders:</b> 4</span>
-                <span><b>Wards:</b> 65</span>
-            </div>
-        </div>
-    </footer>
+        
 
     <!-- Core Application Logic fallback (relative path for GitHub Pages compatibility) -->
     <script src="static/js/app.js">
@@ -6520,7 +6451,21 @@ function switchFooterTab(tabKey) {
             }
         };
 
-        window.addEventListener('DOMContentLoaded', () => {
+        
+function renderEventLogs() {
+    const feed = document.getElementById('activity-feed');
+    if (!feed || typeof state === 'undefined' || !state.logs) return;
+    feed.innerHTML = state.logs.map(log => `
+        <div class="log-entry ${log.tagClass || ''}">
+            <span class="log-time">${log.time}</span>
+            <span class="log-agent">${log.agent}:</span>
+            <span>${log.text}</span>
+        </div>
+    `).join('');
+}
+window.renderEventLogs = renderEventLogs;
+
+window.addEventListener('DOMContentLoaded', () => {
             const hash = (window.location.hash || '').replace('#', '');
             if (hash) {
                 window.switchDashboardTab(hash);
