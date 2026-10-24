@@ -313,6 +313,12 @@
     </style>
 </head>
 <body>
+    <!-- Top Navigation Bar with Back Button -->
+    <div style="position:absolute; top:12px; left:12px; z-index:9999; display:flex; align-items:center; gap:10px;">
+        <button type="button" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('command', event); } else { window.location.href='index.html#command'; }" style="background:#FF9933; color:#002244; border:none; padding:6px 14px; border-radius:6px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 10px rgba(0,0,0,0.35); font-size:0.82rem;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Command Center
+        </button>
+    </div>
 
     <!-- 1. Navigation Map Canvas -->
     <div id="nav-map"></div>

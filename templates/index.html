@@ -2101,11 +2101,50 @@ h1, h2, h3 {
     background: #F5F5F5;
 }
 
+
+/* Top Back Button */
+.btn-top-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    margin-right: 6px;
+}
+.btn-top-back:hover {
+    background: #FF9933;
+    color: #002244;
+    border-color: #FF9933;
+    transform: translateX(-2px);
+    box-shadow: 0 4px 12px rgba(255, 153, 51, 0.4);
+}
+.btn-top-back:active {
+    transform: translateX(0);
+}
+.btn-tier2-back:hover {
+    color: #FF9933 !important;
+    text-decoration: underline;
+}
+
 </style>
 </head>
 <body>
 
-        <header class="app-header">
+            <header class="app-header">
+        <button type="button" class="btn-top-back" id="btn-top-back" onclick="handleTopBackNavigation()" title="Go Back / Return to Command Center">
+            <i class="fa-solid fa-arrow-left"></i> <span>Back</span>
+        </button>
         <div class="brand-identity">
             <div class="brand-emblem" title="UrbanSight AI Autonomous Transit Perception Core">
                 <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2733,6 +2772,33 @@ h1, h2, h3 {
         // ==========================================
         // Header Actions (Simulate, Export CSV, Export GeoJSON, Privacy Blur, Driver Alert)
         // ==========================================
+        
+        // ==========================================
+        // Top Back Navigation Handler
+        // ==========================================
+        window.handleTopBackNavigation = function() {
+            // 1. If inside an iframe on a subview, return parent to command center
+            if (window.top !== window && window.top.switchDashboardTab) {
+                window.top.switchDashboardTab('command');
+                return;
+            }
+            // 2. If viewing a sub-portal in SPA, return to Command Center
+            const curHash = (window.location.hash || '').replace('#', '');
+            if (curHash && curHash !== 'command' && typeof window.switchDashboardTab === 'function') {
+                window.switchDashboardTab('command');
+                if (typeof window.showFloatingToast === 'function') {
+                    window.showFloatingToast('<i class="fa-solid fa-arrow-left"></i> <b>Returned to Command Center</b>', 'info');
+                }
+                return;
+            }
+            // 3. If history length is greater than 1, navigate back
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html#command';
+            }
+        };
+
         window.simulateBusPassAction = function() {
             showFloatingToast('<i class="fa-solid fa-bolt" style="font-size:1.2rem;"></i><div><b>Simulating Transit Bus Pass...</b><br>KSRTC-KA09-E102 scanning Gokulam ORR</div>', 'info');
 

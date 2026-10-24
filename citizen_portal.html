@@ -919,6 +919,7 @@
         </div>
 
         <div class="header-nav-links">
+            <a href="index.html#command" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('command', event); return false; } else { window.location.href='index.html#command'; return false; }" style="color:#FFFFFF; text-decoration:none; padding:4px 11px; border-radius:5px; background:#FF9933; color:#002244; font-weight:800; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 4px rgba(0,0,0,0.2);"><i class="fa-solid fa-arrow-left"></i> Back to Command Center</a>
             <a href="index.html#command" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('command', event); return false; }" class="btn-portal" title="Integrated Command & Control Center">
                 <i class="fa-solid fa-gauge-high"></i> Command Center
             </a>
