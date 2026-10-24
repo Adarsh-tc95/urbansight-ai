@@ -236,14 +236,16 @@ function initClock() {
                 scrollWheelZoom: true
             }).setView([12.3360, 76.6210], 13); // Default Centered on Mysuru (MCC & MUDA / VVCE Campus)
 
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap &copy; CARTO',
+            // OpenStreetMap standard tile layer (Clean, crisp, no API key required, zero watermarks)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 19
             }).addTo(state.map);
 
             renderHazardsOnMap();
             renderBusesOnMap();
             renderPCIHeatmap(0);
+            initMapDirectionsRoute();
         }
 
         function switchCityView(city) {
@@ -275,6 +277,7 @@ function initClock() {
         function jumpToCoord(lat, lng, zoom, name) {
             if (!state.map) return;
             state.map.flyTo([lat, lng], zoom, { duration: 0.8 });
+            drawMapDirectionRoute([lat, lng], name);
             L.popup()
                 .setLatLng([lat, lng])
                 .setContent(`<div style="font-family:'Plus Jakarta Sans',sans-serif; font-size:11px; font-weight:700; color:#1C1917; padding:4px;"><i class="fa-solid fa-location-dot" style="color:#0284C7;"></i> ${name}</div>`)
@@ -1349,4 +1352,188 @@ function openAllNoticesModal() {
 function closeAllNoticesModal() {
     const modal = document.getElementById('modal-notices');
     if (modal) modal.style.display = 'none';
+}
+
+
+
+// =============================================================================
+// Map Visual Directions & Detour Route Navigation Engine
+// =============================================================================
+
+let activeRouteMode = 'detour'; // 'detour' or 'depot'
+let currentNavDestination = [12.3360, 76.6210];
+let currentNavHazardName = "VVCE Ring Road Junction, Gokulam, Mysuru";
+
+function initMapDirectionsRoute() {
+    if (!state.map) return;
+    if (!state.navRouteLayerGroup) {
+        state.navRouteLayerGroup = L.layerGroup().addTo(state.map);
+    }
+    drawMapDirectionRoute();
+}
+
+function drawMapDirectionRoute(destCoord, hazardName, mode) {
+    if (!state.map) return;
+    if (!state.navRouteLayerGroup) {
+        state.navRouteLayerGroup = L.layerGroup().addTo(state.map);
+    }
+    state.navRouteLayerGroup.clearLayers();
+
+    if (destCoord) currentNavDestination = destCoord;
+    if (hazardName) currentNavHazardName = hazardName;
+    if (mode) activeRouteMode = mode;
+
+    let startCoord, wp1, wp2, wp3, endCoord;
+    let steps = [];
+
+    if (activeRouteMode === 'depot') {
+        // PWD Field Crew Depot Route Mode
+        startCoord = [12.3395, 76.6180]; // Gokulam 3rd Stage Depot
+        wp1 = [12.3380, 76.6195];
+        wp2 = [12.3368, 76.6205];
+        wp3 = [12.3362, 76.6208];
+        endCoord = currentNavDestination;
+
+        steps = [
+            { num: 1, text: "<b>Depot Exit:</b> Depart Gokulam Depot onto Contour Rd (400m)", class: "" },
+            { num: 2, text: "<b>Turn Right:</b> Turn onto 3rd Stage Main Road past Doctor's Corner (800m)", class: "blue" },
+            { num: 3, text: `<b>Reach Site:</b> Arrive at ${currentNavHazardName.split(',')[0]} (1.2 km)`, class: "orange" },
+            { num: 4, text: "<b>Station Van:</b> Deploy safety cones & begin cold-milling prep", class: "green" }
+        ];
+
+        document.getElementById('map-maneuver-title').textContent = "DEPOT TO SITE DISPATCH";
+        document.getElementById('map-maneuver-sub').textContent = `Routing to: ${currentNavHazardName.split(',')[0]}`;
+        document.getElementById('map-maneuver-icon').innerHTML = '<i class="fa-solid fa-truck-pickup"></i>';
+        document.getElementById('btn-route-mode').innerHTML = '<i class="fa-solid fa-car"></i> Vehicle Detour';
+        document.getElementById('map-nav-distance').textContent = "2.4 km";
+        document.getElementById('map-nav-eta').textContent = "6 mins";
+    } else {
+        // Vehicle Hazard Detour Mode
+        startCoord = [12.3385, 76.6190]; // Approaching Vehicle
+        wp1 = [12.3368, 76.6202]; // 100m before hazard
+        wp2 = [12.3360, 76.6210]; // Pothole / Hazard site
+        wp3 = [12.3352, 76.6225]; // Temple Road Detour bypass
+        endCoord = [12.3338, 76.6245]; // Clear Arterial Corridor rejoin
+
+        steps = [
+            { num: 1, text: `<b>Continue:</b> Head East along ${currentNavHazardName.split(',')[0]} (350m)`, class: "" },
+            { num: 2, text: "<b>↖ Action:</b> Merge Left Lane in 25m to clear crater defect", class: "orange highlight-turn" },
+            { num: 3, text: "<b>Detour:</b> Bypass via Temple Road link corridor (180m)", class: "blue" },
+            { num: 4, text: "<b>Re-align:</b> Rejoin primary Ring Road carriageway past hazard", class: "green" }
+        ];
+
+        document.getElementById('map-maneuver-title').textContent = "MERGE LEFT IN 25m";
+        document.getElementById('map-maneuver-sub').textContent = `Bypassing ${currentNavHazardName.split(',')[0]}`;
+        document.getElementById('map-maneuver-icon').innerHTML = '<i class="fa-solid fa-arrow-turn-up fa-rotate-270"></i>';
+        document.getElementById('btn-route-mode').innerHTML = '<i class="fa-solid fa-truck-pickup"></i> Crew Route';
+        document.getElementById('map-nav-distance').textContent = "1.8 km";
+        document.getElementById('map-nav-eta').textContent = "4 mins";
+    }
+
+    const routeCoords = [startCoord, wp1, wp2, wp3, endCoord];
+
+    // 1. Draw High-Contrast Outer White Casing
+    const casingPolyline = L.polyline(routeCoords, {
+        color: '#FFFFFF',
+        weight: 9,
+        opacity: 0.95,
+        lineCap: 'round',
+        lineJoin: 'round'
+    }).addTo(state.navRouteLayerGroup);
+
+    // 2. Draw Vibrant Primary Direction Polyline
+    const mainPolyline = L.polyline(routeCoords, {
+        color: activeRouteMode === 'depot' ? '#EA580C' : '#0284C7',
+        weight: 5,
+        opacity: 1.0,
+        lineCap: 'round',
+        lineJoin: 'round'
+    }).addTo(state.navRouteLayerGroup);
+
+    // 3. Draw Marching Animated Pulse Overlay
+    const dashPolyline = L.polyline(routeCoords, {
+        color: '#38BDF8',
+        weight: 3,
+        dashArray: '8, 12',
+        opacity: 0.95
+    }).addTo(state.navRouteLayerGroup);
+
+    // 4. Place Waypoint Badges
+    const startIcon = L.divIcon({
+        className: 'custom-wp-icon',
+        html: `<div class="waypoint-badge start"><span>🚩</span> <span>${activeRouteMode === 'depot' ? 'DEPOT' : 'START'}</span></div>`,
+        iconSize: [80, 24],
+        iconAnchor: [40, 12]
+    });
+    L.marker(startCoord, { icon: startIcon }).addTo(state.navRouteLayerGroup);
+
+    const hazardIcon = L.divIcon({
+        className: 'custom-wp-icon',
+        html: `<div class="waypoint-badge hazard"><span>⚠️</span> <span>${activeRouteMode === 'depot' ? 'DEFECT SITE' : 'MERGE LEFT'}</span></div>`,
+        iconSize: [95, 24],
+        iconAnchor: [47, 12]
+    });
+    L.marker(wp2, { icon: hazardIcon }).addTo(state.navRouteLayerGroup);
+
+    const endIcon = L.divIcon({
+        className: 'custom-wp-icon',
+        html: `<div class="waypoint-badge end"><span>🏁</span> <span>${activeRouteMode === 'depot' ? 'ON SITE' : 'CLEAR'}</span></div>`,
+        iconSize: [75, 24],
+        iconAnchor: [37, 12]
+    });
+    L.marker(endCoord, { icon: endIcon }).addTo(state.navRouteLayerGroup);
+
+    // Update Steps Scroller
+    const scroller = document.getElementById('map-steps-scroller');
+    if (scroller) {
+        scroller.innerHTML = steps.map(s => `
+            <div class="hud-step-item ${s.class}">
+                <div class="step-num-bubble ${s.class}">${s.num}</div>
+                <div class="step-text-content">${s.text}</div>
+            </div>
+        `).join('');
+    }
+}
+
+function toggleMapDirectionsHUD() {
+    const body = document.getElementById('directions-hud-body');
+    const btn = document.getElementById('btn-toggle-map-hud');
+    if (body) {
+        body.classList.toggle('collapsed');
+        const isCollapsed = body.classList.contains('collapsed');
+        if (btn) btn.innerHTML = isCollapsed ? '<i class="fa-solid fa-chevron-down"></i>' : '<i class="fa-solid fa-chevron-up"></i>';
+    }
+}
+
+function toggleRouteMode() {
+    activeRouteMode = activeRouteMode === 'detour' ? 'depot' : 'detour';
+    drawMapDirectionRoute();
+    if (typeof playAlertChime === 'function') playAlertChime('pothole');
+}
+
+function speakMapDirectionPrompt() {
+    const langSelect = document.getElementById('gov-lang-select');
+    const currentLang = langSelect ? langSelect.value : 'en';
+
+    let prompt = `Road hazard ahead near ${currentNavHazardName.split(',')[0]}. Merge to left lane in 25 meters; reduce speed to 20 kilometers per hour.`;
+    let voiceCode = 'en-IN';
+
+    if (currentLang === 'kn') {
+        prompt = `ಮುಂದೆ ${currentNavHazardName.split(',')[0]} ಬಳಿ ರಸ್ತೆ ಗುಂಡಿ ಇದೆ. ಎಡ ಪಥಕ್ಕೆ ತಿರುಗಿ ಮತ್ತು ವೇಗ ಕಡಿಮೆ ಮಾಡಿ.`;
+        voiceCode = 'kn-IN';
+    } else if (currentLang === 'hi') {
+        prompt = `आगे ${currentNavHazardName.split(',')[0]} के पास सड़क पर गड्ढा है। कृपया बाईं लेन में मुड़ें और गति धीमी करें।`;
+        voiceCode = 'hi-IN';
+    }
+
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(prompt);
+        utter.rate = 0.95;
+        utter.pitch = 1.0;
+        utter.lang = voiceCode;
+        window.speechSynthesis.speak(utter);
+    } else {
+        alert(prompt);
+    }
 }
