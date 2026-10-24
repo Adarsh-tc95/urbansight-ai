@@ -13,31 +13,61 @@
 
     <style>
         :root {
-            --bg-void: #090D16;
-            --bg-card: #0F172A;
-            --bg-card-hover: #1E293B;
-            --bg-panel: #111827;
-            --border-color: #1E293B;
-            --border-glow: rgba(0, 229, 255, 0.25);
+    /* Background Hierarchy (Warm Linen & Sandstone Depths) */
+    --bg-base: #F5F2EB;               /* Warm soft linen beige page background */
+    --bg-subtle: #EDE7DA;             /* Warm sandstone background */
+    --bg-surface: #FAF8F5;            /* Creamy ivory surface */
+    --bg-card: rgba(255, 255, 255, 0.94); /* Crisp warm white card */
+    --bg-card-hover: #ECE6D8;         /* Warm sand card hover */
+    --bg-card-solid: #FFFFFF;         /* Solid card white */
+    --bg-glass-panel: rgba(245, 242, 235, 0.92); /* Glassmorphism beige panel */
+    --bg-pill: rgba(0, 0, 0, 0.04);   /* Soft subtle pill background */
+    --bg-pill-hover: rgba(0, 0, 0, 0.08);
 
-            --primary: #00E5FF;
-            --primary-glow: rgba(0, 229, 255, 0.4);
-            --accent: #FF5E1E;
-            --warning: #F59E0B;
-            --warning-glow: rgba(245, 158, 11, 0.4);
-            --danger: #EF4444;
-            --danger-glow: rgba(239, 68, 68, 0.45);
-            --success: #10B981;
-            --success-glow: rgba(16, 185, 129, 0.35);
-            --purple: #8B5CF6;
+    /* Borders & Hairlines */
+    --border-subtle: #E2DCCB;          /* Soft warm tan border */
+    --border-medium: #DDD6C6;          /* Sandstone border */
+    --border-hover: rgba(2, 132, 199, 0.4);
+    --border-glow: rgba(2, 132, 199, 0.2);
 
-            --text-primary: #F8FAFC;
-            --text-muted: #94A3B8;
-            --text-dim: #64748B;
+    /* Brand Accents */
+    --primary: #0284C7;               /* High-contrast civic ocean sapphire */
+    --primary-gradient: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+    --primary-glow: rgba(2, 132, 199, 0.25);
+    --primary-muted: rgba(2, 132, 199, 0.1);
 
-            --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
+    /* Functional Telemetry Accents */
+    --caution: #EA580C;               /* Civic safety orange / terracotta */
+    --caution-glow: rgba(234, 88, 12, 0.25);
+    --caution-muted: rgba(234, 88, 12, 0.1);
+
+    --critical: #DC2626;              /* Alert crimson */
+    --critical-glow: rgba(220, 38, 38, 0.25);
+    --critical-muted: rgba(220, 38, 38, 0.1);
+
+    --success: #059669;               /* Deep emerald green */
+    --success-glow: rgba(5, 150, 105, 0.25);
+    --success-muted: rgba(5, 150, 105, 0.1);
+
+    --indigo: #4F46E5;                /* Slate indigo */
+    --purple: #7C3AED;                /* Royal amethyst */
+    --purple-muted: rgba(124, 58, 237, 0.1);
+
+    /* Typography */
+    --text-primary: #1C1917;          /* Stone 900 charcoal - deep contrast */
+    --text-secondary: #57534E;        /* Stone 600 warm slate */
+    --text-tertiary: #78716C;         /* Stone 500 subtle */
+    --text-inverse: #FFFFFF;
+
+    --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Transitions & Curves */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: 0.15s var(--ease-out);
+    --transition-medium: 0.25s var(--ease-out);
+}
 
         * {
             margin: 0;
@@ -48,7 +78,7 @@
         }
 
         body {
-            background-color: var(--bg-void);
+            background-color: var(--bg-base);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
@@ -60,7 +90,7 @@
 
         /* Top Mobile App Bar */
         .crew-header {
-            background: rgba(15, 23, 42, 0.96);
+            background: rgba(245, 242, 235, 0.96);
             border-bottom: 2px solid var(--border-color);
             padding: 14px 20px;
             display: flex;
@@ -122,8 +152,8 @@
         .pill-cyan { background: rgba(0, 229, 255, 0.15); color: var(--primary); border: 1px solid var(--primary); }
 
         .btn-header-nav {
-            background: #1E293B;
-            border: 1px solid #334155;
+            background: #FFFFFF;
+            border: 1px solid var(--border-medium);
             color: var(--text-primary);
             padding: 6px 12px;
             border-radius: 6px;
@@ -143,7 +173,7 @@
 
         /* GPS & Van Status Strip */
         .van-status-strip {
-            background: #0B1120;
+            background: var(--bg-subtle);
             border-bottom: 1px solid var(--border-color);
             padding: 10px 20px;
             display: flex;
@@ -194,8 +224,8 @@
         }
 
         .filter-tab {
-            background: #1E293B;
-            border: 1px solid #334155;
+            background: #FFFFFF;
+            border: 1px solid var(--border-medium);
             color: var(--text-muted);
             padding: 8px 16px;
             border-radius: 8px;
@@ -376,8 +406,8 @@
         }
 
         .btn-voucher {
-            background: #1E293B;
-            border: 1px solid #334155;
+            background: #FFFFFF;
+            border: 1px solid var(--border-medium);
             color: var(--primary);
         }
 
@@ -387,8 +417,8 @@
         }
 
         .btn-nav-map {
-            background: #1E293B;
-            border: 1px solid #334155;
+            background: #FFFFFF;
+            border: 1px solid var(--border-medium);
             color: var(--text-primary);
         }
 
@@ -418,7 +448,7 @@
         .photo-box {
             background: #000;
             border-radius: 10px;
-            border: 1px solid #334155;
+            border: 1px solid var(--border-medium);
             overflow: hidden;
             height: 160px;
             position: relative;
