@@ -8,15 +8,18 @@
     <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <!-- Government Standard Fonts: Noto Sans + Noto Serif + IBM Plex Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
     /* Background Hierarchy (Warm Linen & Sandstone Depths) */
-    --bg-base: #F5F2EB;               /* Warm soft linen beige page background */
-    --bg-subtle: #EDE7DA;             /* Warm sandstone background */
-    --bg-surface: #FAF8F5;            /* Creamy ivory surface */
+    --bg-base: #F5F5F5;               /* Warm soft linen beige page background */
+    --bg-subtle: #EBF1FB;             /* Warm sandstone background */
+    --bg-surface: #FFFFFF;            /* Creamy ivory surface */
     --bg-card: rgba(255, 255, 255, 0.94); /* Crisp warm white card */
     --bg-card-hover: #ECE6D8;         /* Warm sand card hover */
     --bg-card-solid: #FFFFFF;         /* Solid card white */
@@ -25,27 +28,27 @@
     --bg-pill-hover: rgba(0, 0, 0, 0.08);
 
     /* Borders & Hairlines */
-    --border-subtle: #E2DCCB;          /* Soft warm tan border */
-    --border-medium: #DDD6C6;          /* Sandstone border */
+    --border-subtle: #E5E7EB;          /* Soft warm tan border */
+    --border-medium: #D1D5DB;          /* Sandstone border */
     --border-hover: rgba(2, 132, 199, 0.4);
     --border-glow: rgba(2, 132, 199, 0.2);
 
     /* Brand Accents */
-    --primary: #0284C7;               /* High-contrast civic ocean sapphire */
-    --primary-gradient: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+    --primary: #003580;               /* High-contrast civic ocean sapphire */
+    --primary-gradient: #003580;
     --primary-glow: rgba(2, 132, 199, 0.25);
     --primary-muted: rgba(2, 132, 199, 0.1);
 
     /* Functional Telemetry Accents */
-    --caution: #EA580C;               /* Civic safety orange / terracotta */
+    --caution: #FF9933;               /* Civic safety orange / terracotta */
     --caution-glow: rgba(234, 88, 12, 0.25);
     --caution-muted: rgba(234, 88, 12, 0.1);
 
-    --critical: #DC2626;              /* Alert crimson */
+    --critical: #CC0000;              /* Alert crimson */
     --critical-glow: rgba(220, 38, 38, 0.25);
     --critical-muted: rgba(220, 38, 38, 0.1);
 
-    --success: #059669;               /* Deep emerald green */
+    --success: #138808;               /* Deep emerald green */
     --success-glow: rgba(5, 150, 105, 0.25);
     --success-muted: rgba(5, 150, 105, 0.1);
 
@@ -59,9 +62,9 @@
     --text-tertiary: #78716C;         /* Stone 500 subtle */
     --text-inverse: #FFFFFF;
 
-    --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-heading: 'Noto Serif', serif;
+    --font-ui: 'Noto Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
 
     /* Transitions & Curves */
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);

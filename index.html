@@ -8,7 +8,10 @@
     <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+        <!-- Government Standard Fonts: Noto Sans + Noto Serif + IBM Plex Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Leaflet GIS Map CSS -->
@@ -18,151 +21,255 @@
     <style>
 /* =============================================================================
    UrbanSight AI — Smart City ICCC Command System (Infothon 7.0 / SIH26124)
-   Ultra-Modern Minimal Tech Design System
-   Inspired by Linear, Vercel, Apple, and Palantir Foundry Dark Mode
+   Official Government of India Digital Portal Design System
+   Inspired by: NIC Portals, UMANG, DigiLocker, BBMP Sahaaya, data.gov.in
    ============================================================================= */
 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
 :root {
-    /* Background Hierarchy (Warm Linen & Sandstone Depths) */
-    --bg-base: #F5F2EB;               /* Warm soft linen beige page background */
-    --bg-subtle: #EDE7DA;             /* Warm sandstone background */
-    --bg-surface: #FAF8F5;            /* Creamy ivory surface */
-    --bg-card: rgba(255, 255, 255, 0.94); /* Crisp warm white card */
-    --bg-card-hover: #ECE6D8;         /* Warm sand card hover */
-    --bg-card-solid: #FFFFFF;         /* Solid card white */
-    --bg-glass-panel: rgba(245, 242, 235, 0.92); /* Glassmorphism beige panel */
-    --bg-pill: rgba(0, 0, 0, 0.04);   /* Soft subtle pill background */
-    --bg-pill-hover: rgba(0, 0, 0, 0.08);
+    /* Government of India Official Color Palette */
+    --gov-blue:        #003580;   /* NIC India primary blue */
+    --gov-blue-dark:   #002660;   /* Darker hover blue */
+    --gov-blue-light:  #EBF1FB;   /* Light blue tint for backgrounds */
+    --gov-saffron:     #FF9933;   /* Indian tricolor saffron — alerts/highlights */
+    --gov-green:       #138808;   /* Indian tricolor green — resolved/success */
+    --gov-red:         #CC0000;   /* Critical / danger red */
+    --gov-orange:      #EA580C;   /* In-progress orange */
 
-    /* Borders & Hairlines */
-    --border-subtle: #E2DCCB;          /* Soft warm tan border */
-    --border-medium: #DDD6C6;          /* Sandstone border */
-    --border-hover: rgba(2, 132, 199, 0.4);
-    --border-glow: rgba(2, 132, 199, 0.2);
+    /* Page & Surface Colors */
+    --bg-page:         #F5F5F5;   /* Standard government portal page background */
+    --bg-card:         #FFFFFF;   /* Card and panel white */
+    --bg-table-odd:    #F9FAFB;   /* Zebra-striped table odd row */
+    --bg-header:       #003580;   /* Navigation and section header */
+    --bg-topbar-1:     #003580;   /* Tier-1 topbar (gov blue) */
+    --bg-topbar-2:     #F5F5F5;   /* Tier-2 topbar (light) */
+    --bg-footer:       #003580;   /* Footer background */
+    --bg-filter-bar:   #EBF1FB;   /* Filter bar background */
 
-    /* Brand Accents */
-    --primary: #0284C7;               /* High-contrast civic ocean sapphire */
-    --primary-gradient: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-    --primary-glow: rgba(2, 132, 199, 0.25);
-    --primary-muted: rgba(2, 132, 199, 0.1);
+    /* Border Colors */
+    --border-light:    #D1D5DB;   /* Standard card/table borders */
+    --border-table:    #E5E7EB;   /* Table row borders */
+    --border-medium:   #9CA3AF;   /* Medium emphasis border */
 
-    /* Functional Telemetry Accents */
-    --caution: #EA580C;               /* Civic safety orange / terracotta */
-    --caution-glow: rgba(234, 88, 12, 0.25);
-    --caution-muted: rgba(234, 88, 12, 0.1);
+    /* Typography Colors */
+    --text-primary:    #1A1A1A;   /* Near-black body text */
+    --text-secondary:  #4A4A4A;   /* Secondary grey text */
+    --text-tertiary:   #6B7280;   /* Muted labels */
+    --text-inverse:    #FFFFFF;   /* White text on dark backgrounds */
+    --text-link:       #003580;   /* Link color */
 
-    --critical: #DC2626;              /* Alert crimson */
-    --critical-glow: rgba(220, 38, 38, 0.25);
-    --critical-muted: rgba(220, 38, 38, 0.1);
+    /* Fonts */
+    --font-heading:    'Noto Serif', Georgia, 'Times New Roman', serif;
+    --font-ui:         'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono:       'IBM Plex Mono', 'Courier New', monospace;
 
-    --success: #059669;               /* Deep emerald green */
-    --success-glow: rgba(5, 150, 105, 0.25);
-    --success-muted: rgba(5, 150, 105, 0.1);
+    /* Status Badge Colors (solid, no transparency) */
+    --badge-critical:  #CC0000;
+    --badge-high:      #FF9933;
+    --badge-medium:    #003580;
+    --badge-low:       #4B5563;
+    --badge-resolved:  #138808;
+    --badge-progress:  #EA580C;
 
-    --indigo: #4F46E5;                /* Slate indigo */
-    --purple: #7C3AED;                /* Royal amethyst */
-    --purple-muted: rgba(124, 58, 237, 0.1);
-
-    /* Typography */
-    --text-primary: #1C1917;          /* Stone 900 charcoal - deep contrast */
-    --text-secondary: #57534E;        /* Stone 600 warm slate */
-    --text-tertiary: #78716C;         /* Stone 500 subtle */
-    --text-inverse: #FFFFFF;
-
-    --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-
-    /* Transitions & Curves */
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --transition-fast: 0.15s var(--ease-out);
-    --transition-medium: 0.25s var(--ease-out);
+    /* Spacing & Radius */
+    --radius-sm:       4px;
+    --radius-md:       6px;
+    --radius-lg:       8px;
+    --transition:      0.15s ease;
 }
 
-/* Base Reset & Typography */
-* {
+/* =============================================================================
+   BASE RESET
+   ============================================================================= */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 html, body {
-    background-color: var(--bg-base);
+    background-color: var(--bg-page);
     color: var(--text-primary);
     font-family: var(--font-ui);
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.6;
     min-height: 100vh;
-    overflow-x: hidden;
-    background-image: 
-        radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.04) 0%, transparent 45%),
-        radial-gradient(circle at 90% 20%, rgba(234, 88, 12, 0.03) 0%, transparent 35%);
-    background-attachment: fixed;
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+a {
+    color: var(--gov-blue);
+    text-decoration: none;
 }
-::-webkit-scrollbar-track {
-    background: transparent;
+a:hover {
+    text-decoration: underline;
 }
-::-webkit-scrollbar-thumb {
-    background: #D6CEBC;
-    border-radius: 999px;
+
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    line-height: 1.3;
 }
-::-webkit-scrollbar-thumb:hover {
-    background: #C4BAA3;
-}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-page); }
+::-webkit-scrollbar-thumb { background: #9CA3AF; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #6B7280; }
+
 
 /* =============================================================================
-   1. Branded Unified Header & Navigation Bar
+   1. GOVERNMENT TOP BAR (2-tier: NIC/DigiLocker style)
+   ============================================================================= */
+.gov-topbar-tier1 {
+    background: var(--gov-blue);
+    color: var(--text-inverse);
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-family: var(--font-ui);
+}
+
+.gov-topbar-tier1 .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.gov-topbar-tier1 .emblem-wrap {
+    flex-shrink: 0;
+}
+
+.gov-topbar-tier1 .gov-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.gov-topbar-tier1 .gov-title-main {
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+}
+
+.gov-topbar-tier1 .gov-title-sub {
+    font-size: 0.72rem;
+    opacity: 0.85;
+}
+
+.gov-topbar-tier1 .gov-utils {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.72rem;
+}
+
+.gov-topbar-tier1 .gov-utils a,
+.gov-topbar-tier1 .gov-utils button {
+    color: #fff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-family: var(--font-ui);
+    opacity: 0.85;
+    transition: opacity var(--transition);
+}
+.gov-topbar-tier1 .gov-utils a:hover,
+.gov-topbar-tier1 .gov-utils button:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.gov-topbar-tier1 .divider {
+    opacity: 0.4;
+}
+
+.gov-topbar-tier2 {
+    background: var(--bg-topbar-2);
+    border-bottom: 1px solid var(--border-light);
+    padding: 5px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.gov-topbar-tier2 .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.gov-topbar-tier2 .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--gov-green);
+    font-weight: 600;
+}
+
+.live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gov-green);
+    animation: livePulse 2s infinite;
+}
+
+@keyframes livePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+
+/* =============================================================================
+   2. MAIN NAVIGATION BAR
    ============================================================================= */
 .app-header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: rgba(245, 242, 235, 0.94);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-medium);
-    padding: 0.75rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    box-shadow: 0 2px 12px rgba(80, 65, 45, 0.05);
+    background: var(--gov-blue);
+    border-bottom: 3px solid var(--gov-saffron);
 }
 
-/* Brand Identity */
+.app-header-inner {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    padding: 0 20px;
+    max-width: 1720px;
+    margin: 0 auto;
+    gap: 16px;
+}
+
+/* Brand Identity (left side of nav) */
 .brand-identity {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
-    min-width: 260px;
+    gap: 10px;
+    padding: 10px 0;
+    min-width: 220px;
 }
 
 .brand-emblem {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(0, 112, 243, 0.25));
-    border: 1px solid rgba(0, 240, 255, 0.4);
+    width: 38px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--primary);
-    font-size: 1.15rem;
-    box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
     flex-shrink: 0;
-    transition: transform var(--transition-fast);
-}
-
-.brand-emblem:hover {
-    transform: scale(1.05);
 }
 
 .brand-info {
@@ -170,297 +277,238 @@ html, body {
     flex-direction: column;
 }
 
-.brand-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
 .brand-title {
     font-family: var(--font-heading);
-    font-size: 1.15rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: var(--text-primary);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
 }
 
 .brand-meta-badge {
     font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 999px;
-    background: rgba(0, 240, 255, 0.1);
-    color: var(--primary);
-    border: 1px solid rgba(0, 240, 255, 0.25);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.05em;
 }
 
 .brand-subtitle {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    margin-top: 1px;
+    display: none;
 }
 
-.live-pulse-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--success);
-    font-weight: 600;
-    background: rgba(52, 199, 89, 0.08);
-    border: 1px solid rgba(52, 199, 89, 0.22);
-    padding: 1px 6px;
-    border-radius: 4px;
-}
-
-.pulse-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--success);
-    box-shadow: 0 0 8px var(--success);
-    animation: livePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes livePulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.35; transform: scale(1.35); }
-}
-
-/* Center Navigation Pill Bar */
+/* Center Nav Pills → now simple flat tabs */
 .header-nav-center {
     display: flex;
-    align-items: center;
+    align-items: stretch;
+    flex: 1;
     justify-content: center;
 }
 
 .portal-nav-pills {
     display: flex;
-    align-items: center;
-    gap: 4px;
-    background: #EDE7DA;
-    border: 1px solid var(--border-medium);
-    padding: 3px;
-    border-radius: 999px;
-    box-shadow: 0 1px 4px rgba(78, 64, 45, 0.04);
+    align-items: stretch;
+    gap: 0;
+    background: transparent;
+    border: none;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .portal-pill {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.42rem 0.85rem;
-    border-radius: 999px;
-    font-size: 0.78rem;
+    gap: 6px;
+    padding: 0 16px;
+    font-size: 0.8rem;
     font-weight: 500;
-    color: var(--text-secondary);
+    font-family: var(--font-ui);
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
-    transition: all var(--transition-fast);
-    border: 1px solid transparent;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    border-radius: 0;
     white-space: nowrap;
+    transition: all var(--transition);
+    cursor: pointer;
 }
 
 .portal-pill:hover {
-    color: var(--text-primary);
-    background: var(--bg-pill-hover);
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.4);
+    text-decoration: none;
 }
 
 .portal-pill.active {
-    background: var(--primary);
     color: #FFFFFF;
-    border-color: var(--primary);
     font-weight: 600;
-    box-shadow: 0 2px 8px var(--primary-glow);
-}
-
-
-.role-badge {
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    padding: 1px 6px;
-    border-radius: 4px;
-    background: rgba(2, 132, 199, 0.12);
-    color: #0284C7;
-    margin-left: 4px;
-    transition: all var(--transition-fast);
-}
-
-.portal-pill.active .role-badge {
-    background: rgba(255, 255, 255, 0.25);
-    color: #FFFFFF;
-}
-
-/* .civic-dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.civic-dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    margin-top: 6px;
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-    min-width: 195px;
-    z-index: 1000;
-    padding: 6px;
-}
-
-.civic-dropdown:hover .civic-dropdown-menu {
-    display: block;
-}
-
-.civic-dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 8px 12px;
-    border: none;
-    background: transparent;
-    color: var(--text-primary);
-    font-size: 0.78rem;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.15s;
-}
-
-.civic-dropdown-item:hover {
-    background: #EDE7DA;
-    color: #0284C7;
+    border-bottom-color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
 }
 
 .portal-pill i {
     font-size: 0.78rem;
 }
 
-/* Right Header Action Suite */
+.role-badge {
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
+    margin-left: 2px;
+}
+
+/* Header Action Buttons (right) */
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 0.55rem;
-}
-
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-    padding: 0.45rem 0.85rem;
-    border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all var(--transition-fast);
-    border: 1px solid transparent;
-    white-space: nowrap;
-    outline: none;
-}
-
-.btn-primary {
-    background: var(--primary-gradient);
-    color: var(--text-inverse);
-    font-weight: 700;
-    box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
-}
-
-.btn-primary:hover {
-    opacity: 0.92;
-    transform: translateY(-1px);
-    box-shadow: 0 0 22px rgba(0, 240, 255, 0.5);
-}
-
-.btn-primary:active {
-    transform: translateY(0);
-}
-
-.btn-glass {
-    background: #FFFFFF;
-    color: var(--text-primary);
-    border: 1px solid var(--border-medium);
-    box-shadow: 0 1px 3px rgba(78, 64, 45, 0.04);
-}
-
-.btn-glass:hover {
-    background: var(--bg-card-hover);
-    border-color: #C8BEAA;
-    color: var(--text-primary);
-}
-
-.btn-glass.active-toggle {
-    background: rgba(52, 199, 89, 0.12);
-    border-color: rgba(52, 199, 89, 0.35);
-    color: var(--success);
+    gap: 8px;
+    padding: 8px 0;
 }
 
 .telemetry-clock-box {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    background: #FFFFFF;
-    border: 1px solid var(--border-medium);
-    padding: 0.42rem 0.65rem;
-    border-radius: 6px;
-    letter-spacing: 0.02em;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.03em;
 }
 
 /* =============================================================================
-   2. KPI Metric Cards Strip
+   3. BUTTON SYSTEM
+   ============================================================================= */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all var(--transition);
+    border: 1px solid transparent;
+    white-space: nowrap;
+    outline: none;
+    letter-spacing: 0.01em;
+}
+
+.btn-primary {
+    background: var(--gov-blue);
+    color: #FFFFFF;
+    border-color: var(--gov-blue);
+}
+.btn-primary:hover {
+    background: var(--gov-blue-dark);
+    border-color: var(--gov-blue-dark);
+    text-decoration: none;
+    color: #fff;
+}
+
+.btn-secondary {
+    background: #FFFFFF;
+    color: var(--gov-blue);
+    border-color: var(--gov-blue);
+}
+.btn-secondary:hover {
+    background: var(--gov-blue-light);
+    text-decoration: none;
+}
+
+.btn-success {
+    background: var(--gov-green);
+    color: #FFFFFF;
+    border-color: var(--gov-green);
+}
+.btn-success:hover { background: #0e6e06; color: #fff; text-decoration: none; }
+
+.btn-danger {
+    background: var(--gov-red);
+    color: #FFFFFF;
+    border-color: var(--gov-red);
+}
+.btn-danger:hover { background: #aa0000; color: #fff; text-decoration: none; }
+
+.btn-warning {
+    background: var(--gov-saffron);
+    color: #FFFFFF;
+    border-color: var(--gov-saffron);
+}
+.btn-warning:hover { background: #e8871e; color: #fff; text-decoration: none; }
+
+.btn-glass {
+    background: rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn-sm {
+    padding: 4px 12px;
+    font-size: 0.72rem;
+}
+
+.btn-lg {
+    padding: 12px 28px;
+    font-size: 0.9rem;
+    min-height: 48px;
+}
+
+
+/* =============================================================================
+   4. KPI METRIC TILES STRIP
    ============================================================================= */
 .metrics-strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    padding: 1.25rem 1.5rem 0.5rem;
+    gap: 16px;
+    padding: 16px 20px 8px;
     max-width: 1720px;
     margin: 0 auto;
 }
 
 .metric-kpi-card {
     background: var(--bg-card);
-    border: 1px solid var(--border-medium);
-    border-top: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    padding: 1rem 1.2rem;
+    border: 1px solid var(--border-light);
+    border-top: 3px solid var(--gov-blue);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    transition: all var(--transition-medium);
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(78, 64, 45, 0.04);
-}
-
-.metric-kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transition: box-shadow var(--transition);
 }
 
 .metric-kpi-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--border-hover);
-    box-shadow: 0 8px 24px rgba(78, 64, 45, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 53, 128, 0.1);
+}
+
+.metric-kpi-card.accent-saffron {
+    border-top-color: var(--gov-saffron);
+}
+.metric-kpi-card.accent-green {
+    border-top-color: var(--gov-green);
+}
+.metric-kpi-card.accent-red {
+    border-top-color: var(--gov-red);
 }
 
 .kpi-content {
@@ -472,80 +520,64 @@ html, body {
     font-size: 0.68rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     color: var(--text-tertiary);
-    margin-bottom: 0.35rem;
+    margin-bottom: 6px;
 }
 
 .kpi-value-row {
     display: flex;
     align-items: baseline;
-    gap: 0.35rem;
-    margin-bottom: 0.25rem;
+    gap: 6px;
+    margin-bottom: 4px;
 }
 
 .kpi-value {
     font-family: var(--font-heading);
-    font-size: 1.65rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
+    font-size: 2rem;
+    font-weight: 700;
     line-height: 1.1;
-    color: var(--text-primary);
+    color: var(--gov-blue);
 }
 
-.kpi-value.cyan { color: var(--primary); text-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
-.kpi-value.amber { color: var(--caution); text-shadow: 0 0 20px rgba(255, 149, 0, 0.3); }
-.kpi-value.green { color: var(--success); text-shadow: 0 0 20px rgba(52, 199, 89, 0.3); }
+.kpi-value.green  { color: var(--gov-green); }
+.kpi-value.red    { color: var(--gov-red); }
+.kpi-value.amber  { color: var(--gov-saffron); }
+.kpi-value.cyan   { color: var(--gov-blue); }
 
 .kpi-subtext {
     font-size: 0.72rem;
-    color: var(--text-secondary);
-    letter-spacing: -0.01em;
+    color: var(--text-tertiary);
 }
 
 .kpi-icon-pod {
-    width: 38px;
-    height: 38px;
-    border-radius: 9px;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--gov-blue-light);
+    border: 1px solid #C7D7F5;
+    color: var(--gov-blue);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.05rem;
-    background: #F5F2EB;
-    border: 1px solid var(--border-medium);
-    color: var(--text-secondary);
+    font-size: 1.1rem;
     flex-shrink: 0;
-    transition: all var(--transition-fast);
 }
+.kpi-icon-pod.green  { background: #E8F5E9; border-color: #A5D6A7; color: var(--gov-green); }
+.kpi-icon-pod.amber  { background: #FFF3E0; border-color: #FFCC80; color: var(--gov-saffron); }
+.kpi-icon-pod.red    { background: #FFEBEE; border-color: #FFCDD2; color: var(--gov-red); }
+.kpi-icon-pod.cyan   { background: var(--gov-blue-light); border-color: #C7D7F5; color: var(--gov-blue); }
+.kpi-icon-pod.indigo { background: #EDE7F6; border-color: #CE93D8; color: #6A1B9A; }
 
-.metric-kpi-card:hover .kpi-icon-pod {
-    width: 38px;
-    height: 38px;
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.05rem;
-    background: #F5F2EB;
-    border: 1px solid var(--border-medium);
-    color: var(--text-secondary);
-    flex-shrink: 0;
-    transition: all var(--transition-fast);
-}
-
-.kpi-icon-pod.cyan { color: var(--primary); background: var(--primary-muted); border-color: rgba(0, 240, 255, 0.25); }
-.kpi-icon-pod.indigo { color: var(--indigo); background: rgba(94, 92, 230, 0.12); border-color: rgba(94, 92, 230, 0.25); }
-.kpi-icon-pod.amber { color: var(--caution); background: var(--caution-muted); border-color: rgba(255, 149, 0, 0.25); }
-.kpi-icon-pod.green { color: var(--success); background: var(--success-muted); border-color: rgba(52, 199, 89, 0.25); }
 
 /* =============================================================================
-   3. Main Command Grid Layout
+   5. MAIN LAYOUT GRID
    ============================================================================= */
 .command-grid-layout {
     display: grid;
     grid-template-columns: 1.85fr 1.15fr;
-    gap: 1.25rem;
-    padding: 0.85rem 1.5rem 2rem;
+    gap: 16px;
+    padding: 12px 20px 24px;
     max-width: 1720px;
     margin: 0 auto;
 }
@@ -554,62 +586,74 @@ html, body {
 .right-column {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 16px;
 }
 
-/* Glassmorphic Panel Container */
+
+/* =============================================================================
+   6. PANEL / CARD CONTAINER
+   ============================================================================= */
 .panel-container {
     background: var(--bg-card);
-    border: 1px solid var(--border-medium);
-    border-radius: 14px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
     overflow: hidden;
-    position: relative;
-    box-shadow: 0 4px 18px rgba(78, 64, 45, 0.05);
-    transition: border-color var(--transition-fast);
-}
-
-.panel-container:hover {
-    border-color: rgba(255, 255, 255, 0.12);
 }
 
 .panel-header {
-    background: #EDE7DA;
-    border-bottom: 1px solid var(--border-medium);
-    padding: 0.75rem 1.15rem;
+    background: var(--gov-blue);
+    color: #FFFFFF;
+    padding: 10px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .panel-header-title {
-    font-family: var(--font-heading);
-    font-size: 0.86rem;
-    font-weight: 700;
-    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #FFFFFF;
     display: flex;
     align-items: center;
-    gap: 0.55rem;
-    letter-spacing: -0.01em;
+    gap: 8px;
+    letter-spacing: 0.01em;
 }
 
 .panel-header-title i {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    opacity: 0.85;
 }
 
 .panel-header-meta {
-    font-size: 0.72rem;
-    color: var(--text-tertiary);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
     font-family: var(--font-mono);
 }
 
+/* Light panel header variant */
+.panel-header.light {
+    background: var(--gov-blue-light);
+    color: var(--gov-blue);
+    border-bottom: 1px solid #C7D7F5;
+}
+.panel-header.light .panel-header-title {
+    color: var(--gov-blue);
+}
+.panel-header.light .panel-header-meta {
+    color: var(--gov-blue);
+    opacity: 0.7;
+}
+
+
 /* =============================================================================
-   4. GIS Map Panel & Controls
+   7. GIS MAP PANEL
    ============================================================================= */
 .map-viewport {
     height: 440px;
     width: 100%;
     position: relative;
-    background: #EAE4D6;
+    background: #E8EEF4;
 }
 
 #gis-map {
@@ -617,204 +661,108 @@ html, body {
     height: 100%;
 }
 
+/* Leaflet overrides for gov look */
 .leaflet-bar a {
-    background-color: rgba(13, 17, 29, 0.9) !important;
-    color: var(--text-primary) !important;
-    border-color: var(--border-subtle) !important;
+    background-color: #FFFFFF !important;
+    color: var(--gov-blue) !important;
+    border-color: var(--border-light) !important;
+    font-weight: 600;
 }
 .leaflet-bar a:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: var(--gov-blue-light) !important;
+}
+.leaflet-popup-content-wrapper {
+    background: #FFFFFF !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-light) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: 0 4px 20px rgba(0, 53, 128, 0.12) !important;
+}
+.leaflet-popup-tip {
+    background: #FFFFFF !important;
 }
 
-/* ASTM D6433 PCI Predictive Degradation Forecast Bar */
-
-/* City / Regional Transit Map Switcher & Mysuru Explorer */
-.map-city-controls {
-    position: absolute;
-    top: 14px;
-    left: 56px;
-    z-index: 500;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-width: 65%;
-}
-
-.city-selector-pills {
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--border-medium);
-    border-radius: 999px;
-    padding: 3px 6px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    box-shadow: 0 4px 16px rgba(78, 64, 45, 0.12);
-    width: fit-content;
-}
-
-.btn-city-pill {
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--text-secondary);
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    font-family: var(--font-sans);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: all var(--transition-fast);
-}
-
-.btn-city-pill:hover {
-    background: #F5F2EB;
-    color: var(--text-primary);
-}
-
-.btn-city-pill.active {
-    background: #FFFFFF;
-    border-color: var(--border-medium);
-    color: var(--primary);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-.mysuru-quick-landmarks {
-    background: rgba(255, 255, 255, 0.94);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border-medium);
-    border-radius: 8px;
-    padding: 4px 8px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    box-shadow: 0 3px 12px rgba(78, 64, 45, 0.08);
-    flex-wrap: wrap;
-    width: fit-content;
-}
-
-.landmark-tag {
-    font-size: 0.65rem;
-    font-weight: 800;
-    font-family: var(--font-mono);
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.btn-landmark-jump {
-    background: #FAF8F5;
-    border: 1px solid var(--border-subtle);
-    border-radius: 4px;
-    padding: 2px 7px;
-    font-size: 0.65rem;
-    font-weight: 600;
-    font-family: var(--font-sans);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
-
-.btn-landmark-jump:hover {
-    background: var(--primary);
-    color: #FFFFFF;
-    border-color: var(--primary);
-}
-
+/* Map overlays */
 .map-pci-forecast-bar {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 12px;
+    right: 12px;
     z-index: 500;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--border-medium);
-    border-radius: 999px;
-    padding: 4px 8px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    padding: 5px 8px;
     display: flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 4px 16px rgba(78, 64, 45, 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .forecast-label {
     font-size: 0.68rem;
     font-weight: 700;
     font-family: var(--font-mono);
-    color: var(--primary);
+    color: var(--gov-blue);
     text-transform: uppercase;
     display: flex;
     align-items: center;
     gap: 4px;
-    padding-left: 6px;
+    padding-left: 4px;
 }
 
 .btn-decay-step {
-    background: #F5F2EB;
-    border: 1px solid var(--border-medium);
+    background: var(--bg-page);
+    border: 1px solid var(--border-light);
     color: var(--text-secondary);
     padding: 3px 9px;
-    border-radius: 999px;
+    border-radius: 3px;
     font-size: 0.68rem;
     font-weight: 600;
     font-family: var(--font-mono);
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: all var(--transition);
 }
-
 .btn-decay-step:hover {
-    border-color: rgba(0, 240, 255, 0.3);
-    color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--gov-blue);
+    color: var(--gov-blue);
+    background: var(--gov-blue-light);
 }
-
 .btn-decay-step.active {
-    background: var(--primary);
-    border-color: var(--primary);
+    background: var(--gov-blue);
+    border-color: var(--gov-blue);
     color: #FFFFFF;
-    box-shadow: 0 2px 8px var(--primary-glow);
 }
 
-/* Map Floating Glassmorphic Legend */
 .map-floating-legend {
     position: absolute;
-    bottom: 14px;
-    left: 14px;
+    bottom: 12px;
+    left: 12px;
     z-index: 500;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--border-medium);
-    border-radius: 8px;
-    padding: 0.65rem 0.95rem;
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
     font-size: 0.72rem;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    box-shadow: 0 4px 16px rgba(78, 64, 45, 0.1);
+    gap: 5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .legend-title {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     color: var(--text-tertiary);
     text-transform: uppercase;
     margin-bottom: 2px;
+    font-family: var(--font-mono);
 }
 
 .legend-item {
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 7px;
     color: var(--text-secondary);
 }
 
@@ -825,44 +773,22 @@ html, body {
     flex-shrink: 0;
 }
 
-/* Leaflet Custom Marker & Popup Styles */
-.hazard-custom-marker {
-    background: transparent;
-    border: none;
-}
-
-.bus-custom-marker {
-    background: transparent;
-    border: none;
-}
-
-.leaflet-popup-content-wrapper {
-    background: #FFFFFF !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-medium) !important;
-    border-radius: 10px !important;
-    box-shadow: 0 10px 30px rgba(78, 64, 45, 0.15) !important;
-}
-
-.leaflet-popup-tip {
-    background: #FFFFFF !important;
-}
 
 /* =============================================================================
-   5. Dashcam Edge Vision Simulator
+   8. DASHCAM EDGE VISION SIMULATOR
    ============================================================================= */
 .dashcam-split-panel {
     display: grid;
     grid-template-columns: 1.55fr 1fr;
-    gap: 1.15rem;
-    padding: 1.15rem;
+    gap: 16px;
+    padding: 16px;
 }
 
 .video-simulation-canvas-box {
     position: relative;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     overflow: hidden;
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--border-light);
     background: #04060C;
     height: 250px;
 }
@@ -878,14 +804,13 @@ html, body {
     position: absolute;
     top: 10px;
     left: 10px;
-    background: rgba(7, 10, 17, 0.75);
-    backdrop-filter: blur(8px);
-    border-left: 2px solid var(--primary);
+    background: rgba(0, 0, 0, 0.75);
+    border-left: 3px solid var(--gov-blue);
     padding: 5px 9px;
-    border-radius: 0 6px 6px 0;
+    border-radius: 0 4px 4px 0;
     font-family: var(--font-mono);
     font-size: 0.68rem;
-    color: var(--primary);
+    color: #00E5FF;
     line-height: 1.4;
     letter-spacing: 0.02em;
 }
@@ -894,288 +819,130 @@ html, body {
     position: absolute;
     bottom: 10px;
     right: 10px;
-    background: rgba(7, 10, 17, 0.85);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(52, 199, 89, 0.4);
-    color: var(--success);
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(19, 136, 8, 0.6);
+    color: #4CAF50;
     padding: 4px 9px;
-    border-radius: 6px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    font-family: var(--font-mono);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    box-shadow: 0 0 12px rgba(52, 199, 89, 0.2);
-}
-
-
-/* Media Ingestion & Video/Photo Analyzer */
-.media-analyzer-ribbon {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 8px 12px;
-    background: #EDE7DA;
-    border-bottom: 1px solid var(--border-medium);
-    flex-wrap: wrap;
-}
-
-.media-source-pills {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-
-.btn-media-pill {
-    background: #FAF8F5;
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    font-family: var(--font-sans);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.15s ease;
-}
-
-.btn-media-pill:hover {
-    background: #FFFFFF;
-    color: var(--primary);
-    border-color: var(--primary);
-}
-
-.btn-media-pill.active {
-    background: var(--primary);
-    color: #FFFFFF;
-    border-color: var(--primary);
-}
-
-.btn-media-upload {
-    background: #FFFFFF;
-    border: 1.5px dashed var(--primary);
-    color: var(--primary);
-    padding: 3px 9px;
-    border-radius: 6px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.15s ease;
-}
-
-.btn-media-upload:hover {
-    background: var(--primary);
-    color: #FFFFFF;
-}
-
-.media-playback-bar {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(28, 25, 23, 0.85);
-    backdrop-filter: blur(8px);
-    border-radius: 6px;
-    padding: 3px 8px;
-}
-
-.btn-playback-ctrl {
-    background: transparent;
-    border: none;
-    color: #FFFFFF;
-    font-size: 0.68rem;
-    font-weight: 700;
-    font-family: var(--font-mono);
-    cursor: pointer;
-    padding: 2px 5px;
     border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.btn-playback-ctrl:hover {
-    color: var(--primary);
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.btn-dispatch-grid {
-    background: var(--caution);
-    border: none;
-    color: #FFFFFF;
-    padding: 7px 12px;
-    border-radius: 6px;
-    font-size: 0.72rem;
-    font-weight: 800;
-    font-family: var(--font-sans);
-    cursor: pointer;
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
     display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 6px;
-    box-shadow: 0 2px 8px var(--caution-glow);
-    transition: all var(--transition-fast);
-    width: 100%;
-}
-
-.btn-dispatch-grid:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-}
-
-.analysis-success-toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 9999;
-    background: #1C1917;
-    color: #FFFFFF;
-    border: 1.5px solid var(--success);
-    border-radius: 8px;
-    padding: 12px 18px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: var(--font-sans);
-    animation: slideUp 0.3s ease;
 }
 
 .hud-controls-sidebar {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 0.85rem;
+    gap: 10px;
 }
 
 .hud-stats-group {
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
+    gap: 8px;
 }
 
 .hud-stat-item {
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 8px;
-    padding: 0.6rem 0.85rem;
-    transition: border-color var(--transition-fast);
-}
-
-.hud-stat-item:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--bg-page);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
 }
 
 .hud-stat-item label {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     color: var(--text-tertiary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     display: block;
     margin-bottom: 2px;
+    font-weight: 600;
 }
 
 .hud-stat-item span {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-primary);
 }
 
 .hud-security-callout {
     font-size: 0.72rem;
-    color: var(--text-secondary);
-    background: rgba(52, 199, 89, 0.05);
-    padding: 0.65rem 0.85rem;
-    border-radius: 8px;
-    border: 1px solid rgba(52, 199, 89, 0.18);
+    color: var(--gov-green);
+    background: #E8F5E9;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid #A5D6A7;
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
 }
 
 .hud-security-callout i {
-    color: var(--success);
+    color: var(--gov-green);
     font-size: 0.95rem;
+    margin-top: 1px;
+    flex-shrink: 0;
 }
 
+
 /* =============================================================================
-   6. Multi-Agent Consensus Pipeline Stepper
+   9. AGENT PIPELINE STEPPER
    ============================================================================= */
 .agent-pipeline-box {
-    padding: 1rem;
+    padding: 14px;
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
+    gap: 8px;
 }
 
 .agent-step-item {
     display: flex;
     align-items: flex-start;
-    gap: 0.85rem;
-    padding: 0.75rem 0.95rem;
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 9px;
-    transition: all var(--transition-medium);
-    position: relative;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-page);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition);
+    border-left: 3px solid var(--border-light);
 }
 
 .agent-step-item.active {
-    background: rgba(2, 132, 199, 0.08);
-    border-color: var(--primary);
-    box-shadow: 0 2px 10px var(--primary-glow);
+    background: var(--gov-blue-light);
+    border-color: var(--gov-blue);
+    border-left-color: var(--gov-blue);
 }
 
 .agent-step-icon {
     width: 32px;
     height: 32px;
-    border-radius: 8px;
-    background: rgba(2, 132, 199, 0.12);
-    border: 1px solid var(--border-medium);
-    color: var(--primary);
+    border-radius: var(--radius-sm);
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    color: var(--gov-blue);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.9rem;
     flex-shrink: 0;
-    transition: all var(--transition-fast);
 }
 
 .agent-step-item.active .agent-step-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: rgba(2, 132, 199, 0.12);
-    border: 1px solid var(--border-medium);
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-    transition: all var(--transition-fast);
+    background: var(--gov-blue);
+    color: #FFFFFF;
+    border-color: var(--gov-blue);
 }
 
-.agent-step-content {
-    flex: 1;
-}
+.agent-step-content { flex: 1; }
 
 .agent-step-content h5 {
-    font-family: var(--font-heading);
-    font-size: 0.82rem;
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 2px;
@@ -1187,169 +954,180 @@ html, body {
 .agent-step-content p {
     font-size: 0.72rem;
     color: var(--text-secondary);
-    line-height: 1.35;
+    line-height: 1.4;
 }
 
+
 /* =============================================================================
-   7. Real-Time Event Stream Terminal
+   10. EVENT LOG / ACTIVITY FEED
    ============================================================================= */
 .terminal-window-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.55rem 0.95rem;
-    background: #EDE7DA;
-    border-bottom: 1px solid var(--border-medium);
+    padding: 8px 14px;
+    background: var(--gov-blue-light);
+    border-bottom: 1px solid #C7D7F5;
 }
 
-.terminal-dots {
-    display: flex;
-    gap: 6px;
-}
-
-.terminal-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-}
-.terminal-dot.red { background: #FF5F56; }
-.terminal-dot.yellow { background: #FFBD2E; }
-.terminal-dot.green { background: #27C93F; }
+.terminal-dots { display: none; }
 
 .terminal-title {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--text-tertiary);
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gov-blue);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
 }
 
 .activity-log-feed {
     height: 180px;
     overflow-y: auto;
-    padding: 0.65rem 0.95rem;
+    padding: 8px 14px;
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
-    background: #FAF8F5;
+    gap: 6px;
+    background: var(--bg-page);
     font-family: var(--font-mono);
 }
 
 .log-entry {
     font-size: 0.72rem;
     line-height: 1.45;
-    padding: 4px 8px;
-    border-left: 2px solid var(--border-subtle);
+    padding: 5px 10px;
+    border-left: 3px solid var(--border-light);
     background: #FFFFFF;
-    border-radius: 0 4px 4px 0;
-    border-top: 1px solid #EAE4D6;
-    border-right: 1px solid #EAE4D6;
-    border-bottom: 1px solid #EAE4D6;
-    transition: background var(--transition-fast);
+    border-radius: 0 3px 3px 0;
+    border-top: 1px solid var(--border-table);
+    border-right: 1px solid var(--border-table);
+    border-bottom: 1px solid var(--border-table);
 }
 
-.log-entry:hover {
-    background: rgba(255, 255, 255, 0.04);
-}
+.log-time { color: var(--text-tertiary); margin-right: 6px; }
+.log-agent { font-weight: 700; margin-right: 4px; }
 
-.log-time {
-    color: var(--text-tertiary);
-    margin-right: 6px;
-}
+.agent-tag-vision   { color: var(--gov-blue);   border-left-color: var(--gov-blue) !important; }
+.agent-tag-dbscan   { color: #7B1FA2;            border-left-color: #7B1FA2 !important; }
+.agent-tag-dispatch { color: var(--gov-saffron); border-left-color: var(--gov-saffron) !important; }
+.agent-tag-advisory { color: var(--gov-green);   border-left-color: var(--gov-green) !important; }
 
-.log-agent {
-    font-weight: 700;
-    margin-right: 4px;
-}
-
-.agent-tag-vision { color: var(--primary); border-left-color: var(--primary) !important; }
-.agent-tag-dbscan { color: var(--purple); border-left-color: var(--purple) !important; }
-.agent-tag-dispatch { color: var(--caution); border-left-color: var(--caution) !important; }
-.agent-tag-advisory { color: var(--success); border-left-color: var(--success) !important; }
 
 /* =============================================================================
-   8. PWD Work Orders Queue Table
+   11. TABLES
    ============================================================================= */
 .pwd-table-container {
-    max-height: 250px;
+    max-height: 260px;
     overflow-y: auto;
 }
 
 .custom-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
 }
 
-.custom-table th {
+.custom-table thead th {
     position: sticky;
     top: 0;
-    background: #EDE7DA;
-    padding: 0.6rem 0.85rem;
+    background: var(--gov-blue);
+    color: #FFFFFF;
+    padding: 9px 14px;
     text-align: left;
-    color: var(--text-secondary);
-    font-weight: 700;
-    font-size: 0.68rem;
+    font-weight: 600;
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    border-bottom: 1px solid var(--border-medium);
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
     z-index: 10;
 }
 
+.custom-table tbody tr:nth-child(odd) td { background: var(--bg-table-odd); }
+.custom-table tbody tr:nth-child(even) td { background: #FFFFFF; }
+
 .custom-table td {
-    padding: 0.65rem 0.85rem;
-    border-bottom: 1px solid #E7E1D2;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border-table);
     color: var(--text-secondary);
+    vertical-align: middle;
 }
 
-.custom-table tr:hover td {
-    background: rgba(237, 231, 218, 0.4);
+.custom-table tbody tr:hover td {
+    background: var(--gov-blue-light);
     color: var(--text-primary);
 }
 
 .table-ticket-code {
     font-family: var(--font-mono);
     font-weight: 700;
-    color: var(--primary);
+    color: var(--gov-blue);
+    font-size: 0.75rem;
 }
 
+
+/* =============================================================================
+   12. STATUS BADGES
+   ============================================================================= */
 .badge-pill {
-    font-family: var(--font-mono);
+    font-family: var(--font-ui);
     font-size: 0.65rem;
-    padding: 2px 7px;
-    border-radius: 999px;
-    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: 700;
     display: inline-block;
     white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #FFFFFF;
 }
 
-.badge-cyan { background: var(--primary-muted); color: var(--primary); border: 1px solid rgba(0, 240, 255, 0.3); }
-.badge-amber { background: var(--caution-muted); color: var(--caution); border: 1px solid rgba(255, 149, 0, 0.3); }
-.badge-red { background: var(--critical-muted); color: var(--critical); border: 1px solid rgba(255, 59, 48, 0.3); }
-.badge-green { background: var(--success-muted); color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
+/* Severity */
+.badge-p1, .badge-red      { background: var(--gov-red); }
+.badge-p2, .badge-amber    { background: var(--gov-saffron); }
+.badge-p3, .badge-medium   { background: var(--gov-blue); }
+.badge-green               { background: var(--gov-green); }
+.badge-cyan, .badge-blue   { background: var(--gov-blue); }
 
+/* Status */
+.badge-resolved            { background: var(--gov-green); }
+.badge-progress            { background: var(--gov-orange); }
+.badge-pending             { background: #6B7280; }
+
+/* Legacy compat — keep these working */
+.badge-status-open         { background: var(--gov-red); }
+.badge-status-inprogress   { background: var(--gov-orange); }
+.badge-status-resolved     { background: var(--gov-green); }
+
+
+/* =============================================================================
+   13. TABLE ACTION BUTTONS
+   ============================================================================= */
 .btn-table-action {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 0.68rem;
-    padding: 2px 7px;
-    border-radius: 5px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: var(--radius-sm);
+    background: #FFFFFF;
+    border: 1px solid var(--gov-blue);
+    color: var(--gov-blue);
     text-decoration: none;
-    transition: all var(--transition-fast);
+    transition: all var(--transition);
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-ui);
 }
 
 .btn-table-action:hover {
-    background: var(--primary-muted);
-    border-color: rgba(0, 240, 255, 0.3);
-    color: var(--primary);
+    background: var(--gov-blue);
+    color: #FFFFFF;
+    text-decoration: none;
 }
 
+
 /* =============================================================================
-   9. Driver Advisory Modal (HUD Tablet)
+   14. MODALS
    ============================================================================= */
 .modal-overlay {
     position: fixed;
@@ -1357,32 +1135,29 @@ html, body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(28, 25, 23, 0.5);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.5);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 2000;
 }
 
-.modal-overlay.show {
-    display: flex;
-}
+.modal-overlay.show { display: flex; }
 
 .driver-hud-tablet {
-    background: #FDFCF9;
-    border: 3px solid var(--caution);
-    border-radius: 18px;
+    background: #FFFFFF;
+    border: 2px solid var(--gov-saffron);
+    border-radius: var(--radius-lg);
     width: 90%;
     max-width: 580px;
-    box-shadow: 0 10px 40px rgba(78, 64, 45, 0.2);
-    padding: 1.65rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    padding: 24px;
     position: relative;
     color: var(--text-primary);
 }
 
 @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.95); }
+    from { opacity: 0; transform: scale(0.96); }
     to { opacity: 1; transform: scale(1); }
 }
 
@@ -1390,25 +1165,25 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid var(--border-subtle);
-    padding-bottom: 0.85rem;
-    margin-bottom: 1.15rem;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 14px;
+    margin-bottom: 16px;
 }
 
 .driver-alert-box {
-    background: rgba(234, 88, 12, 0.08);
-    border: 1px solid var(--caution);
-    border-radius: 10px;
-    padding: 1.15rem;
+    background: #FFF3E0;
+    border: 1px solid var(--gov-saffron);
+    border-radius: var(--radius-sm);
+    padding: 16px;
     display: flex;
     align-items: center;
-    gap: 1.15rem;
-    margin-bottom: 1.25rem;
+    gap: 16px;
+    margin-bottom: 16px;
 }
 
 .alert-hazard-icon {
-    font-size: 2.2rem;
-    color: var(--caution);
+    font-size: 2rem;
+    color: var(--gov-saffron);
     animation: pulseAlert 1.2s infinite;
 }
 
@@ -1421,794 +1196,536 @@ html, body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #F5F2EB;
-    border: 1px solid var(--border-medium);
-    padding: 0.85rem 1.15rem;
-    border-radius: 9px;
+    background: var(--bg-page);
+    border: 1px solid var(--border-light);
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
 }
 
-/* =============================================================================
-   10. Responsive Breakpoints
-   ============================================================================= */
-@media (max-width: 1200px) {
-    .metrics-strip {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .command-grid-layout {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 860px) {
-    .app-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: rgba(245, 242, 235, 0.94);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-medium);
-    padding: 0.75rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    box-shadow: 0 2px 12px rgba(80, 65, 45, 0.05);
-}
-    .header-nav-center {
-        overflow-x: auto;
-        padding-bottom: 4px;
-    }
-    .header-actions {
-        flex-wrap: wrap;
-    }
-    .dashcam-split-panel {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 540px) {
-    .metrics-strip {
-        grid-template-columns: 1fr;
-    }
-}
-
-    
-/* Modal Backdrop & Card */
-.modal-backdrop {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(28, 25, 23, 0.65);
-    backdrop-filter: blur(8px);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-}
-
-.modal-card {
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 12px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
-    width: 100%;
-    overflow: hidden;
-    animation: modalIn 0.2s ease-out;
-}
-
-.modal-header {
-    padding: 14px 20px;
-    background: #EDE7DA;
-    border-bottom: 1px solid var(--border-medium);
+/* Govbanner-style modal headers */
+.modal-gov-header {
+    background: var(--gov-blue);
+    color: #FFFFFF;
+    padding: 12px 20px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    margin: -24px -24px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.btn-modal-close {
-    background: transparent;
-    border: none;
-    font-size: 1.4rem;
-    line-height: 1;
-    color: var(--text-tertiary);
-    cursor: pointer;
-}
-
-.btn-modal-close:hover {
-    color: var(--text-primary);
-}
-
-.btn-recipient-pill {
-    background: #FFFFFF;
-    border: 1px solid var(--border-medium);
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
-
-.btn-recipient-pill:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-}
-
-.btn-recipient-pill.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: #FFFFFF;
-}
-
-.btn-wa-send {
-    background: #25D366;
-    border: none;
-    color: #FFFFFF;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
-    transition: all 0.15s ease;
-}
-
-.btn-wa-send:hover {
-    background: #20BA5A;
-    transform: translateY(-1px);
-}
-
-.btn-sms-send {
-    background: #0284C7;
-    border: none;
-    color: #FFFFFF;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
-    transition: all 0.15s ease;
-}
-
-.btn-sms-send:hover {
-    background: #0369A1;
-    transform: translateY(-1px);
-}
-
-.btn-modal-cancel {
-    background: transparent;
-    border: 1px solid var(--border-medium);
-    color: var(--text-secondary);
-    padding: 7px 12px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-
-/* =============================================================================
-   Official Government & GIGW 3.0 Styling System (MCC / Karnataka Govt)
-   ============================================================================= */
-:root {
-    --font-scale: 1;
-}
-
-body {
-    font-size: calc(14px * var(--font-scale)) !important;
-}
-
-/* Tier-0 Official Government Header */
-.gov-topbar {
-    background: #EDE7DA;
-    border-bottom: 1px solid var(--border-medium);
+.modal-gov-header h3 {
     font-family: var(--font-ui);
-    position: relative;
-    z-index: 1001;
-}
-
-.gov-topbar-inner {
-    max-width: 1720px;
-    margin: 0 auto;
-    padding: 6px 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.gov-identity {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.gov-emblem-slot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.gov-text-block {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.15;
-}
-
-.gov-kannada {
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #9A3412;
-    letter-spacing: 0.02em;
-}
-
-.gov-english {
-    font-size: 0.68rem;
+    font-size: 0.9rem;
     font-weight: 700;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.gov-mission-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 999px;
-    padding: 3px 12px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-}
-
-.badge-divider {
-    color: var(--border-medium);
-}
-
-.gov-access-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.font-sizer-group {
-    display: flex;
-    align-items: center;
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.btn-gov-tool {
-    background: transparent;
-    border: none;
-    padding: 4px 8px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.15s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.btn-gov-tool:hover, .btn-gov-tool.active {
-    background: var(--primary);
     color: #FFFFFF;
 }
 
-.gov-lang-picker {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 6px;
-    padding: 2px 6px;
-    font-size: 0.68rem;
-}
-
-.gov-lang-picker select {
-    background: transparent;
+.modal-gov-header .btn-close {
+    background: none;
     border: none;
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    outline: none;
+    color: rgba(255,255,255,0.8);
     cursor: pointer;
-}
-
-.screen-reader-tag {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--success);
-    background: rgba(5, 150, 105, 0.1);
-    border: 1px solid rgba(5, 150, 105, 0.25);
-    border-radius: 4px;
-    padding: 2px 6px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-/* Indian National Tricolor Ribbon */
-.gov-tricolor-strip {
-    display: flex;
-    height: 3px;
-    width: 100%;
-}
-
-.tri-saffron { flex: 1; background: #FF9933; }
-.tri-white { flex: 1; background: #FFFFFF; }
-.tri-green { flex: 1; background: #138808; }
-
-/* Live Public Advisory Ticker */
-.gov-notice-ticker-bar {
-    background: #FFFBEB;
-    border-bottom: 1px solid #FDE68A;
-    display: flex;
-    align-items: center;
-    padding: 5px 1.5rem;
-    font-size: 0.73rem;
-    color: #92400E;
-    position: relative;
-    z-index: 999;
-}
-
-.notice-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: #FEF3C7;
-    border: 1px solid #F59E0B;
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-weight: 800;
-    font-size: 0.68rem;
-    color: #B45309;
-    white-space: nowrap;
-    margin-right: 12px;
-}
-
-.notice-badge .pulse-indicator {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #DC2626;
-    box-shadow: 0 0 6px rgba(220, 38, 38, 0.7);
-    animation: pulseNotice 1.5s infinite;
-}
-
-@keyframes pulseNotice {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(1.3); }
-}
-
-.notice-marquee-track {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-    white-space: nowrap;
-}
-
-.notice-marquee-content {
-    display: inline-block;
-    padding-left: 100%;
-    animation: marqueeScroll 32s linear infinite;
-    font-family: var(--font-ui);
-    letter-spacing: 0.01em;
-}
-
-.notice-marquee-content.paused {
-    animation-play-state: paused;
-}
-
-@keyframes marqueeScroll {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-100%, 0, 0); }
-}
-
-.notice-sep {
-    margin: 0 16px;
-    color: #F59E0B;
-}
-
-.notice-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-left: 12px;
-}
-
-.btn-notice-ctrl {
-    background: #FEF3C7;
-    border: 1px solid #FCD34D;
-    color: #92400E;
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.btn-notice-ctrl:hover {
-    background: #FDE68A;
-}
-
-/* Official Pill Styling in Navbar */
-.portal-pill.official-pill {
-    background: #EDE7DA;
-    border: 1px solid var(--border-medium);
-    color: #1C1917;
-    font-weight: 700;
-}
-
-.portal-pill.official-pill:hover {
-    background: #0284C7;
-    color: #FFFFFF;
-    border-color: #0284C7;
-}
-
-/* High Contrast Mode */
-body.high-contrast {
-    --bg-base: #000000 !important;
-    --bg-subtle: #111111 !important;
-    --bg-surface: #000000 !important;
-    --bg-card: #000000 !important;
-    --border-medium: #FFFF00 !important;
-    --border-subtle: #FFFF00 !important;
-    --text-primary: #FFFF00 !important;
-    --text-secondary: #FFFFFF !important;
-    --text-tertiary: #FFFF00 !important;
-    --primary: #00FFFF !important;
-    color: #FFFF00 !important;
-    background-color: #000000 !important;
-}
-
-body.high-contrast * {
-    border-color: #FFFF00 !important;
-}
-
-/* Official Government Footer */
-.gov-official-footer {
-    background: #EDE7DA;
-    border-top: 2px solid var(--border-medium);
-    margin-top: 2rem;
-    font-family: var(--font-ui);
-    color: var(--text-secondary);
-}
-
-.gov-footer-content {
-    max-width: 1720px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 1rem;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1.5fr;
-    gap: 2rem;
-}
-
-.gov-footer-col h4 {
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.gov-footer-links {
-    list-style: none;
+    font-size: 1.1rem;
     padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+    transition: opacity var(--transition);
+}
+.modal-gov-header .btn-close:hover { opacity: 1; color: #fff; }
+
+
+/* =============================================================================
+   15. GOV FOOTER
+   ============================================================================= */
+.gov-footer {
+    background: var(--gov-blue);
+    color: rgba(255,255,255,0.85);
+    padding: 16px 20px;
+    text-align: center;
     font-size: 0.72rem;
+    border-top: 3px solid var(--gov-saffron);
+    margin-top: auto;
 }
 
-.gov-footer-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: color 0.15s ease;
+.gov-footer a {
+    color: rgba(255,255,255,0.75);
+    margin: 0 8px;
+    transition: opacity var(--transition);
 }
-
-.gov-footer-links a:hover {
-    color: var(--primary);
+.gov-footer a:hover {
+    color: #fff;
+    opacity: 1;
     text-decoration: underline;
 }
 
-.gov-footer-bottom {
-    border-top: 1px solid var(--border-subtle);
-    padding: 1rem 1.5rem;
-    max-width: 1720px;
-    margin: 0 auto;
+.gov-footer .footer-links {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    font-size: 0.68rem;
-    color: var(--text-tertiary);
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 4px;
+    margin-top: 6px;
 }
 
-/* Print Certificate Formatting */
-@media print {
-    body * {
-        visibility: hidden !important;
-    }
-    #modal-inspection-certificate, #modal-inspection-certificate * {
-        visibility: visible !important;
-    }
-    #modal-inspection-certificate {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        background: #FFFFFF !important;
-    }
-    .modal-card {
-        border: none !important;
-        box-shadow: none !important;
-        max-width: 100% !important;
-    }
-    .btn-modal-close, .modal-footer {
-        display: none !important;
-    }
+.gov-footer .footer-sep {
+    opacity: 0.35;
 }
 
 
 /* =============================================================================
-   Map Turn-by-Turn Driving Directions & Visual Route Styling
+   16. FILTER BAR (analytics / citizen portal)
    ============================================================================= */
-
-/* Floating Real-Time Driving Directions HUD on Map */
-.map-directions-hud {
-    position: absolute;
-    top: 58px;
-    right: 14px;
-    z-index: 500;
-    width: 325px;
-    background: rgba(255, 255, 255, 0.97);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1.5px solid var(--border-medium);
-    border-radius: 12px;
-    box-shadow: 0 10px 32px rgba(78, 64, 45, 0.18);
-    overflow: hidden;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    font-family: var(--font-ui);
-}
-
-.directions-hud-header {
-    background: #EDE7DA;
-    border-bottom: 1px solid var(--border-medium);
-    padding: 8px 12px;
+.filter-bar {
+    background: var(--gov-blue-light);
+    border: 1px solid #C7D7F5;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 12px 20px;
+    max-width: 1720px;
 }
 
-.pulse-indicator-nav {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #0284C7;
-    box-shadow: 0 0 8px #0284C7;
-    animation: pulseNav 1.5s infinite;
-}
-
-@keyframes pulseNav {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.3); }
-}
-
-.btn-hud-min {
-    background: transparent;
-    border: none;
-    color: var(--text-tertiary);
-    cursor: pointer;
+.filter-bar label {
     font-size: 0.75rem;
-    padding: 2px 5px;
-    border-radius: 4px;
+    font-weight: 600;
+    color: var(--gov-blue);
+    white-space: nowrap;
 }
 
-.btn-hud-min:hover {
+.filter-bar select,
+.filter-bar input {
+    border: 1px solid var(--gov-blue);
+    border-radius: var(--radius-sm);
+    background: #FFFFFF;
     color: var(--text-primary);
-    background: rgba(0,0,0,0.05);
+    padding: 5px 10px;
+    font-size: 0.78rem;
+    font-family: var(--font-ui);
+    outline: none;
+    cursor: pointer;
+}
+.filter-bar select:focus,
+.filter-bar input:focus {
+    border-color: var(--gov-blue-dark);
+    box-shadow: 0 0 0 2px rgba(0, 53, 128, 0.15);
 }
 
-.directions-hud-body {
-    padding: 10px 12px;
+.filter-bar .filter-spacer { flex: 1; }
+
+
+/* =============================================================================
+   17. PROGRESS / BAR CHART (CSS only)
+   ============================================================================= */
+.gov-progress-bar-wrap {
+    margin: 6px 0;
+}
+
+.gov-progress-label {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
 }
 
-.directions-hud-body.collapsed {
-    display: none;
+.gov-progress-track {
+    background: #E5E7EB;
+    border-radius: 2px;
+    height: 14px;
+    overflow: hidden;
 }
 
-.hud-maneuver-strip {
-    background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-    color: #FFFFFF;
-    border-radius: 8px;
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+.gov-progress-fill {
+    height: 100%;
+    background: var(--gov-blue);
+    border-radius: 2px;
+    transition: width 0.5s ease;
 }
+.gov-progress-fill.saffron { background: var(--gov-saffron); }
+.gov-progress-fill.green   { background: var(--gov-green); }
+.gov-progress-fill.red     { background: var(--gov-red); }
 
-.hud-maneuver-icon-box {
-    width: 34px;
-    height: 34px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.15rem;
-    flex-shrink: 0;
-}
 
-.hud-maneuver-badge {
-    font-size: 0.8rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    font-family: var(--font-heading);
-}
-
-.hud-maneuver-sub {
-    font-size: 0.65rem;
-    opacity: 0.92;
-    letter-spacing: -0.01em;
-}
-
-.hud-steps-scroller {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    max-height: 135px;
-    overflow-y: auto;
-    border-radius: 6px;
-}
-
-.hud-step-item {
+/* =============================================================================
+   18. TICKET TRACKER STEPPER
+   ============================================================================= */
+.ticket-stepper {
     display: flex;
     align-items: flex-start;
-    gap: 8px;
-    background: #FAF8F5;
-    border: 1px solid var(--border-subtle);
-    border-radius: 6px;
-    padding: 5px 8px;
-    font-size: 0.68rem;
-    line-height: 1.3;
+    justify-content: space-between;
+    position: relative;
+    padding: 8px 0;
 }
 
-.hud-step-item.highlight-turn {
-    background: #FFFBEB;
-    border-color: #FCD34D;
-    color: #92400E;
+.ticket-stepper::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: var(--border-light);
+    z-index: 0;
 }
 
-.step-num-bubble {
-    width: 17px;
-    height: 17px;
+.stepper-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 1;
+    flex: 1;
+}
+
+.stepper-dot {
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: #EDE7DA;
-    color: var(--text-secondary);
+    border: 2px solid var(--border-medium);
+    background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.62rem;
-    font-weight: 800;
-    flex-shrink: 0;
-    margin-top: 1px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    position: relative;
 }
 
-.step-num-bubble.orange { background: #EA580C; color: #FFFFFF; }
-.step-num-bubble.blue { background: #0284C7; color: #FFFFFF; }
-.step-num-bubble.green { background: #15803D; color: #FFFFFF; }
+.stepper-step.done .stepper-dot {
+    background: var(--gov-green);
+    border-color: var(--gov-green);
+    color: #FFFFFF;
+}
 
-.hud-telemetry-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    background: #F5F2EB;
-    border: 1px solid var(--border-medium);
-    border-radius: 6px;
-    padding: 4px 6px;
+.stepper-step.active .stepper-dot {
+    background: var(--gov-blue);
+    border-color: var(--gov-blue);
+    color: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(0, 53, 128, 0.15);
+}
+
+.stepper-label {
+    font-size: 0.65rem;
+    color: var(--text-tertiary);
+    text-align: center;
+    font-weight: 600;
+    max-width: 70px;
+    line-height: 1.2;
+}
+
+.stepper-step.done .stepper-label  { color: var(--gov-green); }
+.stepper-step.active .stepper-label { color: var(--gov-blue); }
+
+.stepper-date {
+    font-size: 0.6rem;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
     text-align: center;
 }
 
-.hud-stat-label {
-    font-size: 0.58rem;
-    color: var(--text-tertiary);
-    font-weight: 700;
-    text-transform: uppercase;
+
+/* =============================================================================
+   19. ROI / CALLOUT BOXES
+   ============================================================================= */
+.gov-callout {
+    border-left: 4px solid var(--gov-blue);
+    background: var(--gov-blue-light);
+    padding: 12px 16px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+}
+
+.gov-callout.success {
+    border-left-color: var(--gov-green);
+    background: #E8F5E9;
+}
+
+.gov-callout.warning {
+    border-left-color: var(--gov-saffron);
+    background: #FFF8E1;
+}
+
+.gov-callout.danger {
+    border-left-color: var(--gov-red);
+    background: #FFEBEE;
+}
+
+.gov-callout strong {
     display: block;
+    font-size: 0.88rem;
+    margin-bottom: 4px;
+    color: var(--gov-blue);
+}
+.gov-callout.success strong { color: var(--gov-green); }
+.gov-callout.warning strong { color: #B45309; }
+.gov-callout.danger  strong { color: var(--gov-red); }
+
+
+/* =============================================================================
+   20. VOUCHER / LETTERHEAD (print)
+   ============================================================================= */
+@media print {
+    .no-print { display: none !important; }
+    body { background: #FFFFFF; }
+    .voucher-page { box-shadow: none; border: none; }
 }
 
-.hud-stat-val {
-    font-size: 0.78rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    font-family: var(--font-mono);
+.voucher-page {
+    max-width: 800px;
+    margin: 24px auto;
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    padding: 40px 48px;
+    font-family: var(--font-ui);
+    border-radius: var(--radius-sm);
 }
 
-.hud-actions-row {
-    display: flex;
-    gap: 5px;
+.voucher-letterhead {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 3px solid var(--gov-blue);
+    margin-bottom: 20px;
 }
 
-.btn-hud-action {
-    flex: 1;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 6px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    transition: all 0.15s ease;
+.voucher-letterhead h1 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    color: var(--gov-blue);
+    margin: 8px 0 4px;
 }
 
-.btn-hud-action.voice {
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    color: var(--text-primary);
+.voucher-letterhead h2 {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 2px;
 }
 
-.btn-hud-action.voice:hover {
-    background: #EDE7DA;
-    border-color: #0284C7;
+.voucher-letterhead p {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
 }
 
-.btn-hud-action.mode {
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    color: var(--text-primary);
+.voucher-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin: 16px 0;
 }
 
-.btn-hud-action.mode:hover {
-    background: #EDE7DA;
-    border-color: #EA580C;
-}
-
-.btn-hud-action.gmaps {
-    background: #0284C7;
+.voucher-table th {
+    background: var(--gov-blue);
     color: #FFFFFF;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
 }
 
-.btn-hud-action.gmaps:hover {
-    background: #0369A1;
+.voucher-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border-table);
+    color: var(--text-secondary);
 }
 
-/* Direction Waypoint Markers on Map */
+.voucher-table tbody tr:nth-child(odd) td { background: var(--bg-table-odd); }
+
+.voucher-table tfoot td {
+    font-weight: 700;
+    color: var(--text-primary);
+    border-top: 2px solid var(--gov-blue);
+    background: var(--gov-blue-light);
+}
+
+.voucher-signatures {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 48px;
+}
+
+.sig-block {
+    text-align: center;
+    border-top: 1px solid var(--gov-blue);
+    padding-top: 8px;
+}
+
+.sig-block strong {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--gov-blue);
+    font-weight: 700;
+}
+
+.sig-block span {
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+}
+
+
+/* =============================================================================
+   21. UTILITIES
+   ============================================================================= */
+.text-gov-blue   { color: var(--gov-blue); }
+.text-gov-green  { color: var(--gov-green); }
+.text-gov-red    { color: var(--gov-red); }
+.text-gov-saffron{ color: var(--gov-saffron); }
+.text-muted      { color: var(--text-tertiary); }
+.text-mono       { font-family: var(--font-mono); }
+.text-heading    { font-family: var(--font-heading); }
+
+.fw-700          { font-weight: 700; }
+.fw-600          { font-weight: 600; }
+.fs-sm           { font-size: 0.75rem; }
+.fs-xs           { font-size: 0.68rem; }
+
+.d-flex          { display: flex; }
+.align-center    { align-items: center; }
+.gap-8           { gap: 8px; }
+.gap-12          { gap: 12px; }
+.mt-8            { margin-top: 8px; }
+.mb-8            { margin-bottom: 8px; }
+.p-16            { padding: 16px; }
+.p-12            { padding: 12px; }
+
+.divider {
+    border: none;
+    border-top: 1px solid var(--border-light);
+    margin: 12px 0;
+}
+
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content {
+    flex: 1;
+    padding: 16px 20px 24px;
+    max-width: 1720px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Section title */
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gov-blue);
+    margin-bottom: 4px;
+}
+
+.section-subtitle {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+/* Info definition list */
+.info-dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 16px;
+    font-size: 0.82rem;
+}
+
+.info-dl dt {
+    color: var(--text-tertiary);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding-top: 1px;
+}
+
+.info-dl dd {
+    color: var(--text-primary);
+}
+
+/* Form styles */
+.gov-form-group {
+    margin-bottom: 14px;
+}
+
+.gov-form-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.gov-form-control {
+    width: 100%;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: #FFFFFF;
+    color: var(--text-primary);
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    font-family: var(--font-ui);
+    outline: none;
+    transition: border-color var(--transition);
+}
+
+.gov-form-control:focus {
+    border-color: var(--gov-blue);
+    box-shadow: 0 0 0 3px rgba(0, 53, 128, 0.12);
+}
+
+.gov-form-control.search-lg {
+    font-size: 1rem;
+    padding: 12px 16px;
+    border: 2px solid var(--gov-blue);
+}
+
+/* Alert boxes */
+.alert-box {
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    border: 1px solid;
+    margin: 8px 0;
+}
+
+.alert-box.info    { background: var(--gov-blue-light); border-color: #C7D7F5; color: var(--gov-blue); }
+.alert-box.success { background: #E8F5E9; border-color: #A5D6A7; color: #1B5E20; }
+.alert-box.warning { background: #FFF8E1; border-color: #FFCC80; color: #B45309; }
+.alert-box.danger  { background: #FFEBEE; border-color: #FFCDD2; color: var(--gov-red); }
+
+
+/* =============================================================================
+   22. RESPONSIVE BREAKPOINTS
+   ============================================================================= */
+@media (max-width: 1200px) {
+    .metrics-strip { grid-template-columns: repeat(2, 1fr); }
+    .command-grid-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 860px) {
+    .app-header-inner { flex-wrap: wrap; }
+    .header-nav-center { overflow-x: auto; width: 100%; }
+    .portal-nav-pills { width: 100%; }
+    .header-actions { flex-wrap: wrap; }
+    .dashcam-split-panel { grid-template-columns: 1fr; }
+    .gov-topbar-tier1 .gov-utils { display: none; }
+    .voucher-page { padding: 24px 20px; }
+    .voucher-signatures { grid-template-columns: 1fr; gap: 16px; }
+}
+
+@media (max-width: 540px) {
+    .metrics-strip { grid-template-columns: 1fr; }
+    .ticket-stepper { flex-direction: column; gap: 12px; }
+    .ticket-stepper::before { display: none; }
+    .filter-bar { flex-direction: column; align-items: stretch; }
+}
+
+
+/* Page specific modal additions */
 .waypoint-badge {
     background: #FFFFFF;
     border: 2px solid #0284C7;
@@ -2230,30 +1747,58 @@ body.high-contrast * {
 .waypoint-badge.detour { border-color: #ea580c; color: #ea580c; background: #fff7ed; }
 .waypoint-badge.end { border-color: #2563eb; color: #2563eb; background: #eff6ff; }
 
+
 </style>
 </head>
 <body>
 
-    <!-- Tier-0 Official Government Authority Strip (Clean, Compact & Complete) -->
-    <div class="gov-topbar" id="gov-topbar" style="padding: 5px 20px; font-size: 0.76rem; background: #FAF8F5; border-bottom: 1px solid var(--border-medium); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-weight: 700; color: #B45309; letter-spacing: 0.3px;">ಕರ್ನಾಟಕ ಸರ್ಕಾರ · GOVT OF KARNATAKA</span>
-            <span style="color: #A8A29E;">|</span>
-            <span style="font-weight: 600; color: #57534E;">Mysuru City Corporation (MCC) & BBMP Urban Sensing Grid</span>
-            <span style="color: #A8A29E;">|</span>
-            <span style="color: #0284C7; font-weight: 600;"><i class="fa-solid fa-city"></i> Smart Cities Mission (SIH26124)</span>
+        <!-- Tier-1 Government of India Authority Topbar -->
+    <div class="gov-topbar-tier1 no-print">
+        <div class="brand-group">
+            <div class="emblem-wrap">
+                <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="18" cy="16" r="11" fill="none" stroke="#FF9933" stroke-width="1.5"/>
+                    <circle cx="18" cy="16" r="3" fill="#fff"/>
+                    <line x1="18" y1="5" x2="18" y2="27" stroke="#fff" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="7" y1="16" x2="29" y2="16" stroke="#fff" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="10" y1="8" x2="26" y2="24" stroke="#fff" stroke-width="0.8" opacity="0.4"/>
+                    <line x1="26" y1="8" x2="10" y2="24" stroke="#fff" stroke-width="0.8" opacity="0.4"/>
+                    <text x="18" y="33" text-anchor="middle" font-size="4.5" fill="#FF9933" font-family="serif" font-weight="bold">सत्यमेव जयते</text>
+                </svg>
+            </div>
+            <div class="gov-titles">
+                <div class="gov-title-main">भारत सरकार &nbsp;|&nbsp; Government of India &nbsp;|&nbsp; ಕರ್ನಾಟಕ ಸರ್ಕಾರ</div>
+                <div class="gov-title-sub">Ministry of Housing & Urban Affairs · Smart Cities Mission · Mysuru City Corporation (MCC) & BBMP</div>
+            </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 12px; font-size: 0.72rem; color: #57534E;">
-            <button type="button" onclick="openPublicTendersModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Active Tenders & RTI"><i class="fa-solid fa-landmark"></i> Tenders</button>
-            <span style="color:#D6CEBC;">•</span>
-            <button type="button" onclick="openHelplinesModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Emergency Helplines"><i class="fa-solid fa-phone-volume"></i> Helplines</button>
-            <span style="color:#D6CEBC;">•</span>
-            <button type="button" onclick="openGrievanceTrackerModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Janahitha SLA Tracker"><i class="fa-solid fa-clock-rotate-left"></i> Janahitha SLA</button>
-            <span style="color:#D6CEBC;">•</span>
-            <button type="button" onclick="openInspectionCertificateModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Safety Certificate"><i class="fa-solid fa-certificate"></i> Certificate</button>
-            <span style="color:#D6CEBC;">|</span>
-            <span><i class="fa-solid fa-circle-dot" style="color: #059669;"></i> <strong>30 FPS</strong></span>
-            <span><i class="fa-solid fa-shield-halved" style="color: #0284C7;"></i> DPDP Active</span>
+        <div class="gov-utils">
+            <button type="button" onclick="openPublicTendersModal()"><i class="fa-solid fa-landmark"></i> Tenders</button>
+            <span class="divider">|</span>
+            <button type="button" onclick="openHelplinesModal()"><i class="fa-solid fa-phone-volume"></i> Helplines</button>
+            <span class="divider">|</span>
+            <button type="button" onclick="openGrievanceTrackerModal()"><i class="fa-solid fa-clock-rotate-left"></i> Janahitha SLA</button>
+            <span class="divider">|</span>
+            <button type="button" onclick="openInspectionCertificateModal()"><i class="fa-solid fa-certificate"></i> Certificate</button>
+        </div>
+    </div>
+
+    <!-- Tier-2 Breadcrumb / System Info Bar -->
+    <div class="gov-topbar-tier2 no-print">
+        <div class="breadcrumb">
+            <span>Home</span>
+            <span style="color:#9CA3AF; margin:0 4px;">›</span>
+            <span>UrbanSight AI</span>
+            <span style="color:#9CA3AF; margin:0 4px;">›</span>
+            <strong style="color:#003580;">ICCC Command Dashboard</strong>
+            <span style="color:#9CA3AF; margin:0 8px;">|</span>
+            <span>Problem Statement #07 · SIH26124 · VVCE Mysuru · Infothon 7.0</span>
+        </div>
+        <div class="live-indicator">
+            <span class="live-dot"></span>
+            LIVE · 30 FPS · DPDP Compliant
+            <span style="color:#9CA3AF; margin:0 6px;">|</span>
+            <i class="fa-solid fa-shield-halved" style="color:#138808;"></i>
+            <span style="color:#138808;">Privacy Active</span>
         </div>
     </div>
         <!-- 1. Branded Unified Header & Navigation Bar -->

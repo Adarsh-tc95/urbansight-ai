@@ -8,7 +8,7 @@
     <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Leaflet GIS Map CSS -->
@@ -19,66 +19,74 @@
 </head>
 <body>
 
-    <!-- Tier-0 Official Government Authority Strip (Clean, Compact & Complete) -->
-    <div class="gov-topbar" id="gov-topbar" style="padding: 5px 20px; font-size: 0.76rem; background: #FAF8F5; border-bottom: 1px solid var(--border-medium); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-weight: 700; color: #B45309; letter-spacing: 0.3px;">ಕರ್ನಾಟಕ ಸರ್ಕಾರ · GOVT OF KARNATAKA</span>
-            <span style="color: #A8A29E;">|</span>
-            <span style="font-weight: 600; color: #57534E;">Mysuru City Corporation (MCC) & BBMP Urban Sensing Grid</span>
-            <span style="color: #A8A29E;">|</span>
-            <span style="color: #0284C7; font-weight: 600;"><i class="fa-solid fa-city"></i> Smart Cities Mission (SIH26124)</span>
+    <!-- Tier-1 Government of India Authority Topbar -->
+    <div class="gov-topbar-tier1 no-print">
+        <div class="brand-group">
+            <div class="emblem-wrap">
+                <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="18" cy="16" r="11" fill="none" stroke="#FF9933" stroke-width="1.5"/>
+                    <circle cx="18" cy="16" r="3" fill="#fff"/>
+                    <line x1="18" y1="5" x2="18" y2="27" stroke="#fff" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="7" y1="16" x2="29" y2="16" stroke="#fff" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="10" y1="8" x2="26" y2="24" stroke="#fff" stroke-width="0.8" opacity="0.4"/>
+                    <line x1="26" y1="8" x2="10" y2="24" stroke="#fff" stroke-width="0.8" opacity="0.4"/>
+                    <text x="18" y="33" text-anchor="middle" font-size="4.5" fill="#FF9933" font-family="serif" font-weight="bold">सत्यमेव जयते</text>
+                </svg>
+            </div>
+            <div class="gov-titles">
+                <div class="gov-title-main">भारत सरकार &nbsp;|&nbsp; Government of India &nbsp;|&nbsp; ಕರ್ನಾಟಕ ಸರ್ಕಾರ</div>
+                <div class="gov-title-sub">Ministry of Housing & Urban Affairs · Smart Cities Mission · Mysuru City Corporation (MCC) & BBMP</div>
+            </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 12px; font-size: 0.72rem; color: #57534E;">
-            <button type="button" onclick="openPublicTendersModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Active Tenders & RTI"><i class="fa-solid fa-landmark"></i> Tenders</button>
-            <span style="color:#D6CEBC;">•</span>
-            <button type="button" onclick="openHelplinesModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Emergency Helplines"><i class="fa-solid fa-phone-volume"></i> Helplines</button>
-            <span style="color:#D6CEBC;">•</span>
-            <button type="button" onclick="openGrievanceTrackerModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Janahitha SLA Tracker"><i class="fa-solid fa-clock-rotate-left"></i> Janahitha SLA</button>
-            <span style="color:#D6CEBC;">•</span>
-            <button type="button" onclick="openInspectionCertificateModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Safety Certificate"><i class="fa-solid fa-certificate"></i> Certificate</button>
-            <span style="color:#D6CEBC;">|</span>
-            <span><i class="fa-solid fa-circle-dot" style="color: #059669;"></i> <strong>30 FPS</strong></span>
-            <span><i class="fa-solid fa-shield-halved" style="color: #0284C7;"></i> DPDP Active</span>
+        <div class="gov-utils">
+            <button type="button" onclick="openPublicTendersModal()"><i class="fa-solid fa-landmark"></i> Tenders</button>
+            <span class="divider">|</span>
+            <button type="button" onclick="openHelplinesModal()"><i class="fa-solid fa-phone-volume"></i> Helplines</button>
+            <span class="divider">|</span>
+            <button type="button" onclick="openGrievanceTrackerModal()"><i class="fa-solid fa-clock-rotate-left"></i> Janahitha SLA</button>
+            <span class="divider">|</span>
+            <button type="button" onclick="openInspectionCertificateModal()"><i class="fa-solid fa-certificate"></i> Certificate</button>
         </div>
     </div>
-        <!-- 1. Branded Unified Header & Navigation Bar -->
-    <header class="app-header">
+
+    <!-- Tier-2 Breadcrumb / System Info Bar -->
+    <div class="gov-topbar-tier2 no-print">
+        <div class="breadcrumb">
+            <span>Home</span>
+            <span style="color:#9CA3AF; margin:0 4px;">›</span>
+            <span>UrbanSight AI</span>
+            <span style="color:#9CA3AF; margin:0 4px;">›</span>
+            <strong style="color:#003580;">ICCC Command Dashboard</strong>
+            <span style="color:#9CA3AF; margin:0 8px;">|</span>
+            <span>Problem Statement #07 · SIH26124 · VVCE Mysuru · Infothon 7.0</span>
+        </div>
+        <div class="live-indicator">
+            <span class="live-dot"></span>
+            LIVE · 30 FPS · DPDP Compliant
+            <span style="color:#9CA3AF; margin:0 6px;">|</span>
+            <i class="fa-solid fa-shield-halved" style="color:#138808;"></i>
+            <span style="color:#138808;">Privacy Active</span>
+        </div>
+    </div>
+
+    <!-- 1. Branded Unified Header & Navigation Bar -->
+    <header class="app-header no-print">
+      <div class="app-header-inner">
         <div class="brand-identity">
-            <div class="brand-emblem" title="UrbanSight AI Autonomous Transit Perception Core">
-                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Authentic Civic Shield Base -->
-    <path d="M16 2.5L5 6.8V14.5C5 22.2 9.8 28.1 16 29.8C22.2 28.1 27 22.2 27 14.5V6.8L16 2.5Z" fill="#FAF8F5" stroke="#0284C7" stroke-width="2" stroke-linejoin="round"/>
-    <path d="M16 4.8L7 8.3V14.5C7 21 10.9 26.1 16 27.6C21.1 26.1 25 21 25 14.5V8.3L16 4.8Z" fill="rgba(2, 132, 199, 0.08)"/>
-    <!-- Real Perspective Road with Center Divider -->
-    <path d="M11 26L13.8 15H18.2L21 26H11Z" fill="#57534E"/>
-    <line x1="16" y1="16" x2="16" y2="24" stroke="#FAF8F5" stroke-width="1.2" stroke-dasharray="2 2"/>
-    <!-- Realistic City Transit Electric Bus Front View -->
-    <rect x="10.5" y="8" width="11" height="8.5" rx="1.8" fill="#0284C7" stroke="#0369A1" stroke-width="0.8"/>
-    <!-- Bus Windshield Split Glass -->
-    <rect x="11.8" y="9.2" width="3.4" height="3" rx="0.4" fill="#E0F2FE"/>
-    <rect x="16.8" y="9.2" width="3.4" height="3" rx="0.4" fill="#E0F2FE"/>
-    <!-- Bus Destination Display Bar -->
-    <rect x="12.5" y="8.4" width="7" height="0.6" rx="0.2" fill="#FBBF24"/>
-    <!-- Bus Headlights (Warm Amber) -->
-    <circle cx="12.5" cy="14.5" r="1" fill="#F59E0B"/>
-    <circle cx="19.5" cy="14.5" r="1" fill="#F59E0B"/>
-    <!-- Realistic Optical Camera / Perception Sensor Lens -->
-    <circle cx="16" cy="6.2" r="2.2" fill="#EA580C" stroke="#FFFFFF" stroke-width="0.8"/>
-    <circle cx="16" cy="6.2" r="0.9" fill="#FFFFFF"/>
-</svg>
+            <div class="brand-emblem">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="1" y="1" width="30" height="30" rx="4" fill="#002660"/>
+                    <path d="M11 26L13.8 15H18.2L21 26H11Z" fill="#FF9933"/>
+                    <rect x="10.5" y="8" width="11" height="8.5" rx="1.8" fill="#fff" opacity="0.9"/>
+                    <rect x="11.8" y="9.2" width="3.4" height="3" rx="0.4" fill="#003580"/>
+                    <rect x="16.8" y="9.2" width="3.4" height="3" rx="0.4" fill="#003580"/>
+                    <circle cx="16" cy="6.2" r="2.2" fill="#FF9933"/>
+                    <circle cx="16" cy="6.2" r="0.9" fill="#fff"/>
+                </svg>
             </div>
             <div class="brand-info">
-                <div class="brand-title-wrap">
-                    <span class="brand-title">UrbanSight AI</span>
-                    <span class="brand-meta-badge">PS #07 · SIH26124</span>
-                </div>
-                <div class="brand-subtitle">
-                    <span class="live-pulse-chip">
-                        <span class="pulse-dot"></span>
-                        ICCC PLATFORM · LIVE (30 FPS)
-                    </span>
-                    <span>· VVCE MYSURU</span>
-                </div>
+                <span class="brand-title">UrbanSight AI</span>
+                <span class="brand-meta-badge">SIH26124 · ICCC Platform</span>
             </div>
         </div>
 
@@ -148,6 +156,7 @@
             </button>
             <div class="telemetry-clock-box" id="telemetry-clock">19:54:00 IST</div>
         </div>
+          </div>
     </header>
 
 <!-- 3. Main Command Grid -->
