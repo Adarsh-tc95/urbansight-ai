@@ -879,13 +879,19 @@
     <!-- Top HUD Bar -->
     <header class="hud-topbar">
         <div class="hud-brand">
-            <div class="hud-badge">
-                <i class="fa-solid fa-tablet-screen-button"></i>
+            <div class="hud-badge" title="UrbanSight AI Autonomous Transit Perception Core">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="rgba(2, 132, 199, 0.2)" stroke="#0284C7" stroke-width="1.8" stroke-linejoin="round"/>
+                    <path d="M3 12L12 17L21 12" stroke="#0284C7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 17L12 22L21 17" stroke="#EA580C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="12" cy="7" r="2.2" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.2"/>
+                </svg>
             </div>
             <div class="hud-titles">
                 <h1>
                     UrbanSight AI · Driver In-Cab HUD
                     <span class="tag-pill pill-cyan">BMTC-KA57-E912</span>
+                    <span class="tag-pill" style="background:rgba(118, 185, 0, 0.12); border-color:#76B900; color:#4d7a00;"><i class="fa-brands fa-nvidia" style="color:#76B900;"></i> Jetson Orin</span>
                     <span class="tag-pill pill-green" id="telemetry-mode-tag">LIVE API</span>
                 </h1>
                 <p>Route 500D (Hebbal ↔ Silk Board via Outer Ring Road) · Smart Cities Track SIH26124</p>
@@ -924,6 +930,9 @@
             <button class="btn-hud" id="btn-fullscreen" title="Toggle Fullscreen Tablet Mode">
                 <i class="fa-solid fa-expand"></i>
             </button>
+            <a href="https://github.com/gaganks2006-ind/urbansight-ai" target="_blank" class="btn-hud" title="View Source on GitHub">
+                <i class="fa-brands fa-github"></i> GitHub
+            </a>
             <a href="index.html" class="btn-hud" title="Return to Central ICCC Dashboard">
                 <i class="fa-solid fa-arrow-left"></i> ICCC
             </a>
