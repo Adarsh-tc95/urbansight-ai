@@ -2640,3 +2640,30 @@ window.addEventListener('hashchange', () => {
         window.switchDashboardTab(hash);
     }
 });
+
+
+        // ==========================================
+        // Top Back Navigation Handler
+        // ==========================================
+        window.handleTopBackNavigation = function() {
+            // 1. If inside an iframe on a subview, return parent to command center
+            if (window.top !== window && window.top.switchDashboardTab) {
+                window.top.switchDashboardTab('command');
+                return;
+            }
+            // 2. If viewing a sub-portal in SPA, return to Command Center
+            const curHash = (window.location.hash || '').replace('#', '');
+            if (curHash && curHash !== 'command' && typeof window.switchDashboardTab === 'function') {
+                window.switchDashboardTab('command');
+                if (typeof window.showFloatingToast === 'function') {
+                    window.showFloatingToast('<i class="fa-solid fa-arrow-left"></i> <b>Returned to Command Center</b>', 'info');
+                }
+                return;
+            }
+            // 3. If history length is greater than 1, navigate back
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html#command';
+            }
+        };

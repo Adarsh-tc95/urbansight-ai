@@ -931,6 +931,15 @@
 </script>
 </head>
 <body>
+    <!-- Top Navigation Bar with Back Button -->
+    <div style="background:#003580; color:#FFFFFF; padding:8px 18px; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #FF9933; font-family:'Noto Sans',sans-serif; font-size:0.85rem; z-index:1000; position:relative;">
+        <button type="button" onclick="if(window.top !== window && window.top.switchDashboardTab){ window.top.switchDashboardTab('command', event); } else { window.location.href='index.html#command'; }" style="background:#FF9933; color:#002244; border:none; padding:5px 14px; border-radius:5px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 2px 4px rgba(0,0,0,0.2); font-size:0.82rem;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Command Center
+        </button>
+        <div style="font-weight:700; color:#BAE6FD; display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-tablet-screen-button"></i> In-Cab Driver Tablet HUD Console
+        </div>
+    </div>
     <!-- Main Cockpit Layout -->
     <main class="hud-main-grid">
 
@@ -1173,46 +1182,35 @@
         </div>
     </main>
 
-    <!-- Bottom Evaluation Strip (Quick Scenarios for Infothon Judges) -->
-    <footer class="hud-bottom-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding:12px 24px; background:rgba(15,23,42,0.98);">
-        <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
-            <div class="eval-title" style="display:flex; align-items:center; gap:8px; font-weight:700; color:#38BDF8; font-size:0.85rem;">
+        <!-- Bottom Evaluation Strip (Quick Scenarios for Infothon Judges) -->
+    <footer class="hud-bottom-bar" style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 20px; background:rgba(15,23,42,0.98); border-top:1px solid var(--border-color);">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <div class="eval-title" style="display:flex; align-items:center; gap:6px; font-weight:800; color:#38BDF8; font-size:0.8rem; margin-right:4px;">
                 <i class="fa-solid fa-sliders"></i>
-                <span>Demo Scenarios:</span>
+                <span>DEMO SCENARIOS:</span>
             </div>
-            <div class="eval-buttons" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <button class="btn-sim btn-sim-pothole" id="btn-demo-pothole">
-                    <i class="fa-solid fa-circle-exclamation"></i> Critical Pothole (280m)
-                </button>
-                <button class="btn-sim btn-sim-water" id="btn-demo-water">
-                    <i class="fa-solid fa-water"></i> Waterlogging (250m)
-                </button>
-                <button class="btn-sim btn-sim-bump" id="btn-demo-bump">
-                    <i class="fa-solid fa-shield"></i> Speed Bump (+0.45g Filtered)
-                </button>
-                <button class="btn-sim" id="btn-demo-clear">
-                    <i class="fa-solid fa-road"></i> Road Clear
-                </button>
-            </div>
+            <button class="btn-sim btn-sim-pothole" id="btn-demo-pothole">
+                <i class="fa-solid fa-circle-exclamation"></i> Critical Pothole (280m)
+            </button>
+            <button class="btn-sim btn-sim-water" id="btn-demo-water">
+                <i class="fa-solid fa-water"></i> Waterlogging (250m)
+            </button>
+            <button class="btn-sim btn-sim-bump" id="btn-demo-bump">
+                <i class="fa-solid fa-shield"></i> Speed Bump (+0.45g Filtered)
+            </button>
+            <button class="btn-sim" id="btn-demo-clear">
+                <i class="fa-solid fa-road"></i> Road Clear
+            </button>
         </div>
 
-        <!-- Audio, Voice & Route Controls -->
-        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <button class="btn-sim active" id="btn-audio-toggle" title="Toggle Hazard Audio Alert Chime" style="background:rgba(0,229,255,0.15); border:1px solid #00E5FF; color:#00E5FF; padding:6px 12px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer;">
+        <!-- Necessary Audio Alert Control on single sleek line -->
+        <div style="display:flex; align-items:center; gap:8px;">
+            <button class="btn-sim active" id="btn-audio-toggle" title="Toggle Hazard Audio Alert Chime" style="background:rgba(0,229,255,0.15); border:1px solid #00E5FF; color:#00E5FF; padding:6px 12px; border-radius:6px; font-weight:700; font-size:0.75rem; cursor:pointer; white-space:nowrap;">
                 <i class="fa-solid fa-volume-high" id="audio-icon"></i>
                 <span id="audio-text">CHIME: ON</span>
             </button>
-            <div class="voice-picker-group" style="display:inline-flex; align-items:center; background:#1E293B; border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:2px 6px; gap:4px;">
-                <span style="font-size:0.7rem; font-weight:700; color:#94A3B8;">Voice:</span>
-                <button class="btn-lang-pill active" id="lang-kn" onclick="setDriverVoiceLanguage('kn-IN')" title="ಕನ್ನಡ ಧ್ವನಿ">ಕನ್ನಡ</button>
-                <button class="btn-lang-pill" id="lang-hi" onclick="setDriverVoiceLanguage('hi-IN')" title="हिन्दी आवाज़">हिन्दी</button>
-                <button class="btn-lang-pill" id="lang-en" onclick="setDriverVoiceLanguage('en-IN')" title="English Audio">EN</button>
-            </div>
-            <button class="btn-sim" id="btn-voice-speak" onclick="triggerVoiceSpeech(true)" title="Play Voice Alert" style="background:rgba(16,185,129,0.15); border:1px solid #10B981; color:#10B981; padding:6px 12px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer;">
-                <i class="fa-solid fa-headset"></i> <span id="voice-speak-text">ಧ್ವನಿ Play</span>
-            </button>
-            <button class="btn-sim" id="btn-route-toggle" onclick="toggleDriverRoute()" title="Switch Route" style="background:#1E293B; border:1px solid rgba(255,255,255,0.2); color:#F8FAFC; padding:6px 12px; border-radius:6px; font-weight:600; font-size:0.8rem; cursor:pointer;">
-                <i class="fa-solid fa-route"></i> <span id="route-toggle-label">Route: 500D (BLR)</span>
+            <button class="btn-sim" id="btn-voice-speak" onclick="triggerVoiceSpeech(true)" title="Play Multilingual In-Cab Voice Alert" style="background:rgba(16,185,129,0.15); border:1px solid #10B981; color:#10B981; padding:6px 12px; border-radius:6px; font-weight:700; font-size:0.75rem; cursor:pointer; white-space:nowrap;">
+                <i class="fa-solid fa-headset"></i> <span id="voice-speak-text">Voice Alert</span>
             </button>
         </div>
     </footer>
@@ -1224,6 +1222,15 @@
         <span id="telemetry-mode-tag"></span>
         <span id="imu-shock-val"></span>
         <div id="imu-meter-fill"></div>
+        <span id="imu-filter-status"></span>
+        <button id="btn-chime-test"></button>
+        <button id="btn-fullscreen"></button>
+        <button id="lang-kn" onclick="setDriverVoiceLanguage('kn-IN')"></button>
+        <button id="lang-hi" onclick="setDriverVoiceLanguage('hi-IN')"></button>
+        <button id="lang-en" onclick="setDriverVoiceLanguage('en-IN')"></button>
+        <button id="btn-route-toggle" onclick="toggleDriverRoute()"></button>
+        <span id="route-toggle-label">Route: 500D (BLR)</span>
+    </div>
         <span id="imu-filter-status"></span>
         <button id="btn-chime-test"></button>
         <button id="btn-fullscreen"></button>

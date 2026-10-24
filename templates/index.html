@@ -2101,11 +2101,50 @@ h1, h2, h3 {
     background: #F5F5F5;
 }
 
+
+/* Top Back Button */
+.btn-top-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    margin-right: 6px;
+}
+.btn-top-back:hover {
+    background: #FF9933;
+    color: #002244;
+    border-color: #FF9933;
+    transform: translateX(-2px);
+    box-shadow: 0 4px 12px rgba(255, 153, 51, 0.4);
+}
+.btn-top-back:active {
+    transform: translateX(0);
+}
+.btn-tier2-back:hover {
+    color: #FF9933 !important;
+    text-decoration: underline;
+}
+
 </style>
 </head>
 <body>
 
-        <header class="app-header">
+            <header class="app-header">
+        <button type="button" class="btn-top-back" id="btn-top-back" onclick="handleTopBackNavigation()" title="Go Back / Return to Command Center">
+            <i class="fa-solid fa-arrow-left"></i> <span>Back</span>
+        </button>
         <div class="brand-identity">
             <div class="brand-emblem" title="UrbanSight AI Autonomous Transit Perception Core">
                 <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2733,6 +2772,33 @@ h1, h2, h3 {
         // ==========================================
         // Header Actions (Simulate, Export CSV, Export GeoJSON, Privacy Blur, Driver Alert)
         // ==========================================
+        
+        // ==========================================
+        // Top Back Navigation Handler
+        // ==========================================
+        window.handleTopBackNavigation = function() {
+            // 1. If inside an iframe on a subview, return parent to command center
+            if (window.top !== window && window.top.switchDashboardTab) {
+                window.top.switchDashboardTab('command');
+                return;
+            }
+            // 2. If viewing a sub-portal in SPA, return to Command Center
+            const curHash = (window.location.hash || '').replace('#', '');
+            if (curHash && curHash !== 'command' && typeof window.switchDashboardTab === 'function') {
+                window.switchDashboardTab('command');
+                if (typeof window.showFloatingToast === 'function') {
+                    window.showFloatingToast('<i class="fa-solid fa-arrow-left"></i> <b>Returned to Command Center</b>', 'info');
+                }
+                return;
+            }
+            // 3. If history length is greater than 1, navigate back
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html#command';
+            }
+        };
+
         window.simulateBusPassAction = function() {
             showFloatingToast('<i class="fa-solid fa-bolt" style="font-size:1.2rem;"></i><div><b>Simulating Transit Bus Pass...</b><br>KSRTC-KA09-E102 scanning Gokulam ORR</div>', 'info');
 
@@ -3158,6 +3224,7 @@ h1, h2, h3 {
                     </div>
                 `;
 
+                if (typeof h.lat !== "number" || isNaN(h.lat) || typeof h.lng !== "number" || isNaN(h.lng)) return;
                 L.marker([h.lat, h.lng], { icon: hazardIcon })
                     .bindPopup(popupContent)
                     .addTo(state.map);
@@ -4053,6 +4120,11 @@ function initDashcamSimulator() {
             const matchedPothole = activePool.find(ph => !mediaState.detectedPotholeIds.has(ph.id) && Math.abs(ph.progress - currentProg) <= 0.06);
 
             if (matchedPothole) {
+                if (typeof matchedPothole.lat !== 'number') {
+                    const mProg = matchedPothole.progress || 0.35;
+                    matchedPothole.lat = Number((corr.startLat + mProg * (corr.endLat - corr.startLat)).toFixed(4));
+                    matchedPothole.lng = Number((corr.startLng + mProg * (corr.endLng - corr.startLng)).toFixed(4));
+                }
                 mediaState.detectedPotholeIds.add(matchedPothole.id);
                 mediaState.activePothole = matchedPothole;
                 dispatchContinuousDefect(matchedPothole);
@@ -4061,6 +4133,11 @@ function initDashcamSimulator() {
                 const defP = (corr.potholes && corr.potholes[0]) || {
                     id: 'FP-MYS-1', progress: 0.12, xRatio: 0.42, yRatio: 0.62, width: 148, height: 62, depthCm: 11.4, name: `${corr.short} (Ch: 1.05 km), Mysuru`, ticketId: 'PWD-MYS-7141'
                 };
+                if (typeof defP.lat !== 'number') {
+                    const dProg = defP.progress || 0.12;
+                    defP.lat = Number((corr.startLat + dProg * (corr.endLat - corr.startLat)).toFixed(4));
+                    defP.lng = Number((corr.startLng + dProg * (corr.endLng - corr.startLng)).toFixed(4));
+                }
                 mediaState.detectedPotholeIds.add(defP.id);
                 mediaState.activePothole = defP;
                 dispatchContinuousDefect(defP);
@@ -4893,11 +4970,17 @@ function updateMediaSidebar() {
     const depthEl = document.getElementById('detection-depth-label');
     const locEl = document.getElementById('detection-location-label');
 
-    if (feedEl) feedEl.textContent = `FEED: ${mediaState.sourceName}`;
-    if (coordsEl) coordsEl.textContent = `GPS: ${mediaState.defect.lat.toFixed(4)}°N, ${mediaState.defect.lng.toFixed(4)}°E`;
-    if (defectEl) defectEl.textContent = `${mediaState.defect.type} ${mediaState.defect.rdd.split(' ')[0]} · ${mediaState.defect.conf}`;
-    if (depthEl) depthEl.textContent = `Distress: ${mediaState.defect.depth} · Severity: ${mediaState.defect.sev.split('_')[1] || 'P1'}`;
-    if (locEl) locEl.textContent = mediaState.defect.loc;
+    const latVal = (mediaState.defect && typeof mediaState.defect.lat === 'number') ? mediaState.defect.lat : 12.3360;
+    const lngVal = (mediaState.defect && typeof mediaState.defect.lng === 'number') ? mediaState.defect.lng : 76.6210;
+
+    if (feedEl) feedEl.textContent = `FEED: ${mediaState.sourceName || 'KSRTC-KA09-E102'}`;
+    if (coordsEl) coordsEl.textContent = `GPS: ${latVal.toFixed(4)}°N, ${lngVal.toFixed(4)}°E`;
+    if (defectEl && mediaState.defect) defectEl.textContent = `${mediaState.defect.type || 'POTHOLE'} ${(mediaState.defect.rdd || 'D40').split(' ')[0]} · ${mediaState.defect.conf || '98.4%'}`;
+    if (depthEl && mediaState.defect) {
+        const sevText = mediaState.defect.sev ? (mediaState.defect.sev.includes('_') ? mediaState.defect.sev.split('_')[1] : mediaState.defect.sev) : 'P1';
+        depthEl.textContent = `Distress: ${mediaState.defect.depth || '20.2cm'} · Severity: ${sevText}`;
+    }
+    if (locEl && mediaState.defect) locEl.textContent = mediaState.defect.loc || 'Mysuru ORR Corridor';
 }
 
 function toggleMediaPlayPause() {
@@ -4939,9 +5022,14 @@ function updateLiveNavigationDirections(hazard, lat, lng, loc) {
 
 function runAIAnalysisAndDispatch(targetPothole) {
             const d = mediaState.defect;
+            const corr = (CORRIDORS && CORRIDORS[currentCorridorKey]) ? CORRIDORS[currentCorridorKey] : (CORRIDORS && CORRIDORS['mysuru-orr'] ? CORRIDORS['mysuru-orr'] : {});
+            let safeLat = (targetPothole && typeof targetPothole.lat === 'number') ? targetPothole.lat : ((d && typeof d.lat === 'number') ? d.lat : 12.3360);
+            let safeLng = (targetPothole && typeof targetPothole.lng === 'number') ? targetPothole.lng : ((d && typeof d.lng === 'number') ? d.lng : 76.6210);
+            d.lat = safeLat;
+            d.lng = safeLng;
             if (targetPothole) {
-                d.lat = targetPothole.lat || d.lat;
-                d.lng = targetPothole.lng || d.lng;
+                d.lat = safeLat;
+                d.lng = safeLng;
                 d.loc = targetPothole.name || d.loc;
                 d.depth = `${targetPothole.depthCm}cm`;
                 d.ticketId = targetPothole.ticketId || d.ticketId;
@@ -4984,7 +5072,7 @@ function runAIAnalysisAndDispatch(targetPothole) {
             // 3. Drop marker and Fly Map to location in Mysuru / Bengaluru
             renderHazardsOnMap();
             if (state.map) {
-                state.map.flyTo([d.lat, d.lng], 15, { duration: 1.2 });
+                if (typeof d.lat === "number" && typeof d.lng === "number" && !isNaN(d.lat) && !isNaN(d.lng)) { state.map.flyTo([d.lat, d.lng], 15, { duration: 1.2 }); }
             }
 
             // 4. Update Terminal Logs with Multi-Agent Handoff
@@ -6301,82 +6389,7 @@ function switchFooterTab(tabKey) {
     <!-- =============================================================================
          Official GIGW 3.0 Government Footer
          ============================================================================= -->
-        <!-- =============================================================================
-         Official Single-Tab Government Governance & Directory Bar (GIGW 3.0)
-         ============================================================================= -->
-    <footer class="gov-single-tab-footer">
-        <div class="footer-tab-nav">
-            <button class="footer-tab-pill active" id="ftab-btn-statutory" onclick="switchFooterTab('statutory')">
-                <i class="fa-solid fa-gavel"></i> Statutory Links
-            </button>
-            <button class="footer-tab-pill" id="ftab-btn-emergency" onclick="switchFooterTab('emergency')">
-                <i class="fa-solid fa-phone"></i> Emergency Lines
-            </button>
-            <button class="footer-tab-pill" id="ftab-btn-manager" onclick="switchFooterTab('manager')">
-                <i class="fa-solid fa-user-tie"></i> Web Information Manager
-            </button>
-            <button class="footer-tab-pill" id="ftab-btn-about" onclick="switchFooterTab('about')">
-                <i class="fa-solid fa-landmark"></i> MCC Info
-            </button>
-            <span class="footer-tab-badge">
-                <i class="fa-solid fa-cloud"></i> Hosted at KSDC (NIC Cloud)
-            </span>
-        </div>
-
-        <div class="footer-tab-panel" id="footer-tab-statutory">
-            <span class="ftab-label"><i class="fa-solid fa-scale-balanced"></i> Statutory &amp; Compliance:</span>
-            <a href="#" onclick="openPublicTendersModal(); return false;"><i class="fa-solid fa-file-signature"></i> KTPP Act Tenders</a>
-            <span class="ftab-sep">·</span>
-            <a href="#" onclick="openGrievanceTrackerModal(); return false;"><i class="fa-solid fa-clock-rotate-left"></i> Janahitha Citizen Charter</a>
-            <span class="ftab-sep">·</span>
-            <a href="#" onclick="openPublicTendersModal(); return false;"><i class="fa-solid fa-book-open"></i> RTI Section 4(1)(b)</a>
-            <span class="ftab-sep">·</span>
-            <a href="#" onclick="openInspectionCertificateModal(); return false;"><i class="fa-solid fa-certificate"></i> IRC:SP:20 Compliance</a>
-            <span class="ftab-sep">·</span>
-            <a href="#" onclick="alert('DPDP Act 2023 §2(t) in-memory Gaussian redaction active.'); return false;"><i class="fa-solid fa-shield-halved"></i> DPDP Act 2023 Privacy Policy</a>
-        </div>
-
-        <div class="footer-tab-panel" id="footer-tab-emergency" style="display:none;">
-            <span class="ftab-label"><i class="fa-solid fa-phone-volume"></i> 24x7 Emergency Helplines:</span>
-            <a href="tel:18004254766"><b>Toll-Free:</b> 1800-425-4766</a>
-            <span class="ftab-sep">·</span>
-            <a href="tel:08212418800"><b>Control Room:</b> 0821-2418800</a>
-            <span class="ftab-sep">·</span>
-            <a href="tel:1095"><b>Traffic Police:</b> 1095</a>
-            <span class="ftab-sep">·</span>
-            <a href="tel:101"><b>Fire &amp; Rescue:</b> 101</a>
-            <span class="ftab-sep">·</span>
-            <a href="#" onclick="openHelplinesModal(); return false;"><i class="fa-solid fa-building-flag"></i> View All 9 Zonal Offices</a>
-        </div>
-
-        <div class="footer-tab-panel" id="footer-tab-manager" style="display:none;">
-            <span class="ftab-label"><i class="fa-solid fa-user-check"></i> Web Information Manager:</span>
-            <span><b>Nodal Officer:</b> Assistant Executive Engineer (IT &amp; ICCC)</span>
-            <span class="ftab-sep">·</span>
-            <span><b>Agency:</b> Mysuru City Corporation (MCC)</span>
-            <span class="ftab-sep">·</span>
-            <a href="mailto:commissioner@mysurucitycorporation.co.in"><b>Email:</b> commissioner@mysurucitycorporation.co.in</a>
-        </div>
-
-        <div class="footer-tab-panel" id="footer-tab-about" style="display:none;">
-            <span class="ftab-label"><i class="fa-solid fa-city"></i> Mysuru City Corporation:</span>
-            <span>Sayyaji Rao Road, Agrahara, Mysuru, Karnataka 570024</span>
-            <span class="ftab-sep">·</span>
-            <span><b>Tel:</b> 0821-2418800</span>
-            <span class="ftab-sep">·</span>
-            <span>UrbanSight AI Autonomous Smart City Framework · MoHUA &amp; Govt. of Karnataka</span>
-        </div>
-
-        <div class="gov-footer-bottom-bar">
-            <span>© 2026 Mysuru City Corporation &amp; MoHUA Govt. of India. All rights reserved.</span>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <span><b>Monitored:</b> 412 km</span>
-                <span><b>Grievances:</b> 1,482</span>
-                <span><b>Active Tenders:</b> 4</span>
-                <span><b>Wards:</b> 65</span>
-            </div>
-        </div>
-    </footer>
+        
 
     <!-- Core Application Logic fallback (relative path for GitHub Pages compatibility) -->
     <script src="static/js/app.js">
@@ -6454,7 +6467,21 @@ function switchFooterTab(tabKey) {
             }
         };
 
-        window.addEventListener('DOMContentLoaded', () => {
+        
+function renderEventLogs() {
+    const feed = document.getElementById('activity-feed');
+    if (!feed || typeof state === 'undefined' || !state.logs) return;
+    feed.innerHTML = state.logs.map(log => `
+        <div class="log-entry ${log.tagClass || ''}">
+            <span class="log-time">${log.time}</span>
+            <span class="log-agent">${log.agent}:</span>
+            <span>${log.text}</span>
+        </div>
+    `).join('');
+}
+window.renderEventLogs = renderEventLogs;
+
+window.addEventListener('DOMContentLoaded', () => {
             const hash = (window.location.hash || '').replace('#', '');
             if (hash) {
                 window.switchDashboardTab(hash);
