@@ -1137,72 +1137,7 @@
 
         </article>
 
-                <!-- Citizen SMS / WhatsApp Notification Subscription Card -->
-        <section class="notification-card">
-            <div class="notif-text">
-                <h3><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> Stay Updated on this Road Repair</h3>
-                <p>Receive instant SMS & WhatsApp notifications when the municipal crew arrives on-site and closes the ticket.</p>
-            </div>
-
-            <form class="notif-form" id="notif-form" onsubmit="event.preventDefault(); subscribeNotification('SMS');">
-                <div style="display:flex; align-items:center; background:#FFFFFF; border:1.5px solid var(--border-medium); border-radius:8px; padding:0 8px; box-shadow:0 1px 3px rgba(0,0,0,0.06); transition:border-color 0.2s;" id="phone-input-box">
-                    <span style="font-weight:800; font-family:var(--font-mono); font-size:0.9rem; color:#57534E; padding-right:8px; border-right:1px solid var(--border-medium); display:flex; align-items:center; gap:4px;">
-                        🇮🇳 +91
-                    </span>
-                    <input type="tel" class="phone-input" id="subscriber-phone" placeholder="98765 43210" maxlength="15" autocomplete="tel" required style="border:none; background:transparent; color:#1C1917 !important; font-size:1rem; font-weight:700; font-family:var(--font-mono); padding:10px 10px; width:170px; outline:none;" oninput="formatCitizenPhoneInput(this)" />
-                </div>
-                <button type="button" class="btn-sms" onclick="subscribeNotification('SMS')" style="background:#003580; color:#FFFFFF; border:none; padding:10px 16px; border-radius:8px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:0.85rem;" title="Subscribe to Official National Telecom DLT SMS Updates">
-                    <i class="fa-solid fa-comment-sms"></i> Subscribe SMS Alerts
-                </button>
-                <button type="button" class="btn-wa" onclick="subscribeNotification('WHATSAPP')" style="background:#25D366; color:#FFFFFF; border:none; padding:10px 16px; border-radius:8px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:0.85rem;" title="Subscribe to WhatsApp Cloud Alerts">
-                    <i class="fa-brands fa-whatsapp"></i> WhatsApp Alerts
-                </button>
-            </form>
-
-            <!-- Active Subscription & Milestone Simulator Strip -->
-            <div id="subscriber-status-strip" style="display:none; margin-top:14px; padding:10px 14px; background:#FAF8F5; border:1.5px solid #25D366; border-radius:10px; font-size:0.78rem; font-family:var(--font-mono); color:var(--text-primary); align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <div style="width:24px; height:24px; border-radius:50%; background:rgba(37,211,102,0.15); color:#25D366; display:flex; align-items:center; justify-content:center; font-size:12px;">
-                        <i class="fa-solid fa-bell"></i>
-                    </div>
-                    <div>
-                        <div style="font-weight:800; color:var(--text-primary);">Subscribed Phone: <span id="active-subscriber-number" style="color:#15803d; font-weight:900;">+91 98765 43210</span></div>
-                        <div style="font-size:0.7rem; color:var(--text-tertiary);">Live alerts active for: <b>Crew Arrival On-Site</b> &amp; <b>Ticket Resolution</b></div>
-                    </div>
-                </div>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button type="button" onclick="simulateMilestoneTrigger('IN_PROGRESS')" style="background:#FFFBEB; border:1px solid #F59E0B; color:#B45309; border-radius:6px; padding:5px 10px; font-size:0.72rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Test alert when municipal rapid response van reaches the defect location">
-                        🚜 Test Crew On-Site
-                    </button>
-                    <button type="button" onclick="simulateMilestoneTrigger('RESOLVED')" style="background:#F0FDF4; border:1px solid #10B981; color:#047857; border-radius:6px; padding:5px 10px; font-size:0.72rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Test alert when road defect is repaired and closed">
-                        ✅ Test Crew Closed
-                    </button>
-                </div>
-            </div>
-
-            <!-- Interactive Live Chat/SMS Message Bubble Preview -->
-            <div id="citizen-msg-bubble-wrap" style="display:none; margin-top:16px; padding:14px 16px; background:#EDE7DA; border-radius:10px; border:1px solid var(--border-medium); text-align:left; animation:fadeIn 0.3s ease;">
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span id="citizen-msg-channel-icon" style="font-size:18px; color:#25D366;"><i class="fa-brands fa-whatsapp"></i></span>
-                        <div>
-                            <div style="font-size:0.82rem; font-weight:800; color:var(--text-primary);" id="citizen-msg-sender">Mysuru City Corporation PWD (UrbanSight AI)</div>
-                            <div style="font-size:0.68rem; color:var(--text-tertiary);" id="citizen-msg-time">Just now · Official Municipal Gateway</div>
-                        </div>
-                    </div>
-                    <span style="font-size:0.68rem; padding:3px 8px; border-radius:12px; background:rgba(37,211,102,0.15); color:#15803d; font-weight:700;" id="citizen-msg-badge">✓ Verified Bot</span>
-                </div>
-                <div id="citizen-msg-text-bubble" style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:12px; font-family:var(--font-mono); font-size:0.75rem; color:var(--text-primary); line-height:1.5; white-space:pre-wrap; margin-bottom:10px;"></div>
-                <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <button id="btn-open-wa-chat" class="btn-wa" style="padding:6px 12px; font-size:0.75rem;" onclick="openCitizenWhatsAppChat()">
-                        <i class="fa-brands fa-whatsapp"></i> Open in WhatsApp Web / App
-                    </button>
-                    <button id="btn-open-sms-chat" class="btn-sms" style="padding:6px 12px; font-size:0.75rem;" onclick="openCitizenSMSApp()">
-                        <i class="fa-solid fa-comment-sms"></i> Open in SMS App
-                    </button>
-                </div>
-            </div>
-        </section>
+                
 
     
         <!-- ========================================================================= -->
@@ -2397,6 +2332,30 @@
         // =========================================================================
         // MONTHLY BUS PASSES & MUNICIPAL VOUCHERS REDEMPTION ENGINE
         // =========================================================================
+        
+        function saveCitizenRewards() {
+            try {
+                localStorage.setItem('urbansight_citizen_rewards', JSON.stringify(citizenRewardsState));
+            } catch (e) {}
+        }
+
+        function loadCitizenRewards() {
+            try {
+                const saved = localStorage.getItem('urbansight_citizen_rewards');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(citizenRewardsState, parsed);
+                }
+            } catch (e) {}
+            const ptsEl = document.getElementById('user-points-balance');
+            if (ptsEl) ptsEl.textContent = citizenRewardsState.points.toLocaleString();
+            const adoptedEl = document.getElementById('adopted-road-name');
+            if (adoptedEl && citizenRewardsState.adoptedRoad) adoptedEl.textContent = citizenRewardsState.adoptedRoad;
+            if (typeof renderRedeemedVouchers === 'function') renderRedeemedVouchers();
+        }
+        window.saveCitizenRewards = saveCitizenRewards;
+        window.loadCitizenRewards = loadCitizenRewards;
+
         let citizenRewardsState = {
             points: 1450,
             tier: 'Gold Custodian 🥇',
@@ -2584,6 +2543,31 @@
             playAlertChime('resolved');
             showToast("🛣️ Road Corridor Adopted!", `You are now the Civic Guardian for ${roadName}. +50 Bonus points added!`);
         }
+
+        function loadBackendWorkOrders() {
+            fetch('/api/work-orders')
+                .then(r => {
+                    if (!r.ok) return [];
+                    return r.json();
+                })
+                .then(data => {
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(wo => {
+                            if (wo && (wo.ticket_id || wo.id)) {
+                                const tid = wo.ticket_id || wo.id;
+                                SAMPLE_TICKETS[tid] = Object.assign({}, SAMPLE_TICKETS[tid] || {}, wo, {
+                                    ticket_id: tid,
+                                    short_id: tid.split('-').slice(-2).join('-')
+                                });
+                            }
+                        });
+                    }
+                })
+                .catch(e => {
+                    // Graceful fallback in static mode / GitHub Pages
+                });
+        }
+        window.loadBackendWorkOrders = loadBackendWorkOrders;
 
         loadCitizenRewards();
         loadBackendWorkOrders();

@@ -820,12 +820,8 @@
                         <button class="btn-act btn-nav-map" onclick="event.stopPropagation(); openDirections(${order.lat}, ${order.lng});">
                             <i class="fa-solid fa-diamond-turn-right"></i> Navigate
                         </button>
-                        <button class="btn-act" style="background:rgba(37,211,102,0.15); color:#15803d; border:1px solid #25D366;" onclick="event.stopPropagation(); sendCrewWhatsAppAlert('${order.ticket_id}')" title="Send WhatsApp Update to Ward Engineer">
-                            <i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> WhatsApp Engr
-                        </button>
-                        <button class="btn-act" style="background:rgba(2,132,199,0.12); color:#0369a1; border:1px solid #0284c7;" onclick="event.stopPropagation(); sendCrewSMSAlert('${order.ticket_id}')" title="Send SMS Status via Telecom Gateway">
-                            <i class="fa-solid fa-comment-sms" style="color:#0284c7;"></i> SMS Update
-                        </button>
+                        
+                        
                     </div>
 
                     <!-- Inspection / Before & After Drawer -->
@@ -885,7 +881,7 @@
                     `🔗 *Track live:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${ticketId}`;
                 smsMsg = `URBANSIGHT AI: Field Crew [VAN-04] has ARRIVED ON-SITE at ${locName} for repair #${ticketId}. Status: IN_PROGRESS. Track: https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${ticketId}`;
 
-                showToast(`🚜 Crew Arrived On-Site on #${ticketId}! Instant WhatsApp & SMS sent to Citizen (${citizenPhone}).`);
+                showToast(`🚜 Crew Arrived On-Site on #${ticketId}! (${citizenPhone}).`);
             } else {
                 waMsg = `🎉 *URBANSIGHT AI · ROAD REPAIR COMPLETED* 🎉\n\n` +
                     `Hello Citizen! Work Order #${ticketId} at ${locName} has been successfully REPAIRED, AUDITED & CLOSED.\n` +
@@ -895,7 +891,7 @@
                     `Thank you for keeping Mysuru roads safe!`;
                 smsMsg = `URBANSIGHT AI: Repair #${ticketId} at ${locName} is CLOSED & VERIFIED by Municipal Crew. Voucher: https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=${ticketId}`;
 
-                showToast(`🎉 Ticket #${ticketId} Closed! Instant WhatsApp & SMS delivered to Citizen (${citizenPhone}).`);
+                showToast(`🎉 Ticket #${ticketId} Closed! (${citizenPhone}).`);
             }
 
             // Dispatch WhatsApp Alert via Backend
