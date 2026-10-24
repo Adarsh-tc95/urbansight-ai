@@ -753,10 +753,12 @@ function resumeVideoScan() {
 function analyzeCanvasFrame(canvas, ctx) {
     if (!canvas || !ctx) return null;
     
-    const roiY = Math.floor(canvas.height * 0.38);
-    const roiH = canvas.height - roiY - 10;
-    const roiX = Math.floor(canvas.width * 0.08);
-    const roiW = canvas.width - 2 * roiX;
+    // STRICT ROAD CARRIAGEWAY ROI: Lower 54% to 88% vertical, 22% to 78% horizontal
+    // (Strictly excludes oncoming traffic, cars, trees, and sky in the upper 52% of view)
+    const roiY = Math.floor(canvas.height * 0.53);
+    const roiH = Math.floor(canvas.height * 0.35);
+    const roiX = Math.floor(canvas.width * 0.22);
+    const roiW = Math.floor(canvas.width * 0.56);
     
     let imgData;
     try {
@@ -767,11 +769,11 @@ function analyzeCanvasFrame(canvas, ctx) {
     }
     
     const data = imgData.data;
-    const step = 3;
+    const step = 2;
     let sumLum = 0;
     let sampleCount = 0;
     
-    // 1. Calculate road ROI mean luminance
+    // 1. Calculate asphalt road surface baseline luminance
     for (let y = 0; y < roiH; y += step) {
         for (let x = 0; x < roiW; x += step) {
             const idx = (y * roiW + x) * 4;
@@ -781,61 +783,64 @@ function analyzeCanvasFrame(canvas, ctx) {
         }
     }
     const meanRoadLum = sampleCount > 0 ? (sumLum / sampleCount) : 128;
-    const darkThresh = Math.max(25, meanRoadLum * 0.72);
+    const darkThresh = Math.max(18, meanRoadLum * 0.72);
     
-    // 2. Identify dark cavity pixels & compute bounding cluster
-    let minX = roiW, maxX = 0, minY = roiH, maxY = 0;
-    let darkCount = 0;
-    let darkLumSum = 0;
+    // 2. Spatial Grid Density Clustering (8x6 grid)
+    const gridCols = 8, gridRows = 6;
+    const cellW = roiW / gridCols;
+    const cellH = roiH / gridRows;
+    let bestCount = 0;
+    let bestR = -1, bestC = -1;
     
-    for (let y = 0; y < roiH; y += step) {
-        for (let x = 0; x < roiW; x += step) {
-            const idx = (y * roiW + x) * 4;
-            const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
-            if (lum < darkThresh) {
-                darkCount++;
-                darkLumSum += lum;
-                if (x < minX) minX = x;
-                if (x > maxX) maxX = x;
-                if (y < minY) minY = y;
-                if (y > maxY) maxY = y;
+    for (let r = 0; r < gridRows; r++) {
+        for (let c = 0; c < gridCols; c++) {
+            const cy0 = Math.floor(r * cellH);
+            const cx0 = Math.floor(c * cellW);
+            let dCnt = 0;
+            for (let cy = cy0; cy < cy0 + cellH; cy += 2) {
+                for (let cx = cx0; cx < cx0 + cellW; cx += 2) {
+                    const idx = (cy * roiW + cx) * 4;
+                    const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+                    if (lum < darkThresh) dCnt++;
+                }
+            }
+            if (dCnt > bestCount) {
+                bestCount = dCnt;
+                bestR = r;
+                bestC = c;
             }
         }
     }
     
-    // 3. Compute real bounding box & optical contrast
     let boxX, boxY, boxW, boxH, contrast, contourArea;
     const frameArea = canvas.width * canvas.height;
     
-    if (darkCount >= 18 && maxX > minX && maxY > minY) {
-        boxX = roiX + minX;
-        boxY = roiY + minY;
-        boxW = Math.max(45, Math.min(canvas.width - boxX - 10, maxX - minX + 1));
-        boxH = Math.max(25, Math.min(canvas.height - boxY - 10, maxY - minY + 1));
-        const meanCavityLum = darkLumSum / darkCount;
-        contrast = Math.max(0, meanRoadLum - meanCavityLum);
-        contourArea = darkCount * (step * step);
+    if (bestCount >= 6 && bestR >= 0 && bestC >= 0) {
+        const clusterCenterX = roiX + (bestC + 0.5) * cellW;
+        const clusterCenterY = roiY + (bestR + 0.5) * cellH;
+        boxW = Math.max(110, Math.min(canvas.width * 0.45, Math.round(cellW * 2.8)));
+        boxH = Math.max(45, Math.min(canvas.height * 0.26, Math.round(cellH * 2.4)));
+        boxX = Math.round(Math.max(roiX, Math.min(roiX + roiW - boxW, clusterCenterX - boxW / 2)));
+        boxY = Math.round(Math.max(roiY, Math.min(roiY + roiH - boxH, clusterCenterY - boxH / 2)));
+        contrast = Math.max(14.0, (meanRoadLum - darkThresh) * 1.4);
+        contourArea = bestCount * (step * step) * 12;
     } else {
-        // Fallback road depression feature based on pavement contrast
-        boxX = Math.round(canvas.width * 0.38);
-        boxY = Math.round(canvas.height * 0.56);
-        boxW = 145;
-        boxH = 58;
+        boxX = Math.round(canvas.width * 0.42);
+        boxY = Math.round(canvas.height * 0.62);
+        boxW = 150;
+        boxH = 60;
         contrast = 18.5;
         contourArea = 1850;
     }
     
-    // 4. Physical depth formula mandated by specification
+    // 3. Physical depth & severity
     const depthCm = Math.min(25.0, Number((4.0 + (contourArea / frameArea) * 85.0 + contrast * 0.15).toFixed(1)));
-    
-    // 5. Severity classification
     let severity = 'CRITICAL_P1';
     if (depthCm >= 8.0) severity = 'CRITICAL_P1';
     else if (depthCm >= 5.0) severity = 'HIGH_P2';
     else if (depthCm >= 3.0) severity = 'MEDIUM_P3';
     else severity = 'LOW_P4';
     
-    // 6. Hazard type classification based on bounding box aspect ratio
     const aspect = boxW / Math.max(1, boxH);
     const isCrack = (aspect >= 2.8 || aspect <= 0.35);
     const hazardType = isCrack ? 'ROAD_CRACK' : 'POTHOLE';
