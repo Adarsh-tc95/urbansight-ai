@@ -5,6 +5,16 @@ Centered on Bengaluru & Mysuru arterial transit networks.
 
 INITIAL_BUSES = [
     {
+        "bus_id": "KSRTC-MY09-C330",
+        "route_name": "Mysuru Ring Road Express (Chamundi ↔ Columbia Asia)",
+        "lat": 12.3480,
+        "lng": 76.6620,
+        "speed_kmh": 42.0,
+        "heading_deg": 270.0,
+        "camera_status": "ONLINE_30FPS",
+        "privacy_blur_active": True
+    },
+    {
         "bus_id": "BMTC-KA01-E542",
         "route_name": "Outer Ring Road Express (Silk Board ↔ Marathahalli)",
         "lat": 12.9238,

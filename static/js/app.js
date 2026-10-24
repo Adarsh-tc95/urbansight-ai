@@ -14,98 +14,130 @@ document.addEventListener('DOMContentLoaded', () => {
     startRealtimePolling();
 });
 
-// Central Application State
-const state = {
-    buses: [
-        { id: "BMTC-KA01-E542", route: "Outer Ring Road Express (Silk Board ↔ Marathahalli)", lat: 12.9238, lng: 77.6745, speed: 32, heading: 45, marker: null },
-        { id: "BMTC-KA57-E912", route: "Route 500D (Hebbal ↔ Electronic City)", lat: 12.9112, lng: 77.6380, speed: 26, heading: 180, marker: null },
-        { id: "KSRTC-KA09-E102", route: "Mysuru Ring Road (VVCE Campus Corridor)", lat: 12.3160, lng: 76.6413, speed: 38, heading: 90, marker: null },
-        { id: "BMTC-KA03-E304", route: "Majestic ↔ Whitefield ITPL Expressway", lat: 12.9716, lng: 77.5946, speed: 19, heading: 115, marker: null }
-    ],
-    hazards: [
-        { id: "HAZ-001", type: "POTHOLE", sev: "CRITICAL_P1", lat: 12.9250, lng: 77.6760, name: "ORR Bellandur Flyover Pillar 34", depth: "9.4cm", conf: "96.4%", passes: 14, ticket: "PWD-OCT-0941", sorCode: "CPWD-16.14.2" },
-        { id: "HAZ-002", type: "WATERLOGGING", sev: "HIGH_P2", lat: 12.9125, lng: 77.6395, name: "Silk Board Underpass South Lane", length: "35m", conf: "92.1%", passes: 8, ticket: "PWD-OCT-0882", sorCode: "CPWD-11.4.2" },
-        { id: "HAZ-003", type: "POTHOLE", sev: "CRITICAL_P1", lat: 12.3190, lng: 76.6450, name: "VVCE Ring Road Junction, Mysuru", depth: "8.6cm", conf: "94.8%", passes: 6, ticket: "PWD-OCT-0715", sorCode: "CPWD-16.14.2" },
-        { id: "HAZ-004", type: "CONGESTION", sev: "MEDIUM_P3", lat: 12.9730, lng: 77.5960, name: "Kasturba Road Bottleneck (9 km/h)", conf: "88.5%", passes: 12, ticket: null, sorCode: "TRAFFIC-CORRIDOR" }
-    ],
-    workOrders: [
-        { ticket: "PWD-OCT-0941", type: "POTHOLE", sev: "CRITICAL_P1", loc: "ORR Bellandur Flyover Pillar 34", passes: 14, sla: "41h 20m remaining", status: "DISPATCHED", sorCode: "CPWD 16.14.2 (DBM Patch)" },
-        { ticket: "PWD-OCT-0882", type: "WATERLOGGING", sev: "HIGH_P2", loc: "Silk Board Underpass South Lane", passes: 8, sla: "19h 45m remaining", status: "CREW_ASSIGNED", sorCode: "CPWD 11.4.2 (Drain De-silt)" },
-        { ticket: "PWD-OCT-0715", type: "POTHOLE", sev: "CRITICAL_P1", loc: "VVCE Ring Road Junction, Mysuru", passes: 6, sla: "44h 10m remaining", status: "IN_PROGRESS", sorCode: "CPWD 16.14.2 (DBM Patch)" }
-    ],
-    logs: [
-        { time: "19:54:10", agent: "Agent 1: Vision", tagClass: "agent-tag-vision", text: "YOLOv8-Nano running @ 30 FPS. DPDP Gaussian face & plate blur ACTIVE." },
-        { time: "19:54:02", agent: "Agent 2: DBSCAN", tagClass: "agent-tag-dbscan", text: "Clustered 14 bus passes into canonical hazard #HAZ-001 (5m epsilon match)." },
-        { time: "19:53:50", agent: "Agent 3: PWD Dispatch", tagClass: "agent-tag-dispatch", text: "Auto-filed PWD Work Order #PWD-OCT-0941 with GPS & photo evidence (<180s SLA)." },
-        { time: "19:53:35", agent: "Agent 4: Fleet Advisory", tagClass: "agent-tag-advisory", text: "Pushed WebSocket warning alert to oncoming buses on Bellandur corridor." }
-    ],
-    settings: {
-        privacyBlur: true
-    },
-    map: null,
-    pciLayerGroup: null
-};
+        // Central Application State
+        const state = {
+            buses: [
+                { id: "KSRTC-KA09-E102", route: "Mysuru Ring Road (VVCE Campus Corridor)", lat: 12.3360, lng: 76.6210, speed: 38, heading: 90, marker: null },
+                { id: "KSRTC-MY09-C330", route: "Mysuru Outer Ring Road Express (Chamundi ↔ Columbia Asia)", lat: 12.3480, lng: 76.6620, speed: 44, heading: 270, marker: null },
+                { id: "BMTC-KA01-E542", route: "Outer Ring Road Express (Silk Board ↔ Marathahalli)", lat: 12.9238, lng: 77.6745, speed: 32, heading: 45, marker: null },
+                { id: "BMTC-KA57-E912", route: "Route 500D (Hebbal ↔ Electronic City)", lat: 12.9112, lng: 77.6380, speed: 26, heading: 180, marker: null },
+                { id: "BMTC-KA03-E304", route: "Majestic ↔ Whitefield ITPL Expressway", lat: 12.9716, lng: 77.5946, speed: 19, heading: 115, marker: null }
+            ],
+            hazards: [
+                { id: "HAZ-003", type: "POTHOLE", sev: "CRITICAL_P1", lat: 12.3360, lng: 76.6210, name: "VVCE Ring Road Junction, Gokulam, Mysuru", depth: "8.6cm", conf: "94.8%", passes: 8, ticket: "PWD-OCT-0715", sorCode: "CPWD-16.14.2" },
+                { id: "HAZ-005", type: "POTHOLE", sev: "CRITICAL_P1", lat: 12.3140, lng: 76.6320, name: "Hunsur Road Kalamandira Signal, Mysuru", depth: "8.6cm", conf: "95.2%", passes: 9, ticket: "PWD-OCT-0720", sorCode: "CPWD-16.14.2" },
+                { id: "HAZ-006", type: "POTHOLE", sev: "CRITICAL_P1", lat: 12.3480, lng: 76.6620, name: "Columbia Asia Hospital Ring Road Junction, Mysuru", depth: "9.5cm", conf: "96.1%", passes: 11, ticket: "PWD-OCT-0724", sorCode: "CPWD-16.14.2" },
+                { id: "HAZ-007", type: "WATERLOGGING", sev: "HIGH_P2", lat: 12.3060, lng: 76.6080, name: "Kukkarahalli Lake Catchment Inflow Culvert, Mysuru", length: "40m", conf: "91.8%", passes: 7, ticket: "PWD-OCT-0728", sorCode: "CPWD-11.4.2" },
+                { id: "HAZ-008", type: "POTHOLE", sev: "HIGH_P2", lat: 12.3735, lng: 76.6340, name: "Bannur Road Ring Road Junction, Mysuru", depth: "8.8cm", conf: "93.4%", passes: 6, ticket: "PWD-OCT-0739", sorCode: "CPWD-16.14.2" },
+                { id: "HAZ-001", type: "POTHOLE", sev: "CRITICAL_P1", lat: 12.9250, lng: 77.6760, name: "ORR Bellandur Flyover Pillar 34, Bengaluru", depth: "9.4cm", conf: "96.4%", passes: 14, ticket: "PWD-OCT-0941", sorCode: "CPWD-16.14.2" },
+                { id: "HAZ-002", type: "WATERLOGGING", sev: "HIGH_P2", lat: 12.9125, lng: 77.6395, name: "Silk Board Underpass South Lane, Bengaluru", length: "35m", conf: "92.1%", passes: 8, ticket: "PWD-OCT-0882", sorCode: "CPWD-11.4.2" },
+                { id: "HAZ-004", type: "CONGESTION", sev: "MEDIUM_P3", lat: 12.9730, lng: 77.5960, name: "Kasturba Road Bottleneck (9 km/h)", conf: "88.5%", passes: 12, ticket: null, sorCode: "TRAFFIC-CORRIDOR" }
+            ],
+            workOrders: [
+                { ticket: "PWD-OCT-0715", type: "POTHOLE", sev: "CRITICAL_P1", loc: "VVCE Ring Road Junction, Mysuru (MCC Ward 9)", passes: 8, sla: "44h 10m remaining", status: "IN_PROGRESS", sorCode: "CPWD 16.14.2 (DBM Patch)" },
+                { ticket: "PWD-OCT-0720", type: "POTHOLE", sev: "CRITICAL_P1", loc: "Hunsur Road Kalamandira Signal (MCC Ward 9)", passes: 9, sla: "36h 20m remaining", status: "DISPATCHED", sorCode: "CPWD 16.14.2 (DBM Patch)" },
+                { ticket: "PWD-OCT-0724", type: "POTHOLE", sev: "CRITICAL_P1", loc: "Columbia Asia Ring Road Junction (MCC Ward 14)", passes: 11, sla: "28h 50m remaining", status: "CREW_ASSIGNED", sorCode: "CPWD 16.14.2 (DBM Patch)" },
+                { ticket: "PWD-OCT-0941", type: "POTHOLE", sev: "CRITICAL_P1", loc: "ORR Bellandur Flyover Pillar 34 (BBMP Ward 85)", passes: 14, sla: "41h 20m remaining", status: "DISPATCHED", sorCode: "CPWD 16.14.2 (DBM Patch)" },
+                { ticket: "PWD-OCT-0882", type: "WATERLOGGING", sev: "HIGH_P2", loc: "Silk Board Underpass South Lane (BBMP Ward 174)", passes: 8, sla: "19h 45m remaining", status: "CREW_ASSIGNED", sorCode: "CPWD 11.4.2 (Drain De-silt)" }
+            ],
+            logs: [
+                { time: "19:54:10", agent: "Agent 1: Vision", tagClass: "agent-tag-vision", text: "YOLOv8-Nano running @ 30 FPS. DPDP Gaussian face & plate blur ACTIVE." },
+                { time: "19:54:02", agent: "Agent 2: DBSCAN", tagClass: "agent-tag-dbscan", text: "Clustered 14 bus passes into canonical hazard #HAZ-001 (5m epsilon match)." },
+                { time: "19:53:50", agent: "Agent 3: PWD Dispatch", tagClass: "agent-tag-dispatch", text: "Auto-filed PWD Work Order #PWD-OCT-0715 with GPS & photo evidence (<180s SLA)." },
+                { time: "19:53:35", agent: "Agent 4: Fleet Advisory", tagClass: "agent-tag-advisory", text: "Pushed WebSocket warning alert to oncoming buses on Mysuru Ring Road corridor." }
+            ],
+            settings: {
+                privacyBlur: true
+            },
+            map: null,
+            pciLayerGroup: null
+        };
 
-// ASTM D6433 PCI Baseline Corridors for Predictive Degradation Heatmap
-const FALLBACK_PCI_CORRIDORS = [
-    {
-        corridor_id: "ORR-EAST-01",
-        name: "Outer Ring Road (Iblur ➔ Bellandur ➔ Marathahalli)",
-        jurisdiction: "BBMP Mahadevapura Ward 85",
-        coordinates: [
-            [12.9220, 77.6710],
-            [12.9275, 77.6785],
-            [12.9360, 77.6840],
-            [12.9430, 77.6910],
-            [12.9550, 77.7010]
-        ],
-        base_pci: 68.5,
-        decay_rate_k: 0.016,
-        distress_items: ["3 Severe Potholes (D40)", "1 Longitudinal Joint Separation"]
-    },
-    {
-        corridor_id: "HOSUR-EXP-02",
-        name: "Hosur Road Expressway (Silk Board Underpass ➔ Bommanahalli)",
-        jurisdiction: "BBMP Bommanahalli Ward 174",
-        coordinates: [
-            [12.9170, 77.6225],
-            [12.9110, 77.6320],
-            [12.9030, 77.6410],
-            [12.8950, 77.6495]
-        ],
-        base_pci: 48.0,
-        decay_rate_k: 0.022,
-        distress_items: ["1 Severe Waterlogging Segment (D80)", "2 Ravelling Pockets"]
-    },
-    {
-        corridor_id: "MYS-RING-03",
-        name: "Mysuru Outer Ring Road (Gokulam ➔ VVCE Campus Section)",
-        jurisdiction: "Mysuru City Corporation (MCC) Zone 3",
-        coordinates: [
-            [12.3120, 76.6350],
-            [12.3165, 76.6415],
-            [12.3210, 76.6490],
-            [12.3270, 76.6570]
-        ],
-        base_pci: 74.0,
-        decay_rate_k: 0.011,
-        distress_items: ["1 Edge Spall (D20)", "1 High-Impact Pothole (D40)"]
-    },
-    {
-        corridor_id: "AIRPORT-CORR-04",
-        name: "Hebbal Flyover ➔ Yelahanka Expressway Link",
-        jurisdiction: "BBMP Yelahanka Ward 04",
-        coordinates: [
-            [13.0350, 77.5970],
-            [13.0390, 77.6265],
-            [13.0450, 77.6205],
-            [13.0485, 77.6240]
-        ],
-        base_pci: 82.0,
-        decay_rate_k: 0.009,
-        distress_items: ["1 Minor Transverse Crack (Repaired)"]
-    }
-];
+        const FALLBACK_PCI_CORRIDORS = [
+            {
+                corridor_id: "MYS-RING-ORR",
+                name: "Mysuru Outer Ring Road (VVCE Gokulam ➔ Hunsur Rd ➔ Bogadi ➔ Chamundi ➔ Columbia Asia)",
+                jurisdiction: "Mysuru City Corporation (MCC) & MUDA",
+                coordinates: [
+                    [12.3360, 76.6210],
+                    [12.3315, 76.6270],
+                    [12.3140, 76.6320],
+                    [12.3040, 76.6220],
+                    [12.3000, 76.6180],
+                    [12.3110, 76.6040],
+                    [12.3310, 76.5920],
+                    [12.3480, 76.5900],
+                    [12.3580, 76.5980],
+                    [12.3630, 76.6040],
+                    [12.3700, 76.6180],
+                    [12.3735, 76.6340],
+                    [12.3640, 76.6610],
+                    [12.3480, 76.6620],
+                    [12.3330, 76.6340],
+                    [12.3360, 76.6210]
+                ],
+                base_pci: 73.5,
+                decay_rate_k: 0.012,
+                distress_items: ["3 Potholes (D40)", "1 Culvert Waterlogging", "1 Edge Ravelling"]
+            },
+            {
+                corridor_id: "MYS-HUNSUR-02",
+                name: "Mysuru Hunsur Road (Kalamandira Signal ➔ University West Gate)",
+                jurisdiction: "MCC Mysuru Ward 9",
+                coordinates: [
+                    [12.3140, 76.6320],
+                    [12.3120, 76.6300],
+                    [12.3090, 76.6275],
+                    [12.3040, 76.6220]
+                ],
+                base_pci: 54.0,
+                decay_rate_k: 0.018,
+                distress_items: ["2 Critical Potholes (8.6cm)", "1 Speed Table Displacement"]
+            },
+            {
+                corridor_id: "ORR-EAST-01",
+                name: "Outer Ring Road (Iblur ➔ Bellandur ➔ Marathahalli)",
+                jurisdiction: "BBMP Mahadevapura Ward 85",
+                coordinates: [
+                    [12.9220, 77.6710],
+                    [12.9275, 77.6785],
+                    [12.9360, 77.6840],
+                    [12.9430, 77.6910],
+                    [12.9550, 77.7010]
+                ],
+                base_pci: 68.5,
+                decay_rate_k: 0.016,
+                distress_items: ["3 Severe Potholes (D40)", "1 Longitudinal Joint Separation"]
+            },
+            {
+                corridor_id: "HOSUR-EXP-02",
+                name: "Hosur Road Expressway (Silk Board Underpass ➔ Bommanahalli)",
+                jurisdiction: "BBMP Bommanahalli Ward 174",
+                coordinates: [
+                    [12.9170, 77.6225],
+                    [12.9110, 77.6320],
+                    [12.9030, 77.6410],
+                    [12.8950, 77.6495]
+                ],
+                base_pci: 48.0,
+                decay_rate_k: 0.022,
+                distress_items: ["1 Severe Waterlogging Segment (D80)", "2 Ravelling Pockets"]
+            },
+            {
+                corridor_id: "AIRPORT-CORR-04",
+                name: "Hebbal Flyover ➔ Yelahanka Expressway Link",
+                jurisdiction: "BBMP Yelahanka Ward 04",
+                coordinates: [
+                    [13.0350, 77.5970],
+                    [13.0390, 77.6265],
+                    [13.0450, 77.6205],
+                    [13.0485, 77.6240]
+                ],
+                base_pci: 82.0,
+                decay_rate_k: 0.009,
+                distress_items: ["1 Minor Transverse Crack (Repaired)"]
+            }
+        ];
 
 function calculatePciDecay(basePci, decayK, days) {
     const projected = basePci * Math.exp(-decayK * days);
@@ -194,112 +226,168 @@ function initClock() {
     setInterval(updateTime, 1000);
 }
 
-// 2. Leaflet GIS Real-Time Map
-function initLeafletMap() {
-    const mapContainer = document.getElementById('gis-map');
-    if (!mapContainer || typeof L === 'undefined') return;
+        // 2. Leaflet GIS Real-Time Map
+        function initLeafletMap() {
+            const mapContainer = document.getElementById('gis-map');
+            if (!mapContainer || typeof L === 'undefined') return;
 
-    state.map = L.map('gis-map', {
-        zoomControl: true,
-        scrollWheelZoom: true
-    }).setView([12.9350, 77.6400], 12);
+            state.map = L.map('gis-map', {
+                zoomControl: true,
+                scrollWheelZoom: true
+            }).setView([12.3360, 76.6210], 13); // Default Centered on Mysuru (MCC & MUDA / VVCE Campus)
 
-    // CartoDB Dark Matter Tiles
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO',
-        maxZoom: 19
-    }).addTo(state.map);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                maxZoom: 19
+            }).addTo(state.map);
 
-    renderHazardsOnMap();
-    renderBusesOnMap();
-    renderPCIHeatmap(0);
-}
-
-function renderHazardsOnMap() {
-    if (!state.map) return;
-    state.hazards.forEach(h => {
-        let color = '#FF9500';
-        let iconClass = 'fa-triangle-exclamation';
-
-        if (h.type === 'POTHOLE') {
-            color = h.sev === 'CRITICAL_P1' ? '#FF3B30' : '#FF9500';
-            iconClass = 'fa-road';
-        } else if (h.type === 'WATERLOGGING') {
-            color = '#00F0FF';
-            iconClass = 'fa-water';
-        } else if (h.type === 'CONGESTION') {
-            color = '#AF52DE';
-            iconClass = 'fa-car';
+            renderHazardsOnMap();
+            renderBusesOnMap();
+            renderPCIHeatmap(0);
         }
 
-        const markerHtml = `
-            <div style="position:relative; width:32px; height:32px; display:flex; align-items:center; justify-content:center;">
-                <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:${color}; opacity:0.3; animation:livePulse 1.8s infinite;"></div>
-                <div style="width:22px; height:22px; border-radius:50%; background:${color}; color:#070A11; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; box-shadow:0 0 14px ${color};">
-                    <i class="fa-solid ${iconClass}"></i>
-                </div>
-            </div>
-        `;
+        function switchCityView(city) {
+            if (!state.map) return;
+            const btnMysuru = document.getElementById('btn-city-mysuru');
+            const btnBengaluru = document.getElementById('btn-city-bengaluru');
+            const btnKarnataka = document.getElementById('btn-city-karnataka');
+            const landmarkBar = document.getElementById('mysuru-quick-landmarks');
 
-        const hazardIcon = L.divIcon({
-            className: 'hazard-custom-marker',
-            html: markerHtml,
-            iconSize: [32, 32]
-        });
+            if (btnMysuru) btnMysuru.classList.remove('active');
+            if (btnBengaluru) btnBengaluru.classList.remove('active');
+            if (btnKarnataka) btnKarnataka.classList.remove('active');
 
-        const voucherLink = h.ticket ? `<div style="margin-top:8px; border-top:1px solid rgba(255,255,255,0.08); padding-top:6px;"><a href="voucher.html?ticket=${h.ticket}" target="_blank" style="color:#00F0FF; font-size:11px; font-weight:700; text-decoration:none;"><i class="fa-solid fa-file-invoice"></i> View CPWD Voucher #${h.ticket} &rarr;</a></div>` : '';
+            if (city === 'mysuru') {
+                if (btnMysuru) btnMysuru.classList.add('active');
+                if (landmarkBar) landmarkBar.style.display = 'flex';
+                state.map.flyTo([12.3360, 76.6210], 13, { duration: 1.2 });
+            } else if (city === 'bengaluru') {
+                if (btnBengaluru) btnBengaluru.classList.add('active');
+                if (landmarkBar) landmarkBar.style.display = 'none';
+                state.map.flyTo([12.9350, 77.6400], 12, { duration: 1.2 });
+            } else if (city === 'karnataka') {
+                if (btnKarnataka) btnKarnataka.classList.add('active');
+                if (landmarkBar) landmarkBar.style.display = 'none';
+                state.map.fitBounds([[12.25, 76.55], [13.08, 77.75]], { padding: [30, 30] });
+            }
+        }
 
-        const popupContent = `
-            <div style="color:#F5F7FA; font-family:'Plus Jakarta Sans',sans-serif; min-width:200px; padding:4px;">
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                    <span style="font-weight:800; font-size:11px; color:${color}; font-family:'JetBrains Mono';">[${h.sev}] ${h.type}</span>
-                    <span style="font-size:10px; color:#9BA3AF; font-family:'JetBrains Mono';">${h.conf}</span>
-                </div>
-                <div style="font-size:12px; font-weight:600; margin-bottom:6px; color:#FFFFFF;">${h.name}</div>
-                <div style="font-size:11px; color:#9BA3AF; display:flex; flex-direction:column; gap:2px;">
-                    ${h.depth ? `<div>Measured Depth: <b style="color:#F5F7FA;">${h.depth}</b></div>` : ''}
-                    ${h.length ? `<div>Submerged Length: <b style="color:#F5F7FA;">${h.length}</b></div>` : ''}
-                    <div>DBSCAN Cluster Passes: <b style="color:#00F0FF;">${h.passes} passes verified</b></div>
-                    ${h.sorCode ? `<div>CPWD SOR Code: <b style="color:#FF9500;">${h.sorCode}</b></div>` : ''}
-                </div>
-                ${voucherLink}
-            </div>
-        `;
+        function jumpToCoord(lat, lng, zoom, name) {
+            if (!state.map) return;
+            state.map.flyTo([lat, lng], zoom, { duration: 0.8 });
+            L.popup()
+                .setLatLng([lat, lng])
+                .setContent(`<div style="font-family:'Plus Jakarta Sans',sans-serif; font-size:11px; font-weight:700; color:#1C1917; padding:4px;"><i class="fa-solid fa-location-dot" style="color:#0284C7;"></i> ${name}</div>`)
+                .openOn(state.map);
+        }
 
-        L.marker([h.lat, h.lng], { icon: hazardIcon })
-            .bindPopup(popupContent)
-            .addTo(state.map);
-    });
-}
+        function renderHazardsOnMap() {
+            if (!state.map) return;
+            state.hazards.forEach(h => {
+                let color = '#EA580C';
+                let iconClass = 'fa-triangle-exclamation';
 
-function renderBusesOnMap() {
-    if (!state.map) return;
-    state.buses.forEach(b => {
-        const busHtml = `
-            <div style="background:#00F0FF; color:#070A11; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; box-shadow:0 0 16px rgba(0,240,255,0.6); border:2px solid #FFFFFF;">
-                <i class="fa-solid fa-bus"></i>
-            </div>
-        `;
+                if (h.type === 'POTHOLE') {
+                    color = h.sev === 'CRITICAL_P1' ? '#DC2626' : '#EA580C';
+                    iconClass = 'fa-road-circle-exclamation';
+                } else if (h.type === 'WATERLOGGING') {
+                    color = '#0284C7';
+                    iconClass = 'fa-water';
+                } else if (h.type === 'CONGESTION') {
+                    color = '#7C3AED';
+                    iconClass = 'fa-car-burst';
+                } else if (h.type === 'ROAD_DEBRIS') {
+                    color = '#D97706';
+                    iconClass = 'fa-triangle-exclamation';
+                }
 
-        const busIcon = L.divIcon({
-            className: 'bus-custom-marker',
-            html: busHtml,
-            iconSize: [28, 28]
-        });
+                const markerHtml = `
+                    <div style="position:relative; width:34px; height:46px; display:flex; flex-direction:column; align-items:center; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.32));">
+                        <div style="width:30px; height:30px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); background:${color}; border:2.5px solid #FFFFFF; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 -2px 4px rgba(0,0,0,0.25);">
+                            <i class="fa-solid ${iconClass}" style="transform:rotate(45deg); color:#FFFFFF; font-size:12px; margin-top:-1px; margin-left:-1px;"></i>
+                        </div>
+                        <div style="width:12px; height:4px; background:rgba(0,0,0,0.3); border-radius:50%; margin-top:2px; filter:blur(1px);"></div>
+                    </div>
+                `;
 
-        b.marker = L.marker([b.lat, b.lng], { icon: busIcon })
-            .bindPopup(`
-                <div style="color:#F5F7FA; font-family:'Plus Jakarta Sans',sans-serif; min-width:180px; padding:4px;">
-                    <div style="font-weight:800; font-size:12px; color:#00F0FF; font-family:'JetBrains Mono';">${b.id}</div>
-                    <div style="font-size:11px; margin:4px 0 6px; color:#FFFFFF;">${b.route}</div>
-                    <div style="font-size:10px; color:#34C759; font-weight:600;">● CAMERA: ONLINE (30 FPS)</div>
-                    <div style="font-size:10px; color:#9BA3AF; margin-top:2px;">Speed: ${b.speed} km/h • Heading: ${b.heading}°</div>
-                    <div style="font-size:10px; color:#9BA3AF;">Privacy: <b style="color:#34C759;">DPDP ACT 2023 §2(t) MASK ON</b></div>
-                </div>
-            `)
-            .addTo(state.map);
-    });
-}
+                const hazardIcon = L.divIcon({
+                    className: 'realistic-hazard-pin',
+                    html: markerHtml,
+                    iconSize: [34, 46],
+                    iconAnchor: [17, 44],
+                    popupAnchor: [0, -42]
+                });
+
+                const voucherLink = h.ticket ? `<div style="margin-top:8px; border-top:1px solid #DDD6C6; padding-top:6px;"><a href="voucher.html?ticket=${h.ticket}" target="_blank" style="color:#0284C7; font-size:11px; font-weight:700; text-decoration:none;"><i class="fa-solid fa-file-invoice"></i> View CPWD Voucher #${h.ticket} &rarr;</a></div>` : '';
+
+                const popupContent = `
+                    <div style="color:#1C1917; font-family:'Plus Jakarta Sans',sans-serif; min-width:210px; padding:4px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                            <span style="font-weight:800; font-size:11px; color:${color}; font-family:'JetBrains Mono';">[${h.sev}] ${h.type}</span>
+                            <span style="font-size:10px; color:#78716C; font-family:'JetBrains Mono'; font-weight:600;">${h.conf}</span>
+                        </div>
+                        <div style="font-size:12px; font-weight:700; margin-bottom:6px; color:#1C1917;">${h.name}</div>
+                        <div style="font-size:11px; color:#57534E; display:flex; flex-direction:column; gap:2px;">
+                            ${h.depth ? `<div>Measured Depth: <b style="color:#1C1917;">${h.depth}</b></div>` : ''}
+                            ${h.length ? `<div>Submerged Length: <b style="color:#1C1917;">${h.length}</b></div>` : ''}
+                            <div>DBSCAN Cluster Passes: <b style="color:#0284C7;">${h.passes} passes verified</b></div>
+                            ${h.sorCode ? `<div>CPWD SOR Code: <b style="color:#EA580C;">${h.sorCode}</b></div>` : ''}
+                        </div>
+                        ${voucherLink}
+                    </div>
+                `;
+
+                L.marker([h.lat, h.lng], { icon: hazardIcon })
+                    .bindPopup(popupContent)
+                    .addTo(state.map);
+            });
+        }
+
+        function renderBusesOnMap() {
+            if (!state.map) return;
+            state.buses.forEach(b => {
+                const isMysuru = b.id.includes('KA09') || b.id.includes('MY09');
+                const badgeColor = isMysuru ? '#EA580C' : '#0284C7';
+                const agencyLabel = isMysuru ? 'KSRTC MYSURU' : 'BMTC ORR';
+                const busNum = b.id.split('-').slice(1).join('-');
+
+                const busHtml = `
+                    <div style="display:inline-flex; align-items:center; background:#1C1917; border:2px solid ${badgeColor}; border-radius:18px; padding:3px 8px 3px 5px; box-shadow:0 3px 10px rgba(0,0,0,0.35); cursor:pointer; gap:6px; white-space:nowrap; transform:translate(-50%, -50%);">
+                        <div style="width:20px; height:20px; border-radius:50%; background:${badgeColor}; display:flex; align-items:center; justify-content:center; color:#FFFFFF; font-size:10px;">
+                            <i class="fa-solid fa-bus-simple"></i>
+                        </div>
+                        <div style="display:flex; flex-direction:column; line-height:1.1;">
+                            <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:800; color:#FFFFFF;">${busNum}</span>
+                            <span style="font-size:8px; font-weight:700; color:${isMysuru ? '#FED7AA' : '#BAE6FD'};">${agencyLabel}</span>
+                        </div>
+                        <span style="width:7px; height:7px; border-radius:50%; background:#22C55E; display:inline-block; box-shadow:0 0 6px #22C55E;"></span>
+                    </div>
+                `;
+
+                const busIcon = L.divIcon({
+                    className: 'realistic-bus-marker',
+                    html: busHtml,
+                    iconSize: [120, 32],
+                    iconAnchor: [60, 16],
+                    popupAnchor: [0, -18]
+                });
+
+                b.marker = L.marker([b.lat, b.lng], { icon: busIcon })
+                    .bindPopup(`
+                        <div style="color:#1C1917; font-family:'Plus Jakarta Sans',sans-serif; min-width:200px; padding:4px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                                <span style="font-weight:800; font-size:12px; color:${badgeColor}; font-family:'JetBrains Mono';">${b.id}</span>
+                                <span style="font-size:9px; background:${badgeColor}; color:#FFFFFF; padding:2px 5px; border-radius:4px; font-weight:700;">${agencyLabel}</span>
+                            </div>
+                            <div style="font-size:11px; margin:4px 0 6px; font-weight:600; color:#1C1917;">${b.route}</div>
+                            <div style="font-size:10px; color:#059669; font-weight:700;">● CAMERA: ONLINE (30 FPS)</div>
+                            <div style="font-size:10px; color:#57534E; margin-top:2px;">Speed: <b>${b.speed} km/h</b> • Heading: <b>${b.heading}°</b></div>
+                            <div style="font-size:10px; color:#57534E;">Privacy: <b style="color:#059669;">DPDP ACT 2023 §2(t) MASK ON</b></div>
+                        </div>
+                    `)
+                    .addTo(state.map);
+            });
+        }
 
 // 3. Live Edge Dashcam Vision Canvas Simulator
 function initDashcamSimulator() {

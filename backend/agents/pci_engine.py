@@ -15,6 +15,25 @@ from backend.models import HazardType, SeverityLevel
 
 CORRIDORS_METADATA = [
     {
+        "id": "CORR-06",
+        "name": "Mysuru Outer Ring Road: Bogadi ↔ Chamundi Foothills ↔ Columbia Asia",
+        "jurisdiction": "MCC Mysuru & MUDA",
+        "arterial_type": "Primary Outer Ring Expressway (KSRTC)",
+        "traffic_pcu_per_day": 48000,
+        "monsoon_vulnerability": "MEDIUM",
+        "coordinates": [
+            [12.3040, 76.6220],
+            [12.3310, 76.5920],
+            [12.3630, 76.6040],
+            [12.3735, 76.6340],
+            [12.3480, 76.6620],
+            [12.3360, 76.6210]
+        ],
+        "base_pci": 72.0,
+        "decay_rate_k": 0.012,
+        "distress_items": ["3 Potholes (8.8cm)", "1 Drainage Issue"]
+    },
+    {
         "id": "CORR-01",
         "name": "Outer Ring Road: Marathahalli ↔ Bellandur EcoSpace",
         "jurisdiction": "BBMP Mahadevapura Ward 85",

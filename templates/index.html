@@ -23,12 +23,27 @@
     <header class="app-header">
         <div class="brand-identity">
             <div class="brand-emblem" title="UrbanSight AI Autonomous Transit Perception Core">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L3 7L12 12L21 7L12 2Z" fill="rgba(2, 132, 199, 0.2)" stroke="#0284C7" stroke-width="1.8" stroke-linejoin="round"/>
-                    <path d="M3 12L12 17L21 12" stroke="#0284C7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M3 17L12 22L21 17" stroke="#EA580C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="12" cy="7" r="2.2" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.2"/>
-                </svg>
+                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Authentic Civic Shield Base -->
+    <path d="M16 2.5L5 6.8V14.5C5 22.2 9.8 28.1 16 29.8C22.2 28.1 27 22.2 27 14.5V6.8L16 2.5Z" fill="#FAF8F5" stroke="#0284C7" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M16 4.8L7 8.3V14.5C7 21 10.9 26.1 16 27.6C21.1 26.1 25 21 25 14.5V8.3L16 4.8Z" fill="rgba(2, 132, 199, 0.08)"/>
+    <!-- Real Perspective Road with Center Divider -->
+    <path d="M11 26L13.8 15H18.2L21 26H11Z" fill="#57534E"/>
+    <line x1="16" y1="16" x2="16" y2="24" stroke="#FAF8F5" stroke-width="1.2" stroke-dasharray="2 2"/>
+    <!-- Realistic City Transit Electric Bus Front View -->
+    <rect x="10.5" y="8" width="11" height="8.5" rx="1.8" fill="#0284C7" stroke="#0369A1" stroke-width="0.8"/>
+    <!-- Bus Windshield Split Glass -->
+    <rect x="11.8" y="9.2" width="3.4" height="3" rx="0.4" fill="#E0F2FE"/>
+    <rect x="16.8" y="9.2" width="3.4" height="3" rx="0.4" fill="#E0F2FE"/>
+    <!-- Bus Destination Display Bar -->
+    <rect x="12.5" y="8.4" width="7" height="0.6" rx="0.2" fill="#FBBF24"/>
+    <!-- Bus Headlights (Warm Amber) -->
+    <circle cx="12.5" cy="14.5" r="1" fill="#F59E0B"/>
+    <circle cx="19.5" cy="14.5" r="1" fill="#F59E0B"/>
+    <!-- Realistic Optical Camera / Perception Sensor Lens -->
+    <circle cx="16" cy="6.2" r="2.2" fill="#EA580C" stroke="#FFFFFF" stroke-width="0.8"/>
+    <circle cx="16" cy="6.2" r="0.9" fill="#FFFFFF"/>
+</svg>
             </div>
             <div class="brand-info">
                 <div class="brand-title-wrap">
@@ -182,6 +197,32 @@
                 <div class="map-viewport">
                     <div id="gis-map"></div>
 
+                    <!-- City / Regional Transit Map Switcher & Mysuru Explorer -->
+                    <div class="map-city-controls">
+                        <div class="city-selector-pills">
+                            <button class="btn-city-pill active" id="btn-city-mysuru" onclick="switchCityView('mysuru')">
+                                <i class="fa-solid fa-landmark-dome" style="color:var(--primary);"></i>
+                                <span>Mysuru (MCC & MUDA)</span>
+                            </button>
+                            <button class="btn-city-pill" id="btn-city-bengaluru" onclick="switchCityView('bengaluru')">
+                                <i class="fa-solid fa-city" style="color:#4F46E5;"></i>
+                                <span>Bengaluru (BBMP)</span>
+                            </button>
+                            <button class="btn-city-pill" id="btn-city-karnataka" onclick="switchCityView('karnataka')">
+                                <i class="fa-solid fa-map-location-dot" style="color:#EA580C;"></i>
+                                <span>Karnataka Transit Mesh</span>
+                            </button>
+                        </div>
+                        <div class="mysuru-quick-landmarks" id="mysuru-quick-landmarks">
+                            <span class="landmark-tag"><i class="fa-solid fa-crosshairs"></i> Mysuru:</span>
+                            <button class="btn-landmark-jump" onclick="jumpToCoord(12.3360, 76.6210, 16, 'VVCE Campus & Gokulam 3rd Stage')">🏫 VVCE Gokulam</button>
+                            <button class="btn-landmark-jump" onclick="jumpToCoord(12.3140, 76.6320, 16, 'Hunsur Road Kalamandira Signal')">🚦 Hunsur Rd Signal</button>
+                            <button class="btn-landmark-jump" onclick="jumpToCoord(12.3480, 76.6620, 16, 'Columbia Asia Ring Road Junction')">🏥 Columbia Asia</button>
+                            <button class="btn-landmark-jump" onclick="jumpToCoord(12.3630, 76.6040, 15, 'Chamundi Hill Foothills')">🏞️ Chamundi Foothills</button>
+                            <button class="btn-landmark-jump" onclick="jumpToCoord(12.3330, 76.6340, 16, 'Infosys Mysuru Campus')">💻 Infosys Campus</button>
+                        </div>
+                    </div>
+
                     <!-- ASTM D6433 PCI Predictive Degradation Forecast Bar -->
                     <div class="map-pci-forecast-bar">
                         <span class="forecast-label"><i class="fa-solid fa-chart-line"></i> ASTM D6433 PCI:</span>
@@ -190,34 +231,35 @@
                         <button class="btn-decay-step" id="btn-decay-30" data-days="30">+30 Days</button>
                     </div>
                     
-                    <div class="map-floating-legend">
+                                        <div class="map-floating-legend">
                         <div class="legend-title">GIS LAYER KEY</div>
                         <div class="legend-item">
-                            <span class="legend-dot" style="background:#00F0FF; box-shadow:0 0 8px #00F0FF;"></span>
-                            <span>BMTC & KSRTC Buses (30 FPS)</span>
+                            <span style="display:inline-flex; width:14px; height:14px; border-radius:50%; background:#1C1917; border:1.5px solid #0284C7; align-items:center; justify-content:center; font-size:7px; color:#FFFFFF;"><i class="fa-solid fa-bus"></i></span>
+                            <span>KSRTC & BMTC e-Buses (30 FPS)</span>
                         </div>
                         <div class="legend-item">
-                            <span class="legend-dot" style="background:#FF3B30; box-shadow:0 0 8px #FF3B30;"></span>
+                            <span style="display:inline-flex; width:14px; height:14px; border-radius:50%; background:#DC2626; border:1px solid #FFFFFF; align-items:center; justify-content:center; font-size:7px; color:#FFFFFF;"><i class="fa-solid fa-triangle-exclamation"></i></span>
                             <span>Critical Potholes (P1)</span>
                         </div>
                         <div class="legend-item">
-                            <span class="legend-dot" style="background:#00F0FF;"></span>
-                            <span>Severe Waterlogging (P2)</span>
+                            <span style="display:inline-flex; width:14px; height:14px; border-radius:50%; background:#0284C7; border:1px solid #FFFFFF; align-items:center; justify-content:center; font-size:7px; color:#FFFFFF;"><i class="fa-solid fa-water"></i></span>
+                            <span>Waterlogging Hazard (P2)</span>
                         </div>
                         <div class="legend-item">
-                            <span class="legend-dot" style="background:#AF52DE;"></span>
-                            <span>Live Traffic Chokepoint (P3)</span>
+                            <span style="display:inline-flex; width:14px; height:14px; border-radius:50%; background:#7C3AED; border:1px solid #FFFFFF; align-items:center; justify-content:center; font-size:7px; color:#FFFFFF;"><i class="fa-solid fa-car"></i></span>
+                            <span>Traffic Chokepoint (P3)</span>
                         </div>
-                        <div class="legend-item" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:4px; margin-top:4px;">
-                            <span class="legend-dot" style="background:#34C759;"></span>
+                        <div class="legend-item" style="border-top:1px solid var(--border-subtle); padding-top:4px; margin-top:4px;">
+                            <span class="legend-dot" style="background:#059669;"></span>
                             <span>PCI Good (80–100)</span>
                         </div>
                         <div class="legend-item">
-                            <span class="legend-dot" style="background:#FF9500;"></span>
+                            <span class="legend-dot" style="background:#EA580C;"></span>
                             <span>PCI Poor / Decay Risk (&lt;65)</span>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
 
             <!-- Panel 2: Live On-Bus Dashcam Vision Simulator -->
