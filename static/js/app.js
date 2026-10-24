@@ -438,10 +438,13 @@ const CORRIDORS = {
 let currentCorridorKey = 'mysuru-orr';
 
 const mediaState = {
-    mode: 'video', // 'video' | 'image'
+    mode: 'video', // 'video' | 'image' | 'live-camera'
     sourceName: 'Mysuru ORR Dashcam (KSRTC-KA09-E102)',
     isPlaying: true,
     dpdpActive: true,
+    isLiveCameraActive: false,
+    cameraFacing: 'environment',
+    cameraStream: null,
     userVideo: null,
     userImage: null,
     baseImage: null,

@@ -14,6 +14,16 @@ Execution:
   python tests/test_e2e_suite.py
 """
 
+import sys
+import os
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
+if TESTS_DIR not in sys.path:
+    sys.path.insert(0, TESTS_DIR)
+
 import unittest
 import math
 import io
@@ -43,16 +53,6 @@ from backend.agents.fleet_advisory import (
     FleetAdvisoryAgent, MAX_ADVISORY_DISTANCE_METERS
 )
 from backend.agents.orchestrator import UrbanSightOrchestrator
-
-import sys
-import os
-
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
-TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
-if TESTS_DIR not in sys.path:
-    sys.path.insert(0, TESTS_DIR)
 
 try:
     from tests.test_e2e_helpers import (
@@ -1794,7 +1794,7 @@ class TestTier4MysuruTransitScenarios(unittest.TestCase):
         wo, dispatched, msg = dispatcher.evaluate_and_dispatch(hazard, work_orders)
         self.assertTrue(dispatched)
         self.assertIsNotNone(wo)
-        self.assertIn("Gokulam", wo.jurisdiction_ward)
+        self.assertIn("Gokulam", wo.location_name)
         self.assertGreater(wo.estimated_cost_inr, 0.0)
 
 
