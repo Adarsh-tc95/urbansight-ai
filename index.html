@@ -1408,7 +1408,129 @@ html, body {
     }
 }
 
-    </style>
+    
+/* Modal Backdrop & Card */
+.modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(28, 25, 23, 0.65);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.modal-card {
+    background: #FAF8F5;
+    border: 1px solid var(--border-medium);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    overflow: hidden;
+    animation: modalIn 0.2s ease-out;
+}
+
+.modal-header {
+    padding: 14px 20px;
+    background: #EDE7DA;
+    border-bottom: 1px solid var(--border-medium);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.btn-modal-close {
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--text-tertiary);
+    cursor: pointer;
+}
+
+.btn-modal-close:hover {
+    color: var(--text-primary);
+}
+
+.btn-recipient-pill {
+    background: #FFFFFF;
+    border: 1px solid var(--border-medium);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-recipient-pill:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-recipient-pill.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #FFFFFF;
+}
+
+.btn-wa-send {
+    background: #25D366;
+    border: none;
+    color: #FFFFFF;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+    transition: all 0.15s ease;
+}
+
+.btn-wa-send:hover {
+    background: #20BA5A;
+    transform: translateY(-1px);
+}
+
+.btn-sms-send {
+    background: #0284C7;
+    border: none;
+    color: #FFFFFF;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+    transition: all 0.15s ease;
+}
+
+.btn-sms-send:hover {
+    background: #0369A1;
+    transform: translateY(-1px);
+}
+
+.btn-modal-cancel {
+    background: transparent;
+    border: 1px solid var(--border-medium);
+    color: var(--text-secondary);
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+</style>
 </head>
 <body>
 
@@ -2876,9 +2998,14 @@ html, body {
                     <td><span class="badge-pill badge-green">${w.sla}</span></td>
                     <td><span class="badge-pill badge-cyan">${w.status}</span></td>
                     <td>
-                        <a href="voucher.html?ticket=${w.ticket}" target="_blank" class="btn-table-action" title="View CPWD Tender Voucher">
-                            <i class="fa-solid fa-file-invoice"></i> Voucher
-                        </a>
+                        <div style="display:flex; align-items:center; gap:5px;">
+                            <a href="voucher.html?ticket=${w.ticket}" target="_blank" class="btn-table-action" title="View CPWD Tender Voucher">
+                                <i class="fa-solid fa-file-invoice"></i> Voucher
+                            </a>
+                            <button onclick="openDispatchMessageModal('${w.ticket}')" class="btn-table-action" style="background:rgba(37,211,102,0.12); color:#15803d; border-color:#25D366; cursor:pointer;" title="Send WhatsApp or SMS Alert">
+                                <i class="fa-brands fa-whatsapp"></i> <i class="fa-solid fa-comment-sms" style="font-size:9px;"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -2981,5 +3108,73 @@ html, body {
             }, 3000);
         }
     </script>
+    <!-- WhatsApp & SMS Municipal Dispatch Modal -->
+    <div class="modal-backdrop" id="msg-dispatch-modal" style="display:none;">
+        <div class="modal-card" style="max-width:540px;">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:32px; height:32px; border-radius:50%; background:rgba(37,211,102,0.15); color:#25D366; display:flex; align-items:center; justify-content:center; font-size:16px;">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin:0; font-size:1rem; font-weight:800; color:var(--text-primary);">Municipal Dispatch Gateway</h3>
+                        <p style="margin:0; font-size:0.72rem; color:var(--text-tertiary);">Send live road repair alerts via WhatsApp Business API or National Telecom SMS</p>
+                    </div>
+                </div>
+                <button class="btn-modal-close" onclick="closeDispatchMessageModal()">&times;</button>
+            </div>
+
+            <div class="modal-body" style="padding:16px 20px; display:flex; flex-direction:column; gap:14px;">
+                <div>
+                    <label style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:4px; display:block;">Select PWD Work Order</label>
+                    <select id="msg-ticket-select" onchange="updateDispatchMessagePreview()" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid var(--border-medium); background:#FFFFFF; color:var(--text-primary); font-family:var(--font-mono); font-size:0.78rem;">
+                    </select>
+                </div>
+
+                <div>
+                    <label style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:4px; display:block;">Recipient Role</label>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="btn-recipient-pill active" data-role="CONTRACTOR" data-phone="+91 98450 12345" onclick="setRecipientRole(this)">
+                            👷 PWD Contractor
+                        </button>
+                        <button class="btn-recipient-pill" data-role="CHIEF_ENGINEER" data-phone="+91 94480 54321" onclick="setRecipientRole(this)">
+                            🏛️ Ward Engineer
+                        </button>
+                        <button class="btn-recipient-pill" data-role="CITIZEN" data-phone="+91 98765 43210" onclick="setRecipientRole(this)">
+                            👤 Citizen Informant
+                        </button>
+                        <button class="btn-recipient-pill" data-role="DRIVER" data-phone="+91 99800 11223" onclick="setRecipientRole(this)">
+                            🚌 Transit Bus Fleet
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:4px; display:block;">Recipient Mobile Number</label>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <input type="tel" id="msg-recipient-phone" value="+91 98450 12345" style="flex:1; padding:8px 12px; border-radius:6px; border:1px solid var(--border-medium); background:#FFFFFF; color:var(--text-primary); font-family:var(--font-mono); font-size:0.85rem; font-weight:700;">
+                        <span style="font-size:0.7rem; color:var(--success); font-weight:700; display:flex; align-items:center; gap:3px;"><i class="fa-solid fa-circle-check"></i> Verified</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:4px; display:block;">Live Dispatch Payload Preview</label>
+                    <textarea id="msg-preview-text" rows="5" readonly style="width:100%; padding:10px 12px; border-radius:6px; border:1px solid var(--border-medium); background:#FAF8F5; color:var(--text-primary); font-family:var(--font-mono); font-size:0.72rem; line-height:1.45; resize:none;"></textarea>
+                </div>
+
+                <div id="msg-delivery-status" style="display:none; padding:8px 12px; border-radius:6px; font-size:0.72rem; font-family:var(--font-mono); align-items:center; gap:6px;"></div>
+            </div>
+
+            <div class="modal-footer" style="padding:12px 20px; background:#EDE7DA; border-top:1px solid var(--border-medium); display:flex; justify-content:flex-end; gap:8px;">
+                <button class="btn-modal-cancel" onclick="closeDispatchMessageModal()">Cancel</button>
+                <button class="btn-sms-send" onclick="sendModalDispatch('SMS')">
+                    <i class="fa-solid fa-comment-sms"></i> Send Normal SMS
+                </button>
+                <button class="btn-wa-send" onclick="sendModalDispatch('WHATSAPP')">
+                    <i class="fa-brands fa-whatsapp"></i> Send via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

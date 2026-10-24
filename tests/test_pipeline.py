@@ -623,5 +623,42 @@ class TestMediaAnalysisPipeline(unittest.TestCase):
         self.assertAlmostEqual(res["defect"]["damage_depth_cm"], 8.9)
 
 
+
+
+class TestAlertMessagingEngine(unittest.TestCase):
+    """Verifies WhatsApp and SMS municipal alert messaging dispatch."""
+
+    def test_whatsapp_alert_dispatch(self):
+        from backend.main import send_alert_message, AlertMessageRequest
+        req = AlertMessageRequest(
+            channel="WHATSAPP",
+            phone_number="+919845012345",
+            ticket_id="PWD-OCT-0715",
+            recipient_type="CONTRACTOR",
+            location_name="VVCE Ring Road Junction, Gokulam, Mysuru"
+        )
+        res = send_alert_message(req)
+        self.assertEqual(res["status"], "DELIVERED")
+        self.assertEqual(res["channel"], "WHATSAPP")
+        self.assertTrue(res["message_id"].startswith("MSG-WH-"))
+        self.assertEqual(res["delivery_status"], "SENT_AND_DELIVERED")
+        self.assertTrue(res["audit_verified"])
+
+    def test_sms_alert_dispatch(self):
+        from backend.main import send_alert_message, AlertMessageRequest
+        req = AlertMessageRequest(
+            channel="SMS",
+            phone_number="+919876543210",
+            ticket_id="PWD-OCT-0720",
+            recipient_type="CITIZEN",
+            location_name="Hunsur Road Kalamandira Signal, Mysuru"
+        )
+        res = send_alert_message(req)
+        self.assertEqual(res["status"], "DELIVERED")
+        self.assertEqual(res["channel"], "SMS")
+        self.assertTrue(res["message_id"].startswith("MSG-SM-"))
+        self.assertEqual(res["delivery_status"], "SENT_AND_DELIVERED")
+
+
 if __name__ == '__main__':
     unittest.main()

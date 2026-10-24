@@ -453,6 +453,12 @@
             <button class="btn-action btn-print" onclick="window.print();">
                 <i class="fa-solid fa-print"></i> Print Official Voucher (PDF)
             </button>
+            <button class="btn-action" style="background:rgba(37,211,102,0.15); color:#15803d; border:1px solid #25D366;" onclick="shareVoucherWhatsApp();" title="Share Tender Voucher via WhatsApp">
+                <i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> WhatsApp Voucher
+            </button>
+            <button class="btn-action" style="background:rgba(2,132,199,0.12); color:#0369a1; border:1px solid #0284c7;" onclick="shareVoucherSMS();" title="Send SMS Link to Ward Engineer">
+                <i class="fa-solid fa-comment-sms" style="color:#0284c7;"></i> SMS Voucher
+            </button>
             <a href="https://github.com/gaganks2006-ind/urbansight-ai" target="_blank" class="btn-action" title="View Source on GitHub"><i class="fa-brands fa-github"></i> GitHub</a>
             <a href="index.html" class="btn-action"><i class="fa-solid fa-gauge-high"></i> Command Center</a>
             <a href="citizen_portal.html" class="btn-action" id="link-citizen">
@@ -741,6 +747,55 @@
 
             // Update URL hash / query
             history.replaceState(null, '', `?ticket=${ticketId}`);
+        }
+
+        function shareVoucherWhatsApp() {
+            const sel = document.getElementById('ticket-select');
+            const ticket = sel ? sel.value : 'PWD-2026-OCT-0715';
+            const data = (typeof VOUCHER_DATA !== 'undefined' && VOUCHER_DATA[ticket]) ? VOUCHER_DATA[ticket] : {};
+            const text = `📋 *URBANSIGHT AI · CPWD TENDER VOUCHER* 📋\n\n` +
+                `🏛️ *Ticket:* #${ticket}\n` +
+                `📍 *Location:* ${data.location || 'VVCE Mysuru Ring Road'}\n` +
+                `💰 *CPWD Est. Total:* ₹${data.total || '14,250'} INR\n` +
+                `⏱️ *SLA Deadline:* ${data.sla_text || '48 Hours'}\n` +
+                `📄 *Printable Voucher:* https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=${ticket}\n` +
+                `🔍 *Citizen Tracker:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${ticket}\n\n` +
+                `— Municipal Council Approved | DPDP Act 2023 Compliant`;
+
+            fetch('/api/send-alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    channel: 'WHATSAPP',
+                    phone_number: '+91 98450 12345',
+                    ticket_id: ticket,
+                    recipient_type: 'CONTRACTOR',
+                    message: text
+                })
+            }).catch(() => {});
+
+            window.open(`https://api.whatsapp.com/send?phone=919845012345&text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareVoucherSMS() {
+            const sel = document.getElementById('ticket-select');
+            const ticket = sel ? sel.value : 'PWD-2026-OCT-0715';
+            const data = (typeof VOUCHER_DATA !== 'undefined' && VOUCHER_DATA[ticket]) ? VOUCHER_DATA[ticket] : {};
+            const text = `URBANSIGHT AI: CPWD Voucher #${ticket} approved (${data.location || 'Mysuru Ring Rd'}). Total ₹${data.total || '14,250'}. View voucher: https://gaganks2006-ind.github.io/urbansight-ai/voucher.html?ticket=${ticket}`;
+
+            fetch('/api/send-alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    channel: 'SMS',
+                    phone_number: '+91 94480 54321',
+                    ticket_id: ticket,
+                    recipient_type: 'CHIEF_ENGINEER',
+                    message: text
+                })
+            }).catch(() => {});
+
+            window.location.href = `sms:+919448054321?body=${encodeURIComponent(text)}`;
         }
 
         // On Load: Check URL parameters (e.g. ?ticket=PWD-2026-OCT-0882)

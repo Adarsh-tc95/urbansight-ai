@@ -734,8 +734,8 @@
         }
 
         .btn-sms {
-            background: #FFFFFF;
-            border: 1px solid var(--border-medium);
+            background: #0284C7;
+            border: 1px solid #0369A1;
             color: #FFFFFF;
             padding: 10px 16px;
             border-radius: 8px;
@@ -1080,6 +1080,28 @@
                     <i class="fa-solid fa-comment-sms"></i> SMS
                 </button>
             </form>
+            <!-- Interactive Live Chat/SMS Message Bubble Preview -->
+            <div id="citizen-msg-bubble-wrap" style="display:none; margin-top:16px; padding:14px 16px; background:#EDE7DA; border-radius:10px; border:1px solid var(--border-medium); text-align:left; animation:fadeIn 0.3s ease;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span id="citizen-msg-channel-icon" style="font-size:18px; color:#25D366;"><i class="fa-brands fa-whatsapp"></i></span>
+                        <div>
+                            <div style="font-size:0.82rem; font-weight:800; color:var(--text-primary);" id="citizen-msg-sender">Mysuru City Corporation PWD (UrbanSight AI)</div>
+                            <div style="font-size:0.68rem; color:var(--text-tertiary);" id="citizen-msg-time">Just now · Official Municipal Gateway</div>
+                        </div>
+                    </div>
+                    <span style="font-size:0.68rem; padding:3px 8px; border-radius:12px; background:rgba(37,211,102,0.15); color:#15803d; font-weight:700;" id="citizen-msg-badge">✓ Verified Bot</span>
+                </div>
+                <div id="citizen-msg-text-bubble" style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:12px; font-family:var(--font-mono); font-size:0.75rem; color:var(--text-primary); line-height:1.5; white-space:pre-wrap; margin-bottom:10px;"></div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button id="btn-open-wa-chat" class="btn-wa" style="padding:6px 12px; font-size:0.75rem;" onclick="openCitizenWhatsAppChat()">
+                        <i class="fa-brands fa-whatsapp"></i> Open in WhatsApp Web / App
+                    </button>
+                    <button id="btn-open-sms-chat" class="btn-sms" style="padding:6px 12px; font-size:0.75rem;" onclick="openCitizenSMSApp()">
+                        <i class="fa-solid fa-comment-sms"></i> Open in SMS App
+                    </button>
+                </div>
+            </div>
         </section>
 
     </main>
@@ -1384,12 +1406,94 @@
             }, 3800);
         }
 
-        function subscribeNotification(channel = 'WhatsApp') {
-            const phone = document.getElementById('subscriber-phone').value || '+91 98765 43210';
+        let lastCitizenMessagePayload = { text: '', phone: '', cleanPhone: '', channel: 'WHATSAPP' };
+
+        function subscribeNotification(channel = 'WHATSAPP') {
+            const phoneInput = document.getElementById('subscriber-phone');
+            const phone = (phoneInput && phoneInput.value.trim()) ? phoneInput.value.trim() : '+91 98765 43210';
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            const currentTkt = (typeof currentTicket !== 'undefined' && currentTicket) ? currentTicket : {
+                ticket_id: 'PWD-OCT-0715',
+                hazard_name: 'Pothole (High)',
+                location_name: 'VVCE Ring Road Junction, Gokulam, Mysuru',
+                status: 'IN_PROGRESS',
+                sla_hours: 48
+            };
+
+            const tktId = currentTkt.ticket_id || 'PWD-OCT-0715';
+            const locName = currentTkt.location_name || 'VVCE Mysuru Ring Road';
+            const hazName = currentTkt.hazard_name || 'Pothole';
+            const statusTxt = currentTkt.status || 'IN_PROGRESS';
+
+            const msgText = `🚨 *URBANSIGHT AI · MUNICIPAL ROAD REPAIR ALERT* 🚨\n\n` +
+                `Hello Citizen! You are subscribed to live updates for repair #${tktId}.\n` +
+                `📍 *Defect:* ${hazName}\n` +
+                `📌 *Location:* ${locName}\n` +
+                `⚡ *Status:* ${statusTxt} (Rapid Response Van #KA-09-EA-4122)\n` +
+                `⏱️ *SLA Target:* Under 48 hours\n` +
+                `🔗 *Live Tracker:* https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${tktId}\n\n` +
+                `— Mysuru City Corporation (MCC) & Smart City Mission`;
+
+            lastCitizenMessagePayload = { text: msgText, phone: phone, cleanPhone: cleanPhone, channel: channel };
+
+            // Call backend API
+            fetch('/api/send-alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    channel: channel.toUpperCase(),
+                    phone_number: phone,
+                    ticket_id: tktId,
+                    recipient_type: 'CITIZEN',
+                    message: msgText
+                })
+            }).catch(() => {});
+
+            // Show Toast
             showToast(
-                `Subscribed via ${channel}!`,
-                `Live repair updates for ${document.getElementById('ticket-number-display').textContent} will be sent to ${phone}.`
+                `✓ Subscribed via ${channel}!`,
+                `Live repair updates for ${tktId} will be delivered to ${phone}.`
             );
+
+            // Display simulated chat bubble preview
+            const bubbleWrap = document.getElementById('citizen-msg-bubble-wrap');
+            const bubbleText = document.getElementById('citizen-msg-text-bubble');
+            const channelIcon = document.getElementById('citizen-msg-channel-icon');
+            const channelBadge = document.getElementById('citizen-msg-badge');
+            const btnWa = document.getElementById('btn-open-wa-chat');
+            const btnSms = document.getElementById('btn-open-sms-chat');
+
+            if (bubbleWrap && bubbleText) {
+                bubbleWrap.style.display = 'block';
+                bubbleText.textContent = msgText.replace(/\\n/g, '\n');
+                if (channel.toUpperCase() === 'WHATSAPP') {
+                    channelIcon.innerHTML = '<i class="fa-brands fa-whatsapp"></i>';
+                    channelIcon.style.color = '#25D366';
+                    channelBadge.textContent = '✓ WhatsApp Cloud API';
+                    channelBadge.style.background = 'rgba(37,211,102,0.15)';
+                    channelBadge.style.color = '#15803d';
+                } else {
+                    channelIcon.innerHTML = '<i class="fa-solid fa-comment-sms"></i>';
+                    channelIcon.style.color = '#0284C7';
+                    channelBadge.textContent = '✓ Telecom DLT Gateway';
+                    channelBadge.style.background = 'rgba(2,132,199,0.15)';
+                    channelBadge.style.color = '#0369a1';
+                }
+            }
+        }
+
+        function openCitizenWhatsAppChat() {
+            if (!lastCitizenMessagePayload.text) subscribeNotification('WHATSAPP');
+            const clean = lastCitizenMessagePayload.cleanPhone || '919876543210';
+            const url = `https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(lastCitizenMessagePayload.text)}`;
+            window.open(url, '_blank');
+        }
+
+        function openCitizenSMSApp() {
+            if (!lastCitizenMessagePayload.text) subscribeNotification('SMS');
+            const phone = lastCitizenMessagePayload.phone || '+919876543210';
+            const url = `sms:${phone}?body=${encodeURIComponent(lastCitizenMessagePayload.text)}`;
+            window.location.href = url;
         }
 
         // Hybrid API Fetch: Load live work orders if FastAPI backend is available

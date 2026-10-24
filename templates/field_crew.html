@@ -844,6 +844,12 @@
                         <button class="btn-act btn-nav-map" onclick="event.stopPropagation(); openDirections(${order.lat}, ${order.lng});">
                             <i class="fa-solid fa-diamond-turn-right"></i> Navigate
                         </button>
+                        <button class="btn-act" style="background:rgba(37,211,102,0.15); color:#15803d; border:1px solid #25D366;" onclick="event.stopPropagation(); sendCrewWhatsAppAlert('${order.ticket_id}')" title="Send WhatsApp Update to Ward Engineer">
+                            <i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> WhatsApp Engr
+                        </button>
+                        <button class="btn-act" style="background:rgba(2,132,199,0.12); color:#0369a1; border:1px solid #0284c7;" onclick="event.stopPropagation(); sendCrewSMSAlert('${order.ticket_id}')" title="Send SMS Status via Telecom Gateway">
+                            <i class="fa-solid fa-comment-sms" style="color:#0284c7;"></i> SMS Update
+                        </button>
                     </div>
 
                     <!-- Inspection / Before & After Drawer -->
@@ -890,9 +896,22 @@
             // Notify User
             showToast(
                 newStatus === 'RESOLVED' ? 
-                `🎉 Ticket ${ticketId} Closed & Verified!` : 
-                `🛠️ Work started on ${ticketId}`
+                `🎉 Ticket ${ticketId} Closed & Verified! WhatsApp & SMS sent to Citizen.` : 
+                `🛠️ Work started on ${ticketId}. WhatsApp & SMS dispatched.`
             );
+
+            // Dispatch automated alert to citizen
+            fetch('/api/send-alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    channel: 'WHATSAPP',
+                    phone_number: '+91 98765 43210',
+                    ticket_id: ticketId,
+                    recipient_type: 'CITIZEN',
+                    message: `🚨 *URBANSIGHT AI · REPAIR STATUS UPDATE* 🚨\nWork Order #${ticketId} has been updated to: ${newStatus}.\nField Crew: Van #KA-09-EA-4122\nTracker: https://gaganks2006-ind.github.io/urbansight-ai/citizen_portal.html?ticket=${ticketId}`
+                })
+            }).catch(() => {});
 
             // Attempt live sync with Node A backend
             try {

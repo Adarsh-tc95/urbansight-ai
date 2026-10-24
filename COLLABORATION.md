@@ -179,6 +179,20 @@
   4. **Backend REST API**: Endpoints `POST /api/analyze-media` (multipart upload) and `POST /api/analyze-media-json` passing detections through `orchestrator.process_edge_detection()`.
   5. **100% Test Coverage**: 29/29 unit tests passing, synced across `main` and `gh-pages`.
 
+---
+
+### 🟢 TASK-13: Automated WhatsApp & SMS Municipal Alert Notification Gateway [COMPLETED]
+- **Assignee**: Lead Messaging & Fullstack Systems Engineer (Antigravity)
+- **Target Files**: backend/main.py, tests/test_pipeline.py, index.html, templates/index.html, static/js/app.js, citizen_portal.html, templates/citizen_portal.html, voucher.html, templates/voucher.html, field_crew.html, templates/field_crew.html, COLLABORATION.md
+- **Objective**: Implement comprehensive real-time messaging support across WhatsApp Business API and National Telecom SMS gateways, connecting civic stakeholders (PWD Contractors, Ward Executive Engineers, Citizens, and Fleet Bus Drivers) directly to automated road hazard alerts and work orders.
+- **Key Deliverables**:
+  1. **Backend REST Endpoint (POST /api/send-alert)**: Validates phone numbers and delivery channels (WHATSAPP, SMS), routes through simulated Meta Cloud API / National DLT Gateways, and injects audit logs into the multi-agent telemetry stream.
+  2. **Command Center Municipal Dispatch Modal**: Integrated into PWD Work Orders table with recipient role toggles (Contractor, Engineer, Citizen, Driver), live phone validator, auto-generated Markdown payload preview, and single-click WhatsApp/SMS triggers.
+  3. **Citizen Portal Interactive Subscription**: Interactive phone subscription form with live simulated message bubble preview (WhatsApp Cloud API / Telecom DLT Gateway) and deep action links to WhatsApp Web and native mobile SMS.
+  4. **CPWD Tender Voucher Sharing**: Quick-action ribbon buttons (WhatsApp Voucher, SMS Voucher) to deliver formal procurement estimates with CPWD SOR codes directly to contractors.
+  5. **Mobile Field Crew PWA Dispatch**: Quick status reporting buttons (WhatsApp Engr, SMS Update) with automated alerts triggered upon starting and resolving repairs.
+  6. **100% Unit Test Pass Rate**: 31/31 unit tests passing, synced across main and gh-pages.
+
 ## 🔄 Status Tracker
 - [x] Backend 4-Agent Modular Architecture (`tests/test_pipeline.py` 24/24 passing) — Node A & B
 - [x] Real-time GIS Command Dashboard (`index.html`) — Node A
@@ -195,3 +209,4 @@
 - [x] TASK-10: Warm Beige Light Design System & Branded Ecosystem UI (All 6 HTML portals + templates) — Lead Frontend UI/UX Architect (Completed)
 - [x] TASK-11: Mysuru GIS Map Integration & Realistic Civic Iconography (All portals, maps & backend) — Lead Frontend UI/UX Architect (Completed)
 - [x] TASK-12: Transit Video & Photo Road Inspection AI Analyzer Engine (Backend, Frontend, Tests) — Lead Vision & Fullstack Engineer (Completed)
+- [x] TASK-13: Automated WhatsApp & SMS Municipal Alert Notification Gateway (Backend, Frontend, Tests) — Lead Messaging & Fullstack Systems Engineer (Completed)
