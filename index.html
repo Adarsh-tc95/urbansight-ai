@@ -299,7 +299,7 @@ html, body {
     color: #FFFFFF;
 }
 
-.civic-dropdown {
+/* .civic-dropdown {
     position: relative;
     display: inline-block;
 }
@@ -2234,8 +2234,8 @@ body.high-contrast * {
 </head>
 <body>
 
-    <!-- Tier-0 Official Government Authority Strip (Clean & Minimal) -->
-    <div class="gov-topbar" id="gov-topbar" style="padding: 6px 24px; font-size: 0.78rem; background: #FAF8F5; border-bottom: 1px solid var(--border-medium); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+    <!-- Tier-0 Official Government Authority Strip (Clean, Compact & Complete) -->
+    <div class="gov-topbar" id="gov-topbar" style="padding: 5px 20px; font-size: 0.76rem; background: #FAF8F5; border-bottom: 1px solid var(--border-medium); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
         <div style="display: flex; align-items: center; gap: 10px;">
             <span style="font-weight: 700; color: #B45309; letter-spacing: 0.3px;">ಕರ್ನಾಟಕ ಸರ್ಕಾರ · GOVT OF KARNATAKA</span>
             <span style="color: #A8A29E;">|</span>
@@ -2243,13 +2243,20 @@ body.high-contrast * {
             <span style="color: #A8A29E;">|</span>
             <span style="color: #0284C7; font-weight: 600;"><i class="fa-solid fa-city"></i> Smart Cities Mission (SIH26124)</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 14px; font-size: 0.74rem; color: #78716C;">
-            <span><i class="fa-solid fa-circle-dot" style="color: #059669;"></i> Telemetry: <strong style="color: #1C1917;">Active (30 FPS)</strong></span>
-            <span><i class="fa-solid fa-shield-halved" style="color: #0284C7;"></i> DPDP Act 2023 §2(t) Privacy Active</span>
+        <div style="display: flex; align-items: center; gap: 12px; font-size: 0.72rem; color: #57534E;">
+            <button type="button" onclick="openPublicTendersModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Active Tenders & RTI"><i class="fa-solid fa-landmark"></i> Tenders</button>
+            <span style="color:#D6CEBC;">•</span>
+            <button type="button" onclick="openHelplinesModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Emergency Helplines"><i class="fa-solid fa-phone-volume"></i> Helplines</button>
+            <span style="color:#D6CEBC;">•</span>
+            <button type="button" onclick="openGrievanceTrackerModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Janahitha SLA Tracker"><i class="fa-solid fa-clock-rotate-left"></i> Janahitha SLA</button>
+            <span style="color:#D6CEBC;">•</span>
+            <button type="button" onclick="openInspectionCertificateModal()" style="background:none; border:none; color:#0284C7; font-size:0.72rem; font-weight:600; cursor:pointer;" title="Safety Certificate"><i class="fa-solid fa-certificate"></i> Certificate</button>
+            <span style="color:#D6CEBC;">|</span>
+            <span><i class="fa-solid fa-circle-dot" style="color: #059669;"></i> <strong>30 FPS</strong></span>
+            <span><i class="fa-solid fa-shield-halved" style="color: #0284C7;"></i> DPDP Active</span>
         </div>
     </div>
-
-    <!-- 1. Branded Unified Header & Navigation Bar -->
+        <!-- 1. Branded Unified Header & Navigation Bar -->
     <header class="app-header">
         <div class="brand-identity">
             <div class="brand-emblem" title="UrbanSight AI Autonomous Transit Perception Core">
@@ -2290,65 +2297,44 @@ body.high-contrast * {
             </div>
         </div>
 
-        <!-- Portal Switcher: 6 Dedicated Stakeholder Dashboards (Separated by Role) -->
+        <!-- Portal Switcher: 6 Dedicated Stakeholder Dashboards -->
         <div class="header-nav-center">
             <nav class="portal-nav-pills" aria-label="Smart City Stakeholder Dashboards">
                 <!-- 1. Command Center: City Commissioners -->
                 <a href="index.html" class="portal-pill active" title="Integrated Command & Control Center (For City Commissioners & Traffic Police)">
                     <i class="fa-solid fa-gauge-high"></i>
                     <span>Command Center</span>
-                    <span class="role-badge">Commissioners</span>
                 </a>
 
                 <!-- 2. Driver HUD: Transit Pilots -->
                 <a href="driver_console.html" target="_blank" class="portal-pill" title="In-Cab Bus Driver HUD Console (For BMTC & KSRTC Drivers)">
                     <i class="fa-solid fa-tablet-screen-button"></i>
                     <span>Driver HUD</span>
-                    <span class="role-badge">Drivers</span>
                 </a>
 
                 <!-- 3. Citizen Portal: Public Commuters -->
                 <a href="citizen_portal.html" target="_blank" class="portal-pill" title="Public Citizen Road Repair Tracker (For Public & Commuters)">
                     <i class="fa-solid fa-users"></i>
                     <span>Citizen Portal</span>
-                    <span class="role-badge">Citizens</span>
                 </a>
 
                 <!-- 4. Field Crew PWA: Road Repair Vans -->
                 <a href="field_crew.html" target="_blank" class="portal-pill" title="Mobile Field Crew Repair PWA (For PWD Repair Vans)">
                     <i class="fa-solid fa-truck-pickup"></i>
                     <span>Field Crew</span>
-                    <span class="role-badge">PWD Crews</span>
                 </a>
 
                 <!-- 5. Ward Analytics: Corporators & Finance -->
                 <a href="analytics.html" target="_blank" class="portal-pill" title="Municipal Ward Analytics & SLA Leaderboard (For Corporators & Finance)">
                     <i class="fa-solid fa-chart-pie"></i>
                     <span>Ward Analytics</span>
-                    <span class="role-badge">Governance</span>
                 </a>
 
                 <!-- 6. CPWD Voucher: Auditors & Contractors -->
                 <a href="voucher.html?ticket=PWD-OCT-0941" target="_blank" class="portal-pill" title="Official CPWD Statutory Tender Voucher (For Auditors & Contractors)">
                     <i class="fa-solid fa-file-invoice"></i>
-                    <span>Tender Voucher</span>
-                    <span class="role-badge">Auditors</span>
+                    <span>CPWD Voucher</span>
                 </a>
-
-                <!-- Secondary Civic Utilities Dropdown (Keeps Nav Clean & Clutter-Free) -->
-                <div class="civic-dropdown">
-                    <button type="button" class="portal-pill civic-dropdown-btn" style="cursor:pointer;" title="Civic Governance Modals (Tenders, Helplines, SLA, Certificate)">
-                        <i class="fa-solid fa-landmark"></i>
-                        <span>Civic Tools</span>
-                        <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem; margin-left: 2px;"></i>
-                    </button>
-                    <div class="civic-dropdown-menu">
-                        <button type="button" class="civic-dropdown-item" onclick="openPublicTendersModal()"><i class="fa-solid fa-landmark"></i> Tenders & RTI</button>
-                        <button type="button" class="civic-dropdown-item" onclick="openHelplinesModal()"><i class="fa-solid fa-phone-volume"></i> Helplines & Wards</button>
-                        <button type="button" class="civic-dropdown-item" onclick="openGrievanceTrackerModal()"><i class="fa-solid fa-clock-rotate-left"></i> Janahitha SLA</button>
-                        <button type="button" class="civic-dropdown-item" onclick="openInspectionCertificateModal()"><i class="fa-solid fa-certificate"></i> Safety Certificate</button>
-                    </div>
-                </div>
 
                 <!-- Official Infothon GitHub Repo -->
                 <a href="https://github.com/Infothon-7-0/AGENTIC-AI-05-EcoLogic" target="_blank" class="portal-pill" title="Official Hackathon Repository on GitHub">

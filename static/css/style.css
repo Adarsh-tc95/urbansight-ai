@@ -281,51 +281,7 @@ html, body {
     color: #FFFFFF;
 }
 
-.civic-dropdown {
-    position: relative;
-    display: inline-block;
-}
 
-.civic-dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    margin-top: 6px;
-    background: #FAF8F5;
-    border: 1px solid var(--border-medium);
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-    min-width: 195px;
-    z-index: 1000;
-    padding: 6px;
-}
-
-.civic-dropdown:hover .civic-dropdown-menu {
-    display: block;
-}
-
-.civic-dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 8px 12px;
-    border: none;
-    background: transparent;
-    color: var(--text-primary);
-    font-size: 0.78rem;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.15s;
-}
-
-.civic-dropdown-item:hover {
-    background: #EDE7DA;
-    color: #0284C7;
-}
 
 .portal-pill i {
     font-size: 0.78rem;
