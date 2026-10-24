@@ -1947,3 +1947,113 @@ h1, h2, h3 {
     font-size: 0.72rem;
     flex-wrap: wrap;
 }
+
+/* =============================================================================
+   Official GIGW 3.0 Single-Tab Government Governance & Directory Bar
+   ============================================================================= */
+.gov-single-tab-footer {
+    background: #002244;
+    color: #FFFFFF;
+    border-top: 3px solid var(--gov-saffron);
+    margin-top: 16px;
+    font-family: var(--font-ui);
+    width: 100%;
+}
+
+.footer-tab-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 16px;
+    background: #001833;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    flex-wrap: wrap;
+}
+
+.footer-tab-pill {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.75);
+    border: 1px solid transparent;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.footer-tab-pill:hover {
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.footer-tab-pill.active {
+    background: var(--gov-blue);
+    color: #FFFFFF;
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.footer-tab-badge {
+    margin-left: auto;
+    font-size: 0.68rem;
+    color: #7DD3FC;
+    background: rgba(2, 132, 199, 0.2);
+    border: 1px solid rgba(2, 132, 199, 0.4);
+    padding: 2px 8px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-tab-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+    background: rgba(0, 34, 68, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    min-height: 36px;
+}
+
+.ftab-label {
+    font-weight: 700;
+    color: var(--gov-saffron);
+    margin-right: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-tab-panel a {
+    color: #BAE6FD;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.footer-tab-panel a:hover {
+    color: #FFFFFF;
+    text-decoration: underline;
+}
+
+.ftab-sep {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.gov-footer-bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px;
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.6);
+    background: #001226;
+    flex-wrap: wrap;
+    gap: 8px;
+}

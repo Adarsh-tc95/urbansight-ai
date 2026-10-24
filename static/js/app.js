@@ -2540,3 +2540,13 @@ function speakMapDirectionPrompt() {
 }
 }
 
+
+function switchFooterTab(tabKey) {
+    document.querySelectorAll('.footer-tab-pill').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.footer-tab-panel').forEach(panel => panel.style.display = 'none');
+    
+    const activeBtn = document.getElementById(`ftab-btn-${tabKey}`);
+    const activePanel = document.getElementById(`footer-tab-${tabKey}`);
+    if (activeBtn) activeBtn.classList.add('active');
+    if (activePanel) activePanel.style.display = 'flex';
+}

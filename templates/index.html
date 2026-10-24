@@ -1969,6 +1969,116 @@ h1, h2, h3 {
     flex-wrap: wrap;
 }
 
+/* =============================================================================
+   Official GIGW 3.0 Single-Tab Government Governance & Directory Bar
+   ============================================================================= */
+.gov-single-tab-footer {
+    background: #002244;
+    color: #FFFFFF;
+    border-top: 3px solid var(--gov-saffron);
+    margin-top: 16px;
+    font-family: var(--font-ui);
+    width: 100%;
+}
+
+.footer-tab-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 16px;
+    background: #001833;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    flex-wrap: wrap;
+}
+
+.footer-tab-pill {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.75);
+    border: 1px solid transparent;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.footer-tab-pill:hover {
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.footer-tab-pill.active {
+    background: var(--gov-blue);
+    color: #FFFFFF;
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.footer-tab-badge {
+    margin-left: auto;
+    font-size: 0.68rem;
+    color: #7DD3FC;
+    background: rgba(2, 132, 199, 0.2);
+    border: 1px solid rgba(2, 132, 199, 0.4);
+    padding: 2px 8px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-tab-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+    background: rgba(0, 34, 68, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    min-height: 36px;
+}
+
+.ftab-label {
+    font-weight: 700;
+    color: var(--gov-saffron);
+    margin-right: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-tab-panel a {
+    color: #BAE6FD;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.footer-tab-panel a:hover {
+    color: #FFFFFF;
+    text-decoration: underline;
+}
+
+.ftab-sep {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.gov-footer-bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px;
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.6);
+    background: #001226;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 </style>
 </head>
 <body>
@@ -2543,27 +2653,6 @@ h1, h2, h3 {
                 </div>
             </div>
         </div>
-
-        <!-- Row 2: Multi-Agent Consensus Intelligence & Real-Time Telemetry Feed -->
-        <div class="consensus-dual-row">
-            <!-- Panel 3: 4-Agent Pipeline Workflow Stepper -->
-            <div class="panel-container">
-                <div class="panel-header">
-                    <div class="panel-header-title">
-                        <i class="fa-solid fa-robot" style="color: var(--primary);"></i>
-                        Autonomous Multi-Agent Consensus Pipeline
-                    </div>
-                    <span class="badge-pill badge-green">4 Agents Operational</span>
-                </div>
-
-                <div class="agent-pipeline-box">
-                    <div class="agent-step-item active" id="agent-step-1">
-                        <div class="agent-step-icon"><i class="fa-solid fa-eye"></i></div>
-                        <div class="agent-step-content">
-                            <h5>Agent 1: Vision Perception <span class="badge-pill badge-cyan">EDGE</span></h5>
-                            <p>Detects road distress & applies DPDP on-chip Gaussian privacy blur.</p>
-                        </div>
-                    </div>
                     <div class="agent-step-item" id="agent-step-2">
                         <div class="agent-step-icon"><i class="fa-solid fa-diagram-project"></i></div>
                         <div class="agent-step-content">
@@ -2677,7 +2766,18 @@ h1, h2, h3 {
     </div>
 
     <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+function switchFooterTab(tabKey) {
+    document.querySelectorAll('.footer-tab-pill').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.footer-tab-panel').forEach(panel => panel.style.display = 'none');
+    
+    const activeBtn = document.getElementById(`ftab-btn-${tabKey}`);
+    const activePanel = document.getElementById(`footer-tab-${tabKey}`);
+    if (activeBtn) activeBtn.classList.add('active');
+    if (activePanel) activePanel.style.display = 'flex';
+}
+
+</script>
 
     <!-- Embedded Standalone Application JavaScript -->
     <script>
@@ -5102,6 +5202,17 @@ function speakMapDirectionPrompt() {
     }
 }
 
+
+function switchFooterTab(tabKey) {
+    document.querySelectorAll('.footer-tab-pill').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.footer-tab-panel').forEach(panel => panel.style.display = 'none');
+    
+    const activeBtn = document.getElementById(`ftab-btn-${tabKey}`);
+    const activePanel = document.getElementById(`footer-tab-${tabKey}`);
+    if (activeBtn) activeBtn.classList.add('active');
+    if (activePanel) activePanel.style.display = 'flex';
+}
+
 </script>
     <!-- WhatsApp & SMS Municipal Dispatch Modal -->
     <div class="modal-backdrop" id="msg-dispatch-modal" style="display:none;">
@@ -5696,69 +5807,109 @@ function speakMapDirectionPrompt() {
     <!-- =============================================================================
          Official GIGW 3.0 Government Footer
          ============================================================================= -->
-    <footer class="gov-official-footer">
-        <div class="gov-footer-content">
-            <div class="gov-footer-col">
-                <h4><i class="fa-solid fa-landmark"></i> Mysuru City Corporation (MCC)</h4>
-                <p style="font-size:0.75rem; line-height:1.6; margin-bottom:8px;">
-                    UrbanSight AI is an autonomous transit-fleet pavement intelligence and citizen road safety framework developed for the Integrated Command & Control Center (ICCC) under the Smart Cities Mission and Digital India initiative.
-                </p>
-                <div style="font-size:0.7rem; color:var(--text-tertiary);">
-                    <b>MCC Head Office:</b> Sayyaji Rao Road, Agrahara, Mysuru, Karnataka 570024 · Tel: 0821-2418800
-                </div>
-            </div>
-            <div class="gov-footer-col">
-                <h4><i class="fa-solid fa-gavel"></i> Statutory Links</h4>
-                <ul class="gov-footer-links">
-                    <li><a href="#" onclick="openPublicTendersModal(); return false;">KTPP Act Tenders</a></li>
-                    <li><a href="#" onclick="openGrievanceTrackerModal(); return false;">Janahitha Citizen Charter</a></li>
-                    <li><a href="#" onclick="openPublicTendersModal(); return false;">RTI Section 4(1)(b)</a></li>
-                    <li><a href="#" onclick="openInspectionCertificateModal(); return false;">IRC:SP:20 Compliance</a></li>
-                    <li><a href="#" onclick="alert('DPDP Act 2023 §2(t) Gaussian blur applied to all public faces and license plates prior to telemetry ingest.'); return false;">DPDP Act 2023 Privacy Policy</a></li>
-                </ul>
-            </div>
-            <div class="gov-footer-col">
-                <h4><i class="fa-solid fa-phone"></i> Emergency Lines</h4>
-                <ul class="gov-footer-links">
-                    <li><a href="tel:18004254766">Toll-Free: 1800-425-4766</a></li>
-                    <li><a href="tel:08212418800">Control Room: 0821-2418800</a></li>
-                    <li><a href="tel:1095">Traffic Police: 1095</a></li>
-                    <li><a href="tel:101">Fire & Rescue: 101</a></li>
-                    <li><a href="#" onclick="openHelplinesModal(); return false;">View All 9 Zonal Offices</a></li>
-                </ul>
-            </div>
-            <div class="gov-footer-col">
-                <h4><i class="fa-solid fa-user-tie"></i> Web Information Manager</h4>
-                <div style="font-size:0.72rem; line-height:1.5;">
-                    <div><b>Nodal Officer:</b> Assistant Executive Engineer (IT & ICCC)</div>
-                    <div><b>Organization:</b> Mysuru City Corporation (MCC)</div>
-                    <div><b>Email:</b> commissioner@mysurucitycorporation.co.in</div>
-                    <div style="margin-top:8px;">
-                        <span class="screen-reader-tag" style="background:rgba(2, 132, 199, 0.1); border-color:rgba(2, 132, 199, 0.3); color:#0284c7;">
-                            <i class="fa-solid fa-check-double"></i> Hosted at KSDC (NIC Cloud)
-                        </span>
-                    </div>
-                </div>
-            </div>
+        <!-- =============================================================================
+         Official Single-Tab Government Governance & Directory Bar (GIGW 3.0)
+         ============================================================================= -->
+    <footer class="gov-single-tab-footer">
+        <div class="footer-tab-nav">
+            <button class="footer-tab-pill active" id="ftab-btn-statutory" onclick="switchFooterTab('statutory')">
+                <i class="fa-solid fa-gavel"></i> Statutory Links
+            </button>
+            <button class="footer-tab-pill" id="ftab-btn-emergency" onclick="switchFooterTab('emergency')">
+                <i class="fa-solid fa-phone"></i> Emergency Lines
+            </button>
+            <button class="footer-tab-pill" id="ftab-btn-manager" onclick="switchFooterTab('manager')">
+                <i class="fa-solid fa-user-tie"></i> Web Information Manager
+            </button>
+            <button class="footer-tab-pill" id="ftab-btn-about" onclick="switchFooterTab('about')">
+                <i class="fa-solid fa-landmark"></i> MCC Info
+            </button>
+            <span class="footer-tab-badge">
+                <i class="fa-solid fa-cloud"></i> Hosted at KSDC (NIC Cloud)
+            </span>
         </div>
-        <div class="gov-footer-bottom">
-            <div>
-                © 2026 Mysuru City Corporation & Ministry of Housing and Urban Affairs (MoHUA), Govt. of India. All rights reserved.
-            </div>
-            <div style="display:flex; align-items:center; gap:16px;">
+
+        <div class="footer-tab-panel" id="footer-tab-statutory">
+            <span class="ftab-label"><i class="fa-solid fa-scale-balanced"></i> Statutory &amp; Compliance:</span>
+            <a href="#" onclick="openPublicTendersModal(); return false;"><i class="fa-solid fa-file-signature"></i> KTPP Act Tenders</a>
+            <span class="ftab-sep">·</span>
+            <a href="#" onclick="openGrievanceTrackerModal(); return false;"><i class="fa-solid fa-clock-rotate-left"></i> Janahitha Citizen Charter</a>
+            <span class="ftab-sep">·</span>
+            <a href="#" onclick="openPublicTendersModal(); return false;"><i class="fa-solid fa-book-open"></i> RTI Section 4(1)(b)</a>
+            <span class="ftab-sep">·</span>
+            <a href="#" onclick="openInspectionCertificateModal(); return false;"><i class="fa-solid fa-certificate"></i> IRC:SP:20 Compliance</a>
+            <span class="ftab-sep">·</span>
+            <a href="#" onclick="alert('DPDP Act 2023 §2(t) in-memory Gaussian redaction active.'); return false;"><i class="fa-solid fa-shield-halved"></i> DPDP Act 2023 Privacy Policy</a>
+        </div>
+
+        <div class="footer-tab-panel" id="footer-tab-emergency" style="display:none;">
+            <span class="ftab-label"><i class="fa-solid fa-phone-volume"></i> 24x7 Emergency Helplines:</span>
+            <a href="tel:18004254766"><b>Toll-Free:</b> 1800-425-4766</a>
+            <span class="ftab-sep">·</span>
+            <a href="tel:08212418800"><b>Control Room:</b> 0821-2418800</a>
+            <span class="ftab-sep">·</span>
+            <a href="tel:1095"><b>Traffic Police:</b> 1095</a>
+            <span class="ftab-sep">·</span>
+            <a href="tel:101"><b>Fire &amp; Rescue:</b> 101</a>
+            <span class="ftab-sep">·</span>
+            <a href="#" onclick="openHelplinesModal(); return false;"><i class="fa-solid fa-building-flag"></i> View All 9 Zonal Offices</a>
+        </div>
+
+        <div class="footer-tab-panel" id="footer-tab-manager" style="display:none;">
+            <span class="ftab-label"><i class="fa-solid fa-user-check"></i> Web Information Manager:</span>
+            <span><b>Nodal Officer:</b> Assistant Executive Engineer (IT &amp; ICCC)</span>
+            <span class="ftab-sep">·</span>
+            <span><b>Agency:</b> Mysuru City Corporation (MCC)</span>
+            <span class="ftab-sep">·</span>
+            <a href="mailto:commissioner@mysurucitycorporation.co.in"><b>Email:</b> commissioner@mysurucitycorporation.co.in</a>
+        </div>
+
+        <div class="footer-tab-panel" id="footer-tab-about" style="display:none;">
+            <span class="ftab-label"><i class="fa-solid fa-city"></i> Mysuru City Corporation:</span>
+            <span>Sayyaji Rao Road, Agrahara, Mysuru, Karnataka 570024</span>
+            <span class="ftab-sep">·</span>
+            <span><b>Tel:</b> 0821-2418800</span>
+            <span class="ftab-sep">·</span>
+            <span>UrbanSight AI Autonomous Smart City Framework · MoHUA &amp; Govt. of Karnataka</span>
+        </div>
+
+        <div class="gov-footer-bottom-bar">
+            <span>© 2026 Mysuru City Corporation &amp; MoHUA Govt. of India. All rights reserved.</span>
+            <div style="display:flex; align-items:center; gap:12px;">
                 <span><b>Monitored:</b> 412 km</span>
-                <span><b>Grievances Closed:</b> 1,482</span>
+                <span><b>Grievances:</b> 1,482</span>
                 <span><b>Active Tenders:</b> 4</span>
                 <span><b>Wards:</b> 65</span>
-                <span><b>Last Updated:</b> 24 Oct 2026</span>
             </div>
         </div>
     </footer>
 
     <!-- Leaflet GIS Map JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+function switchFooterTab(tabKey) {
+    document.querySelectorAll('.footer-tab-pill').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.footer-tab-panel').forEach(panel => panel.style.display = 'none');
+    
+    const activeBtn = document.getElementById(`ftab-btn-${tabKey}`);
+    const activePanel = document.getElementById(`footer-tab-${tabKey}`);
+    if (activeBtn) activeBtn.classList.add('active');
+    if (activePanel) activePanel.style.display = 'flex';
+}
+
+</script>
     <!-- Core Application Logic -->
-    <script src="/static/js/app.js"></script>
+    <script src="/static/js/app.js">
+function switchFooterTab(tabKey) {
+    document.querySelectorAll('.footer-tab-pill').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.footer-tab-panel').forEach(panel => panel.style.display = 'none');
+    
+    const activeBtn = document.getElementById(`ftab-btn-${tabKey}`);
+    const activePanel = document.getElementById(`footer-tab-${tabKey}`);
+    if (activeBtn) activeBtn.classList.add('active');
+    if (activePanel) activePanel.style.display = 'flex';
+}
+
+</script>
 </body>
 </html>
 
