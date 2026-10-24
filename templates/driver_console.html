@@ -1818,6 +1818,25 @@
         // Start hybrid polling
         setInterval(pollTelemetryAPI, 2000);
         pollTelemetryAPI();
+
+        // Cross-Tab Listener for Real-Time AI Hazards Dispatched from Command Center
+        try {
+            const driverChannel = new BroadcastChannel('urbansight_crew_events');
+            driverChannel.onmessage = (e) => {
+                if (e.data && e.data.event_type === 'NEW_DEFECT_DISPATCHED') {
+                    setHazardAlert(
+                        `${e.data.hazard_type || 'POTHOLE'} DETECTED`,
+                        e.data.location_name || "Ahead on Bus Path (180m Horizon)",
+                        180,
+                        "MERGE LEFT LANE & REDUCE SPEED TO 20 KM/H",
+                        "Live Edge Detection Dispatched by ICCC Master Agent",
+                        2,
+                        -0.40
+                    );
+                    playVoiceAdvisory("Kannada");
+                }
+            };
+        } catch (err) {}
     </script>
 </body>
 </html>

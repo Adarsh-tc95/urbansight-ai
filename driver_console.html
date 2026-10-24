@@ -913,30 +913,6 @@
 </head>
 <body>
 
-    <!-- Tier-1 Government Authority Topbar & Unified Dashboard Navigation -->
-    <div style="background:#003580; color:#FFFFFF; padding:6px 16px; display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; border-bottom:1px solid rgba(255,255,255,0.15); flex-wrap:wrap; gap:8px;">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <svg width="24" height="24" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="16" r="11" fill="none" stroke="#FF9933" stroke-width="1.5"/>
-                <circle cx="18" cy="16" r="3" fill="#fff"/>
-                <line x1="18" y1="5" x2="18" y2="27" stroke="#fff" stroke-width="0.8" opacity="0.6"/>
-                <line x1="7" y1="16" x2="29" y2="16" stroke="#fff" stroke-width="0.8" opacity="0.6"/>
-                <text x="18" y="33" text-anchor="middle" font-size="4.5" fill="#FF9933" font-family="serif" font-weight="bold">सत्यमेव जयते</text>
-            </svg>
-            <div>
-                <span style="font-weight:700; color:#FF9933;">भारत सरकार | Government of India</span> &nbsp;·&nbsp; BMTC & KSRTC Transit Telemetry
-            </div>
-        </div>
-        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-            <a href="index.html" style="color:#BAE6FD; text-decoration:none; padding:3px 9px; border-radius:4px; background:rgba(255,255,255,0.1); font-weight:600;"><i class="fa-solid fa-gauge-high"></i> Command Center</a>
-            <a href="driver_console.html" style="color:#FFFFFF; text-decoration:none; font-weight:700; padding:3px 9px; border-radius:4px; background:#0284C7;"><i class="fa-solid fa-tablet-screen-button"></i> Driver HUD</a>
-            <a href="citizen_portal.html" style="color:#BAE6FD; text-decoration:none; padding:3px 9px; border-radius:4px; background:rgba(255,255,255,0.1); font-weight:600;"><i class="fa-solid fa-users"></i> Citizen Portal</a>
-            <a href="field_crew.html" style="color:#BAE6FD; text-decoration:none; padding:3px 9px; border-radius:4px; background:rgba(255,255,255,0.1); font-weight:600;"><i class="fa-solid fa-truck-pickup"></i> Field Crew</a>
-            <a href="analytics.html" style="color:#BAE6FD; text-decoration:none; padding:3px 9px; border-radius:4px; background:rgba(255,255,255,0.1); font-weight:600;"><i class="fa-solid fa-chart-pie"></i> Ward Analytics</a>
-            <a href="voucher.html?ticket=PWD-OCT-0941" style="color:#BAE6FD; text-decoration:none; padding:3px 9px; border-radius:4px; background:rgba(255,255,255,0.1); font-weight:600;"><i class="fa-solid fa-file-invoice"></i> CPWD Voucher</a>
-            <a href="https://github.com/gaganks2006-ind/urbansight-ai" target="_blank" style="color:#BAE6FD; text-decoration:none; padding:3px 9px; border-radius:4px; background:rgba(255,255,255,0.1); font-weight:600;"><i class="fa-brands fa-github"></i> GitHub</a>
-        </div>
-    </div>
     <!-- Top HUD Bar -->
     <header class="hud-topbar">
         <div class="hud-brand">
@@ -1842,6 +1818,25 @@
         // Start hybrid polling
         setInterval(pollTelemetryAPI, 2000);
         pollTelemetryAPI();
+
+        // Cross-Tab Listener for Real-Time AI Hazards Dispatched from Command Center
+        try {
+            const driverChannel = new BroadcastChannel('urbansight_crew_events');
+            driverChannel.onmessage = (e) => {
+                if (e.data && e.data.event_type === 'NEW_DEFECT_DISPATCHED') {
+                    setHazardAlert(
+                        `${e.data.hazard_type || 'POTHOLE'} DETECTED`,
+                        e.data.location_name || "Ahead on Bus Path (180m Horizon)",
+                        180,
+                        "MERGE LEFT LANE & REDUCE SPEED TO 20 KM/H",
+                        "Live Edge Detection Dispatched by ICCC Master Agent",
+                        2,
+                        -0.40
+                    );
+                    playVoiceAdvisory("Kannada");
+                }
+            };
+        } catch (err) {}
     </script>
 </body>
 </html>
