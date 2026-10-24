@@ -3224,6 +3224,7 @@ h1, h2, h3 {
                     </div>
                 `;
 
+                if (typeof h.lat !== "number" || isNaN(h.lat) || typeof h.lng !== "number" || isNaN(h.lng)) return;
                 L.marker([h.lat, h.lng], { icon: hazardIcon })
                     .bindPopup(popupContent)
                     .addTo(state.map);
@@ -4119,6 +4120,11 @@ function initDashcamSimulator() {
             const matchedPothole = activePool.find(ph => !mediaState.detectedPotholeIds.has(ph.id) && Math.abs(ph.progress - currentProg) <= 0.06);
 
             if (matchedPothole) {
+                if (typeof matchedPothole.lat !== 'number') {
+                    const mProg = matchedPothole.progress || 0.35;
+                    matchedPothole.lat = Number((corr.startLat + mProg * (corr.endLat - corr.startLat)).toFixed(4));
+                    matchedPothole.lng = Number((corr.startLng + mProg * (corr.endLng - corr.startLng)).toFixed(4));
+                }
                 mediaState.detectedPotholeIds.add(matchedPothole.id);
                 mediaState.activePothole = matchedPothole;
                 dispatchContinuousDefect(matchedPothole);
@@ -4127,6 +4133,11 @@ function initDashcamSimulator() {
                 const defP = (corr.potholes && corr.potholes[0]) || {
                     id: 'FP-MYS-1', progress: 0.12, xRatio: 0.42, yRatio: 0.62, width: 148, height: 62, depthCm: 11.4, name: `${corr.short} (Ch: 1.05 km), Mysuru`, ticketId: 'PWD-MYS-7141'
                 };
+                if (typeof defP.lat !== 'number') {
+                    const dProg = defP.progress || 0.12;
+                    defP.lat = Number((corr.startLat + dProg * (corr.endLat - corr.startLat)).toFixed(4));
+                    defP.lng = Number((corr.startLng + dProg * (corr.endLng - corr.startLng)).toFixed(4));
+                }
                 mediaState.detectedPotholeIds.add(defP.id);
                 mediaState.activePothole = defP;
                 dispatchContinuousDefect(defP);
@@ -5011,9 +5022,14 @@ function updateLiveNavigationDirections(hazard, lat, lng, loc) {
 
 function runAIAnalysisAndDispatch(targetPothole) {
             const d = mediaState.defect;
+            const corr = (CORRIDORS && CORRIDORS[currentCorridorKey]) ? CORRIDORS[currentCorridorKey] : (CORRIDORS && CORRIDORS['mysuru-orr'] ? CORRIDORS['mysuru-orr'] : {});
+            let safeLat = (targetPothole && typeof targetPothole.lat === 'number') ? targetPothole.lat : ((d && typeof d.lat === 'number') ? d.lat : 12.3360);
+            let safeLng = (targetPothole && typeof targetPothole.lng === 'number') ? targetPothole.lng : ((d && typeof d.lng === 'number') ? d.lng : 76.6210);
+            d.lat = safeLat;
+            d.lng = safeLng;
             if (targetPothole) {
-                d.lat = targetPothole.lat || d.lat;
-                d.lng = targetPothole.lng || d.lng;
+                d.lat = safeLat;
+                d.lng = safeLng;
                 d.loc = targetPothole.name || d.loc;
                 d.depth = `${targetPothole.depthCm}cm`;
                 d.ticketId = targetPothole.ticketId || d.ticketId;
@@ -5056,7 +5072,7 @@ function runAIAnalysisAndDispatch(targetPothole) {
             // 3. Drop marker and Fly Map to location in Mysuru / Bengaluru
             renderHazardsOnMap();
             if (state.map) {
-                state.map.flyTo([d.lat, d.lng], 15, { duration: 1.2 });
+                if (typeof d.lat === "number" && typeof d.lng === "number" && !isNaN(d.lat) && !isNaN(d.lng)) { state.map.flyTo([d.lat, d.lng], 15, { duration: 1.2 }); }
             }
 
             // 4. Update Terminal Logs with Multi-Agent Handoff
