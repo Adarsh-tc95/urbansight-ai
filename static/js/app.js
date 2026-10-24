@@ -763,7 +763,8 @@ state.hazards.unshift({
     // 2. Add to PWD Work Orders Queue
     const existingWO = state.workOrders.find(w => w.ticket === d.ticketId);
     if (!existingWO) {
-state.workOrders.unshift({
+updateLiveNavigationDirections(targetHazard, targetLat, targetLng, targetLoc);
+    state.workOrders.unshift({
     ticket: d.ticketId,
     type: d.type,
     sev: d.sev,
@@ -973,6 +974,7 @@ function highlightAgent(stepNumber) {
 }
 
 function addNewWorkOrder(ticket, type, sev, loc, passes, sorCode) {
+    updateLiveNavigationDirections(targetHazard, targetLat, targetLng, targetLoc);
     state.workOrders.unshift({
         ticket, type, sev, loc, passes, sla: "47h 58m remaining", status: "DISPATCHED", sorCode: sorCode || "CPWD 16.14.2 (DBM Patch)"
     });

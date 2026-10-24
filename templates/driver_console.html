@@ -1198,10 +1198,13 @@
             <div class="telemetry-card">
                 <div class="telemetry-card-title">
                     <span>Dashcam Optical Feed</span>
-                    <span style="color:var(--primary);">30 FPS</span>
+                    <button class="btn-hud" style="padding:2px 8px; font-size:0.68rem; background:rgba(0,229,255,0.12); color:#00E5FF; border:1px solid rgba(0,229,255,0.4);" onclick="toggleDriverLiveCamera()" id="btn-driver-cam-toggle">
+                        <i class="fa-solid fa-video"></i> <span id="driver-cam-btn-text">Start Live Cam</span>
+                    </button>
                 </div>
-                <div class="dashcam-preview">
-                    <div class="dashcam-sim-grid"></div>
+                <div class="dashcam-preview" style="position:relative; overflow:hidden;">
+                    <video id="driver-live-video" autoplay playsinline muted style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;"></video>
+                    <div class="dashcam-sim-grid" id="driver-sim-grid"></div>
                     <div class="dashcam-overlay-text">
                         CAM-01 [FRONT WIDE]<br>
                         1080p @ 30 FPS · BUFFER IN-MEMORY<br>

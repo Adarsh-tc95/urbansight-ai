@@ -284,6 +284,12 @@
                         <button class="btn-media-pill" id="btn-media-sample-pothole" onclick="loadSampleMedia('mysuru-pothole')">
                             <i class="fa-solid fa-camera"></i> Mysuru Road Photo
                         </button>
+                                                <button class="btn-media-pill" id="btn-media-live-camera" onclick="toggleLiveCameraFeed()" style="background:rgba(220,38,38,0.12); color:#DC2626; border:1px solid rgba(220,38,38,0.35);" title="Start Real-time Live Camera (Webcam or Mobile Phone Camera)">
+                            <i class="fa-solid fa-circle-dot" style="color:#DC2626; animation:pulse 1.5s infinite;"></i> <span id="btn-live-cam-label">Live Camera Video</span>
+                        </button>
+                        <button class="btn-media-pill" id="btn-media-flip-camera" onclick="flipLiveCamera()" style="display:none;" title="Flip Front / Rear Camera">
+                            <i class="fa-solid fa-camera-rotate"></i> Flip Camera
+                        </button>
                         <button class="btn-media-pill" id="btn-media-sample-water" onclick="loadSampleMedia('silk-water')">
                             <i class="fa-solid fa-camera"></i> Monsoon Flood Photo
                         </button>
@@ -299,6 +305,7 @@
 
                 <div class="dashcam-split-panel">
                     <div class="video-simulation-canvas-box" style="position:relative;">
+                        <video id="live-camera-video" autoplay playsinline muted style="display:none;"></video>
                         <canvas id="dashcam-canvas" width="480" height="250"></canvas>
                         
                         <div class="hud-corner-telemetry" id="media-hud-telemetry">
@@ -337,6 +344,60 @@
                             <div class="hud-stat-item">
                                 <label><i class="fa-solid fa-map-pin" style="color:#059669;"></i> Location & Corridor</label>
                                 <span id="detection-location-label" style="font-size:0.75rem; color:var(--text-secondary);">VVCE Ring Road, Gokulam, Mysuru</span>
+                            </div>
+                        </div>
+
+                        <!-- Real-Time Navigation Directions & Driving Maneuvers Panel -->
+                        <div class="hud-directions-panel" id="hud-directions-box" style="margin-top:10px; background:#FFFFFF; border:1.5px solid var(--border-medium); border-radius:10px; padding:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <span style="font-size:0.75rem; font-weight:800; color:var(--text-primary); text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px;">
+                                    <i class="fa-solid fa-diamond-turn-right" style="color:var(--primary);"></i> Navigation &amp; Driving Directions
+                                </span>
+                                <span class="badge-pill badge-green" id="nav-maneuver-badge">MERGE LEFT</span>
+                            </div>
+
+                            <!-- Dynamic Direction Directive Banner -->
+                            <div style="background:rgba(2,132,199,0.08); border:1px solid rgba(2,132,199,0.3); border-radius:8px; padding:10px; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                                <div style="width:36px; height:36px; border-radius:50%; background:#0284C7; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-size:18px;" id="nav-direction-arrow">
+                                    <i class="fa-solid fa-arrow-turn-up fa-rotate-270"></i>
+                                </div>
+                                <div style="flex:1;">
+                                    <div style="font-size:0.85rem; font-weight:800; color:#0369A1;" id="nav-directive-text">
+                                        ↖ Merge Left Lane in 25m (Avoid Crater)
+                                    </div>
+                                    <div style="font-size:0.68rem; color:var(--text-tertiary); margin-top:2px;" id="nav-sub-directive">
+                                        Defect in Center Lane · Reduce speed to 20 km/h
+                                    </div>
+                                </div>
+                                <button type="button" onclick="speakLiveNavigationDirections()" style="background:#FFFFFF; border:1px solid var(--border-medium); border-radius:6px; padding:6px 10px; font-size:0.72rem; cursor:pointer;" title="Speak Directions in Kannada / Hindi / English">
+                                    <i class="fa-solid fa-volume-high" style="color:var(--primary);"></i>
+                                </button>
+                            </div>
+
+                            <!-- Turn-by-Turn Detour Steps -->
+                            <div style="font-size:0.7rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:6px;">
+                                Turn-by-Turn Detour Navigation
+                            </div>
+                            <div id="nav-turn-steps" style="display:flex; flex-direction:column; gap:6px; font-size:0.72rem; color:var(--text-primary); margin-bottom:10px;">
+                                <div style="display:flex; align-items:center; gap:6px; background:#FAF8F5; padding:6px 8px; border-radius:6px; border:1px solid var(--border-medium);">
+                                    <i class="fa-solid fa-arrow-up" style="color:var(--primary);"></i> <span id="nav-step-1">Step 1: Continue along VVCE Ring Road (200m)</span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:6px; background:#FAF8F5; padding:6px 8px; border-radius:6px; border:1px solid var(--border-medium);">
+                                    <i class="fa-solid fa-arrow-turn-up fa-rotate-270" style="color:#EA580C;"></i> <span id="nav-step-2">Step 2: Veer Left to bypass deep pothole zone (40m)</span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:6px; background:#FAF8F5; padding:6px 8px; border-radius:6px; border:1px solid var(--border-medium);">
+                                    <i class="fa-solid fa-check" style="color:#10B981;"></i> <span id="nav-step-3">Step 3: Re-align with main corridor past defect</span>
+                                </div>
+                            </div>
+
+                            <!-- Navigation Action Links -->
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
+                                <button type="button" onclick="openGoogleMapsLiveDirections()" class="btn-table-action" style="background:#FAF8F5; border:1px solid #0284C7; color:#0284C7; cursor:pointer; justify-content:center; padding:7px 8px;" title="Open Turn-by-turn Navigation in Google Maps">
+                                    <i class="fa-solid fa-location-arrow"></i> Google Maps
+                                </button>
+                                <button type="button" onclick="openFieldCrewRouteModal()" class="btn-table-action" style="background:#FAF8F5; border:1px solid #10B981; color:#15803d; cursor:pointer; justify-content:center; padding:7px 8px;" title="View PWD Field Crew Turn-by-Turn Route from Depot">
+                                    <i class="fa-solid fa-truck-pickup"></i> Crew Route
+                                </button>
                             </div>
                         </div>
 
@@ -557,6 +618,49 @@
                 </button>
                 <button class="btn-wa-send" onclick="sendModalDispatch('WHATSAPP')">
                     <i class="fa-brands fa-whatsapp"></i> Send via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal: PWD Field Crew Turn-by-Turn Routing -->
+    <div class="modal-backdrop" id="crew-route-modal" style="display:none;">
+        <div class="modal-card" style="max-width:500px;">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:18px;">🚜</span>
+                    <div>
+                        <h3 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-primary);">PWD Rapid Response Van Route</h3>
+                        <p style="margin:0; font-size:0.7rem; color:var(--text-tertiary);">Turn-by-Turn Navigation from Depot to Hazard Location</p>
+                    </div>
+                </div>
+                <button class="btn-modal-close" onclick="closeFieldCrewRouteModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding:16px; display:flex; flex-direction:column; gap:12px;">
+                <div style="background:#FAF8F5; border:1px solid var(--border-medium); border-radius:8px; padding:10px; font-size:0.75rem; font-family:var(--font-mono);">
+                    <div><b>DEPOT ORIGIN:</b> MCC Ward 9 PWD Rapid Response Depot (Contour Rd, Gokulam)</div>
+                    <div style="margin-top:3px;"><b>TARGET LOCATION:</b> <span id="crew-modal-dest">VVCE Ring Road Junction, Gokulam, Mysuru</span></div>
+                    <div style="margin-top:3px; color:#15803d;"><b>ESTIMATED ARRIVAL (ETA):</b> 14 mins (Distance: 2.4 km)</div>
+                </div>
+                <div style="font-size:0.72rem; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; font-family:var(--font-mono);">Turn-by-Turn Navigation Route</div>
+                <div style="display:flex; flex-direction:column; gap:8px;" id="crew-route-steps-list">
+                    <div style="display:flex; align-items:flex-start; gap:8px; background:#FFFFFF; padding:8px 10px; border-radius:6px; border:1px solid var(--border-medium); font-size:0.75rem;">
+                        <i class="fa-solid fa-arrow-up" style="color:var(--primary); margin-top:2px;"></i>
+                        <div><b>Depart Depot:</b> Head North on Contour Road toward 3rd Stage (400m)</div>
+                    </div>
+                    <div style="display:flex; align-items:flex-start; gap:8px; background:#FFFFFF; padding:8px 10px; border-radius:6px; border:1px solid var(--border-medium); font-size:0.75rem;">
+                        <i class="fa-solid fa-arrow-right" style="color:#0284C7; margin-top:2px;"></i>
+                        <div><b>Turn Right:</b> Take Gokulam Main Road past Doctor's Corner (800m)</div>
+                    </div>
+                    <div style="display:flex; align-items:flex-start; gap:8px; background:#FFFFFF; padding:8px 10px; border-radius:6px; border:1px solid var(--border-medium); font-size:0.75rem;">
+                        <i class="fa-solid fa-location-dot" style="color:#DC2626; margin-top:2px;"></i>
+                        <div><b>Arrive on Left:</b> Merge onto Ring Road. Pothole defect spotted at Chainage 14+200.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:10px 16px; background:#EDE7DA; display:flex; justify-content:flex-end; gap:8px;">
+                <button class="btn-modal-cancel" onclick="closeFieldCrewRouteModal()">Close</button>
+                <button class="btn-wa-send" onclick="openGoogleMapsLiveDirections()">
+                    <i class="fa-solid fa-diamond-turn-right"></i> Open Navigation in Google Maps
                 </button>
             </div>
         </div>

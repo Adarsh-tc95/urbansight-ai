@@ -759,6 +759,25 @@ class TestPeopleAndInclusion(unittest.TestCase):
         self.assertEqual(red_res["remaining_points"], initial_balance - 300)
         self.assertTrue(red_res["voucher"]["voucher_id"].startswith("MCC-PERK-2026-"))
 
+    def test_live_video_navigation_directions(self):
+        from backend.main import get_navigation_directions, generate_navigation_guidance
+        nav = get_navigation_directions(
+            hazard_type="POTHOLE",
+            lat=12.3360,
+            lng=76.6210,
+            location_name="VVCE Ring Road Junction, Gokulam, Mysuru"
+        )
+        self.assertEqual(nav["status"], "SUCCESS")
+        self.assertEqual(nav["maneuver"], "MERGE_LEFT")
+        self.assertIn("google_maps_url", nav)
+        self.assertTrue(nav["google_maps_url"].startswith("https://www.google.com/maps/dir/"))
+        self.assertTrue(len(nav["turn_by_turn"]) >= 3)
+        self.assertIn("kn-IN", nav["voice_prompts"])
+        self.assertIn("hi-IN", nav["voice_prompts"])
+        self.assertIn("en-IN", nav["voice_prompts"])
+        self.assertIn("field_crew_route", nav)
+        self.assertTrue(nav["field_crew_route"]["eta_minutes"] > 0)
+
 
 if __name__ == '__main__':
     unittest.main()
