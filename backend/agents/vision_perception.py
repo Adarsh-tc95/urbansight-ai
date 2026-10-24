@@ -119,6 +119,14 @@ class VisionPerceptionAgent:
             bx, by, bw, bh = cv2.boundingRect(best_contour)
             by += roi_y_start
 
+            aspect_ratio = round(float(bw) / max(1.0, float(bh)), 2)
+            if aspect_ratio >= 2.8 or aspect_ratio <= 0.35:
+                h_type = HazardType.ROAD_CRACK
+                rdd_code = "D00 (Longitudinal Crack)" if aspect_ratio >= 2.8 else "D10 (Transverse Crack)"
+            else:
+                h_type = HazardType.POTHOLE
+                rdd_code = RDD_CODE_MAPPING[HazardType.POTHOLE]
+
             mask = np.zeros(gray.shape, dtype=np.uint8)
             cv2.drawContours(mask, [best_contour + [0, roi_y_start]], -1, 255, -1)
             mean_contour = float(cv2.mean(gray, mask=mask)[0])
@@ -143,8 +151,9 @@ class VisionPerceptionAgent:
 
             return {
                 "hazard_detected": True,
-                "hazard_type": HazardType.POTHOLE,
-                "rdd_code": RDD_CODE_MAPPING[HazardType.POTHOLE],
+                "hazard_type": h_type,
+                "rdd_code": rdd_code,
+                "aspect_ratio": aspect_ratio,
                 "severity": sev,
                 "confidence": conf,
                 "depth_cm": depth_cm,
@@ -170,6 +179,26 @@ class VisionPerceptionAgent:
             "normalized_bbox": {"top": "46%", "left": "38%", "width": "30%", "height": "34%"},
             "privacy": self.simulate_dpdp_privacy_redaction()
         }
+
+    def draw_detections(self, frame: Any, analysis: Dict[str, Any]) -> Any:
+        """Draws bounding box, defect type, and depth watermark onto frame."""
+        import cv2
+        import numpy as np
+        if frame is None or not isinstance(frame, np.ndarray):
+            return frame
+        out = frame.copy()
+        if not analysis.get("hazard_detected"):
+            return out
+        bbox = analysis.get("bounding_box") or {}
+        x = int(bbox.get("x", 0))
+        y = int(bbox.get("y", 0))
+        w = int(bbox.get("width", 50))
+        h = int(bbox.get("height", 50))
+        color = (0, 0, 255)
+        cv2.rectangle(out, (x, y), (x + w, y + h), color, 2)
+        label = f"{analysis.get('rdd_code', 'DEFECT')} | {analysis.get('depth_cm', 0)}cm"
+        cv2.putText(out, label, (x, max(15, y - 5)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 255), 1)
+        return out
 
     def simulate_dpdp_privacy_redaction(
         self,
