@@ -14,6 +14,12 @@ import json
 import argparse
 import random
 import requests
+
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 from typing import Dict, Any, List, Optional, Tuple
 
 try:

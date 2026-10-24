@@ -898,6 +898,9 @@
             <a href="citizen_portal.html" class="btn-portal active" style="background:#003580; color:#FFFFFF; border-color:#003580;" title="Citizen Road Repair Tracker">
                 <i class="fa-solid fa-users"></i> Citizen Portal
             </a>
+            <a href="nav_overlay.html" class="btn-portal" style="background:#FF9933; color:#1A1A1A; font-weight:700;" title="Open Mobile Navigation HUD Overlay">
+                <i class="fa-solid fa-diamond-turn-right"></i> Mobile Nav HUD
+            </a>
             <a href="field_crew.html" class="btn-portal" title="Open Field Crew PWA">
                 <i class="fa-solid fa-truck-pickup"></i> Field Crew
             </a>
@@ -1081,7 +1084,7 @@
                         </div>
 
                         <!-- Real Dashcam Photo -->
-                        <img src="image1.jpg" alt="Road Surface Distress" class="snapshot-img" id="snapshot-img" onerror="this.src='image2.jpg';">
+                        <img src="/static/image1.jpg" alt="Road Surface Distress" class="snapshot-img" id="snapshot-img" onerror="this.onerror=null; this.src='/static/image2.jpg';">
 
                         <!-- Detection Bounding Box -->
                         <div class="bbox-overlay" id="bbox-box">

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UrbanSight AI — Mobile Navigation HUD Overlay</title>
+    
+    <!-- Government Standard Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Leaflet GIS Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Noto Sans', sans-serif;
+            background: #111827;
+            color: #FFFFFF;
+        }
+
+        /* 1. Underlying Navigation Map (Simulates Google Maps / MapMyIndia Navigation) */
+        #nav-map {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* 2. Top Navigation Turn Banner (Google Maps Style) */
+        .gmaps-top-banner {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            background: #003580;
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 1000;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border-bottom: 3px solid #FF9933;
+        }
+
+        .maneuver-icon-circle {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            color: #003580;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .gmaps-direction-info {
+            flex: 1;
+        }
+
+        .direction-dist {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FF9933;
+            line-height: 1.1;
+        }
+
+        .direction-street {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .direction-subtext {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* 3. UrbanSight AI FLOATING HEADS-UP OVERLAY (White-Hat HUD Pill) */
+        .urbansight-hud-overlay {
+            position: absolute;
+            top: 110px;
+            left: 14px;
+            right: 14px;
+            background: rgba(17, 24, 39, 0.94);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid #CC0000;
+            border-radius: 16px;
+            padding: 14px 16px;
+            z-index: 1100;
+            box-shadow: 0 12px 36px rgba(204, 0, 0, 0.35);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: pulseGlow 1.8s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { border-color: #CC0000; box-shadow: 0 0 20px rgba(204, 0, 0, 0.4); }
+            50% { border-color: #FF9933; box-shadow: 0 0 32px rgba(255, 153, 51, 0.6); }
+        }
+
+        .hud-header-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 6px;
+        }
+
+        .hud-brand-tag {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #00E5FF;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hud-badge-sev {
+            background: #CC0000;
+            color: #FFFFFF;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
+        }
+
+        .hud-body-grid {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .hud-action-icon {
+            font-size: 2.2rem;
+            color: #FF9933;
+            animation: bounceLeft 1s infinite alternate;
+        }
+
+        @keyframes bounceLeft {
+            from { transform: translateX(0); }
+            to { transform: translateX(-8px); }
+        }
+
+        .hud-directive-text {
+            flex: 1;
+        }
+
+        .hud-directive-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            line-height: 1.2;
+        }
+
+        .hud-directive-sub {
+            font-size: 0.78rem;
+            color: #D1D5DB;
+            margin-top: 3px;
+        }
+
+        /* 4. Bottom Trip Telemetry & Live Simulation Controls */
+        .bottom-trip-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #FFFFFF;
+            color: #111827;
+            border-radius: 20px 20px 0 0;
+            padding: 16px 20px 24px;
+            z-index: 1000;
+            box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        .trip-metrics-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .trip-eta {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #138808;
+            line-height: 1;
+        }
+
+        .trip-sub {
+            font-size: 0.8rem;
+            color: #6B7280;
+            font-weight: 600;
+        }
+
+        .speedometer-badge {
+            background: #EBF1FB;
+            border: 2px solid #003580;
+            color: #003580;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Simulation Controls for Judge Demo */
+        .simulation-controls-box {
+            background: #F3F4F6;
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .btn-sim-travel {
+            background: #003580;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 53, 128, 0.3);
+            transition: all 0.2s;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-sim-travel:hover {
+            background: #002660;
+            transform: translateY(-1px);
+        }
+
+        .btn-sim-travel.active {
+            background: #CC0000;
+            box-shadow: 0 4px 12px rgba(204, 0, 0, 0.4);
+        }
+
+        .btn-toggle-portal {
+            background: #FFFFFF;
+            border: 1px solid #D1D5DB;
+            color: #003580;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Audio Alert Button */
+        .btn-audio-mute {
+            background: none;
+            border: none;
+            color: #6B7280;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* Simulated Car Vehicle Marker */
+        .car-marker-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #003580;
+            border: 3px solid #FFFFFF;
+            box-shadow: 0 0 14px rgba(0, 53, 128, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Navigation Map Canvas -->
+    <div id="nav-map"></div>
+
+    <!-- 2. Google Maps Style Turn Banner -->
+    <div class="gmaps-top-banner">
+        <div class="maneuver-icon-circle" id="turn-icon">
+            <i class="fa-solid fa-arrow-up"></i>
+        </div>
+        <div class="gmaps-direction-info">
+            <div class="direction-dist" id="turn-dist">350 m</div>
+            <div class="direction-street" id="turn-street">VVCE Ring Road Corridor</div>
+            <div class="direction-subtext">Navigating toward Gokulam 3rd Stage, Mysuru</div>
+        </div>
+        <button class="btn-audio-mute" id="btn-audio-mute" onclick="toggleAudio()" title="Mute/Unmute Audio Alert">
+            <i class="fa-solid fa-volume-high" id="audio-icon"></i>
+        </button>
+    </div>
+
+    <!-- 3. UrbanSight AI FLOATING HEADS-UP OVERLAY (White-Hat Live HUD) -->
+    <div class="urbansight-hud-overlay" id="hud-overlay" style="display: none;">
+        <div class="hud-header-strip">
+            <span class="hud-brand-tag">
+                <i class="fa-solid fa-shield-halved"></i> UrbanSight AI · Road Hazard Guard
+            </span>
+            <span class="hud-badge-sev" id="hud-sev-tag">CRITICAL P1</span>
+        </div>
+        <div class="hud-body-grid">
+            <div class="hud-action-icon" id="hud-arrow">
+                <i class="fa-solid fa-arrow-turn-up fa-rotate-270"></i>
+            </div>
+            <div class="hud-directive-text">
+                <div class="hud-directive-title" id="hud-directive-title">MERGE LEFT IN 80m</div>
+                <div class="hud-directive-sub" id="hud-directive-sub">
+                    Dangerous Pothole (9.4 cm depth) detected on right lane by bus dashcams. Reduce speed to 20 km/h.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Bottom Trip Bar & Demo Controls -->
+    <div class="bottom-trip-panel">
+        <div class="trip-metrics-row">
+            <div>
+                <div class="trip-eta" id="trip-eta">4 min</div>
+                <div class="trip-sub">1.8 km · Fast Route (Via Ring Road)</div>
+            </div>
+            <div class="speedometer-badge" id="speedo-badge">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span id="speed-val">38</span> km/h
+            </div>
+        </div>
+
+        <!-- Simulation Controls for Hackathon Judges -->
+        <div class="simulation-controls-box">
+            <button class="btn-sim-travel" id="btn-sim" onclick="toggleTravelSimulation()">
+                <i class="fa-solid fa-play" id="sim-btn-icon"></i>
+                <span id="sim-btn-text">Simulate Driving on Mysuru Ring Road</span>
+            </button>
+            <a href="citizen_portal.html" class="btn-toggle-portal" title="Return to Citizen Portal">
+                <i class="fa-solid fa-users"></i> Portal
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Audio synthesis for live turn & hazard alerts
+        let audioEnabled = true;
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const icon = document.getElementById('audio-icon');
+            icon.className = audioEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+        }
+
+        function speakGuidance(text) {
+            if (!audioEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.05;
+            utterance.pitch = 1.0;
+            utterance.lang = 'en-IN';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Initialize Map
+        const map = L.map('nav-map', {
+            zoomControl: false,
+            attributionControl: false
+        }).setView([12.3360, 76.6210], 16);
+
+        // Clean OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        // Waypoints along Mysuru Ring Road / VVCE Corridor
+        const WAYPOINTS = [
+            { lat: 12.3385, lng: 76.6180, street: "VVCE North Gate Approach", turnDist: "400m", speed: 42, hazard: null },
+            { lat: 12.3372, lng: 76.6195, street: "Contour Road Intersection", turnDist: "250m", speed: 38, hazard: null },
+            { 
+                lat: 12.3360, lng: 76.6210, street: "VVCE Ring Road Junction", turnDist: "120m", speed: 22,
+                hazard: {
+                    title: "MERGE LEFT IN 80m",
+                    sub: "Severe Pothole (9.4 cm) detected on Right Carriageway by Bus Dashcams. CPWD SOR Code 16.14.2.",
+                    sev: "CRITICAL P1",
+                    speech: "Caution! Pothole detected ahead. Merge to left lane and slow down."
+                }
+            },
+            { lat: 12.3348, lng: 76.6225, street: "Gokulam 3rd Stage Feeder", turnDist: "300m", speed: 28, hazard: null },
+            { lat: 12.3335, lng: 76.6240, street: "KSRTC Gokulam Bus Depot", turnDist: "150m", speed: 35, hazard: null }
+        ];
+
+        // Car GPS Marker
+        const carIcon = L.divIcon({
+            className: 'custom-car-marker',
+            html: '<div class="car-marker-icon"><i class="fa-solid fa-car"></i></div>',
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
+        });
+        const carMarker = L.marker([WAYPOINTS[0].lat, WAYPOINTS[0].lng], { icon: carIcon }).addTo(map);
+
+        // Pothole Hazard Marker on Map
+        const hazardIcon = L.divIcon({
+            className: 'pothole-icon',
+            html: '<div style="background:#CC0000; border:2px solid #FFF; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; box-shadow:0 0 12px red;"><i class="fa-solid fa-triangle-exclamation"></i></div>',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
+        L.marker([12.3360, 76.6210], { icon: hazardIcon }).addTo(map).bindPopup("<b>#PWD-OCT-0941</b><br>Pothole 9.4cm (Critical P1)");
+
+        // Route Polyline
+        const routeCoords = WAYPOINTS.map(w => [w.lat, w.lng]);
+        L.polyline(routeCoords, { color: '#003580', weight: 6, opacity: 0.85 }).addTo(map);
+
+        // Simulation Loop
+        let simInterval = null;
+        let stepIdx = 0;
+
+        function toggleTravelSimulation() {
+            if (simInterval) {
+                clearInterval(simInterval);
+                simInterval = null;
+                document.getElementById('sim-btn-text').textContent = "Resume Driving Simulation";
+                document.getElementById('sim-btn-icon').className = "fa-solid fa-play";
+                document.getElementById('btn-sim').classList.remove('active');
+            } else {
+                document.getElementById('sim-btn-text').textContent = "Stop Driving Simulation";
+                document.getElementById('sim-btn-icon').className = "fa-solid fa-pause";
+                document.getElementById('btn-sim').classList.add('active');
+                
+                simInterval = setInterval(() => {
+                    stepIdx = (stepIdx + 1) % WAYPOINTS.length;
+                    const wp = WAYPOINTS[stepIdx];
+                    
+                    // Animate marker
+                    carMarker.setLatLng([wp.lat, wp.lng]);
+                    map.panTo([wp.lat, wp.lng], { animate: true, duration: 1.0 });
+
+                    // Update UI
+                    document.getElementById('turn-street').textContent = wp.street;
+                    document.getElementById('turn-dist').textContent = wp.turnDist;
+                    document.getElementById('speed-val').textContent = wp.speed;
+
+                    // Trigger UrbanSight HUD Overlay if hazard
+                    const hud = document.getElementById('hud-overlay');
+                    if (wp.hazard) {
+                        hud.style.display = 'block';
+                        document.getElementById('hud-directive-title').textContent = wp.hazard.title;
+                        document.getElementById('hud-directive-sub').textContent = wp.hazard.sub;
+                        document.getElementById('hud-sev-tag').textContent = wp.hazard.sev;
+                        speakGuidance(wp.hazard.speech);
+                    } else {
+                        hud.style.display = 'none';
+                    }
+                }, 2500);
+            }
+        }
+    </script>
+</body>
+</html>

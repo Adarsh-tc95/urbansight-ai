@@ -615,14 +615,14 @@
             </div>
         </div>
 
-        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-            <a href="index.html" class="btn-header-nav" title="Command Center"><i class="fa-solid fa-gauge-high"></i> Command Center</a>
-            <a href="driver_console.html" class="btn-header-nav" title="Driver HUD"><i class="fa-solid fa-tablet-screen-button"></i> Driver HUD</a>
-            <a href="citizen_portal.html" class="btn-header-nav" title="Citizen Portal"><i class="fa-solid fa-users"></i> Citizen Portal</a>
-            <a href="field_crew.html" class="btn-header-nav active" style="background:#003580; color:#FFFFFF; border-color:#003580;" title="Field Crew Active"><i class="fa-solid fa-truck-pickup"></i> Field Crew</a>
-            <a href="analytics.html" class="btn-header-nav" title="Ward Analytics"><i class="fa-solid fa-chart-pie"></i> Ward Analytics</a>
-            <a href="voucher.html?ticket=PWD-OCT-0941" class="btn-header-nav" title="CPWD Voucher"><i class="fa-solid fa-file-invoice"></i> Voucher</a>
-            <a href="https://github.com/gaganks2006-ind/urbansight-ai" target="_blank" class="btn-header-nav" title="GitHub"><i class="fa-brands fa-github"></i> GitHub</a>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <a href="citizen_portal.html" class="btn-header-nav" title="Open Citizen Portal">
+                <i class="fa-solid fa-users"></i> Citizen
+            </a>
+            <a href="https://github.com/gaganks2006-ind/urbansight-ai" target="_blank" class="btn-header-nav" title="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="index.html" class="btn-header-nav" title="Open ICCC Dashboard">
+                <i class="fa-solid fa-gauge"></i> ICCC
+            </a>
         </div>
     </header>
 
@@ -1068,6 +1068,36 @@
 
         renderOrders();
         syncBackendWorkOrders();
+
+        // Real-Time Cross-Tab Listener for Newly Dispatched AI Defects from Command Center
+        try {
+            const crewChannel = new BroadcastChannel('urbansight_crew_events');
+            crewChannel.onmessage = (e) => {
+                if (e.data && e.data.ticket_id && (e.data.event_type === 'NEW_DEFECT_DISPATCHED' || e.data.status === 'DISPATCHED')) {
+                    const existing = workOrders.find(w => w.ticket_id === e.data.ticket_id);
+                    if (!existing) {
+                        workOrders.unshift({
+                            ticket_id: e.data.ticket_id,
+                            hazard_type: e.data.hazard_type || 'POTHOLE',
+                            severity: e.data.severity || 'CRITICAL_P1',
+                            location_name: e.data.location_name || 'Mysuru Ring Road Corridor',
+                            ward: 'MCC Ward 9 (Mysuru North)',
+                            lat: e.data.lat || 12.3360,
+                            lng: e.data.lng || 76.6210,
+                            sla_deadline: '47h 55m remaining',
+                            status: 'DISPATCHED',
+                            sor_code: e.data.sorCode || 'CPWD 16.14.2',
+                            est_cost: 14250,
+                            before_img: 'image1.jpg',
+                            after_img: 'image2.jpg',
+                            citizen_phone: '+91 98450 12345'
+                        });
+                        renderOrders();
+                        showToast(`⚡ New AI Work Order #${e.data.ticket_id} received from Command Center!`);
+                    }
+                }
+            };
+        } catch (err) {}
     </script>
 </body>
 </html>

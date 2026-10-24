@@ -24,7 +24,7 @@
     {"seq": 16, "name": "Beratena Agrahara Elevated Pier 210", "lat": 12.8740, "lng": 77.6655, "elevation_m": 929.5, "hazard": "ROAD_CRACK", "depth": 3.6, "z_shock": -0.17, "speed_kmh": 55},
     {"seq": 17, "name": "Beratena Agrahara Metro Station Cross", "lat": 12.8705, "lng": 77.6685, "elevation_m": 927.0, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 58},
     {"seq": 18, "name": "Konappana Agrahara Toll Plaza Approach", "lat": 12.8665, "lng": 77.6715, "elevation_m": 924.0, "hazard": null, "depth": null, "z_shock": -0.03, "speed_kmh": 38},
-    {"seq": 19, "name": "BETL Toll Plaza Speed Table (Speed Bump Check)", "lat": 12.8635, "lng": 77.6735, "elevation_m": 922.0, "hazard": "POTHOLE", "depth": 3.5, "z_shock": +0.52, "speed_kmh": 20},
+    {"seq": 19, "name": "BETL Toll Plaza Speed Table (Speed Bump Check)", "lat": 12.8635, "lng": 77.6735, "elevation_m": 922.0, "hazard": "POTHOLE", "depth": 3.5, "z_shock": 0.52, "speed_kmh": 20},
     {"seq": 20, "name": "Electronic City Toll Gate Exit Ramp", "lat": 12.8600, "lng": 77.6750, "elevation_m": 918.0, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 35},
     {"seq": 21, "name": "Infosys Main Gate (Gate 1) Sector", "lat": 12.8570, "lng": 77.6680, "elevation_m": 915.0, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 38},
     {"seq": 22, "name": "Infosys Gate 6 Tech Corridor", "lat": 12.8540, "lng": 77.6640, "elevation_m": 914.5, "hazard": "ROAD_CRACK", "depth": 2.8, "z_shock": -0.13, "speed_kmh": 40},

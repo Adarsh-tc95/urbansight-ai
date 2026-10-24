@@ -8,6 +8,13 @@ Supports realistic GPS route trajectories from distributed/routes/*.json.
 import time
 import json
 import os
+import sys
+
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 import random
 import requests
 import argparse

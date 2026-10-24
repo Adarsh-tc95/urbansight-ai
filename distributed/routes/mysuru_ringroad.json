@@ -11,7 +11,7 @@
     {"seq": 3, "name": "Aditya Hospital Signal Approach", "lat": 12.3315, "lng": 76.6270, "elevation_m": 775.0, "hazard": "ROAD_CRACK", "depth": 2.4, "z_shock": -0.12, "speed_kmh": 40},
     {"seq": 4, "name": "Jayalakshmipuram 1st Main Sector", "lat": 12.3290, "lng": 76.6300, "elevation_m": 773.2, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 42},
     {"seq": 5, "name": "Hunsur Road Junction (Kalamandira Signal)", "lat": 12.3140, "lng": 76.6320, "elevation_m": 770.8, "hazard": "POTHOLE", "depth": 8.6, "z_shock": -0.40, "speed_kmh": 34},
-    {"seq": 6, "name": "Hunsur Road Speed Table (Speed Bump Check)", "lat": 12.3120, "lng": 76.6300, "elevation_m": 771.5, "hazard": "POTHOLE", "depth": 4.0, "z_shock": +0.55, "speed_kmh": 22},
+    {"seq": 6, "name": "Hunsur Road Speed Table (Speed Bump Check)", "lat": 12.3120, "lng": 76.6300, "elevation_m": 771.5, "hazard": "POTHOLE", "depth": 4.0, "z_shock": 0.55, "speed_kmh": 22},
     {"seq": 7, "name": "Manasagangotri University West Gate", "lat": 12.3090, "lng": 76.6275, "elevation_m": 776.0, "hazard": null, "depth": null, "z_shock": -0.02, "speed_kmh": 44},
     {"seq": 8, "name": "Bogadi Ring Road Junction Flyover Link", "lat": 12.3040, "lng": 76.6220, "elevation_m": 778.2, "hazard": null, "depth": null, "z_shock": -0.01, "speed_kmh": 50},
     {"seq": 9, "name": "Bogadi 2nd Stage Ring Road Arterial", "lat": 12.3000, "lng": 76.6180, "elevation_m": 779.0, "hazard": "POTHOLE", "depth": 9.2, "z_shock": -0.42, "speed_kmh": 38},
